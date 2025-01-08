@@ -43,7 +43,7 @@ const translations = {
         features: [
           "Full-stack development",
           "User-centric design",
-          ""
+          "Core feature implementation"
         ]
       }
     },
@@ -208,18 +208,18 @@ const LanguageFlag = ({ code }) => {
   const flags = {
     en: (
       <svg className="w-5 h-5" viewBox="0 0 640 480">
-        <path fill="#012169" d="M0 0h640v480H0z"/>
-        <path fill="#FFF" d="m75 0 244 181L562 0h78v62L400 241l240 178v61h-80L320 301 81 480H0v-60l239-178L0 64V0h75z"/>
-        <path fill="#C8102E" d="m424 281 216 159v40L369 281h55zm-184 20 6 35L54 480H0l240-179zM640 0v3L391 191l2-44L590 0h50zM0 0l239 176h-60L0 42V0z"/>
-        <path fill="#FFF" d="M241 0v480h160V0H241zM0 160v160h640V160H0z"/>
-        <path fill="#C8102E" d="M0 193v96h640v-96H0zM273 0v480h96V0h-96z"/>
+        <path fill="#012169" d="M0 0h640v480H0z" />
+        <path fill="#FFF" d="m75 0 244 181L562 0h78v62L400 241l240 178v61h-80L320 301 81 480H0v-60l239-178L0 64V0h75z" />
+        <path fill="#C8102E" d="m424 281 216 159v40L369 281h55zm-184 20 6 35L54 480H0l240-179zM640 0v3L391 191l2-44L590 0h50zM0 0l239 176h-60L0 42V0z" />
+        <path fill="#FFF" d="M241 0v480h160V0H241zM0 160v160h640V160H0z" />
+        <path fill="#C8102E" d="M0 193v96h640v-96H0zM273 0v480h96V0h-96z" />
       </svg>
     ),
     de: (
       <svg className="w-5 h-5" viewBox="0 0 640 480">
-        <path fill="#FFCE00" d="M0 320h640v160H0z"/>
-        <path d="M0 0h640v160H0z"/>
-        <path fill="#DD0000" d="M0 160h640v160H0z"/>
+        <path fill="#FFCE00" d="M0 320h640v160H0z" />
+        <path d="M0 0h640v160H0z" />
+        <path fill="#DD0000" d="M0 160h640v160H0z" />
       </svg>
     )
   };
@@ -228,24 +228,31 @@ const LanguageFlag = ({ code }) => {
 };
 
 // Language Selector Component
-const LanguageSelector = ({ isMobile = false }) => {
+const LanguageSelector = ({ isMobile = false, onSelect }) => {
   const { language, setLanguage } = useContext(LanguageContext);
 
   const buttonClass = isMobile
-    ? "flex items-center justify-between w-full px-3 py-2 text-sm font-medium text-gray-600 bg-transparent hover:bg-gray-50 rounded-md"
+    ? "flex items-center justify-between w-full px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-md"
     : "flex items-center space-x-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors";
+
+  const handleChange = (e) => {
+    e.stopPropagation(); // Prevent event from bubbling up
+    setLanguage(e.target.value);
+    if (onSelect) onSelect();
+  };
 
   return (
     <div className={isMobile ? "w-full" : "relative inline-flex items-center"}>
       <select
         value={language}
-        onChange={(e) => setLanguage(e.target.value)}
+        onChange={handleChange}
+        onClick={(e) => e.stopPropagation()} // Prevent click from bubbling up
         className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"
       >
         <option value="en">English</option>
         <option value="de">Deutsch</option>
       </select>
-      <div className={buttonClass}>
+      <div className={buttonClass} onClick={(e) => e.stopPropagation()}> {/* Prevent click from bubbling up */}
         <LanguageFlag code={language} />
         <span className="ml-2">{language.toUpperCase()}</span>
       </div>
@@ -253,9 +260,42 @@ const LanguageSelector = ({ isMobile = false }) => {
   );
 };
 
+// Navigation Link Component
+const NavLink = ({ href, onClick, children }) => {
+  const handleClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+      if (onClick) onClick();
+    }
+  };
+
+  return (
+    <a
+      href={href}
+      onClick={handleClick}
+      className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+    >
+      {children}
+    </a>
+  );
+};
+
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { translate } = useContext(LanguageContext);
+
+  const closeMenu = () => setIsMenuOpen(false);
+
+  const scrollToSection = (sectionId) => {
+    const element = document.querySelector(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+      closeMenu();
+    }
+  };
 
   return (
     <header className="px-6 h-16 flex items-center fixed top-0 w-full z-50 bg-white/80 backdrop-blur-sm border-b border-gray-200">
@@ -267,31 +307,40 @@ function Header() {
         </span>
       </a>
 
-      {/* Navigation Links - Push to center with auto margins */}
+      {/* Desktop Navigation */}
       <div className="hidden md:flex items-center gap-8 mx-auto">
-        <a className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors" href="#services">
+        <button
+          onClick={() => scrollToSection('#services')}
+          className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+        >
           {translate('nav.services')}
-        </a>
-        <a className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors" href="#approach">
+        </button>
+        <button
+          onClick={() => scrollToSection('#approach')}
+          className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+        >
           {translate('nav.approach')}
-        </a>
-        <a className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors" href="#contact">
+        </button>
+        <button
+          onClick={() => scrollToSection('#contact')}
+          className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+        >
           {translate('nav.contact')}
-        </a>
+        </button>
       </div>
 
-      {/* Right side items */}
+      {/* Desktop Right Side */}
       <div className="hidden md:flex items-center gap-4">
         <LanguageSelector />
         <button
           className="px-4 py-2 bg-black text-white rounded-md hover:bg-black/90"
-          onClick={() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })}
+          onClick={() => scrollToSection('#contact')}
         >
           {translate('nav.getStarted')}
         </button>
       </div>
 
-      {/* Mobile menu button */}
+      {/* Mobile Menu Button */}
       <button
         className="ml-auto md:hidden"
         onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -299,40 +348,37 @@ function Header() {
         {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
       </button>
 
-      {/* Mobile menu */}
+      {/* Language Selector for Mobile */}
+      <div className="md:hidden ml-4">
+        <LanguageSelector />
+      </div>
+
+      {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="absolute top-full left-0 right-0 bg-white border-b border-gray-200 p-4 md:hidden">
           <nav className="flex flex-col gap-4">
-            <a 
-              className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors" 
-              href="#services"
-              onClick={() => setIsMenuOpen(false)}
+            <button
+              onClick={() => scrollToSection('#services')}
+              className="text-left text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
             >
               {translate('nav.services')}
-            </a>
-            <a 
-              className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors" 
-              href="#approach"
-              onClick={() => setIsMenuOpen(false)}
+            </button>
+            <button
+              onClick={() => scrollToSection('#approach')}
+              className="text-left text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
             >
               {translate('nav.approach')}
-            </a>
-            <a 
-              className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors" 
-              href="#contact"
-              onClick={() => setIsMenuOpen(false)}
+            </button>
+            <button
+              onClick={() => scrollToSection('#contact')}
+              className="text-left text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
             >
               {translate('nav.contact')}
-            </a>
-            
-            <LanguageSelector isMobile />
-            
+            </button>
+
             <button
               className="w-full px-4 py-2 bg-black text-white rounded-md hover:bg-black/90"
-              onClick={() => {
-                document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
-                setIsMenuOpen(false);
-              }}
+              onClick={() => scrollToSection('#contact')}
             >
               {translate('nav.getStarted')}
             </button>
@@ -346,11 +392,10 @@ function Header() {
 function HeroSection({ fadeIn }) {
   const { translate, language } = useContext(LanguageContext);
 
-  // Get the correct parts based on language
   const renderTitle = () => {
     const beforeText = language === 'en' ? "Your Idea, Live in " : "Ihre Idee, live in ";
     const highlightedText = language === 'en' ? "2 Weeks" : "2 Wochen";
-    
+
     return (
       <>
         {beforeText}
@@ -362,28 +407,28 @@ function HeroSection({ fadeIn }) {
   };
 
   return (
-    <section className="w-full min-h-[100vh] md:min-h-[80vh] py-12 md:py-24 lg:py-32 xl:py-48 bg-black relative overflow-hidden flex items-center">
+    <section className="w-full min-h-[70vh] md:min-h-[80vh] py-12 md:py-24 lg:py-32 xl:py-48 bg-black relative overflow-hidden flex items-center">
       <div className="absolute inset-0 opacity-10">
         <img src={HeroImage} alt="Background" className="w-full h-full object-cover" />
       </div>
       <div className="container px-4 md:px-6 relative z-10">
         <motion.div
-          className="flex flex-col items-center space-y-4 text-center"
+          className="flex flex-col items-center space-y-6 md:space-y-4 text-center"
           initial="initial"
           animate="animate"
           variants={fadeIn}
         >
-          <div className="space-y-2">
-            <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl/none text-white">
+          <div className="space-y-4 md:space-y-2">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl/none font-bold tracking-tighter text-white px-2">
               {renderTitle()}
             </h1>
-            <p className="mx-auto max-w-[700px] text-gray-300 md:text-xl">
+            <p className="mx-auto max-w-[700px] text-lg md:text-xl text-gray-300 px-4 mt-4">
               {translate('hero.subtitle')}
             </p>
           </div>
-          <div className="w-full max-w-sm space-y-2">
+          <div className="w-full max-w-sm space-y-2 px-4 mt-8 md:mt-6">
             <button
-              className="w-full px-6 py-4 text-lg font-medium bg-white text-black rounded-md hover:bg-gray-100"
+              className="w-full px-6 py-4 text-lg font-medium bg-white text-black rounded-md hover:bg-gray-100 transform transition hover:scale-105"
               onClick={() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })}
             >
               {translate('hero.cta')}
@@ -392,7 +437,7 @@ function HeroSection({ fadeIn }) {
         </motion.div>
       </div>
       <motion.div
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 cursor-pointer"
+        className="absolute bottom-6 left-1/2 transform -translate-x-1/2 cursor-pointer"
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
@@ -492,19 +537,19 @@ const ApproachSection = ({ fadeIn }) => {
         </motion.div>
         <div className="grid gap-6 lg:grid-cols-3 lg:gap-12">
           {[
-            { 
-              icon: Lightbulb, 
-              title: translate('approach.steps.discovery.title'), 
+            {
+              icon: Lightbulb,
+              title: translate('approach.steps.discovery.title'),
               description: translate('approach.steps.discovery.description')
             },
-            { 
-              icon: Code, 
-              title: translate('approach.steps.development.title'), 
+            {
+              icon: Code,
+              title: translate('approach.steps.development.title'),
               description: translate('approach.steps.development.description')
             },
-            { 
-              icon: Rocket, 
-              title: translate('approach.steps.delivery.title'), 
+            {
+              icon: Rocket,
+              title: translate('approach.steps.delivery.title'),
               description: translate('approach.steps.delivery.description')
             }
           ].map((step, index) => (
@@ -555,7 +600,7 @@ const WhyChooseUsSection = ({ fadeIn }) => {
         </motion.div>
         <div className="grid gap-6 lg:grid-cols-2 lg:gap-12">
           {Object.entries(translate('why.features')).map(([key, feature], index) => (
-            <FeatureItem 
+            <FeatureItem
               key={key}
               title={feature.title}
               description={feature.description}
@@ -612,21 +657,21 @@ const ContactSection = ({ fadeIn }) => {
           </div>
           <div className="w-full max-w-sm space-y-2">
             <form className="grid gap-4">
-              <Input 
-                placeholder={translate('contact.form.name')} 
-                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400" 
+              <Input
+                placeholder={translate('contact.form.name')}
+                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
               />
-              <Input 
-                type="email" 
-                placeholder={translate('contact.form.email')} 
-                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400" 
+              <Input
+                type="email"
+                placeholder={translate('contact.form.email')}
+                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
               />
-              <Textarea 
-                placeholder={translate('contact.form.idea')} 
-                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400" 
+              <Textarea
+                placeholder={translate('contact.form.idea')}
+                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
               />
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className="px-6 py-3 text-lg font-medium bg-white text-black rounded-md hover:bg-gray-100"
               >
                 {translate('contact.form.submit')}
@@ -647,7 +692,7 @@ const ContactSection = ({ fadeIn }) => {
 
 const Footer = () => {
   const { translate } = useContext(LanguageContext);
-  
+
   return (
     <footer className="w-full py-6 bg-white border-t border-gray-200">
       <div className="container px-4 md:px-6">
