@@ -18,7 +18,8 @@ const translations = {
       services: "Services",
       approach: "Our Approach",
       contact: "Contact",
-      getStarted: "Get Started"
+      getStarted: "Get Started",
+      impressum: "Legal Notice"
     },
     hero: {
       title: "Your Idea, Live in 2 Weeks",
@@ -105,6 +106,31 @@ const translations = {
       copyright: "© 2025 RapidWorks Agency. All rights reserved.",
       terms: "Terms of Service",
       privacy: "Privacy Policy"
+    },
+    impressum: {
+      title: "Legal Notice",
+      companyInfo: {
+        title: "Company Information",
+        name: "RapidWorks Agency GmbH",
+        street: "Innovationsstraße 42",
+        city: "50667 Köln",
+        country: "Germany",
+        email: "contact@rapidworks.de",
+        phone: "+49 (0) 221 123456",
+        managing: "Managing Director",
+        managingName: "Max Mustermann"
+      },
+      registration: {
+        title: "Registration",
+        court: "District Court Köln",
+        number: "HRB 123456",
+        vatId: "VAT ID: DE123456789"
+      },
+      responsibility: {
+        title: "Responsible for Content",
+        name: "Max Mustermann",
+        address: "Address same as above"
+      }
     }
   },
   de: {
@@ -112,10 +138,11 @@ const translations = {
       services: "Leistungen",
       approach: "Unser Ansatz",
       contact: "Kontakt",
-      getStarted: "Jetzt Starten"
+      getStarted: "Jetzt Starten",
+      impressum: "Impressum"
     },
     hero: {
-      title: "Ihre Idee, live in 2 Wochen",
+      title: "Ihre Idea, live in 2 Wochen",
       subtitle: "Wir entwickeln Ihren MVP in nur 14 Tagen - kostenfrei bis Sie von den Ergebnissen begeistert sind.",
       cta: "Kostenloses Beratungsgespräch"
     },
@@ -199,10 +226,34 @@ const translations = {
       copyright: "© 2025 RapidWorks Agency. Alle Rechte vorbehalten.",
       terms: "AGB",
       privacy: "Datenschutz"
+    },
+    impressum: {
+      title: "Impressum",
+      companyInfo: {
+        title: "Unternehmensangaben",
+        name: "RapidWorks Agency GmbH",
+        street: "Innovationsstraße 42",
+        city: "50667 Köln",
+        country: "Deutschland",
+        email: "contact@rapidworks.de",
+        phone: "+49 (0) 221 123456",
+        managing: "Geschäftsführer",
+        managingName: "Max Mustermann"
+      },
+      registration: {
+        title: "Registereintrag",
+        court: "Amtsgericht Köln",
+        number: "HRB 123456",
+        vatId: "USt-IdNr.: DE123456789"
+      },
+      responsibility: {
+        title: "Verantwortlich für den Inhalt",
+        name: "Max Mustermann",
+        address: "Adresse wie oben"
+      }
     }
   }
 };
-
 // Language Flag Component
 const LanguageFlag = ({ code }) => {
   const flags = {
@@ -690,30 +741,102 @@ const ContactSection = ({ fadeIn }) => {
   );
 };
 
-const Footer = () => {
-  const { translate } = useContext(LanguageContext);
 
+const ImpressumSection = () => {
+  const { translate } = useContext(LanguageContext);
+  
   return (
-    <footer className="w-full py-6 bg-white border-t border-gray-200">
+    <section className="w-full py-12 md:py-24 bg-white">
       <div className="container px-4 md:px-6">
-        <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-          <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
-            <Rocket className="h-6 w-6 text-violet-500" />
-            <p className="text-center text-sm leading-loose text-gray-600 md:text-left">
-              {translate('footer.copyright')}
-            </p>
+        <h2 className="text-3xl font-bold mb-8">{translate('impressum.title')}</h2>
+        
+        <div className="space-y-8">
+          <div>
+            <h3 className="text-xl font-semibold mb-4">{translate('impressum.companyInfo.title')}</h3>
+            <p>{translate('impressum.companyInfo.name')}</p>
+            <p>{translate('impressum.companyInfo.street')}</p>
+            <p>{translate('impressum.companyInfo.city')}</p>
+            <p>{translate('impressum.companyInfo.country')}</p>
+            <p>Email: {translate('impressum.companyInfo.email')}</p>
+            <p>Tel: {translate('impressum.companyInfo.phone')}</p>
+            <p>{translate('impressum.companyInfo.managing')}: {translate('impressum.companyInfo.managingName')}</p>
           </div>
-          <nav className="flex gap-4 sm:gap-6">
-            <a className="text-sm font-medium hover:underline underline-offset-4 text-gray-500" href="#">
-              {translate('footer.terms')}
-            </a>
-            <a className="text-sm font-medium hover:underline underline-offset-4 text-gray-500" href="#">
-              {translate('footer.privacy')}
-            </a>
-          </nav>
+
+          <div>
+            <h3 className="text-xl font-semibold mb-4">{translate('impressum.registration.title')}</h3>
+            <p>{translate('impressum.registration.court')}</p>
+            <p>{translate('impressum.registration.number')}</p>
+            <p>{translate('impressum.registration.vatId')}</p>
+          </div>
+
+          <div>
+            <h3 className="text-xl font-semibold mb-4">{translate('impressum.responsibility.title')}</h3>
+            <p>{translate('impressum.responsibility.name')}</p>
+            <p>{translate('impressum.responsibility.address')}</p>
+          </div>
         </div>
       </div>
-    </footer>
+    </section>
+  );
+};
+
+const Footer = () => {
+  const { translate } = useContext(LanguageContext);
+  const [showImpressum, setShowImpressum] = useState(false);
+
+  return (
+    <>
+      <footer className="w-full py-6 bg-white border-t border-gray-200">
+        <div className="container px-4 md:px-6">
+          <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+            <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
+              <Rocket className="h-6 w-6 text-violet-500" />
+              <p className="text-center text-sm leading-loose text-gray-600 md:text-left">
+                {translate('footer.copyright')}
+              </p>
+            </div>
+            <nav className="flex gap-4 sm:gap-6">
+              <button 
+                className="text-sm font-medium hover:underline underline-offset-4 text-gray-500"
+                onClick={() => setShowImpressum(true)}
+              >
+                {translate('nav.impressum')}
+              </button>
+              <a className="text-sm font-medium hover:underline underline-offset-4 text-gray-500" href="#">
+                {translate('footer.terms')}
+              </a>
+              <a className="text-sm font-medium hover:underline underline-offset-4 text-gray-500" href="#">
+                {translate('footer.privacy')}
+              </a>
+            </nav>
+          </div>
+        </div>
+      </footer>
+      
+      {/* Impressum Modal */}
+      {showImpressum && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+          onClick={() => setShowImpressum(false)}
+        >
+          <div 
+            className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            onClick={e => e.stopPropagation()}  // Prevent closing when clicking inside
+          >
+            <div className="p-6 relative">
+              <button
+                onClick={() => setShowImpressum(false)}
+                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+                aria-label="Close"
+              >
+                <X className="h-6 w-6" />
+              </button>
+              <ImpressumSection />
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
@@ -721,7 +844,7 @@ function App() {
   // Initialize language from localStorage or default to 'en'
   const [language, setLanguage] = useState(() => {
     const saved = localStorage.getItem('language');
-    return saved || 'en';
+    return saved || 'de';
   });
 
   const fadeIn = {
