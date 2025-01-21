@@ -1,0 +1,428 @@
+import React, { useState, useEffect } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { ArrowRight, Plus, Minus, ChevronLeft, ChevronRight } from "lucide-react"
+import HeroImage2 from "../images/heroimage3.jpg"
+import RapidWorksWebsite from "../images/rapidworkswebsite.png"
+import RapidWorksLogo from "../images/logo512.png"
+import QRCodeLogo from "../images/qrcodelogo.jpg"
+import PlaceholderImage from "../assets/placeholder.svg"
+import RapidWorksHoodie from "../images/rapiworkshoddie.jpg"
+import RapidWorksBanner from "../images/rapidworksbanner.jpg"
+import RapidWorksEmailSignature from "../images/rapidworksemailsignature.png"
+import BusinessCard from "../images/businesscard.png"
+import PhoneMockLogo from "../images/phonemocklogo.jpg"
+import RollupBanner from "../images/rollup.png"
+import PitchDeck from "../images/pitchdeck.jpg"
+import GuidelineBrand from "../images/guidelinebrand.jpg"
+import Calendar from "../images/calendar.jpg"
+import RLogo from "../images/rlogo.jpg"
+import VisibilityHero from "../images/visibilityher.png"
+import { Link } from "react-router-dom"
+
+const BundleItem = ({ title, description, index, imageSrc }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5, delay: index * 0.1 }}
+    className="mb-12"
+  >
+    <div className="relative w-full h-64 mb-4 overflow-hidden">
+      <img
+        src={imageSrc || PlaceholderImage}
+        alt={title}
+        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+      />
+    </div>
+    <h3 className="text-2xl font-light mb-2">{title}</h3>
+    <p className="text-gray-600">{description}</p>
+  </motion.div>
+)
+
+const FAQItem = ({ question, answer }) => {
+  const [isOpen, setIsOpen] = useState(false)
+
+  return (
+    <div className="border-b border-gray-200 py-4">
+      <button className="flex justify-between items-center w-full text-left" onClick={() => setIsOpen(!isOpen)}>
+        <span className="text-lg font-light">{question}</span>
+        {isOpen ? <Minus className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+      </button>
+      {isOpen && <p className="mt-2 text-gray-600 font-light">{answer}</p>}
+    </div>
+  )
+}
+
+const BundleSlider = ({ items, currentIndex, setCurrentIndex }) => {
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % items.length)
+    }, 4000)
+    return () => clearInterval(timer)
+  }, [items.length, setCurrentIndex])
+
+  return (
+    <div className="relative">
+      {/* Navigation Buttons */}
+      <div className="absolute -left-12 top-1/2 -translate-y-1/2 z-10">
+        <button
+          onClick={() => setCurrentIndex((prev) => (prev - 1 + items.length) % items.length)}
+          className="p-2 bg-black text-white hover:bg-gray-900 transition-colors"
+        >
+          <ChevronLeft className="w-6 h-6" />
+        </button>
+      </div>
+      <div className="absolute -right-12 top-1/2 -translate-y-1/2 z-10">
+        <button
+          onClick={() => setCurrentIndex((prev) => (prev + 1) % items.length)}
+          className="p-2 bg-black text-white hover:bg-gray-900 transition-colors"
+        >
+          <ChevronRight className="w-6 h-6" />
+        </button>
+      </div>
+
+      {/* Slider Content */}
+      <div className="overflow-hidden">
+            <motion.div
+          className="flex"
+          animate={{ x: `-${currentIndex * 100}%` }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+        >
+          {items.map((item, index) => (
+            <div key={index} className="min-w-full">
+              <div className="grid grid-cols-2 gap-12">
+                <div className="aspect-[4/3] overflow-hidden">
+                <img
+                  src={item.imageSrc || PlaceholderImage}
+                  alt={item.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="flex flex-col justify-center">
+                  <h3 className="text-3xl font-light mb-4">{item.title}</h3>
+                  <p className="text-gray-600 text-lg mb-8">{item.description}</p>
+                  <button className="inline-flex items-center text-black hover:text-gray-600 transition-colors group">
+                    Learn More 
+                    <ArrowRight className="ml-2 w-5 h-5 transform group-hover:translate-x-1 transition-transform" />
+                  </button>
+                  </div>
+                </div>
+              </div>
+          ))}
+            </motion.div>
+      </div>
+
+      {/* Progress Bar */}
+      <div className="mt-12 flex items-center gap-4">
+        <div className="text-sm text-gray-500">
+          {String(currentIndex + 1).padStart(2, '0')} / {String(items.length).padStart(2, '0')}
+        </div>
+        <div className="flex-1 bg-gray-100 h-[2px]">
+          <motion.div 
+            className="bg-black h-full origin-left"
+            animate={{ scaleX: (currentIndex + 1) / items.length }}
+            transition={{ duration: 0.5 }}
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const BundleGrid = ({ items, currentIndex, setCurrentIndex }) => (
+  <div className="flex justify-center mt-8">
+    <div className="flex gap-2 p-2 bg-white/5 backdrop-blur-sm rounded-full">
+      {items.map((_, index) => (
+        <button
+          key={index}
+          onClick={() => setCurrentIndex(index)}
+          className={`w-2 h-2 rounded-full transition-all duration-300 ${
+            currentIndex === index 
+              ? "bg-violet-500 w-8" 
+              : "bg-white/20 hover:bg-white/40"
+          }`}
+          />
+      ))}
+    </div>
+  </div>
+)
+
+const VisibiltyBundle = () => {
+  const [currentIndex, setCurrentIndex] = useState(0)
+  
+  const bundleItems = [
+    {
+      title: "Bespoke Logo Design",
+      description: "A timeless, versatile logo that embodies your brand's essence.",
+      imageSrc: RLogo,
+    },
+    {
+      title: "Curated Website",
+      description: "An elegant, responsive website tailored to your unique aesthetic.",
+      imageSrc: RapidWorksWebsite,
+    },
+    {
+      title: "Signature QR Code",
+      description: "A custom QR code that seamlessly integrates with your brand identity.",
+      imageSrc: QRCodeLogo,
+    },
+    {
+      title: "Social Media Presence",
+      description: "Striking banners and profile images for a cohesive online presence.",
+      imageSrc: RapidWorksBanner,
+    },
+    {
+      title: "Professional Email Signature",
+      description: "A sophisticated email signature that leaves a lasting impression.",
+      imageSrc: RapidWorksEmailSignature,
+    },
+    {
+      title: "Branded Stationery",
+      description: "Luxurious letterheads and business cards that exude quality.",
+      imageSrc: BusinessCard,
+    },
+    {
+      title: "Digital Wallpapers",
+      description: "Chic smartphone and desktop backgrounds that showcase your brand.",
+      imageSrc: PhoneMockLogo,
+    },
+    {
+      title: "Event Essentials",
+      description: "Eye-catching rollup banners and flyers for your brand events.",
+      imageSrc: RollupBanner,
+    },
+    {
+      title: "Curated Apparel",
+      description: "Stylish t-shirt and hoodie designs for brand ambassadors.",
+      imageSrc: RapidWorksHoodie,
+    },
+    {
+      title: "Investor-Ready Pitch Deck",
+      description: "An elegant 11-slide pitch deck to captivate potential investors.",
+      imageSrc: PitchDeck,
+    },
+    {
+      title: "Comprehensive Brand Guidelines",
+      description: "A detailed style guide to maintain your brand's integrity.",
+      imageSrc: GuidelineBrand,
+    },
+    {
+      title: "Seamless Calendar Integration",
+      description: "Effortless booking integration for your digital platforms.",
+      imageSrc: Calendar,
+    },
+  ]
+
+  const faqItems = [
+    {
+      question: "What is the turnaround time for the Visibility Bundle?",
+      answer:
+        "We pride ourselves on swift, high-quality delivery. Your complete Visibility Bundle will be ready within 24 hours of receiving your order and brand information.",
+    },
+    {
+      question: "Can I request modifications to the designs?",
+      answer:
+        "Absolutely. We offer one round of refinements for each item in the bundle to ensure the final result aligns perfectly with your vision.",
+    },
+    {
+      question: "Do I receive the source files for the designs?",
+      answer:
+        "Yes, we provide all necessary source files, allowing you or your team to make future adjustments as your brand evolves.",
+    },
+    {
+      question: "Is the website fully customizable?",
+      answer:
+        "The included website is a sophisticated, responsive design. For more advanced customization, we offer bespoke web development services. Please contact us for a personalized quote.",
+    },
+  ]
+
+  return (
+    <div className="min-h-screen bg-white">
+      <header className="fixed w-full z-10 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center border-b-2 border-gray-100 py-6 md:justify-start md:space-x-10">
+            <div className="flex justify-start lg:w-0 lg:flex-1">
+              <Link to="/" className="text-xl font-light hover:text-gray-600 transition-colors">
+                RapidWorks
+              </Link>
+            </div>
+            {/* <nav className="flex space-x-10">
+              <a href="#features" className="text-base font-light text-gray-500 hover:text-gray-900">
+                Features
+              </a>
+              <a href="#process" className="text-base font-light text-gray-500 hover:text-gray-900">
+                Process
+              </a>
+              <a href="#faq" className="text-base font-light text-gray-500 hover:text-gray-900">
+                FAQ
+              </a>
+            </nav> */}
+            <div className="flex items-center justify-end md:flex-1 lg:w-0">
+              <button className="ml-8 inline-flex items-center justify-center px-4 py-2 border border-transparent text-base font-light rounded-none text-white bg-black hover:bg-gray-900">
+                Get Started
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <div className="relative">
+          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gray-100" />
+          <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div className="relative shadow-xl sm:rounded-2xl sm:overflow-hidden">
+              <div className="absolute inset-0">
+                <img
+                  className="h-full w-full object-cover"
+                  src={VisibilityHero}
+                  alt="Hero background"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/50" />
+              </div>
+              <div className="relative px-4 py-16 sm:px-6 sm:py-24 lg:py-32 lg:px-8">
+                <h2 className="text-4xl tracking-tight font-light text-white sm:text-5xl lg:text-6xl">
+                  Transform Your <br />
+                  Brand Identity
+                </h2>
+                <p className="mt-6 max-w-lg text-xl text-gray-300 font-light">
+                  Complete brand identity package, delivered in 24 hours.
+                </p>
+                <div className="mt-10">
+                  <button className="inline-flex items-center px-6 py-3 border border-transparent text-base font-light rounded-none text-black bg-white hover:bg-gray-100">
+                    Get Started
+                    <ArrowRight className="ml-2 -mr-1 h-5 w-5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <section id="features" className="py-24">
+          <div className="max-w-6xl mx-auto px-16">
+            <h2 className="text-3xl font-light mb-16">
+              Complete Brand Package
+            </h2>
+            <BundleSlider
+              items={bundleItems}
+              currentIndex={currentIndex}
+              setCurrentIndex={setCurrentIndex}
+            />
+          </div>
+        </section>
+
+        <section id="process" className="py-32 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-4xl font-light text-center mb-24">
+              How It Works
+            </h2>
+            <div className="relative">
+              {/* Connection Line */}
+              <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-black/10" />
+              
+              <div className="grid md:grid-cols-3 gap-16 relative">
+                {[
+                  {
+                    title: "Share Your Vision",
+                    description: "Tell us about your brand and what makes it unique. We'll understand your goals and requirements.",
+                    icon: "01"
+                  },
+                  {
+                    title: "We Create",
+                    description: "Our team crafts your complete brand identity package with meticulous attention to detail.",
+                    icon: "02"
+                  },
+                  {
+                    title: "24hr Delivery",
+                    description: "Receive your full Visibility Bundle within 24 hours, ready to elevate your brand.",
+                    icon: "03"
+                  },
+                ].map((step, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: index * 0.2 }}
+                    className="relative bg-white p-8 group hover:bg-black transition-colors duration-500"
+                  >
+                    <div className="absolute -top-8 left-8 text-7xl font-light text-black/10 group-hover:text-white/10 transition-colors duration-500">
+                      {step.icon}
+                    </div>
+                    <div className="relative">
+                      <h3 className="text-2xl font-light mb-4 group-hover:text-white transition-colors duration-500">
+                        {step.title}
+                      </h3>
+                      <p className="text-gray-600 group-hover:text-gray-300 transition-colors duration-500">
+                        {step.description}
+                      </p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-32 bg-black text-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-12">
+              <div className="flex-1">
+                <h2 className="text-4xl font-light mb-4">
+                  Need an MVP in 2 Weeks?
+                </h2>
+                <p className="text-xl text-gray-300 mb-8">
+                  Transform your idea into a working product with our rapid MVP development service.
+                  Zero upfront cost, pay only when amazed.
+                </p>
+                <Link 
+                  to="/" 
+                  className="inline-flex items-center px-6 py-3 bg-white text-black hover:bg-gray-100 transition-colors font-light"
+                >
+                  Learn More
+                  <ArrowRight className="ml-2 -mr-1 h-5 w-5" />
+                </Link>
+              </div>
+              <div className="flex-1 flex justify-center">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-indigo-600 blur-3xl opacity-20"></div>
+                  <div className="relative text-8xl font-bold">
+                    2<span className="text-violet-500">Weeks</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-20">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-4xl font-light mb-8">Ready to Transform Your Brand?</h2>
+            <p className="text-xl mb-8 max-w-2xl mx-auto text-gray-600">
+              Get your complete brand identity package today.
+            </p>
+            <button className="bg-black text-white px-8 py-3 rounded-none font-light hover:bg-gray-900 transition duration-300 inline-flex items-center text-lg">
+              Get Started
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </button>
+          </div>
+        </section>
+      </main>
+
+      {/* <footer className="py-12 border-t border-gray-100">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center">
+            <p className="text-gray-600">&copy; 2023 RapidWorks. All rights reserved.</p>
+            <div className="flex gap-8">
+              <a href="#" className="text-gray-600 hover:text-black transition-colors">Terms</a>
+              <a href="#" className="text-gray-600 hover:text-black transition-colors">Privacy</a>
+              <a href="#" className="text-gray-600 hover:text-black transition-colors">Contact</a>
+            </div>
+          </div>
+        </div>
+      </footer> */}
+    </div>
+  )
+}
+
+export default VisibiltyBundle
+

@@ -20,6 +20,8 @@ import HeroImage from "./images/heroimage.jpg"
 import HeroImage1 from "./images/heroimage2.jpg"
 import HeroImage2 from "./images/heroimage3.jpg"
 import NRWLogo from "./images/nwrlogo.png"
+import { Link } from "react-router-dom"
+import { ArrowRight } from "lucide-react"
 
 // Create Language Context
 const LanguageContext = createContext()
@@ -33,6 +35,7 @@ const translations = {
       contact: "Contact",
       getStarted: "Get Started",
       impressum: "Legal Notice",
+      visibility: "Visibility Bundle",
     },
     hero: {
       title: "Your Idea, Live in 2 Weeks",
@@ -182,6 +185,7 @@ const translations = {
       contact: "Kontakt",
       getStarted: "Jetzt Starten",
       impressum: "Impressum",
+      visibility: "Sichtbarkeits-Bundle",
     },
     hero: {
       title: "Ihre Idea, live in 2 Wochen",
@@ -425,102 +429,89 @@ const NavLink = ({ href, onClick, children }) => {
 }
 
 function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const { translate } = useContext(LanguageContext)
-
-  const closeMenu = () => setIsMenuOpen(false)
-
-  const scrollToSection = (sectionId) => {
-    const element = document.querySelector(sectionId)
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" })
-      closeMenu()
-    }
-  }
+  const { language, setLanguage, translate } = useContext(LanguageContext)
+  const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <header className="px-6 h-16 flex items-center fixed top-0 w-full z-50 bg-white/80 backdrop-blur-sm border-b border-gray-200">
-      {/* Logo */}
-      <a className="flex items-center mr-8" href="/">
-        <Rocket className="h-6 w-6 text-violet-500" />
-        <span className="ml-2 text-xl font-bold text-violet-500">RapidWorks</span>
-      </a>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
+      <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <div className="flex-shrink-0">
+            <Link to="/" className="flex items-center space-x-2">
+              <Rocket className="h-6 w-6 text-violet-600" />
+              <span className="text-xl font-light">RapidWorks</span>
+            </Link>
+          </div>
 
-      {/* Desktop Navigation */}
-      <div className="hidden md:flex items-center gap-8 mx-auto">
-        <button
-          onClick={() => scrollToSection("#services")}
-          className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-        >
-          {translate("nav.services")}
-        </button>
-        <button
-          onClick={() => scrollToSection("#approach")}
-          className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-        >
-          {translate("nav.approach")}
-        </button>
-        <button
-          onClick={() => scrollToSection("#contact")}
-          className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-        >
-          {translate("nav.contact")}
-        </button>
-      </div>
-
-      {/* Desktop Right Side */}
-      <div className="hidden md:flex items-center gap-4">
-        <LanguageSelector />
-        <button
-          className="px-4 py-2 bg-black text-white rounded-md hover:bg-black/90"
-          onClick={() => scrollToSection("#contact")}
-        >
-          {translate("nav.getStarted")}
-        </button>
-      </div>
-
-      {/* Mobile Menu Button */}
-      <button className="ml-auto md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-        {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-      </button>
-
-      {/* Language Selector for Mobile */}
-      <div className="md:hidden ml-4">
-        <LanguageSelector />
-      </div>
-
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="absolute top-full left-0 right-0 bg-white border-b border-gray-200 p-4 md:hidden">
-          <nav className="flex flex-col gap-4">
-            <button
-              onClick={() => scrollToSection("#services")}
-              className="text-left text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-            >
+          {/* Desktop Navigation - Centered */}
+          <div className="hidden md:flex flex-1 justify-center items-center space-x-8">
+            <Link to="/#services" className="text-gray-600 hover:text-gray-900">
               {translate("nav.services")}
-            </button>
-            <button
-              onClick={() => scrollToSection("#approach")}
-              className="text-left text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-            >
+            </Link>
+            <Link to="/#approach" className="text-gray-600 hover:text-gray-900">
               {translate("nav.approach")}
-            </button>
-            <button
-              onClick={() => scrollToSection("#contact")}
-              className="text-left text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-            >
+            </Link>
+            <Link to="/visibility" className="text-gray-600 hover:text-gray-900">
+              {translate("nav.visibility")}
+            </Link>
+            <Link to="/#contact" className="text-gray-600 hover:text-gray-900">
               {translate("nav.contact")}
-            </button>
+            </Link>
+          </div>
 
-            <button
-              className="w-full px-4 py-2 bg-black text-white rounded-md hover:bg-black/90"
-              onClick={() => scrollToSection("#contact")}
+          {/* Right side items */}
+          <div className="hidden md:flex items-center space-x-4">
+            <LanguageSelector />
+            <Link
+              to="/#contact"
+              className="px-4 py-2 text-sm font-medium text-white bg-black hover:bg-gray-900 rounded-none"
             >
               {translate("nav.getStarted")}
-            </button>
-          </nav>
+            </Link>
+          </div>
+
+          {/* Mobile menu button */}
+          <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
+            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
         </div>
-      )}
+
+        {/* Mobile Navigation */}
+        {isOpen && (
+          <div className="md:hidden">
+            <div className="px-2 pt-2 pb-3 space-y-1">
+              <Link
+                to="/#services"
+                className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900"
+              >
+                {translate("nav.services")}
+              </Link>
+              <Link
+                to="/#approach"
+                className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900"
+              >
+                {translate("nav.approach")}
+              </Link>
+              <Link
+                to="/visibility"
+                className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900"
+              >
+                {translate("nav.visibility")}
+              </Link>
+              <Link
+                to="/#contact"
+                className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900"
+              >
+                {translate("nav.contact")}
+              </Link>
+              <div className="px-3 py-2">
+                <LanguageSelector isMobile={true} onSelect={() => setIsOpen(false)} />
+              </div>
+            </div>
+          </div>
+        )}
+      </nav>
     </header>
   )
 }
@@ -881,6 +872,38 @@ const ContactSection = ({ fadeIn }) => {
   )
 }
 
+const VisibilityCTA = ({ fadeIn }) => {
+  const { translate } = useContext(LanguageContext)
+
+  return (
+    <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-violet-600 to-indigo-600">
+      <div className="container px-4 md:px-6">
+        <motion.div
+          className="flex flex-col items-center space-y-4 text-center"
+          initial="initial"
+          whileInView="animate"
+          viewport={{ once: true }}
+          variants={fadeIn}
+        >
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-white">
+            Transform Your Brand in 24 Hours
+          </h2>
+          <p className="mx-auto max-w-[700px] text-xl text-violet-100 md:text-2xl">
+            Get a complete professional brand identity package, website, and marketing essentials - all delivered in just one day.
+          </p>
+          <Link
+            to="/visibility"
+            className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-violet-600 bg-white rounded-full hover:bg-violet-50 transition-colors duration-300"
+          >
+            Explore Visibility Bundle
+            <ArrowRight className="ml-2 h-5 w-5" />
+          </Link>
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+
 const ImpressumSection = () => {
   const { translate } = useContext(LanguageContext)
 
@@ -1020,6 +1043,7 @@ function App() {
           <WhyChooseUsSection fadeIn={fadeIn} />
           <PostMVPOfferSection fadeIn={fadeIn} />
           <ContactSection fadeIn={fadeIn} />
+          <VisibilityCTA fadeIn={fadeIn} />
         </main>
         <Footer />
       </div>
