@@ -56,7 +56,7 @@ const BundleSlider = ({ items, currentIndex, setCurrentIndex }) => {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % items.length)
-    }, 4000)
+    }, 5000)
     return () => clearInterval(timer)
   }, [items.length, setCurrentIndex])
 
@@ -144,6 +144,26 @@ const BundleGrid = ({ items, currentIndex, setCurrentIndex }) => (
       ))}
     </div>
   </div>
+)
+
+// Update the BundleGridItem component to remove the Learn More button
+const BundleGridItem = ({ title, description, imageSrc }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    className="group"
+  >
+    <div className="aspect-[4/3] overflow-hidden mb-4">
+      <img
+        src={imageSrc || PlaceholderImage}
+        alt={title}
+        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+      />
+    </div>
+    <h3 className="text-2xl font-light mb-2">{title}</h3>
+    <p className="text-gray-600">{description}</p>
+  </motion.div>
 )
 
 const VisibiltyBundle = () => {
@@ -267,27 +287,28 @@ const VisibiltyBundle = () => {
 
       <main>
         <div className="relative">
-          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gray-100" />
-          <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div className="relative shadow-xl sm:rounded-2xl sm:overflow-hidden">
+            <div className="relative shadow-xl sm:overflow-hidden">
               <div className="absolute inset-0">
                 <img
                   className="h-full w-full object-cover"
                   src={VisibilityHero}
                   alt="Hero background"
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/50" />
+              <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-black/85 to-black/75" />
               </div>
-              <div className="relative px-4 py-16 sm:px-6 sm:py-24 lg:py-32 lg:px-8">
-                <h2 className="text-4xl tracking-tight font-light text-white sm:text-5xl lg:text-6xl">
-                  Transform Your <br />
-                  Brand Identity
-                </h2>
-                <p className="mt-6 max-w-lg text-xl text-gray-300 font-light">
+            <div className="relative py-32 sm:py-40 lg:py-56">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="max-w-3xl mx-auto">
+                  <span className="inline-block text-violet-400 text-base uppercase tracking-wider mb-6 font-light">
+                    Visibility Bundle
+                  </span>
+                  <h1 className="text-5xl sm:text-6xl lg:text-7xl font-light text-white leading-tight tracking-tight mb-6">
+                    Transform Your Brand Identity
+                  </h1>
+                  <p className="text-xl text-gray-300 font-light leading-relaxed mb-12">
                   Complete brand identity package, delivered in 24 hours.
                 </p>
-                <div className="mt-10">
-                  <button className="inline-flex items-center px-6 py-3 border border-transparent text-base font-light rounded-none text-black bg-white hover:bg-gray-100">
+                    <button className="inline-flex items-center px-8 py-4 border border-transparent text-base font-light rounded-none text-black bg-white hover:bg-gray-100 transition-all duration-300">
                     Get Started
                     <ArrowRight className="ml-2 -mr-1 h-5 w-5" />
                   </button>
@@ -297,7 +318,8 @@ const VisibiltyBundle = () => {
           </div>
         </div>
 
-        <section id="features" className="py-24">
+        {/* Comment out the slider section */}
+        {/* <section id="features" className="py-24">
           <div className="max-w-6xl mx-auto px-16">
             <h2 className="text-3xl font-light mb-16">
               Complete Brand Package
@@ -307,6 +329,25 @@ const VisibiltyBundle = () => {
               currentIndex={currentIndex}
               setCurrentIndex={setCurrentIndex}
             />
+          </div>
+        </section> */}
+
+        {/* Grid section */}
+        <section className="py-32 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-3xl font-light mb-16 text-center">
+              Everything You Need
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
+              {bundleItems.map((item, index) => (
+                <BundleGridItem
+                  key={index}
+                  title={item.title}
+                  description={item.description}
+                  imageSrc={item.imageSrc}
+                />
+              ))}
+            </div>
           </div>
         </section>
 
@@ -328,7 +369,7 @@ const VisibiltyBundle = () => {
                   },
                   {
                     title: "We Create",
-                    description: "Our team crafts your complete brand identity package with meticulous attention to detail.",
+                    description: "Our team rapidly crafts your complete brand identity package using our proven process.",
                     icon: "02"
                   },
                   {
