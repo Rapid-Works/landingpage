@@ -333,7 +333,7 @@ const VisibiltyBundle = () => {
         </section> */}
 
         {/* Grid section */}
-        <section className="py-32 bg-gray-50">
+        <section className="pt-32 pb-16 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-3xl font-light mb-16 text-center">
               Everything You Need
@@ -351,7 +351,7 @@ const VisibiltyBundle = () => {
           </div>
         </section>
 
-        <section id="process" className="py-32 bg-gray-50">
+        <section id="process" className="pt-16 pb-32 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-4xl font-light text-center mb-24">
               How It Works
