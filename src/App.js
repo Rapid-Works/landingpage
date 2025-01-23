@@ -20,8 +20,10 @@ import HeroImage from "./images/heroimage.jpg"
 import HeroImage1 from "./images/heroimage2.jpg"
 import HeroImage2 from "./images/heroimage3.jpg"
 import NRWLogo from "./images/nwrlogo.png"
-import { Link } from "react-router-dom"
+import { Link, Routes, Route } from "react-router-dom"
 import { ArrowRight } from "lucide-react"
+import BundleForm from "./components/BundleForm"
+import VisibiltyBundle from "./components/visibilitypage"
 
 // Create Language Context
 const LanguageContext = createContext()
@@ -1036,7 +1038,7 @@ function App() {
     <LanguageContext.Provider value={{ language, setLanguage, translate }}>
       <div className="flex flex-col min-h-screen bg-white">
         <Header />
-        <main className="flex-1 pt-16">
+        <main className="flex-1">
           <HeroSection fadeIn={fadeIn} />
           <ServicesSection fadeIn={fadeIn} />
           <ApproachSection fadeIn={fadeIn} />

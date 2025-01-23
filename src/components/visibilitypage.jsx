@@ -17,7 +17,8 @@ import GuidelineBrand from "../images/guidelinebrand.jpg"
 import Calendar from "../images/calendar.jpg"
 import RLogo from "../images/rlogo.jpg"
 import VisibilityHero from "../images/visibilityher.png"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import BundleForm from "./BundleForm"
 
 const BundleItem = ({ title, description, index, imageSrc }) => (
   <motion.div
@@ -168,7 +169,13 @@ const BundleGridItem = ({ title, description, imageSrc }) => (
 
 const VisibiltyBundle = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [showForm, setShowForm] = useState(false)
+  const navigate = useNavigate();
   
+  const handleGetBundle = () => {
+    navigate('/get-bundle');
+  }
+
   const bundleItems = [
     {
       title: "Bespoke Logo Design",
@@ -277,8 +284,11 @@ const VisibiltyBundle = () => {
               </a>
             </nav> */}
             <div className="flex items-center justify-end md:flex-1 lg:w-0">
-              <button className="ml-8 inline-flex items-center justify-center px-4 py-2 border border-transparent text-base font-light rounded-none text-white bg-black hover:bg-gray-900">
-                Get Started
+              <button 
+                onClick={handleGetBundle}
+                className="ml-8 inline-flex items-center justify-center px-4 py-2 border border-transparent text-base font-light rounded-none text-white bg-black hover:bg-gray-900"
+              >
+                Get Your Bundle Now
               </button>
             </div>
           </div>
@@ -308,8 +318,11 @@ const VisibiltyBundle = () => {
                   <p className="text-xl text-gray-300 font-light leading-relaxed mb-12">
                   Complete brand identity package, delivered in 24 hours.
                 </p>
-                    <button className="inline-flex items-center px-8 py-4 border border-transparent text-base font-light rounded-none text-black bg-white hover:bg-gray-100 transition-all duration-300">
-                    Get Started
+                    <button 
+                      onClick={handleGetBundle}
+                      className="inline-flex items-center px-8 py-4 border border-transparent text-base font-light rounded-none text-black bg-white hover:bg-gray-100 transition-all duration-300"
+                    >
+                    Get Your Bundle Now
                     <ArrowRight className="ml-2 -mr-1 h-5 w-5" />
                   </button>
                 </div>
@@ -441,26 +454,18 @@ const VisibiltyBundle = () => {
             <p className="text-xl mb-8 max-w-2xl mx-auto text-gray-600">
               Get your complete brand identity package today.
             </p>
-            <button className="bg-black text-white px-8 py-3 rounded-none font-light hover:bg-gray-900 transition duration-300 inline-flex items-center text-lg">
-              Get Started
+            <button 
+              onClick={handleGetBundle}
+              className="bg-black text-white px-8 py-3 rounded-none font-light hover:bg-gray-900 transition duration-300 inline-flex items-center text-lg"
+            >
+              Get Your Bundle Now
               <ArrowRight className="ml-2 h-5 w-5" />
             </button>
           </div>
         </section>
       </main>
 
-      {/* <footer className="py-12 border-t border-gray-100">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center">
-            <p className="text-gray-600">&copy; 2023 RapidWorks. All rights reserved.</p>
-            <div className="flex gap-8">
-              <a href="#" className="text-gray-600 hover:text-black transition-colors">Terms</a>
-              <a href="#" className="text-gray-600 hover:text-black transition-colors">Privacy</a>
-              <a href="#" className="text-gray-600 hover:text-black transition-colors">Contact</a>
-            </div>
-          </div>
-        </div>
-      </footer> */}
+      {showForm && <BundleForm onClose={() => setShowForm(false)} />}
     </div>
   )
 }
