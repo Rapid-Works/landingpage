@@ -271,22 +271,20 @@ const VisibiltyBundle = () => {
 
       <main>
         <div className="relative">
-          <div className="relative min-h-[100vh] flex items-center">
+          <div className="relative min-h-[100vh] flex items-center justify-center overflow-hidden">
             <div className="absolute inset-0">
               <img
                 className="h-full w-full object-cover"
                 src={VisibilityHero}
                 alt="Hero background"
               />
-              {/* Minimal gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-r from-white/30 to-transparent" />
             </div>
 
             <div className="relative w-full mt-32">
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-                <div className="grid lg:grid-cols-2 gap-12 items-center">
-                  {/* Left content */}
-                  <div className="space-y-6">
+              <div className="mx-auto px-4 sm:px-6 lg:px-8 max-w-[1200px]">
+                <div className="flex flex-col lg:flex-row items-center">
+                  <div className="w-full max-w-[580px] lg:w-1/2 space-y-6">
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -352,17 +350,9 @@ const VisibiltyBundle = () => {
                     </motion.div>
                   </div>
 
-                  {/* Right side - Floating elements */}
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.8, delay: 0.2 }}
-                    className="relative hidden lg:block"
-                  >
-                    <div className="relative w-full h-full">
-                      {/* Add floating UI elements, mockups, or decorative shapes */}
-                    </div>
-                  </motion.div>
+                  <div className="w-full lg:w-1/2 lg:pl-8 hidden lg:block">
+                    {/* Add floating UI elements, mockups, or decorative shapes */}
+                  </div>
                 </div>
               </div>
             </div>
