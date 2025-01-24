@@ -271,71 +271,61 @@ const VisibiltyBundle = () => {
 
       <main>
         <div className="relative">
-          <div className="relative sm:overflow-hidden min-h-screen">
+          <div className="relative min-h-[100vh] flex items-center">
             <div className="absolute inset-0">
               <img
                 className="h-full w-full object-cover"
                 src={VisibilityHero}
                 alt="Hero background"
               />
-              {/* Minimal gradient overlay - just enough to ensure text readability */}
+              {/* Minimal gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-r from-white/30 to-transparent" />
-              
-              {/* Keep subtle pattern but reduce opacity further */}
-              <div className="absolute inset-0 opacity-[0.01] bg-[linear-gradient(white_2px,transparent_2px),linear-gradient(90deg,white_2px,transparent_2px)] bg-[size:40px_40px]" />
             </div>
 
-            <div className="relative min-h-screen flex items-center">
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
+            <div className="relative w-full mt-32">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
                 <div className="grid lg:grid-cols-2 gap-12 items-center">
                   {/* Left content */}
-                  <div className="space-y-10">
-                    <div className="space-y-8">
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
-                        className="flex items-center space-x-4"
-                      >
-                        <span className="inline-block text-violet-600 text-base uppercase tracking-wider font-light
-                                      px-4 py-1 rounded-full bg-violet-50/80 border border-violet-100
-                                      shadow-sm shadow-violet-100/50">
-                          Visibility Bundle
-                        </span>
-                      </motion.div>
+                  <div className="space-y-6">
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6 }}
+                      className="flex items-center space-x-4"
+                    >
+                      <span className="inline-block text-violet-600 text-base uppercase tracking-wider font-light
+                                    px-4 py-1 rounded-full bg-violet-50/80 border border-violet-100">
+                        Visibility Bundle
+                      </span>
+                    </motion.div>
 
-                      <motion.h1 
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 0.1 }}
-                        className="text-5xl sm:text-6xl lg:text-7xl font-bold text-black leading-[1.1] tracking-tight"
-                      >
-                        Transform Your{' '}
-                        <span className="relative inline-block">
-                          Brand
-                          <div className="absolute -bottom-2 left-0 w-full h-[0.5em] bg-violet-100/50 -z-10" />
-                        </span>{' '}
-                        <span className="block mt-2">Identity</span>
-                      </motion.h1>
+                    <motion.h1 
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: 0.1 }}
+                      className="text-5xl sm:text-6xl lg:text-7xl font-bold text-black leading-[1.1] tracking-tight"
+                    >
+                      Transform Your{' '}
+                      <span className="block">Brand Identity</span>
+                    </motion.h1>
 
-                      <motion.p 
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 0.2 }}
-                        className="text-xl text-gray-600 font-light leading-relaxed max-w-xl"
-                      >
-                        Complete brand identity package, delivered in 48 hours.
-                        <span className="block mt-4 text-base">
-                          Join the brands that trust RapidWorks for their identity needs.
-                        </span>
-                      </motion.p>
-                    </div>
+                    <motion.p 
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: 0.2 }}
+                      className="text-xl text-gray-600 font-light leading-relaxed max-w-xl"
+                    >
+                      Complete brand identity package, delivered in 48 hours.
+                      <span className="block mt-4 text-base">
+                        Join the brands that trust RapidWorks for their identity needs.
+                      </span>
+                    </motion.p>
 
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: 0.3 }}
-                      className="flex flex-col sm:flex-row gap-4"
+                      className="flex flex-col sm:flex-row gap-4 pt-4"
                     >
                       <button 
                         onClick={handleGetBundle}
