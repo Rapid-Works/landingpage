@@ -5,9 +5,9 @@ import HeroImage2 from "../images/heroimage3.jpg"
 import RapidWorksWebsite from "../images/rapidworkswebsite.png"
 import RapidWorksLogo from "../images/logo512.png"
 import QRCodeLogo from "../images/qrcodelogo.jpg"
-import PlaceholderImage from "../assets/placeholder.svg"
-import RapidWorksHoodie from "../images/rapiworkshoddie.jpg"
-import RapidWorksBanner from "../images/rapidworksbanner.jpg"
+import PlaceholderImage from "../images/visibilityher.png"
+import RapidWorksHoodie from "../images/rapiworkshoddie.png"
+import RapidWorksBanner from "../images/rapidworksbanner.png"
 import RapidWorksEmailSignature from "../images/rapidworksemailsignature.png"
 import BusinessCard from "../images/businesscard.png"
 import PhoneMockLogo from "../images/phonemocklogo.jpg"
@@ -178,11 +178,6 @@ const VisibiltyBundle = () => {
 
   const bundleItems = [
     {
-      title: "Bespoke Logo Design",
-      description: "A timeless, versatile logo that embodies your brand's essence.",
-      imageSrc: RLogo,
-    },
-    {
       title: "Curated Website",
       description: "An elegant, responsive website tailored to your unique aesthetic.",
       imageSrc: RapidWorksWebsite,
@@ -198,11 +193,6 @@ const VisibiltyBundle = () => {
       imageSrc: RapidWorksBanner,
     },
     {
-      title: "Professional Email Signature",
-      description: "A sophisticated email signature that leaves a lasting impression.",
-      imageSrc: RapidWorksEmailSignature,
-    },
-    {
       title: "Branded Stationery",
       description: "Luxurious letterheads and business cards that exude quality.",
       imageSrc: BusinessCard,
@@ -213,7 +203,7 @@ const VisibiltyBundle = () => {
       imageSrc: PhoneMockLogo,
     },
     {
-      title: "Event Essentials",
+      title: "Rollup",
       description: "Eye-catching rollup banners and flyers for your brand events.",
       imageSrc: RollupBanner,
     },
@@ -223,27 +213,22 @@ const VisibiltyBundle = () => {
       imageSrc: RapidWorksHoodie,
     },
     {
-      title: "Investor-Ready Pitch Deck",
-      description: "An elegant 11-slide pitch deck to captivate potential investors.",
-      imageSrc: PitchDeck,
-    },
-    {
-      title: "Comprehensive Brand Guidelines",
-      description: "A detailed style guide to maintain your brand's integrity.",
-      imageSrc: GuidelineBrand,
-    },
-    {
       title: "Seamless Calendar Integration",
       description: "Effortless booking integration for your digital platforms.",
       imageSrc: Calendar,
     },
+    {
+      title: "And More...",
+      description: "Additional brand assets and resources to ensure your complete brand success.",
+      imageSrc: PlaceholderImage,
+    }
   ]
 
   const faqItems = [
     {
       question: "What is the turnaround time for the Visibility Bundle?",
       answer:
-        "We pride ourselves on swift, high-quality delivery. Your complete Visibility Bundle will be ready within 24 hours of receiving your order and brand information.",
+        "We pride ourselves on swift, high-quality delivery. Your complete Visibility Bundle will be ready within 48 hours of receiving your order and brand information.",
     },
     {
       question: "Can I request modifications to the designs?",
@@ -304,7 +289,7 @@ const VisibiltyBundle = () => {
                   src={VisibilityHero}
                   alt="Hero background"
                 />
-              <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-black/85 to-black/75" />
+                <div className="absolute inset-0 bg-gradient-to-br from-black/95 via-black/90 to-black/80" />
               </div>
             <div className="relative py-32 sm:py-40 lg:py-56">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -316,7 +301,7 @@ const VisibiltyBundle = () => {
                     Transform Your Brand Identity
                   </h1>
                   <p className="text-xl text-gray-300 font-light leading-relaxed mb-12">
-                  Complete brand identity package, delivered in 24 hours.
+                  Complete brand identity package, delivered in 48 hours.
                 </p>
                     <button 
                       onClick={handleGetBundle}
@@ -386,8 +371,8 @@ const VisibiltyBundle = () => {
                     icon: "02"
                   },
                   {
-                    title: "24hr Delivery",
-                    description: "Receive your full Visibility Bundle within 24 hours, ready to elevate your brand.",
+                    title: "48hr Delivery",
+                    description: "Receive your full Visibility Bundle within 48 hours, ready to elevate your brand.",
                     icon: "03"
                   },
                 ].map((step, index) => (
