@@ -269,9 +269,10 @@ const VisibiltyBundle = () => {
         </div>
       </header>
 
-      <main>
-        <div className="relative">
-          <div className="relative min-h-[100vh] flex items-center justify-center overflow-hidden">
+      <main className="relative w-full overflow-x-hidden">
+        <div className="relative w-full">
+          <div className="relative min-h-[100vh] flex items-center">
+            {/* Background */}
             <div className="absolute inset-0">
               <img
                 className="h-full w-full object-cover"
@@ -281,77 +282,82 @@ const VisibiltyBundle = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-white/30 to-transparent" />
             </div>
 
-            <div className="relative w-full mt-32">
-              <div className="mx-auto px-4 sm:px-6 lg:px-8 max-w-[1200px]">
-                <div className="flex flex-col lg:flex-row items-center">
-                  <div className="w-full max-w-[580px] lg:w-1/2 space-y-6">
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6 }}
-                      className="flex items-center space-x-4"
-                    >
-                      <span className="inline-block text-violet-600 text-base uppercase tracking-wider font-light
-                                    px-4 py-1 rounded-full bg-violet-50/80 border border-violet-100">
-                        Visibility Bundle
-                      </span>
-                    </motion.div>
-
-                    <motion.h1 
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: 0.1 }}
-                      className="text-5xl sm:text-6xl lg:text-7xl font-bold text-black leading-[1.1] tracking-tight"
-                    >
-                      Transform Your{' '}
-                      <span className="block">Brand Identity</span>
-                    </motion.h1>
-
-                    <motion.p 
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: 0.2 }}
-                      className="text-xl text-gray-600 font-light leading-relaxed max-w-xl"
-                    >
-                      Complete brand identity package, delivered in 48 hours.
-                      <span className="block mt-4 text-base">
-                        Join the brands that trust RapidWorks for their identity needs.
-                      </span>
-                    </motion.p>
-
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: 0.3 }}
-                      className="flex flex-col sm:flex-row gap-4 pt-4"
-                    >
-                      <button 
-                        onClick={handleGetBundle}
-                        className="group relative inline-flex items-center px-8 py-4 text-base font-light 
-                          overflow-hidden rounded-full text-white bg-black transition-all duration-300
-                          shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            {/* Content Container */}
+            <div className="relative w-full">
+              <div className="w-full max-w-[1140px] mx-auto px-5"> {/* Strict container width */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                  {/* Left Column - Fixed width */}
+                  <div className="w-full max-w-[540px] mx-auto lg:mx-0"> {/* Control content width */}
+                    <div className="space-y-6">
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
                       >
-                        <span className="relative z-10 flex items-center">
-                          Get Your Bundle Now
-                          <ArrowRight className="ml-2 -mr-1 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                        <span className="inline-block text-violet-600 text-base uppercase tracking-wider font-light
+                          px-4 py-1 rounded-full bg-violet-50/80 border border-violet-100"
+                        >
+                          Visibility Bundle
                         </span>
-                        <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-violet-500 
-                          opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      </button>
-                      <a 
-                        href="#features" 
-                        className="group inline-flex items-center justify-center px-8 py-4 text-base font-light
-                          rounded-full text-gray-600 bg-gray-50 hover:bg-gray-100 transition-all duration-300
-                          border border-gray-200 hover:border-gray-300"
+                      </motion.div>
+
+                      <motion.h1 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.1 }}
+                        className="text-5xl sm:text-6xl lg:text-7xl font-bold text-black leading-[1.1] tracking-tight"
                       >
-                        See What's Included
-                        <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                      </a>
-                    </motion.div>
+                        Transform Your{' '}
+                        <span className="block">Brand Identity</span>
+                      </motion.h1>
+
+                      <motion.p 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                        className="text-xl text-gray-600 font-light leading-relaxed max-w-xl"
+                      >
+                        Complete brand identity package, delivered in 48 hours.
+                        <span className="block mt-4 text-base">
+                          Join the brands that trust RapidWorks for their identity needs.
+                        </span>
+                      </motion.p>
+
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.3 }}
+                        className="flex flex-col sm:flex-row gap-4 pt-4"
+                      >
+                        <button 
+                          onClick={handleGetBundle}
+                          className="group relative inline-flex items-center px-8 py-4 text-base font-light 
+                            overflow-hidden rounded-full text-white bg-black transition-all duration-300
+                            shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                        >
+                          <span className="relative z-10 flex items-center">
+                            Get Your Bundle Now
+                            <ArrowRight className="ml-2 -mr-1 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                          </span>
+                          <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-violet-500 
+                            opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        </button>
+                        <a 
+                          href="#features" 
+                          className="group inline-flex items-center justify-center px-8 py-4 text-base font-light
+                            rounded-full text-gray-600 bg-gray-50 hover:bg-gray-100 transition-all duration-300
+                            border border-gray-200 hover:border-gray-300"
+                        >
+                          See What's Included
+                          <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                        </a>
+                      </motion.div>
+                    </div>
                   </div>
 
-                  <div className="w-full lg:w-1/2 lg:pl-8 hidden lg:block">
-                    {/* Add floating UI elements, mockups, or decorative shapes */}
+                  {/* Right Column */}
+                  <div className="hidden lg:block">
+                    {/* Empty for image placement */}
                   </div>
                 </div>
               </div>
