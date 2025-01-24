@@ -289,7 +289,7 @@ const VisibiltyBundle = () => {
                   src={VisibilityHero}
                   alt="Hero background"
                 />
-                <div className="absolute inset-0 bg-gradient-to-br from-black/95 via-black/90 to-black/80" />
+                <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-black/85 to-black/75" />
               </div>
             <div className="relative py-32 sm:py-40 lg:py-56">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
