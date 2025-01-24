@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowRight, Plus, Minus, ChevronLeft, ChevronRight } from "lucide-react"
+import { ArrowRight, Plus, Minus, ChevronLeft, ChevronRight, CheckCircle } from "lucide-react"
 import HeroImage2 from "../images/heroimage3.jpg"
 import RapidWorksWebsite from "../images/rapidworkswebsite.png"
 import RapidWorksLogo from "../images/logo512.png"
@@ -249,25 +249,14 @@ const VisibiltyBundle = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <header className="fixed w-full z-10 bg-white">
+      <header className="fixed w-full z-10 bg-white/95 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center border-b-2 border-gray-100 py-6 md:justify-start md:space-x-10">
+          <div className="flex justify-between items-center py-6 md:justify-start md:space-x-10">
             <div className="flex justify-start lg:w-0 lg:flex-1">
               <Link to="/" className="text-xl font-light hover:text-gray-600 transition-colors">
                 RapidWorks
               </Link>
             </div>
-            {/* <nav className="flex space-x-10">
-              <a href="#features" className="text-base font-light text-gray-500 hover:text-gray-900">
-                Features
-              </a>
-              <a href="#process" className="text-base font-light text-gray-500 hover:text-gray-900">
-                Process
-              </a>
-              <a href="#faq" className="text-base font-light text-gray-500 hover:text-gray-900">
-                FAQ
-              </a>
-            </nav> */}
             <div className="flex items-center justify-end md:flex-1 lg:w-0">
               <button 
                 onClick={handleGetBundle}
@@ -282,34 +271,108 @@ const VisibiltyBundle = () => {
 
       <main>
         <div className="relative">
-            <div className="relative shadow-xl sm:overflow-hidden">
-              <div className="absolute inset-0">
-                <img
-                  className="h-full w-full object-cover"
-                  src={VisibilityHero}
-                  alt="Hero background"
-                />
-                <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-black/85 to-black/75" />
-              </div>
-            <div className="relative py-32 sm:py-40 lg:py-56">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="max-w-3xl mx-auto">
-                  <span className="inline-block text-violet-400 text-base uppercase tracking-wider mb-6 font-light">
-                    Visibility Bundle
-                  </span>
-                  <h1 className="text-5xl sm:text-6xl lg:text-7xl font-light text-white leading-tight tracking-tight mb-6">
-                    Transform Your Brand Identity
-                  </h1>
-                  <p className="text-xl text-gray-300 font-light leading-relaxed mb-12">
-                  Complete brand identity package, delivered in 48 hours.
-                </p>
-                    <button 
-                      onClick={handleGetBundle}
-                      className="inline-flex items-center px-8 py-4 border border-transparent text-base font-light rounded-none text-black bg-white hover:bg-gray-100 transition-all duration-300"
+          <div className="relative sm:overflow-hidden min-h-screen">
+            <div className="absolute inset-0">
+              <img
+                className="h-full w-full object-cover"
+                src={VisibilityHero}
+                alt="Hero background"
+              />
+              {/* Minimal gradient overlay - just enough to ensure text readability */}
+              <div className="absolute inset-0 bg-gradient-to-r from-white/30 to-transparent" />
+              
+              {/* Keep subtle pattern but reduce opacity further */}
+              <div className="absolute inset-0 opacity-[0.01] bg-[linear-gradient(white_2px,transparent_2px),linear-gradient(90deg,white_2px,transparent_2px)] bg-[size:40px_40px]" />
+            </div>
+
+            <div className="relative min-h-screen flex items-center">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
+                <div className="grid lg:grid-cols-2 gap-12 items-center">
+                  {/* Left content */}
+                  <div className="space-y-10">
+                    <div className="space-y-8">
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
+                        className="flex items-center space-x-4"
+                      >
+                        <span className="inline-block text-violet-600 text-base uppercase tracking-wider font-light
+                                      px-4 py-1 rounded-full bg-violet-50/80 border border-violet-100
+                                      shadow-sm shadow-violet-100/50">
+                          Visibility Bundle
+                        </span>
+                      </motion.div>
+
+                      <motion.h1 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.1 }}
+                        className="text-5xl sm:text-6xl lg:text-7xl font-bold text-black leading-[1.1] tracking-tight"
+                      >
+                        Transform Your{' '}
+                        <span className="relative inline-block">
+                          Brand
+                          <div className="absolute -bottom-2 left-0 w-full h-[0.5em] bg-violet-100/50 -z-10" />
+                        </span>{' '}
+                        <span className="block mt-2">Identity</span>
+                      </motion.h1>
+
+                      <motion.p 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                        className="text-xl text-gray-600 font-light leading-relaxed max-w-xl"
+                      >
+                        Complete brand identity package, delivered in 48 hours.
+                        <span className="block mt-4 text-base">
+                          Join the brands that trust RapidWorks for their identity needs.
+                        </span>
+                      </motion.p>
+                    </div>
+
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: 0.3 }}
+                      className="flex flex-col sm:flex-row gap-4"
                     >
-                    Get Your Bundle Now
-                    <ArrowRight className="ml-2 -mr-1 h-5 w-5" />
-                  </button>
+                      <button 
+                        onClick={handleGetBundle}
+                        className="group relative inline-flex items-center px-8 py-4 text-base font-light 
+                          overflow-hidden rounded-full text-white bg-black transition-all duration-300
+                          shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                      >
+                        <span className="relative z-10 flex items-center">
+                          Get Your Bundle Now
+                          <ArrowRight className="ml-2 -mr-1 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                        </span>
+                        <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-violet-500 
+                          opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      </button>
+                      <a 
+                        href="#features" 
+                        className="group inline-flex items-center justify-center px-8 py-4 text-base font-light
+                          rounded-full text-gray-600 bg-gray-50 hover:bg-gray-100 transition-all duration-300
+                          border border-gray-200 hover:border-gray-300"
+                      >
+                        See What's Included
+                        <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                      </a>
+                    </motion.div>
+                  </div>
+
+                  {/* Right side - Floating elements */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.8, delay: 0.2 }}
+                    className="relative hidden lg:block"
+                  >
+                    <div className="relative w-full h-full">
+                      {/* Add floating UI elements, mockups, or decorative shapes */}
+                    </div>
+                  </motion.div>
                 </div>
               </div>
             </div>
