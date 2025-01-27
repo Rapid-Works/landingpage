@@ -20,7 +20,7 @@ import HeroImage from "./images/heroimage.jpg"
 import HeroImage1 from "./images/heroimage2.jpg"
 import HeroImage2 from "./images/heroimage3.jpg"
 import NRWLogo from "./images/nwrlogo.png"
-import { Link, Routes, Route, BrowserRouter as Router } from "react-router-dom"
+import { Link, Routes, Route } from "react-router-dom"
 import { ArrowRight } from "lucide-react"
 import BundleForm from "./components/BundleForm"
 import VisibiltyBundle from "./components/visibilitypage"
@@ -1048,34 +1048,32 @@ function App() {
 
   return (
     <LanguageContext.Provider value={contextValue}>
-      <Router>
-        <div className="flex flex-col min-h-screen bg-white">
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <>
-                  <Header />
-                  <main className="flex-1">
-                    <HeroSection fadeIn={fadeIn} />
-                    <ServicesSection fadeIn={fadeIn} />
-                    <ApproachSection fadeIn={fadeIn} />
-                    <WhyChooseUsSection fadeIn={fadeIn} />
-                    <PostMVPOfferSection fadeIn={fadeIn} />
-                    <ContactSection fadeIn={fadeIn} />
-                    <VisibilityCTA fadeIn={fadeIn} />
-                  </main>
-                  <Footer />
-                </>
-              }
-            />
-            <Route 
-              path="/visibility" 
-              element={<VisibiltyBundle />} 
-            />
-          </Routes>
-        </div>
-      </Router>
+      <div className="flex flex-col min-h-screen bg-white">
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <Header />
+                <main className="flex-1">
+                  <HeroSection fadeIn={fadeIn} />
+                  <ServicesSection fadeIn={fadeIn} />
+                  <ApproachSection fadeIn={fadeIn} />
+                  <WhyChooseUsSection fadeIn={fadeIn} />
+                  <PostMVPOfferSection fadeIn={fadeIn} />
+                  <ContactSection fadeIn={fadeIn} />
+                  <VisibilityCTA fadeIn={fadeIn} />
+                </main>
+                <Footer />
+              </>
+            }
+          />
+          <Route 
+            path="/visibility" 
+            element={<VisibiltyBundle />} 
+          />
+        </Routes>
+      </div>
     </LanguageContext.Provider>
   )
 }
