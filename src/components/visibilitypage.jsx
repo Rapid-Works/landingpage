@@ -198,7 +198,8 @@ const VisibiltyBundle = () => {
   }
 
   const handleGetBundle = () => {
-    navigate('/get-bundle');
+    // navigate('/get-bundle'); // Comment out the old navigation
+    window.open('https://forms.office.com/r/Q4RB42z9ni', '_blank'); // Open in new tab
   }
 
   // Update the pageContent object with more translations
@@ -556,31 +557,31 @@ const VisibiltyBundle = () => {
                 initial={{ scale: 1.1 }}
                 animate={{ scale: 1 }}
                 transition={{ duration: 1.5, ease: "easeOut" }}
-                className="h-full w-full object-cover object-[80%_center] md:object-center transform hover:scale-105 transition-transform duration-700"
+                className="h-full w-full object-cover object-center transform hover:scale-105 transition-transform duration-700"
                 src={VisibilityHero}
                 alt="Hero background"
               />
               {/* Enhanced gradient overlay for mobile */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/85 to-black/70 md:from-white/60 md:via-white/40 md:to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/75 to-black/60 md:from-white/60 md:via-white/40 md:to-transparent" />
               {/* Additional vertical gradient for mobile */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent md:hidden" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent md:hidden" />
             </div>
 
-            {/* Content Container - Updated padding and spacing */}
+            {/* Content Container */}
             <div className="relative w-full">
               <div className="w-full pl-0 sm:pl-4 md:pl-8 lg:pl-16">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-32 items-center">
-                  {/* Left Column - Updated padding and spacing */}
-                  <div className="w-full max-w-[480px] px-8 sm:px-4 md:px-0">
-                    <div className="space-y-6 sm:space-y-6">
+                  {/* Left Column - Updated padding */}
+                  <div className="w-full max-w-[480px] px-6 sm:px-4 md:px-0">
+                    <div className="space-y-4 sm:space-y-6">
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6 }}
                         className="animate-float"
                       >
-                        <span className="inline-block text-violet-400 md:text-violet-600 text-sm sm:text-base uppercase tracking-wider font-light
-                          px-4 py-1.5 rounded-full bg-violet-50/10 md:bg-violet-50/80 border border-violet-200/20 md:border-violet-100 backdrop-blur-sm shadow-sm"
+                        <span className="inline-block text-violet-600 text-sm sm:text-base uppercase tracking-wider font-light
+                          px-3 sm:px-4 py-1 rounded-full bg-violet-50/80 border border-violet-100 backdrop-blur-sm shadow-sm"
                         >
                           {content.bundleLabel}
                         </span>
@@ -590,7 +591,7 @@ const VisibiltyBundle = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.1 }}
-                        className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-white md:text-black leading-[1.1] tracking-tight"
+                        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white md:text-black leading-[1.1] tracking-tight"
                       >
                         {content.title}
                       </motion.h1>
@@ -599,10 +600,10 @@ const VisibiltyBundle = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.2 }}
-                        className="text-lg sm:text-xl text-gray-300 md:text-gray-600 font-light leading-relaxed max-w-xl"
+                        className="text-base sm:text-lg text-gray-200 md:text-gray-600 font-light leading-relaxed max-w-xl"
                       >
                         {content.subtitle}
-                        <span className="block mt-3 sm:mt-4 text-base sm:text-lg text-gray-400 md:text-gray-600">
+                        <span className="block mt-2 sm:mt-3 text-sm sm:text-base text-gray-300 md:text-gray-600">
                           {content.subtext}
                         </span>
                       </motion.p>
@@ -611,32 +612,37 @@ const VisibiltyBundle = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.3 }}
-                        className="flex flex-col sm:flex-row gap-4 sm:gap-4 pt-4 sm:pt-3"
+                        className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2 sm:pt-3"
                       >
                         <button 
                           onClick={handleGetBundle}
-                          className="group relative inline-flex items-center justify-center px-8 py-4 text-base font-light 
-                            overflow-hidden rounded-full text-white bg-violet-600 md:bg-black transition-all duration-300
+                          className="group relative inline-flex items-center px-6 py-3 text-sm font-light 
+                            overflow-hidden rounded-full text-white bg-black transition-all duration-300
                             shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 hover:scale-105"
                         >
                           <span className="relative z-10 flex items-center">
                             {content.cta}
-                            <ArrowRight className="ml-2 -mr-1 h-5 w-5 transition-transform group-hover:translate-x-2" />
+                            <ArrowRight className="ml-2 -mr-1 h-4 w-4 transition-transform group-hover:translate-x-2" />
                           </span>
                           <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-violet-500 
                             opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         </button>
                         <a 
                           href="#features" 
-                          className="group inline-flex items-center justify-center px-8 py-4 text-base font-light
-                            rounded-full text-gray-300 md:text-gray-600 bg-white/10 md:bg-gray-50 hover:bg-gray-100 transition-all duration-300
-                            border border-white/20 md:border-gray-200 hover:border-gray-300 hover:scale-105 hover:shadow-lg backdrop-blur-sm"
+                          className="group inline-flex items-center justify-center px-6 py-3 text-sm font-light
+                            rounded-full text-gray-600 bg-gray-50 hover:bg-gray-100 transition-all duration-300
+                            border border-gray-200 hover:border-gray-300 hover:scale-105 hover:shadow-lg"
                         >
                           {content.seeMore}
-                          <ChevronRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                          <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                         </a>
                       </motion.div>
                     </div>
+                  </div>
+
+                  {/* Right Column */}
+                  <div className="hidden lg:block">
+                    {/* Empty for image placement */}
                   </div>
                 </div>
               </div>
