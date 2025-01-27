@@ -1,4 +1,4 @@
-import React, { useState, createContext, useContext, useEffect } from "react"
+import React, { useState, createContext, useContext, useEffect, useMemo } from "react"
 import { motion } from "framer-motion"
 import {
   Rocket,
@@ -20,13 +20,17 @@ import HeroImage from "./images/heroimage.jpg"
 import HeroImage1 from "./images/heroimage2.jpg"
 import HeroImage2 from "./images/heroimage3.jpg"
 import NRWLogo from "./images/nwrlogo.png"
-import { Link, Routes, Route } from "react-router-dom"
+import { Link, Routes, Route, BrowserRouter as Router } from "react-router-dom"
 import { ArrowRight } from "lucide-react"
 import BundleForm from "./components/BundleForm"
 import VisibiltyBundle from "./components/visibilitypage"
 
-// Create Language Context
-const LanguageContext = createContext()
+// Create and export Language Context with initial values
+export const LanguageContext = createContext({
+  language: 'de',
+  setLanguage: () => {},
+  translate: () => ''
+})
 
 // Translation Object
 const translations = {
@@ -1007,11 +1011,34 @@ const Footer = () => {
 }
 
 function App() {
-  // Initialize language from localStorage or default to 'en'
   const [language, setLanguage] = useState(() => {
     const saved = localStorage.getItem("language")
+    console.log("Initial language from localStorage:", saved)
     return saved || "de"
   })
+
+  // Add useEffect to persist language changes
+  useEffect(() => {
+    console.log("Persisting language change:", language)
+    localStorage.setItem("language", language)
+  }, [language])
+
+  const contextValue = useMemo(() => ({
+    language,
+    setLanguage: (newLang) => {
+      console.log("Setting language to:", newLang)
+      setLanguage(newLang)
+    },
+    translate: (key) => {
+      console.log("Translating with language:", language)
+      const keys = key.split(".")
+      let value = translations[language]
+      for (const k of keys) {
+        value = value?.[k]
+      }
+      return value || key
+    }
+  }), [language])
 
   const fadeIn = {
     initial: { opacity: 0, y: 20 },
@@ -1019,36 +1046,36 @@ function App() {
     transition: { duration: 0.6 },
   }
 
-  // Translation helper function
-  const translate = (key) => {
-    const keys = key.split(".")
-    let value = translations[language]
-    for (const k of keys) {
-      value = value?.[k]
-    }
-    return value || key
-  }
-
-  // Save language preference to localStorage
-  useEffect(() => {
-    localStorage.setItem("language", language)
-  }, [language])
-
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, translate }}>
-      <div className="flex flex-col min-h-screen bg-white">
-        <Header />
-        <main className="flex-1">
-          <HeroSection fadeIn={fadeIn} />
-          <ServicesSection fadeIn={fadeIn} />
-          <ApproachSection fadeIn={fadeIn} />
-          <WhyChooseUsSection fadeIn={fadeIn} />
-          <PostMVPOfferSection fadeIn={fadeIn} />
-          <ContactSection fadeIn={fadeIn} />
-          <VisibilityCTA fadeIn={fadeIn} />
-        </main>
-        <Footer />
-      </div>
+    <LanguageContext.Provider value={contextValue}>
+      <Router>
+        <div className="flex flex-col min-h-screen bg-white">
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <>
+                  <Header />
+                  <main className="flex-1">
+                    <HeroSection fadeIn={fadeIn} />
+                    <ServicesSection fadeIn={fadeIn} />
+                    <ApproachSection fadeIn={fadeIn} />
+                    <WhyChooseUsSection fadeIn={fadeIn} />
+                    <PostMVPOfferSection fadeIn={fadeIn} />
+                    <ContactSection fadeIn={fadeIn} />
+                    <VisibilityCTA fadeIn={fadeIn} />
+                  </main>
+                  <Footer />
+                </>
+              }
+            />
+            <Route 
+              path="/visibility" 
+              element={<VisibiltyBundle />} 
+            />
+          </Routes>
+        </div>
+      </Router>
     </LanguageContext.Provider>
   )
 }
