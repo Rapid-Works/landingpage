@@ -562,7 +562,7 @@ const VisibiltyBundle = () => {
                 alt="Hero background"
               />
               {/* Enhanced gradient overlay for mobile */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/75 to-black/60 md:from-white/60 md:via-white/40 md:to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/75 to-black/60 md:from-white/40 md:via-white/20 md:to-transparent" />
               {/* Additional vertical gradient for mobile */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent md:hidden" />
             </div>
@@ -570,18 +570,18 @@ const VisibiltyBundle = () => {
             {/* Content Container */}
             <div className="relative w-full">
               <div className="w-full pl-0 sm:pl-4 md:pl-8 lg:pl-16">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-32 items-center">
-                  {/* Left Column - Updated padding */}
-                  <div className="w-full max-w-[480px] px-6 sm:px-4 md:px-0">
-                    <div className="space-y-4 sm:space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-32 items-center">
+                  {/* Left Column - Updated padding and spacing */}
+                  <div className="w-full max-w-[480px] px-4 sm:px-4 md:px-0">
+                    <div className="space-y-3 sm:space-y-6">
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6 }}
                         className="animate-float"
                       >
-                        <span className="inline-block text-violet-600 text-sm sm:text-base uppercase tracking-wider font-light
-                          px-3 sm:px-4 py-1 rounded-full bg-violet-50/80 border border-violet-100 backdrop-blur-sm shadow-sm"
+                        <span className="inline-block text-violet-400 md:text-violet-600 text-xs sm:text-sm uppercase tracking-wider font-light
+                          px-2 sm:px-4 py-1 rounded-full bg-violet-50/10 md:bg-violet-50/80 border border-violet-200/20 md:border-violet-100 backdrop-blur-sm shadow-sm"
                         >
                           {content.bundleLabel}
                         </span>
@@ -591,7 +591,7 @@ const VisibiltyBundle = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.1 }}
-                        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white md:text-black leading-[1.1] tracking-tight"
+                        className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white md:text-black leading-[1.1] tracking-tight"
                       >
                         {content.title}
                       </motion.h1>
@@ -600,10 +600,10 @@ const VisibiltyBundle = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.2 }}
-                        className="text-base sm:text-lg text-gray-200 md:text-gray-600 font-light leading-relaxed max-w-xl"
+                        className="text-sm sm:text-lg text-gray-200 md:text-gray-600 font-light leading-relaxed max-w-xl"
                       >
                         {content.subtitle}
-                        <span className="block mt-2 sm:mt-3 text-sm sm:text-base text-gray-300 md:text-gray-600">
+                        <span className="block mt-2 text-xs sm:text-base text-gray-300 md:text-gray-600">
                           {content.subtext}
                         </span>
                       </motion.p>
@@ -612,7 +612,7 @@ const VisibiltyBundle = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.3 }}
-                        className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2 sm:pt-3"
+                        className="flex flex-col sm:flex-row gap-2 sm:gap-4 pt-2 sm:pt-3"
                       >
                         <button 
                           onClick={handleGetBundle}
@@ -739,28 +739,28 @@ const VisibiltyBundle = () => {
         </section>
 
         {/* MVP Section */}
-        <section className="py-32 bg-black text-white">
+        <section className="py-12 sm:py-32 bg-black text-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-12">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12">
               <div className="flex-1">
-                <h2 className="text-4xl font-light mb-4">
+                <h2 className="text-xl sm:text-4xl font-light mb-2 sm:mb-4">
                   {content.mvp.title}
                 </h2>
-                <p className="text-xl text-gray-300 mb-8">
+                <p className="text-sm sm:text-xl text-gray-300 mb-4 sm:mb-8">
                   {content.mvp.description}
                 </p>
                 <Link 
                   to="/" 
-                  className="inline-flex items-center px-6 py-3 bg-white text-black hover:bg-gray-100 transition-colors font-light"
+                  className="inline-flex items-center px-3 sm:px-6 py-2 sm:py-3 bg-white text-black hover:bg-gray-100 transition-colors font-light text-xs sm:text-base"
                 >
                   {content.mvp.cta}
-                  <ArrowRight className="ml-2 -mr-1 h-5 w-5" />
+                  <ArrowRight className="ml-1 sm:ml-2 -mr-1 h-3 w-3 sm:h-5 sm:w-5" />
                 </Link>
               </div>
               <div className="flex-1 flex justify-center">
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-indigo-600 blur-3xl opacity-20"></div>
-                  <div className="relative text-8xl font-bold">
+                  <div className="relative text-4xl sm:text-6xl md:text-8xl font-bold">
                     2<span className="text-violet-500">{content.mvp.weeks}</span>
                   </div>
                 </div>
