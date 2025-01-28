@@ -595,10 +595,10 @@ const VisibiltyBundle = () => {
               {/* Desktop Background Image - Unchanged */}
               <div className="absolute inset-0 translate-y-16 mr-0 md:mr-4 lg:mr-8 xl:mr-16 hidden md:block">
                 <motion.img
-                  initial={{ scale: 1.1 }}
-                  animate={{ scale: 1 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
                   transition={{ duration: 1.5, ease: "easeOut" }}
-                  className="h-full w-full object-cover object-center transform hover:scale-105 transition-transform duration-700"
+                  className="h-full w-full object-cover object-center transition-transform duration-700"
                 src={VisibilityHero}
                 alt="Hero background"
               />
@@ -606,17 +606,17 @@ const VisibiltyBundle = () => {
 
               {/* Mobile Layout - Flex column for vertical stacking */}
               <div className="flex flex-col md:hidden">
-                {/* Mobile Image First */}
-                <div className="w-full h-[60vh]">
-                <motion.img
-                  initial={{ scale: 1.1 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 1.5, ease: "easeOut" }}
+                {/* Mobile Image First - Increased height and added padding */}
+                <div className="w-full h-[70vh] pt-16"> {/* Increased from 60vh to 70vh and added top padding */}
+                  <motion.img
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1.5, ease: "easeOut" }}
                     className="h-full w-full object-contain scale-[1.3] transform transition-transform duration-700 px-4 sm:px-8"
                     src={PlaceholderImage}
-                  alt="Hero background"
-                />
-            </div>
+                    alt="Hero background"
+                  />
+                </div>
 
                 {/* Mobile Text Content Below */}
                 <div className="w-full bg-white px-6 py-8">
@@ -849,7 +849,7 @@ const VisibiltyBundle = () => {
               </motion.div>
               
               {/* Alternating List Items */}
-              <div className="space-y-56 relative">
+              <div className="space-y-24 relative">
                 {/* Enhanced Connecting Line with Animation */}
                 <div className="absolute left-1/2 top-0 bottom-0 w-[1px] hidden md:block">
                   <motion.div 
@@ -884,40 +884,27 @@ const VisibiltyBundle = () => {
                     </div>
 
                     {/* Content Container */}
-                    <motion.div 
-                      className={`flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-16 md:gap-32`}
-                      whileHover={{ y: -5 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      {/* Image Side with Enhanced Effects */}
+                    <div className={`flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-16 md:gap-32`}>
+                      {/* Image Side */}
                       <div className="w-full md:w-1/2">
                         <div className="relative aspect-[4/3] overflow-hidden group rounded-3xl">
-                          <motion.div
-                            whileHover={{ scale: 1.03 }}
-                            transition={{ duration: 0.6, ease: [0.43, 0.13, 0.23, 0.96] }}
-                            className="h-full transform-gpu"
-                          >
+                          <div className="h-full transform-gpu">
                             <img
                               src={item.imageSrc || PlaceholderImage}
                               alt={item.title}
                               className="w-full h-full object-contain mix-blend-multiply filter contrast-125"
                             />
-                            {/* Enhanced Gradient Effects */}
-                            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gray-50/30 group-hover:opacity-0 transition-all duration-700" />
-                            <div className="absolute inset-0 bg-gradient-to-tr from-violet-50/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700" />
-                            {/* Enhanced Border and Shadow */}
-                            <div className="absolute inset-0 border border-gray-200/20 rounded-3xl shadow-[0_8px_32px_-4px_rgba(0,0,0,0.1)] group-hover:shadow-[0_24px_64px_-12px_rgba(0,0,0,0.15)] transition-all duration-700" />
-                          </motion.div>
+                            {/* Keep gradient effects but remove hover transitions */}
+                            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gray-50/30" />
+                            <div className="absolute inset-0 bg-gradient-to-tr from-violet-50/10 to-transparent" />
+                            <div className="absolute inset-0 border border-gray-200/20 rounded-3xl shadow-[0_8px_32px_-4px_rgba(0,0,0,0.1)]" />
+                          </div>
                         </div>
                       </div>
                       
-                      {/* Content Side with Enhanced Typography */}
+                      {/* Content Side */}
                       <div className="w-full md:w-1/2">
-                        <motion.div
-                          className="relative pl-16 md:pl-0"
-                          whileHover={{ x: index % 2 === 0 ? 10 : -10 }}
-                          transition={{ duration: 0.3 }}
-                        >
+                        <div className="relative pl-16 md:pl-0">
                           {/* Enhanced Item Number */}
                           <span className="absolute -left-4 md:-left-12 top-1 text-8xl md:text-[10rem] font-extralight text-violet-200/10 select-none">
                             {(index + 1).toString().padStart(2, '0')}
@@ -940,9 +927,9 @@ const VisibiltyBundle = () => {
                               <div className="absolute top-2 left-0 w-24 h-[1px] bg-gradient-to-r from-violet-300 to-transparent rounded-full opacity-20" />
                             </div>
                           </div>
-                        </motion.div>
+                        </div>
                       </div>
-                    </motion.div>
+                    </div>
                   </motion.div>
                 ))}
               </div>
