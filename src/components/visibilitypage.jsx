@@ -2,21 +2,21 @@ import React, { useState, useEffect, useContext } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ArrowRight, Plus, Minus, ChevronLeft, ChevronRight, CheckCircle } from "lucide-react"
 import HeroImage2 from "../images/heroimage3.jpg"
-import RapidWorksWebsite from "../images/rapidworkswebsite.png"
+import RapidWorksWebsite from "../images/laptop.png"
 import RapidWorksLogo from "../images/logo512.png"
-import QRCodeLogo from "../images/qrcodelogo.jpg"
-import PlaceholderImage from "../images/visibilityher.png"
-import RapidWorksHoodie from "../images/rapiworkshoddie.png"
-import RapidWorksBanner from "../images/rapidworksbanner.png"
+import QRCodeLogo from "../images/qrcode.png"
+import PlaceholderImage from "../images/more.png"
+import RapidWorksHoodie from "../images/hoodie.png"
+import RapidWorksBanner from "../images/banner.png"
 import RapidWorksEmailSignature from "../images/rapidworksemailsignature.png"
-import BusinessCard from "../images/businesscard.png"
-import PhoneMockLogo from "../images/phonemocklogo.jpg"
+import BusinessCard from "../images/card.png"
+import PhoneMockLogo from "../images/phone.png"
 import RollupBanner from "../images/rollup.png"
 import PitchDeck from "../images/pitchdeck.jpg"
 import GuidelineBrand from "../images/guidelinebrand.jpg"
-import Calendar from "../images/calendar.jpg"
+import Calendar from "../images/calendar.png"
 import RLogo from "../images/rlogo.jpg"
-import VisibilityHero from "../images/visibilityher.png"
+import VisibilityHero from "../images/background.png"
 import { Link, useNavigate } from "react-router-dom"
 import BundleForm from "./BundleForm"
 import { LanguageContext as AppLanguageContext } from "../App"
@@ -168,6 +168,43 @@ const BundleGridItem = ({ title, description, imageSrc }) => (
   </motion.div>
 )
 
+const NewsletterForm = () => {
+  const [email, setEmail] = useState('')
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    // Handle newsletter signup logic here
+    console.log('Newsletter signup:', email)
+  }
+
+  return (
+    <div className="bg-[#0F1115] text-white p-8 rounded-lg">
+      <div className="max-w-md">
+        <img src={RapidWorksLogo} alt="Logo" className="h-8 w-8 mb-4" />
+        <p className="text-gray-400 mb-6">
+          All-in-one brand identity platform for your business to manage design assets and much more
+        </p>
+        <h3 className="text-xl font-light mb-4">Join our Newsletter</h3>
+        <form onSubmit={handleSubmit} className="flex gap-2">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter Your Email Here"
+            className="flex-1 px-4 py-2 bg-white/10 border border-white/20 rounded-md text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-violet-500"
+          />
+          <button
+            type="submit"
+            className="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-md transition-colors"
+          >
+            →
+          </button>
+        </form>
+      </div>
+    </div>
+  )
+}
+
 const VisibiltyBundle = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [showForm, setShowForm] = useState(false)
@@ -196,7 +233,7 @@ const VisibiltyBundle = () => {
     setLanguage(newLang)
     setCurrentLanguage(newLang) // Update local state immediately
   }
-
+  
   const handleGetBundle = () => {
     // navigate('/get-bundle'); // Comment out the old navigation
     window.open('https://forms.office.com/r/Q4RB42z9ni', '_blank'); // Open in new tab
@@ -549,10 +586,11 @@ const VisibiltyBundle = () => {
       </header>
 
       <main className="relative w-full overflow-x-hidden">
+        {/* Hero Section */}
         <div className="relative w-full">
-          <div className="relative min-h-[100vh] flex items-center">
-            {/* Background */}
-            <div className="absolute inset-0 translate-y-16 mr-0 md:mr-4 lg:mr-8 xl:mr-16">
+          <div className="relative min-h-screen flex flex-col md:items-center">
+            {/* Desktop Background Image - Unchanged */}
+            <div className="absolute inset-0 translate-y-16 mr-0 md:mr-4 lg:mr-8 xl:mr-16 hidden md:block">
               <motion.img
                 initial={{ scale: 1.1 }}
                 animate={{ scale: 1 }}
@@ -561,27 +599,108 @@ const VisibiltyBundle = () => {
                 src={VisibilityHero}
                 alt="Hero background"
               />
-              {/* Enhanced gradient overlay for mobile */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/75 to-black/60 md:from-white/40 md:via-white/20 md:to-transparent" />
-              {/* Additional vertical gradient for mobile */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent md:hidden" />
             </div>
 
-            {/* Content Container */}
-            <div className="relative w-full">
+            {/* Mobile Layout - Flex column for vertical stacking */}
+            <div className="flex flex-col md:hidden">
+              {/* Mobile Image First */}
+              <div className="w-full h-[60vh]">
+              <motion.img
+                initial={{ scale: 1.1 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 1.5, ease: "easeOut" }}
+                  className="h-full w-full object-contain scale-[1.3] transform transition-transform duration-700 px-4 sm:px-8"
+                  src={PlaceholderImage}
+                alt="Hero background"
+              />
+            </div>
+
+              {/* Mobile Text Content Below */}
+              <div className="w-full bg-white px-6 py-8">
+                <div className="max-w-[480px] mx-auto space-y-4 text-center">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                    className="animate-float"
+                  >
+                    <span className="inline-block text-violet-600 text-xs md:text-sm uppercase tracking-wider font-light
+                      px-2 py-0.5 md:px-4 md:py-1 rounded-full bg-violet-50/80 md:bg-violet-50 border border-violet-100 backdrop-blur-sm shadow-sm"
+                    >
+                      {content.bundleLabel}
+                    </span>
+                  </motion.div>
+
+                  <motion.h1 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.1 }}
+                    className="text-2xl md:text-5xl lg:text-6xl font-bold text-gray-900 md:text-black leading-[1.1] tracking-tight"
+                  >
+                    {content.title}
+                  </motion.h1>
+
+                  <motion.p 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.2 }}
+                    className="text-sm md:text-lg font-light leading-relaxed max-w-xl mx-auto md:mx-0"
+                  >
+                    {content.subtitle}
+                    <span className="block mt-1 md:mt-2 text-xs md:text-base text-gray-500 md:text-gray-600">
+                      {content.subtext}
+                    </span>
+                  </motion.p>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.3 }}
+                    className="flex flex-col sm:flex-row gap-2 md:gap-4 pt-2 md:pt-4 justify-center md:justify-start"
+                  >
+                    <button 
+                      onClick={handleGetBundle}
+                      className="group relative inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 text-sm font-light 
+                        overflow-hidden rounded-full text-white bg-black transition-all duration-300
+                        shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 hover:scale-105"
+                    >
+                      <span className="relative z-10 flex items-center">
+                        {content.cta}
+                        <ArrowRight className="ml-2 -mr-1 h-4 w-4 transition-transform group-hover:translate-x-2" />
+                      </span>
+                      <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-violet-500 
+                        opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </button>
+                    <a 
+                      href="#features" 
+                      className="group inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 text-sm font-light
+                        rounded-full text-gray-600 bg-gray-50 hover:bg-gray-100 transition-all duration-300
+                        border border-gray-200 hover:border-gray-300 hover:scale-105 hover:shadow-lg"
+                    >
+                      {content.seeMore}
+                      <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </a>
+                  </motion.div>
+                </div>
+              </div>
+            </div>
+
+            {/* Desktop Content - Unchanged */}
+            <div className="hidden md:block relative w-full">
+              <div className="relative min-h-screen flex items-center">
               <div className="w-full pl-0 sm:pl-4 md:pl-8 lg:pl-16">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-32 items-center">
-                  {/* Left Column - Updated padding and spacing */}
-                  <div className="w-full max-w-[480px] px-4 sm:px-4 md:px-0">
-                    <div className="space-y-3 sm:space-y-6">
+                  {/* Text Content */}
+                  <div className="w-full max-w-[480px] mx-auto md:mx-0">
+                    <div className="space-y-2 md:space-y-6 text-center md:text-left px-6 py-3 md:p-0">
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6 }}
                         className="animate-float"
                       >
-                        <span className="inline-block text-violet-400 md:text-violet-600 text-xs sm:text-sm uppercase tracking-wider font-light
-                          px-2 sm:px-4 py-1 rounded-full bg-violet-50/10 md:bg-violet-50/80 border border-violet-200/20 md:border-violet-100 backdrop-blur-sm shadow-sm"
+                        <span className="inline-block text-violet-600 text-xs md:text-sm uppercase tracking-wider font-light
+                          px-2 py-0.5 md:px-4 md:py-1 rounded-full bg-violet-50/80 md:bg-violet-50 border border-violet-100 backdrop-blur-sm shadow-sm"
                         >
                           {content.bundleLabel}
                         </span>
@@ -591,7 +710,7 @@ const VisibiltyBundle = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.1 }}
-                        className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white md:text-black leading-[1.1] tracking-tight"
+                        className="text-2xl md:text-5xl lg:text-6xl font-bold text-gray-900 md:text-black leading-[1.1] tracking-tight"
                       >
                         {content.title}
                       </motion.h1>
@@ -600,10 +719,10 @@ const VisibiltyBundle = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.2 }}
-                        className="text-sm sm:text-lg text-gray-200 md:text-gray-600 font-light leading-relaxed max-w-xl"
+                        className="text-sm md:text-lg font-light leading-relaxed max-w-xl mx-auto md:mx-0"
                       >
                         {content.subtitle}
-                        <span className="block mt-2 text-xs sm:text-base text-gray-300 md:text-gray-600">
+                        <span className="block mt-1 md:mt-2 text-xs md:text-base text-gray-500 md:text-gray-600">
                           {content.subtext}
                         </span>
                       </motion.p>
@@ -612,11 +731,11 @@ const VisibiltyBundle = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.3 }}
-                        className="flex flex-col sm:flex-row gap-2 sm:gap-4 pt-2 sm:pt-3"
+                        className="flex flex-col sm:flex-row gap-2 md:gap-4 pt-2 md:pt-4 justify-center md:justify-start"
                       >
                         <button 
                           onClick={handleGetBundle}
-                          className="group relative inline-flex items-center px-6 py-3 text-sm font-light 
+                          className="group relative inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 text-sm font-light 
                             overflow-hidden rounded-full text-white bg-black transition-all duration-300
                             shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 hover:scale-105"
                         >
@@ -629,7 +748,7 @@ const VisibiltyBundle = () => {
                         </button>
                         <a 
                           href="#features" 
-                          className="group inline-flex items-center justify-center px-6 py-3 text-sm font-light
+                          className="group inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 text-sm font-light
                             rounded-full text-gray-600 bg-gray-50 hover:bg-gray-100 transition-all duration-300
                             border border-gray-200 hover:border-gray-300 hover:scale-105 hover:shadow-lg"
                         >
@@ -640,9 +759,10 @@ const VisibiltyBundle = () => {
                     </div>
                   </div>
 
-                  {/* Right Column */}
+                  {/* Right Column - Unchanged */}
                   <div className="hidden lg:block">
                     {/* Empty for image placement */}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -684,22 +804,143 @@ const VisibiltyBundle = () => {
         </section> */}
 
         {/* Features Section (Everything You Need) */}
-        <section id="features" className="py-24">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-light text-center mb-4">
-              {content.features.title}
-            </h2>
-            <p className="text-gray-600 text-center mb-16">
-              {content.features.subtitle}
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <section id="features" className="py-40 overflow-hidden bg-gradient-to-b from-white via-gray-50/50 to-white relative">
+          {/* Background Decorative Elements */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute -top-1/2 -right-1/4 w-[800px] h-[800px] bg-violet-50/50 rounded-full blur-3xl" />
+            <div className="absolute -bottom-1/2 -left-1/4 w-[800px] h-[800px] bg-violet-50/30 rounded-full blur-3xl" />
+            <div className="absolute top-1/4 left-1/2 w-4 h-4 bg-violet-200/20 rounded-full blur-sm" />
+            <div className="absolute bottom-1/4 right-1/4 w-6 h-6 bg-violet-200/30 rounded-full blur-md" />
+          </div>
+
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-40 relative"
+            >
+              <motion.span 
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                className="inline-flex items-center gap-2 text-violet-600 text-sm uppercase tracking-wider font-light mb-6 px-6 py-2 rounded-full bg-violet-50/80 border border-violet-100 shadow-sm backdrop-blur-sm"
+              >
+                <span className="w-2 h-2 rounded-full bg-violet-400 animate-pulse" />
+                Designed for Impact
+              </motion.span>
+
+              <h2 className="text-4xl md:text-6xl font-light mb-8 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 bg-clip-text text-transparent">
+                {content.features.title}
+              </h2>
+              <p className="text-gray-600 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+                {content.features.subtitle}
+              </p>
+
+              {/* Enhanced Decorative Elements */}
+              <div className="absolute left-1/2 -translate-x-1/2 mt-12">
+                <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-violet-300 to-transparent" />
+                <div className="w-32 h-[1px] bg-gradient-to-r from-transparent via-violet-200 to-transparent mt-2" />
+                <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-violet-100 to-transparent mt-2" />
+              </div>
+            </motion.div>
+            
+            {/* Alternating List Items */}
+            <div className="space-y-56 relative">
+              {/* Enhanced Connecting Line with Animation */}
+              <div className="absolute left-1/2 top-0 bottom-0 w-[1px] hidden md:block">
+                <motion.div 
+                  initial={{ scaleY: 0 }}
+                  whileInView={{ scaleY: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1.5, ease: "easeOut" }}
+                  className="h-full origin-top"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-b from-violet-200 via-violet-200/50 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-violet-200/30 via-transparent to-transparent" />
+                </motion.div>
+              </div>
+              
               {bundleItems.map((item, index) => (
-                <BundleGridItem
-                  key={index}
-                  title={item.title}
-                  description={item.description}
-                  imageSrc={item.imageSrc}
-                />
+                <motion.div 
+                  key={index} 
+                  className="relative group"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                >
+                  {/* Enhanced Connecting Dot */}
+                  <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:block">
+                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-violet-100 to-violet-200 border-2 border-violet-300 relative shadow-lg">
+                      <div className="absolute -inset-1 rounded-full border border-violet-200/50 animate-ping" />
+                      <div className="absolute inset-0 rounded-full bg-violet-400/20 animate-pulse" />
+                      <div className="absolute -inset-2 rounded-full border border-violet-200/50" />
+                      <div className="absolute -inset-3 rounded-full border border-violet-100/30" />
+                    </div>
+                  </div>
+
+                  {/* Content Container */}
+                  <motion.div 
+                    className={`flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-16 md:gap-32`}
+                    whileHover={{ y: -5 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {/* Image Side with Enhanced Effects */}
+                    <div className="w-full md:w-1/2">
+                      <div className="relative aspect-[4/3] overflow-hidden group rounded-3xl">
+                        <motion.div
+                          whileHover={{ scale: 1.03 }}
+                          transition={{ duration: 0.6, ease: [0.43, 0.13, 0.23, 0.96] }}
+                          className="h-full transform-gpu"
+                        >
+                          <img
+                            src={item.imageSrc || PlaceholderImage}
+                            alt={item.title}
+                            className="w-full h-full object-contain mix-blend-multiply filter contrast-125"
+                          />
+                          {/* Enhanced Gradient Effects */}
+                          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gray-50/30 group-hover:opacity-0 transition-all duration-700" />
+                          <div className="absolute inset-0 bg-gradient-to-tr from-violet-50/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700" />
+                          {/* Enhanced Border and Shadow */}
+                          <div className="absolute inset-0 border border-gray-200/20 rounded-3xl shadow-[0_8px_32px_-4px_rgba(0,0,0,0.1)] group-hover:shadow-[0_24px_64px_-12px_rgba(0,0,0,0.15)] transition-all duration-700" />
+                        </motion.div>
+                      </div>
+                    </div>
+                    
+                    {/* Content Side with Enhanced Typography */}
+                    <div className="w-full md:w-1/2">
+                      <motion.div
+                        className="relative pl-16 md:pl-0"
+                        whileHover={{ x: index % 2 === 0 ? 10 : -10 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        {/* Enhanced Item Number */}
+                        <span className="absolute -left-4 md:-left-12 top-1 text-8xl md:text-[10rem] font-extralight text-violet-200/10 select-none">
+                          {(index + 1).toString().padStart(2, '0')}
+                        </span>
+                        
+                        <div className="space-y-8">
+                          <div className="space-y-6">
+                            <h3 className="text-3xl md:text-5xl font-light tracking-tight bg-gradient-to-br from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                              {item.title}
+                            </h3>
+                            <p className="text-gray-600 text-lg md:text-xl leading-relaxed">
+                              {item.description}
+                            </p>
+                          </div>
+                          
+                          {/* Enhanced Decorative Elements */}
+                          <div className="relative">
+                            <div className="w-32 h-[2px] bg-gradient-to-r from-violet-500 to-violet-300 rounded-full opacity-40" />
+                            <div className="absolute top-0 left-0 w-16 h-[2px] bg-gradient-to-r from-violet-400 to-transparent rounded-full animate-pulse" />
+                            <div className="absolute top-2 left-0 w-24 h-[1px] bg-gradient-to-r from-violet-300 to-transparent rounded-full opacity-20" />
+                          </div>
+                        </div>
+                      </motion.div>
+                    </div>
+                  </motion.div>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -713,27 +954,27 @@ const VisibiltyBundle = () => {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
               {content.howItWorks.steps.map((step, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.2 }}
-                  className="relative bg-white p-8 group hover:bg-black transition-colors duration-500"
-                >
-                  <div className="absolute -top-8 left-8 text-7xl font-light text-black/10 group-hover:text-white/10 transition-colors duration-500">
-                    {step.icon}
-                  </div>
-                  <div className="relative">
-                    <h3 className="text-2xl font-light mb-4 group-hover:text-white transition-colors duration-500">
-                      {step.title}
-                    </h3>
-                    <p className="text-gray-600 group-hover:text-gray-300 transition-colors duration-500">
-                      {step.description}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: index * 0.2 }}
+                    className="relative bg-white p-8 group hover:bg-black transition-colors duration-500"
+                  >
+                    <div className="absolute -top-8 left-8 text-7xl font-light text-black/10 group-hover:text-white/10 transition-colors duration-500">
+                      {step.icon}
+                    </div>
+                    <div className="relative">
+                      <h3 className="text-2xl font-light mb-4 group-hover:text-white transition-colors duration-500">
+                        {step.title}
+                      </h3>
+                      <p className="text-gray-600 group-hover:text-gray-300 transition-colors duration-500">
+                        {step.description}
+                      </p>
+                    </div>
+                  </motion.div>
+                ))}
             </div>
           </div>
         </section>
@@ -788,6 +1029,31 @@ const VisibiltyBundle = () => {
       </main>
 
       {showForm && <BundleForm onClose={() => setShowForm(false)} />}
+
+      <footer className="bg-[#0F1115] text-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 gap-12">
+            {/* Newsletter Section */}
+            <div className="max-w-md">
+              <NewsletterForm />
+            </div>
+          </div>
+
+          {/* Bottom Bar */}
+          <div className="mt-16 pt-8 border-t border-white/10">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <div className="text-gray-400">
+                Copyright © 2024 RapidWorks. All rights reserved.
+              </div>
+              <div className="flex gap-6">
+                <Link to="#" className="text-gray-400 hover:text-white transition-colors">Impressum</Link>
+                <Link to="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</Link>
+                <Link to="#" className="text-gray-400 hover:text-white transition-colors">Contact Us</Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
