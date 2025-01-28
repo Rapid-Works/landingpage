@@ -28,7 +28,7 @@ import VisibiltyBundle from "./components/visibilitypage"
 // Create and export Language Context with initial values
 export const LanguageContext = createContext({
   language: 'de',
-  setLanguage: () => {},
+  setLanguage: () => { },
   translate: () => ''
 })
 
@@ -1068,9 +1068,9 @@ function App() {
               </>
             }
           />
-          <Route 
-            path="/visibility" 
-            element={<VisibiltyBundle />} 
+          <Route
+            path="/visibility"
+            element={<VisibiltyBundle />}
           />
         </Routes>
       </div>
