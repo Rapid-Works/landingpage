@@ -1006,7 +1006,7 @@ const VisibiltyBundle = () => {
                   <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-indigo-600 blur-3xl opacity-20"></div>
                     <div className="relative text-4xl sm:text-6xl md:text-8xl font-bold">
                       2<span className="text-violet-500">{content.mvp.weeks}</span>
-                    </div>
+                  </div>
                 </div>
               </div>
             </div>
