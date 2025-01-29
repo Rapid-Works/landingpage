@@ -24,6 +24,9 @@ import { Link, Routes, Route } from "react-router-dom"
 import { ArrowRight } from "lucide-react"
 import BundleForm from "./components/BundleForm"
 import VisibiltyBundle from "./components/visibilitypage"
+import mockuplapall from "./images/mockuplapall.jpg"
+import platformBg from "./images/platform-bg.png"
+import Navbar from './components/Navbar'
 
 // Create and export Language Context with initial values
 export const LanguageContext = createContext({
@@ -532,7 +535,7 @@ function HeroSection({ fadeIn }) {
     return (
       <>
         {beforeText}
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#cb5eee] to-[#4be1ec]">
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-violet-500">
           {highlightedText}
         </span>
       </>
@@ -540,44 +543,90 @@ function HeroSection({ fadeIn }) {
   }
 
   return (
-    <section className="w-full min-h-[70vh] md:min-h-[80vh] py-12 md:py-24 lg:py-32 xl:py-48 bg-black relative overflow-hidden flex items-center">
-      <div className="absolute inset-0 opacity-10">
-        <img src={HeroImage || "/placeholder.svg"} alt="Background" className="w-full h-full object-cover" />
-      </div>
-      <div className="container px-4 md:px-6 relative z-10">
-        <motion.div
-          className="flex flex-col items-center space-y-6 md:space-y-4 text-center"
-          initial="initial"
-          animate="animate"
-          variants={fadeIn}
-        >
-          <div className="space-y-4 md:space-y-2">
-            <h1 className="text-5xl md:text-6xl lg:text-7xl/none font-bold tracking-tighter text-white px-2">
-              {renderTitle()}
-            </h1>
-            <p className="mx-auto max-w-[700px] text-lg md:text-xl text-gray-300 px-4 mt-4">
-              {translate("hero.subtitle")}
-            </p>
+    <div className="relative w-full">
+      <div className="relative min-h-screen flex items-center">
+        {/* Background Image */}
+        <div className="absolute inset-0 translate-y-16 lg:w-[60%] lg:left-[40%]">
+          <motion.img
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+            className="h-full w-full object-contain object-right-top transition-transform duration-700 scale-90"
+            src={platformBg}
+            alt="Platform dashboard interface"
+          />
+        </div>
+
+        {/* Content Container */}
+        <div className="relative w-full">
+          <div className="w-full pl-0 sm:pl-4 md:pl-8 lg:pl-16">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-32 items-center">
+              {/* Text Content */}
+              <div className="w-full max-w-[480px] mx-auto md:mx-0">
+                <div className="space-y-6 text-center md:text-left">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                    className="animate-float"
+                  >
+                    <span className="inline-block text-violet-600 text-sm uppercase tracking-wider font-light
+                      px-4 py-1 rounded-full bg-violet-50 border border-violet-100 backdrop-blur-sm shadow-sm"
+                    >
+                      RapidWorks
+                    </span>
+                  </motion.div>
+
+                  <motion.h1 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.1 }}
+                    className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-[1.1] tracking-tight"
+                  >
+                    {renderTitle()}
+                  </motion.h1>
+
+                  <motion.p 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.2 }}
+                    className="text-lg font-light leading-relaxed max-w-xl mx-auto md:mx-0 text-gray-600"
+                  >
+                    {translate("hero.subtitle")}
+                  </motion.p>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.3 }}
+                    className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start"
+                  >
+                    <button
+                      onClick={() => document.getElementById("contact").scrollIntoView({ behavior: "smooth" })}
+                      className="group relative inline-flex items-center justify-center px-6 py-3 text-sm font-light 
+                        overflow-hidden rounded-full text-white bg-black transition-all duration-300
+                        shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 hover:scale-105"
+                    >
+                      <span className="relative z-10 flex items-center">
+                        {translate("hero.cta")}
+                        <ArrowRight className="ml-2 -mr-1 h-4 w-4 transition-transform group-hover:translate-x-2" />
+                      </span>
+                      <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-violet-500 
+                        opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </button>
+                  </motion.div>
+                </div>
+              </div>
+
+              {/* Right Column */}
+              <div className="hidden lg:block">
+                {/* Empty for image placement */}
+              </div>
+            </div>
           </div>
-          <div className="w-full max-w-sm space-y-2 px-4 mt-8 md:mt-6">
-            <button
-              className="w-full px-6 py-4 text-lg font-medium bg-white text-black rounded-md hover:bg-gray-100 transform transition hover:scale-105"
-              onClick={() => document.getElementById("contact").scrollIntoView({ behavior: "smooth" })}
-            >
-              {translate("hero.cta")}
-            </button>
-          </div>
-        </motion.div>
+        </div>
       </div>
-      <motion.div
-        className="absolute bottom-6 left-1/2 transform -translate-x-1/2 cursor-pointer"
-        animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-        onClick={() => window.scrollTo({ top: window.innerHeight, behavior: "smooth" })}
-      >
-        <ChevronDown className="h-8 w-8 text-white" />
-      </motion.div>
-    </section>
+    </div>
   )
 }
 
@@ -1049,30 +1098,34 @@ function App() {
   return (
     <LanguageContext.Provider value={contextValue}>
       <div className="flex flex-col min-h-screen bg-white">
+        <Navbar />
         <Routes>
           <Route
             path="/"
             element={
-              <>
-                <Header />
-                <main className="flex-1">
-                  <HeroSection fadeIn={fadeIn} />
-                  <ServicesSection fadeIn={fadeIn} />
-                  <ApproachSection fadeIn={fadeIn} />
-                  <WhyChooseUsSection fadeIn={fadeIn} />
-                  <PostMVPOfferSection fadeIn={fadeIn} />
-                  <ContactSection fadeIn={fadeIn} />
-                  <VisibilityCTA fadeIn={fadeIn} />
-                </main>
-                <Footer />
-              </>
+              <main className="flex-1">
+                <HeroSection fadeIn={fadeIn} />
+                <ServicesSection fadeIn={fadeIn} />
+                <ApproachSection fadeIn={fadeIn} />
+                <WhyChooseUsSection fadeIn={fadeIn} />
+                <PostMVPOfferSection fadeIn={fadeIn} />
+                <ContactSection fadeIn={fadeIn} />
+                <VisibilityCTA fadeIn={fadeIn} />
+              </main>
             }
           />
           <Route
             path="/visibility"
-            element={<VisibiltyBundle />}
+            element={
+              <>
+                <main className="flex-1">
+                  <VisibiltyBundle />
+                </main>
+              </>
+            }
           />
         </Routes>
+        <Footer />
       </div>
     </LanguageContext.Provider>
   )
