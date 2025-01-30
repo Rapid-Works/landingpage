@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowRight, Plus, Minus, ChevronLeft, ChevronRight, CheckCircle, ChevronDown } from "lucide-react"
+import { ArrowRight, Plus, Minus, ChevronLeft, ChevronRight, CheckCircle, ChevronDown, Menu, X, CalendarCheck, Palette, Package } from "lucide-react"
 import HeroImage2 from "../images/heroimage3.jpg"
 import RapidWorksWebsite from "../images/laptop.png"
 import RapidWorksLogo from "../images/logo512.png"
@@ -21,6 +21,7 @@ import { Link, useNavigate } from "react-router-dom"
 import BundleForm from "./BundleForm"
 import { LanguageContext as AppLanguageContext } from "../App"
 import Modal from './Modal'
+import NewsletterPopup from "./NewsletterPopup"
 
 const BundleItem = ({ title, description, index, imageSrc }) => (
   <motion.div
@@ -85,7 +86,7 @@ const BundleSlider = ({ items, currentIndex, setCurrentIndex }) => {
 
       {/* Slider Content */}
       <div className="overflow-hidden">
-        <motion.div
+            <motion.div
           className="flex"
           animate={{ x: `-${currentIndex * 100}%` }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
@@ -94,9 +95,9 @@ const BundleSlider = ({ items, currentIndex, setCurrentIndex }) => {
             <div key={index} className="min-w-full">
               <div className="grid grid-cols-2 gap-12">
                 <div className="aspect-[4/3] overflow-hidden">
-                  <img
-                    src={item.imageSrc || PlaceholderImage}
-                    alt={item.title}
+                <img
+                  src={item.imageSrc || PlaceholderImage}
+                  alt={item.title}
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -104,14 +105,14 @@ const BundleSlider = ({ items, currentIndex, setCurrentIndex }) => {
                   <h3 className="text-3xl font-light mb-4">{item.title}</h3>
                   <p className="text-gray-600 text-lg mb-8">{item.description}</p>
                   <button className="inline-flex items-center text-black hover:text-gray-600 transition-colors group">
-                    Learn More
+                    Learn More 
                     <ArrowRight className="ml-2 w-5 h-5 transform group-hover:translate-x-1 transition-transform" />
                   </button>
+                  </div>
                 </div>
               </div>
-            </div>
           ))}
-        </motion.div>
+            </motion.div>
       </div>
 
       {/* Progress Bar */}
@@ -120,7 +121,7 @@ const BundleSlider = ({ items, currentIndex, setCurrentIndex }) => {
           {String(currentIndex + 1).padStart(2, '0')} / {String(items.length).padStart(2, '0')}
         </div>
         <div className="flex-1 bg-gray-100 h-[2px]">
-          <motion.div
+          <motion.div 
             className="bg-black h-full origin-left"
             animate={{ scaleX: (currentIndex + 1) / items.length }}
             transition={{ duration: 0.5 }}
@@ -139,10 +140,10 @@ const BundleGrid = ({ items, currentIndex, setCurrentIndex }) => (
           key={index}
           onClick={() => setCurrentIndex(index)}
           className={`w-2 h-2 rounded-full transition-all duration-300 ${currentIndex === index
-              ? "bg-violet-500 w-8"
+              ? "bg-violet-500 w-8" 
               : "bg-white/20 hover:bg-white/40"
-            }`}
-        />
+          }`}
+          />
       ))}
     </div>
   </div>
@@ -212,6 +213,7 @@ const VisibiltyBundle = () => {
   const context = useContext(AppLanguageContext)
   const [currentLanguage, setCurrentLanguage] = useState(context?.language || 'de')
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const formUrl = "https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAMAANEznbRUMkVHMFpWTTVaTjREWlc4Wk5WOEdNOFhMTi4u"
 
   // Update local state when context language changes
@@ -235,7 +237,7 @@ const VisibiltyBundle = () => {
     setLanguage(newLang)
     setCurrentLanguage(newLang) // Update local state immediately
   }
-
+  
   const handleGetBundle = () => {
     setIsModalOpen(true)
   }
@@ -559,19 +561,23 @@ const VisibiltyBundle = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-white">
-        {/* Add Navbar here */}
+    <div className="min-h-screen bg-white">
+        {/* Updated Navbar */}
         <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               {/* Left: Logo & Name */}
-              <Link to="/" className="flex items-center space-x-2">
+              <Link 
+                to="/" 
+                onClick={() => window.scrollTo(0, 0)} 
+                className="flex items-center space-x-2"
+              >
                 <img src={RapidWorksLogo} alt="RapidWorks" className="h-8 w-8" />
                 <span className="font-medium text-gray-900">RapidWorks</span>
               </Link>
 
-              {/* Middle: Navigation */}
-              <div className="flex items-center space-x-1">
+              {/* Middle: Navigation - Hidden on mobile */}
+              <div className="hidden md:flex items-center space-x-1">
                 <Link
                   to="/"
                   className="px-4 py-2 rounded-full text-sm font-light text-gray-600 hover:text-gray-900 transition-colors"
@@ -586,10 +592,10 @@ const VisibiltyBundle = () => {
                 </Link>
               </div>
 
-              {/* Right: CTA & Language */}
-              <div className="flex items-center space-x-4">
+              {/* Right: CTA & Language - Hidden on mobile */}
+              <div className="hidden md:flex items-center space-x-4">
                 <button
-                  // onClick={() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })}
+                  onClick={() => window.open('https://calendly.com/yannick-familie-heeren/30min', '_blank')}
                   className="px-4 py-2 text-sm font-light text-white rounded-full bg-gradient-to-r from-violet-600 to-violet-500 hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5"
                 >
                   Book a Call
@@ -597,27 +603,101 @@ const VisibiltyBundle = () => {
                 <div className="flex items-center space-x-1 text-sm">
                   <button
                     onClick={() => handleLanguageChange('en')}
-                    className={`px-2 py-1 rounded-l ${language === 'en' ? 'text-violet-600' : 'text-gray-400'
-                      }`}
+                    className={`px-2 py-1 rounded-l ${
+                      language === 'en' ? 'text-violet-600' : 'text-gray-400'
+                    }`}
                   >
                     EN
                   </button>
                   <span className="text-gray-300">/</span>
                   <button
                     onClick={() => handleLanguageChange('de')}
-                    className={`px-2 py-1 rounded-r ${language === 'de' ? 'text-violet-600' : 'text-gray-400'
-                      }`}
+                    className={`px-2 py-1 rounded-r ${
+                      language === 'de' ? 'text-violet-600' : 'text-gray-400'
+                    }`}
                   >
                     DE
                   </button>
                 </div>
-              </div>
+            </div>
+
+              {/* Mobile menu button */}
+              <button 
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                {isMenuOpen ? (
+                  <X className="h-6 w-6 text-gray-600" />
+                ) : (
+                  <Menu className="h-6 w-6 text-gray-600" />
+                )}
+              </button>
             </div>
           </div>
+
+          {/* Mobile menu */}
+          <AnimatePresence>
+            {isMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="md:hidden bg-white border-t border-gray-100"
+              >
+                <div className="px-4 py-4 space-y-4">
+                  <Link
+                    to="/"
+                    onClick={() => {
+                      window.scrollTo(0, 0)
+                      setIsMenuOpen(false)
+                    }}
+                    className="block px-4 py-2 rounded-lg text-sm font-light text-gray-600"
+                  >
+                    MVP Development
+                  </Link>
+                  <Link
+                    to="/visibility"
+                    onClick={() => {
+                      window.scrollTo(0, 0)
+                      setIsMenuOpen(false)
+                    }}
+                    className="block px-4 py-2 rounded-lg text-sm font-light bg-violet-50 text-violet-600"
+                  >
+                    Visibility Bundle
+                  </Link>
+                  <button
+                    onClick={() => window.open('https://calendly.com/yannick-familie-heeren/30min', '_blank')}
+                    className="w-full px-4 py-2 text-sm font-light text-white rounded-lg bg-gradient-to-r from-violet-600 to-violet-500"
+                  >
+                    Book a Call
+                  </button>
+                  <div className="flex justify-center items-center space-x-1 text-sm border-t border-gray-100 pt-4">
+                    <button
+                      onClick={() => handleLanguageChange('en')}
+                      className={`px-4 py-2 rounded ${
+                        language === 'en' ? 'text-violet-600' : 'text-gray-400'
+                      }`}
+                    >
+                      EN
+                    </button>
+                    <span className="text-gray-300">/</span>
+                    <button
+                      onClick={() => handleLanguageChange('de')}
+                      className={`px-4 py-2 rounded ${
+                        language === 'de' ? 'text-violet-600' : 'text-gray-400'
+                      }`}
+                    >
+                      DE
+                    </button>
+          </div>
+        </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </nav>
 
-        <main className="relative w-full overflow-x-hidden">
-          <div className="relative w-full">
+      <main className="relative w-full overflow-x-hidden">
+        <div className="relative w-full">
             <div className="relative min-h-screen flex flex-col md:items-center">
               {/* Desktop Background Image - Unchanged */}
               <div className="absolute inset-0 translate-y-16 mr-0 md:mr-4 lg:mr-8 xl:mr-16 hidden md:block">
@@ -626,83 +706,83 @@ const VisibiltyBundle = () => {
                   animate={{ opacity: 1 }}
                   transition={{ duration: 1.5, ease: "easeOut" }}
                   className="h-full w-full object-cover object-center transition-transform duration-700"
-                  src={VisibilityHero}
-                  alt="Hero background"
-                />
+                src={VisibilityHero}
+                alt="Hero background"
+              />
               </div>
 
               {/* Mobile Layout - Flex column for vertical stacking */}
               <div className="flex flex-col md:hidden">
-                {/* Mobile Image First - Increased height and added padding */}
-                <div className="w-full h-[70vh] pt-16"> {/* Increased from 60vh to 70vh and added top padding */}
+                {/* Mobile Image First - Adjusted scaling and padding */}
+                <div className="w-full h-[70vh] pt-16">
                   <motion.img
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 1.5, ease: "easeOut" }}
-                    className="h-full w-full object-contain scale-[1.3] transform transition-transform duration-700 px-4 sm:px-8"
+                    className="h-full w-full object-contain scale-100 transform transition-transform duration-700 px-4 sm:px-8"
                     src={PlaceholderImage}
                     alt="Hero background"
                   />
-                </div>
+            </div>
 
                 {/* Mobile Text Content Below */}
                 <div className="w-full bg-white px-6 py-8">
                   <div className="max-w-[480px] mx-auto space-y-4 text-center">
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6 }}
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
                       className="animate-float"
                     >
                       <span className="inline-block text-violet-600 text-xs md:text-sm uppercase tracking-wider font-light
                         px-2 py-0.5 md:px-4 md:py-1 rounded-full bg-violet-50/80 md:bg-violet-50 border border-violet-100 backdrop-blur-sm shadow-sm"
                       >
                         {content.bundleLabel}
-                      </span>
-                    </motion.div>
+                        </span>
+                      </motion.div>
 
-                    <motion.h1
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: 0.1 }}
+                      <motion.h1 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.1 }}
                       className="text-2xl md:text-5xl lg:text-6xl font-bold text-gray-900 md:text-black leading-[1.1] tracking-tight"
-                    >
+                      >
                       {content.title}
-                    </motion.h1>
+                      </motion.h1>
 
-                    <motion.p
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: 0.2 }}
+                      <motion.p 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
                       className="text-sm md:text-lg font-light leading-relaxed max-w-xl mx-auto md:mx-0"
                     >
                       {content.subtitle}
                       <span className="block mt-1 md:mt-2 text-xs md:text-base text-gray-500 md:text-gray-600">
                         {content.subtext}
-                      </span>
-                    </motion.p>
+                        </span>
+                      </motion.p>
 
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: 0.3 }}
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.3 }}
                       className="flex flex-col sm:flex-row gap-2 md:gap-4 pt-2 md:pt-4 justify-center md:justify-start"
-                    >
-                      <button
-                        onClick={handleGetBundle}
-                        className="group relative inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 text-sm font-light 
+                      >
+                        <button 
+                          onClick={handleGetBundle}
+                          className="group relative inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 text-sm font-light 
                             overflow-hidden rounded-full text-white bg-black transition-all duration-300
                           shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 hover:scale-105"
-                      >
-                        <span className="relative z-10 flex items-center">
+                        >
+                          <span className="relative z-10 flex items-center">
                           {content.cta}
                           <ArrowRight className="ml-2 -mr-1 h-4 w-4 transition-transform group-hover:translate-x-2" />
-                        </span>
-                        <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-violet-500 
+                          </span>
+                          <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-violet-500 
                             opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      </button>
-                      <a
-                        href="#features"
+                        </button>
+                        <a 
+                          href="#features" 
                         className="group inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 text-sm font-light
                             rounded-full text-gray-600 bg-gray-50 hover:bg-gray-100 transition-all duration-300
                           border border-gray-200 hover:border-gray-300 hover:scale-105 hover:shadow-lg"
@@ -784,20 +864,23 @@ const VisibiltyBundle = () => {
                             >
                               {content.seeMore}
                               <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                            </a>
-                          </motion.div>
-                        </div>
-                      </div>
+                        </a>
+                      </motion.div>
+                    </div>
+                  </div>
 
                       {/* Right Column - Unchanged */}
-                      <div className="hidden lg:block">
-                        {/* Empty for image placement */}
-                      </div>
-                    </div>
+                  <div className="hidden lg:block">
+                    {/* Empty for image placement */}
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+
+              {/* Down Arrow */}
+            
+        </div>
           </div>
 
           {/* Features Section (Everything You Need) */}
@@ -829,7 +912,7 @@ const VisibiltyBundle = () => {
 
                 <h2 className="text-4xl md:text-6xl font-light mb-8 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 bg-clip-text text-transparent">
                   {content.features.title}
-                </h2>
+            </h2>
                 <p className="text-gray-600 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
                   {content.features.subtitle}
                 </p>
@@ -858,9 +941,9 @@ const VisibiltyBundle = () => {
                   </motion.div>
                 </div>
 
-                {bundleItems.map((item, index) => (
+              {bundleItems.map((item, index) => (
                   <motion.div
-                    key={index}
+                  key={index}
                     className="relative group"
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
@@ -906,7 +989,7 @@ const VisibiltyBundle = () => {
 
                           <div className="space-y-8">
                             <div className="space-y-6">
-                              <h3 className="text-3xl md:text-5xl font-light tracking-tight bg-gradient-to-br from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                              <h3 className="text-3xl md:text-5xl font-light tracking-tight bg-gradient-to-br from-gray-900 to-gray-700 bg-clip-text text-transparent leading-relaxed pb-1">
                                 {item.title}
                               </h3>
                               <p className="text-gray-600 text-lg md:text-xl leading-relaxed">
@@ -916,27 +999,43 @@ const VisibiltyBundle = () => {
 
                             {/* Enhanced Decorative Elements */}
                             <div className="relative">
-                              <div className="w-32 h-[2px] bg-gradient-to-r from-violet-500 to-violet-300 rounded-full opacity-40" />
-                              <div className="absolute top-0 left-0 w-16 h-[2px] bg-gradient-to-r from-violet-400 to-transparent rounded-full animate-pulse" />
-                              <div className="absolute top-2 left-0 w-24 h-[1px] bg-gradient-to-r from-violet-300 to-transparent rounded-full opacity-20" />
+                              <div className="w-32 h-[2px] bg-gradient-to-r from-gray-900 to-gray-700 rounded-full opacity-40" />
+                              <div className="absolute top-0 left-0 w-16 h-[2px] bg-gradient-to-r from-gray-800 to-transparent rounded-full animate-pulse" />
+                              <div className="absolute top-2 left-0 w-24 h-[1px] bg-gradient-to-r from-gray-700 to-transparent rounded-full opacity-20" />
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </motion.div>
-                ))}
-              </div>
+              ))}
             </div>
-          </section>
+          </div>
+        </section>
 
-          {/* How It Works Section - Moved under Features */}
+          {/* How It Works Section */}
           <section className="py-24 bg-gray-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <h2 className="text-3xl font-light text-center mb-16">
                 {content.howItWorks.title}
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+                {/* Connecting Lines and Arrows - Only visible on desktop */}
+                <div className="hidden md:block absolute top-1/2 left-0 right-0 -translate-y-1/2 z-0">
+                  <div className="flex justify-between items-center px-20">
+                    {/* First connecting line */}
+                    <div className="flex-1 flex items-center">
+                      <div className="h-[2px] w-full bg-gradient-to-r from-violet-200 to-violet-300" />
+                      <ArrowRight className="w-6 h-6 text-violet-400 flex-shrink-0 -ml-3" />
+                    </div>
+                    {/* Second connecting line */}
+                    <div className="flex-1 flex items-center">
+                      <div className="h-[2px] w-full bg-gradient-to-r from-violet-200 to-violet-300" />
+                      <ArrowRight className="w-6 h-6 text-violet-400 flex-shrink-0 -ml-3" />
+                    </div>
+                  </div>
+                </div>
+
                 {content.howItWorks.steps.map((step, index) => (
                   <motion.div
                     key={index}
@@ -944,16 +1043,29 @@ const VisibiltyBundle = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: index * 0.2 }}
-                    className="relative bg-white p-8 group hover:bg-black transition-colors duration-500"
+                    className="relative bg-white p-8 rounded-lg shadow-sm z-10"
                   >
-                    <div className="absolute -top-8 left-8 text-7xl font-light text-black/10 group-hover:text-white/10 transition-colors duration-500">
-                      {step.icon}
+                    {/* Step Number Badge */}
+                    <div className="absolute -top-4 left-8 bg-violet-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium">
+                      {index + 1}
                     </div>
+
+                    {/* Icon */}
+                    <div className="mb-6 text-violet-500">
+                      {index === 0 ? (
+                        <CalendarCheck className="w-8 h-8" />
+                      ) : index === 1 ? (
+                        <Palette className="w-8 h-8" />
+                      ) : (
+                        <Package className="w-8 h-8" />
+                      )}
+                    </div>
+
                     <div className="relative">
-                      <h3 className="text-2xl font-light mb-4 group-hover:text-white transition-colors duration-500">
+                      <h3 className="text-2xl font-light mb-4 text-gray-900">
                         {step.title}
                       </h3>
-                      <p className="text-gray-600 group-hover:text-gray-300 transition-colors duration-500">
+                      <p className="text-gray-600">
                         {step.description}
                       </p>
                     </div>
@@ -961,61 +1073,63 @@ const VisibiltyBundle = () => {
                 ))}
               </div>
             </div>
-          </section>
+        </section>
 
-          {/* MVP Section */}
-          <section className="py-12 sm:py-32 bg-black text-white">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12">
-                <div className="flex-1">
-                  <h2 className="text-xl sm:text-4xl font-light mb-2 sm:mb-4">
-                    {content.mvp.title}
-                  </h2>
-                  <p className="text-sm sm:text-xl text-gray-300 mb-4 sm:mb-8">
-                    {content.mvp.description}
-                  </p>
-                  <Link
-                    to="/"
-                    className="inline-flex items-center px-3 sm:px-6 py-2 sm:py-3 bg-white text-black hover:bg-gray-100 transition-colors font-light text-xs sm:text-base"
-                  >
-                    {content.mvp.cta}
-                    <ArrowRight className="ml-1 sm:ml-2 -mr-1 h-3 w-3 sm:h-5 sm:w-5" />
-                  </Link>
-                </div>
-                <div className="flex-1 flex justify-center">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-indigo-600 blur-3xl opacity-20"></div>
-                    <div className="relative text-4xl sm:text-6xl md:text-8xl font-bold">
-                      2<span className="text-violet-500">{content.mvp.weeks}</span>
-                    </div>
+          {/* Final CTA Section */}
+        <section className="py-20">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-4xl font-light mb-8">{content.finalCta.title}</h2>
+            <p className="text-xl mb-8 max-w-2xl mx-auto text-gray-600">
+              {content.finalCta.subtitle}
+            </p>
+            <button 
+              onClick={() => window.open('https://calendly.com/yannick-familie-heeren/30min', '_blank')}
+              className="bg-black text-white px-8 py-3 rounded-none font-light hover:bg-gray-900 transition duration-300 inline-flex items-center text-lg"
+            >
+              {content.finalCta.cta}
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </button>
+          </div>
+        </section>
+
+        {/* MVP Section - Moved below Final CTA */}
+        <section className="py-12 sm:py-32 bg-black text-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12">
+              <div className="flex-1">
+                <h2 className="text-xl sm:text-4xl font-light mb-2 sm:mb-4">
+                  {content.mvp.title}
+                </h2>
+                <p className="text-sm sm:text-xl text-gray-300 mb-4 sm:mb-8">
+                  {content.mvp.description}
+                </p>
+                <Link 
+                  to="/" 
+                  className="inline-flex items-center px-3 sm:px-6 py-2 sm:py-3 bg-white text-black hover:bg-gray-100 transition-colors font-light text-xs sm:text-base"
+                >
+                  {content.mvp.cta}
+                  <ArrowRight className="ml-1 sm:ml-2 -mr-1 h-3 w-3 sm:h-5 sm:w-5" />
+                </Link>
+              </div>
+              <div className="flex-1 flex justify-center">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-indigo-600 blur-3xl opacity-20"></div>
+                  <div className="relative text-4xl sm:text-6xl md:text-8xl font-bold">
+                    2 <span className="text-violet-500">{content.mvp.weeks}</span>
                   </div>
                 </div>
               </div>
             </div>
-          </section>
+          </div>
+        </section>
+      </main>
 
-          {/* Final CTA Section */}
-          <section className="py-20">
-            <div className="container mx-auto px-4 text-center">
-              <h2 className="text-4xl font-light mb-8">{content.finalCta.title}</h2>
-              <p className="text-xl mb-8 max-w-2xl mx-auto text-gray-600">
-                {content.finalCta.subtitle}
-              </p>
-              <button
-                onClick={handleGetBundle}
-                className="bg-black text-white px-8 py-3 rounded-none font-light hover:bg-gray-900 transition duration-300 inline-flex items-center text-lg"
-              >
-                {content.finalCta.cta}
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </button>
-            </div>
-          </section>
-        </main>
-
-        {showForm && <BundleForm onClose={() => setShowForm(false)} />}
+      {showForm && <BundleForm onClose={() => setShowForm(false)} />}
 
         {/* MS Forms Modal */}
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+
+        <NewsletterPopup />
 
         <footer className="bg-[#0F1115] text-white py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1041,7 +1155,7 @@ const VisibiltyBundle = () => {
             </div>
           </div>
         </footer>
-      </div>
+    </div>
     </>
   )
 }

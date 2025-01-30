@@ -27,6 +27,8 @@ import VisibiltyBundle from "./components/visibilitypage"
 import mockuplapall from "./images/mockuplapall.jpg"
 import platformBg from "./images/platform-bg.png"
 import Navbar from './components/Navbar'
+import ScrollToTop from './components/ScrollToTop'
+import NewsletterPopup from './components/NewsletterPopup'
 
 // Create and export Language Context with initial values
 export const LanguageContext = createContext({
@@ -563,12 +565,12 @@ function HeroSection({ fadeIn }) {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-32 items-center">
               {/* Text Content */}
               <div className="w-full max-w-[480px] mx-auto md:mx-0">
-                <div className="space-y-6 text-center md:text-left">
+                <div className="space-y-6 text-center md:text-left pt-40 md:pt-0">
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
-                    className="animate-float"
+                    className="animate-float pt-4 md:pt-0"
                   >
                     <span className="inline-block text-violet-600 text-sm uppercase tracking-wider font-light
                       px-4 py-1 rounded-full bg-violet-50 border border-violet-100 backdrop-blur-sm shadow-sm"
@@ -577,7 +579,7 @@ function HeroSection({ fadeIn }) {
                     </span>
                   </motion.div>
 
-                  <motion.h1 
+                  <motion.h1
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.1 }}
@@ -602,12 +604,13 @@ function HeroSection({ fadeIn }) {
                     className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start"
                   >
                     <button
-                      onClick={() => document.getElementById("contact").scrollIntoView({ behavior: "smooth" })}
+                      onClick={() => window.open('https://calendly.com/yannick-familie-heeren/30min', '_blank')}
                       className="group relative inline-flex items-center justify-center px-6 py-3 text-sm font-light 
                         overflow-hidden rounded-full text-white bg-black transition-all duration-300
-                        shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 hover:scale-105"
+                        shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 hover:scale-105
+                        w-auto mx-auto sm:mx-0"
                     >
-                      <span className="relative z-10 flex items-center">
+                      <span className="relative z-10 flex items-center whitespace-nowrap">
                         {translate("hero.cta")}
                         <ArrowRight className="ml-2 -mr-1 h-4 w-4 transition-transform group-hover:translate-x-2" />
                       </span>
@@ -617,14 +620,19 @@ function HeroSection({ fadeIn }) {
                   </motion.div>
                 </div>
               </div>
-
-              {/* Right Column */}
-              <div className="hidden lg:block">
-                {/* Empty for image placement */}
-              </div>
             </div>
           </div>
         </div>
+
+        {/* Down Arrow */}
+        <motion.div
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 cursor-pointer hidden md:block"
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          onClick={() => document.getElementById('services').scrollIntoView({ behavior: 'smooth' })}
+        >
+          <ChevronDown className="h-8 w-8 text-gray-400 hover:text-violet-500 transition-colors" />
+        </motion.div>
       </div>
     </div>
   )
@@ -948,6 +956,7 @@ const VisibilityCTA = ({ fadeIn }) => {
           </p>
           <Link
             to="/visibility"
+            onClick={() => window.scrollTo(0, 0)}
             className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-violet-600 bg-white rounded-full hover:bg-violet-50 transition-colors duration-300"
           >
             Explore Visibility Bundle
@@ -1097,36 +1106,38 @@ function App() {
 
   return (
     <LanguageContext.Provider value={contextValue}>
-      <div className="flex flex-col min-h-screen bg-white">
-        <Navbar />
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <main className="flex-1">
-                <HeroSection fadeIn={fadeIn} />
-                <ServicesSection fadeIn={fadeIn} />
-                <ApproachSection fadeIn={fadeIn} />
-                <WhyChooseUsSection fadeIn={fadeIn} />
-                <PostMVPOfferSection fadeIn={fadeIn} />
-                <ContactSection fadeIn={fadeIn} />
-                <VisibilityCTA fadeIn={fadeIn} />
-              </main>
-            }
-          />
-          <Route
-            path="/visibility"
-            element={
-              <>
+      <>
+        <div className="flex flex-col min-h-screen bg-white">
+          <ScrollToTop />
+          <Navbar />
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <main className="flex-1">
+                  <HeroSection fadeIn={fadeIn} />
+                  <ServicesSection fadeIn={fadeIn} />
+                  <ApproachSection fadeIn={fadeIn} />
+                  <WhyChooseUsSection fadeIn={fadeIn} />
+                  <PostMVPOfferSection fadeIn={fadeIn} />
+                  <ContactSection fadeIn={fadeIn} />
+                  <VisibilityCTA fadeIn={fadeIn} />
+                  <NewsletterPopup />
+                </main>
+              }
+            />
+            <Route
+              path="/visibility"
+              element={
                 <main className="flex-1">
                   <VisibiltyBundle />
                 </main>
-              </>
-            }
-          />
-        </Routes>
-        <Footer />
-      </div>
+              }
+            />
+          </Routes>
+          <Footer />
+        </div>
+      </>
     </LanguageContext.Provider>
   )
 }
