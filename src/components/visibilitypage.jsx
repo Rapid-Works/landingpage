@@ -46,12 +46,36 @@ const FAQItem = ({ question, answer }) => {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <div className="border-b border-gray-200 py-4">
-      <button className="flex justify-between items-center w-full text-left" onClick={() => setIsOpen(!isOpen)}>
-        <span className="text-lg font-light">{question}</span>
-        {isOpen ? <Minus className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+    <div className="py-6">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex justify-between items-center w-full text-left"
+      >
+        <h3 className="text-lg font-light text-gray-900 pr-8">
+          {question}
+        </h3>
+        {isOpen ? (
+          <Minus className="w-5 h-5 text-violet-500 flex-shrink-0" />
+        ) : (
+          <Plus className="w-5 h-5 text-violet-500 flex-shrink-0" />
+        )}
       </button>
-      {isOpen && <p className="mt-2 text-gray-600 font-light">{answer}</p>}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="overflow-hidden"
+          >
+            <p 
+              className="mt-4 text-gray-600 font-light"
+              dangerouslySetInnerHTML={{ __html: answer }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
@@ -245,45 +269,41 @@ const VisibiltyBundle = () => {
   // Update the pageContent object with more translations
   const pageContent = {
     en: {
-      title: "Transform Your Brand Identity",
-      subtitle: "Complete brand identity package, delivered in 48 hours.",
-      subtext: "Join the brands that trust RapidWorks for their identity needs.",
-      cta: "Get Your Bundle Now",
+      title: "VISIBILITY BUNDLE",
+      subtitle: "Transform Your Brand Visibility",
+      subtext: "Convince us of your startup idea and get your free Visibility Bundle within one week free of charge. No hidden costs, no bullshit.",
+      cta: "Apply for your bundle",
       seeMore: "See What's Included",
       bundleLabel: "Visibility Bundle",
       // Bundle items
       bundleItems: {
         website: {
-          title: "Curated Website",
-          description: "An elegant, responsive website tailored to your unique aesthetic."
+          title: "Your Startup Website",
+          description: "An elegant, responsive website with a clear call to action for your target group. We coach you on what components a startup website needs to generate leads and attract customers and create it for you."
         },
         qrCode: {
-          title: "Signature QR Code",
-          description: "A custom QR code that seamlessly integrates with your brand identity."
+          title: "QR code and Calendar link integration",
+          description: "We link the online and offline world for you. In our intuitive form, you can specify a calendar link for each founder and where it should appear (email signature, business card, website). You can also specify where we should insert the QR code to your website (business card, rollup)"
         },
         socialMedia: {
-          title: "Social Media Presence",
-          description: "Striking banners and profile images for a cohesive online presence."
+          title: "Social Media Banner",
+          description: "A meaningful social media banner through which founders and employees can show their affiliation to the startup. The purpose of the banner is to communicate your mission at a glance."
         },
         stationery: {
-          title: "Branded Stationery",
-          description: "Luxurious letterheads and business cards that exude quality."
+          title: "Business Card print file & Email signature",
+          description: "Your business card doesn't have to win a design competition, instead it has to create a recognizable value for you and your startup. That's why we add your profile picture, the QR code of your landing page and a graphic background that matches your startup's activity as standard."
         },
         wallpapers: {
           title: "Digital Wallpapers",
-          description: "Chic smartphone and desktop backgrounds that showcase your brand."
+          description: "A discreet wallpaper in your startup's brand design for smartphones and laptops. In our intuitive form, every founder can specify which smartphone they use."
         },
         rollup: {
-          title: "Rollup",
-          description: "Eye-catching rollup banners and flyers for your brand events."
+          title: "Rollup template print file",
+          description: "A roll-up in your brand design. Rollups don't have to appeal to everyone and don't have to make your startup look bigger than it is. But your target group needs to understand what problem you solve for them just by looking at it. We help you find the most important message for your rollup and integrate the QR code of your website on it."
         },
         apparel: {
-          title: "Curated Apparel",
-          description: "Stylish t-shirt and hoodie designs for brand ambassadors."
-        },
-        calendar: {
-          title: "Seamless Calendar Integration",
-          description: "Effortless booking integration for your digital platforms."
+          title: "Hoodie print file",
+          description: "Without a hoodie you wouldn't be a startup. You would just be self employed. Luckily we got your cofounders and you covered with a hoodie print file."
         },
         more: {
           title: "And More...",
@@ -295,20 +315,60 @@ const VisibiltyBundle = () => {
         title: "Frequently Asked Questions",
         items: [
           {
-            question: "What is the turnaround time for the Visibility Bundle?",
-            answer: "We pride ourselves on swift, high-quality delivery. Your complete Visibility Bundle will be ready within 48 hours of receiving your order and brand information."
+            question: "What is a Visibility Bundle worth?",
+            answer: "Only you can determine its true value to your business. At agencies, the combined cost of all Visibility Bundle components would typically range between €10,000 and €15,000, involving several weeks of waiting time and countless additional hours of coordination on your part. We drastically reduce costs by using a combination of automation and smart processes."
           },
           {
-            question: "Can I request modifications to the designs?",
-            answer: "Absolutely. We offer one round of refinements for each item in the bundle to ensure the final result aligns perfectly with your vision."
+            question: "Why is a Visibility Bundle so important for startups?",
+            answer: "Our honest opinion? It's not. Startup founders have more important things to do than worry about design. We believe the founding team's most important task is to focus on their market and product. However, from both our own founding experience and consulting over 50 startups, we've recognized that developing brand visibility consumes a disproportionate amount of resources in terms of time and money, and contains too many pitfalls for inexperienced founders. While not as complex as the problems startups solve, the connection and coordination of visibility elements is detailed and meticulous. We handle these details for you, aiming to deliver your complete Visibility Bundle within days, making you operational for the next year."
           },
           {
-            question: "Do I receive the source files for the designs?",
-            answer: "Yes, we provide all necessary source files, allowing you or your team to make future adjustments as your brand evolves."
+            question: "Why should I have RapidWorks create my Visibility Bundle?",
+            answer: "Our team combines startup founding experience with design and development expertise. We know exactly what a startup needs to reach and convince customers. We're also cost and time-efficient in creating Visibility Bundles, having semi-automated the creation of several bundle components."
           },
           {
-            question: "Is the website fully customizable?",
-            answer: "The included website is a sophisticated, responsive design. For more advanced customization, we offer bespoke web development services. Please contact us for a personalized quote."
+            question: "In what form do I receive the Visibility Bundle contents?",
+            answer: "Upon completion, you'll receive an email with access to cloud storage containing all components of your Visibility Bundle in digital form. Each file is saved in an appropriate format and clearly named. You'll also receive each file in an editable format. Our goal is to make you self-sufficient rather than creating dependency on us or other service providers. We don't provide physical materials, but you can use our files to have them produced at any print shop."
+          },
+          {
+            question: "Why is RapidWorks giving away 3 Visibility Bundles?",
+            answer: "As a startup ourselves, we value speed and happy customers over profit. Through free distribution, we're turning the tables and carefully selecting our first customers. We validate our own assumptions about workload, coordination effort, customer value, and more through initial test customers."
+          },
+          {
+            question: "What happens if my startup isn't among the top 3?",
+            answer: "Everyone wins with us. Even if you don't win during our application phase, you'll receive an unbeatable offer within a few days."
+          },
+          {
+            question: "Does RapidWorks offer other services?",
+            answer: "Yes, the Visibility Bundle is our market entry, but our mission goes much further. We offer personal coaching with Yannick, MVP development, software development services at unbeatable prices, and free financing consultation. See <a href='https://rapidworks.vercel.app/' target='_blank' rel='noopener noreferrer' class='text-violet-600 hover:text-violet-700 underline'>RapidWorks</a> for more information."
+          },
+          {
+            question: "What's the quality level of the Visibility Bundle?",
+            answer: "Comparable to the RapidWorks Visibility Bundle you see showcased on this website. Your bundle will be created by Yannick and Samuel, exactly like the RapidWorks Visibility Bundle. We're transparent that you shouldn't expect Apple-level design from us, but we're convinced that few startups need that level of design quality in the early stage."
+          },
+          {
+            question: "What if I have special requests for my Visibility Bundle?",
+            answer: "You can note special requests in our form. We'll review them and inform you whether we can implement them within the offer or arrange an alternative solution."
+          },
+          {
+            question: "Do I give up rights to my Visibility Bundle or startup idea?",
+            answer: "You retain all rights to your idea and Visibility Bundle. We don't share any data with third parties. However, if your startup targets other startups with design, coaching, or development services, there might be a conflict of interest."
+          },
+          {
+            question: "Who is the Startup Visibility Bundle offer for?",
+            answer: "In short - startups. See <a href='https://de.wikipedia.org/wiki/Start-up-Unternehmen' target='_blank' rel='noopener noreferrer' class='text-violet-600 hover:text-violet-700 underline'>Start-up-Unternehmen – Wikipedia</a>. If you're not sure whether you're a startup but need the Visibility Bundle, feel free to fill out our form."
+          },
+          {
+            question: "Do I need to have already founded my startup to receive a Visibility Bundle?",
+            answer: "No, you can fill out our application form even if you haven't founded your company yet."
+          },
+          {
+            question: "What if I already have some contents of the Visibility Bundle?",
+            answer: "No problem. In our form, you can upload any files you already have and tell us how to incorporate them into your Visibility Bundle."
+          },
+          {
+            question: "When will I receive my Visibility Bundle?",
+            answer: "Since we've semi-automated the creation of several bundle components and are an experienced team in creating Visibility Bundles, we complete at least one bundle per week. We process orders on a <a href='https://de.wikipedia.org/wiki/First_In_%E2%80%93_First_Out' target='_blank' rel='noopener noreferrer' class='text-violet-600 hover:text-violet-700 underline'>First In – First Out – Wikipedia</a> basis and intentionally keep our pipeline small. Your bundle will be completed promptly and quickly - significantly faster than you could likely create or outsource it yourself."
           }
         ]
       },
@@ -330,26 +390,23 @@ const VisibiltyBundle = () => {
         title: "How It Works",
         steps: [
           {
-            icon: "1",
             title: "Submit Your Brand Info",
-            description: "Share your brand vision, colors, and preferences through our simple form."
+            description: "Share your brand vision, colors preferences and potentially existing graphics to include through our simple form."
           },
           {
-            icon: "2",
             title: "We Create Your Assets",
-            description: "Our team crafts your complete brand identity package within 48 hours."
+            description: "We craft your complete visibility bundle and present it to you once finished. If you are not satisfied with the bundle you don't have to pay."
           },
           {
-            icon: "3",
             title: "Review & Refine",
-            description: "Review your brand assets and request any refinements to perfect your identity."
+            description: "We are also happy to help you if you notice any small adjustment requests afterwards. A minor feedback iteration after a few days is already included in the offer."
           }
         ]
       },
       // Features section
       features: {
-        title: "Complete Brand Package",
-        subtitle: "Everything you need to establish a strong brand presence"
+        title: "Contents",
+        subtitle: "The Visibility Bundle contains everything you need to draw the attention of customers, partners, investors and employees to your startup. You immediately become visible and a uniform brand design makes your brand recognizable."
       },
       // Process section
       process: {
@@ -375,45 +432,41 @@ const VisibiltyBundle = () => {
       }
     },
     de: {
-      title: "Transformieren Sie Ihre Markenidentität",
-      subtitle: "Komplettes Markenidentitätspaket, geliefert in 48 Stunden.",
-      subtext: "Schließen Sie sich den Marken an, die RapidWorks für ihre Identitätsbedürfnisse vertrauen.",
-      cta: "Holen Sie sich Ihr Paket",
+      title: "SICHTBARKEITSPAKET",
+      subtitle: "Transformieren Sie Ihre Markensichtbarkeit",
+      subtext: "Überzeugen Sie uns von Ihrer Startup-Idee und erhalten Sie Ihr kostenloses Visibility Bundle innerhalb einer Woche. Keine versteckten Kosten, kein Bullshit.",
+      cta: "Bewerben Sie sich für Ihr Bundle",
       seeMore: "Sehen Sie, was enthalten ist",
       bundleLabel: "Sichtbarkeits-Paket",
       // Bundle items
       bundleItems: {
         website: {
-          title: "Kuratierte Website",
-          description: "Eine elegante, responsive Website, maßgeschneidert für Ihre einzigartige Ästhetik."
+          title: "Ihre Startup-Website",
+          description: "Eine elegante, responsive Website mit klarem Call-to-Action für Ihre Zielgruppe. Wir beraten Sie, welche Komponenten eine Startup-Website benötigt, um Leads zu generieren und Kunden zu gewinnen, und erstellen diese für Sie."
         },
         qrCode: {
-          title: "Signatur-QR-Code",
-          description: "Ein individueller QR-Code, der sich nahtlos in Ihre Markenidentität integriert."
+          title: "QR-Code und Kalender-Link Integration",
+          description: "Wir verbinden die Online- und Offline-Welt für Sie. In unserem intuitiven Formular können Sie einen Kalender-Link für jeden Gründer angeben und wo dieser erscheinen soll (E-Mail-Signatur, Visitenkarte, Website). Sie können auch festlegen, wo wir den QR-Code zu Ihrer Website einfügen sollen (Visitenkarte, Rollup)."
         },
         socialMedia: {
-          title: "Social Media Präsenz",
-          description: "Auffällige Banner und Profilbilder für eine kohärente Online-Präsenz."
+          title: "Social-Media Banner",
+          description: "Ein aussagekräftiges Social-Media-Banner, durch das Gründer und Mitarbeiter ihre Zugehörigkeit zum Startup zeigen können. Der Zweck des Banners ist es, Ihre Mission auf einen Blick zu kommunizieren."
         },
         stationery: {
-          title: "Geschäftsausstattung",
-          description: "Hochwertige Briefköpfe und Visitenkarten, die Qualität ausstrahlen."
+          title: "Visitenkarten-Druckdatei & E-Mail-Signatur",
+          description: "Ihre Visitenkarte muss keinen Design-Wettbewerb gewinnen, sondern einen erkennbaren Wert für Sie und Ihr Startup schaffen. Deshalb fügen wir standardmäßig Ihr Profilbild, den QR-Code Ihrer Landing Page und einen zu Ihrer Startup-Aktivität passenden grafischen Hintergrund hinzu."
         },
         wallpapers: {
-          title: "Digitale Hintergründe",
-          description: "Stilvolle Smartphone- und Desktop-Hintergründe, die Ihre Marke präsentieren."
+          title: "Digitale Wallpaper",
+          description: "Ein dezentes Wallpaper im Brand Design Ihres Startups für Smartphones und Laptops. In unserem intuitiven Formular kann jeder Gründer angeben, welches Smartphone er verwendet."
         },
         rollup: {
-          title: "Roll-up Banner",
-          description: "Auffällige Roll-up Banner und Flyer für Ihre Markenveranstaltungen."
+          title: "Rollup-Template Druckdatei",
+          description: "Ein Roll-up in Ihrem Brand Design. Roll-ups müssen nicht jedem gefallen und Ihr Startup nicht größer erscheinen lassen als es ist. Aber Ihre Zielgruppe muss auf einen Blick verstehen, welches Problem Sie für sie lösen. Wir helfen Ihnen, die wichtigste Botschaft für Ihr Roll-up zu finden und integrieren den QR-Code Ihrer Website."
         },
         apparel: {
-          title: "Kuratierte Kleidung",
-          description: "Stilvolle T-Shirt- und Hoodie-Designs für Markenbotschafter."
-        },
-        calendar: {
-          title: "Nahtlose Kalenderintegration",
-          description: "Mühelose Buchungsintegration für Ihre digitalen Plattformen."
+          title: "Hoodie-Druckdatei",
+          description: "Ohne Hoodie wären Sie kein Startup. Sie wären einfach nur selbstständig. Zum Glück haben wir Sie und Ihre Mitgründer mit einer Hoodie-Druckdatei abgedeckt."
         },
         more: {
           title: "Und mehr...",
@@ -425,20 +478,60 @@ const VisibiltyBundle = () => {
         title: "Häufig gestellte Fragen",
         items: [
           {
-            question: "Wie lange dauert die Lieferung des Visibility Bundles?",
-            answer: "Wir sind stolz auf unsere schnelle, hochwertige Lieferung. Ihr komplettes Visibility Bundle ist innerhalb von 48 Stunden nach Erhalt Ihrer Bestellung und Markeninformationen fertig."
+            question: "Was ist ein Visibility Bundle Wert?",
+            answer: "Was es Wert ist, kannst nur du selbst bestimmen, was alle Inhalte des Visibility Bundles zusammengerechnet bei Agenturen kosten würden, liegt etwa zwischen 10.000€ und 15.000€ und wäre mit mehreren Wochen an Wartezeit und unzähligen zusätzlichen Stunden an Koordinationsaufwand von deiner Seite verbunden. Wir reduzieren die Kosten drastisch, indem wir auf eine Kombination aus Automation und smarten Prozessen setzen."
           },
           {
-            question: "Kann ich Änderungen an den Designs anfordern?",
-            answer: "Absolut. Wir bieten eine Überarbeitungsrunde für jedes Element im Bundle an, um sicherzustellen, dass das Endergebnis perfekt zu Ihrer Vision passt."
+            question: "Warum ist ein Visibility Bundle so wichtig für Startups?",
+            answer: "Unsere ehrliche Meinung? Ist es nicht. Startup Gründer haben wichtigeres zu tun, als sich mit Design zu beschäftigen. Wir sind davon überzeugt, dass es die wichtigste Aufgabe des Gründerteams ist, sich mit ihrem Markt und ihrem Produkt zu beschäftigen. Wir haben jedoch sowohl aus eigener Gründungserfahrung als auch aus der Beratung von über 50 Startups erkannt, dass die Entwicklung der Markenvisibilität eine überdimensionierte Menge der Ressourcen eines jungen Startups in Form von Zeit und Geld verschlingt und zu viele Fallstricke für unerfahrene Gründer beinhaltet. Die Verbindung und Abstimmung der einzelnen Elemente des Visibility Bundles eines Startups ist im Vergleich zu den Problemen, die ein Startup löst, nicht komplex. Aber sie ist kleinteilig und penibel. Genau diese kleinteiligen Schritte nehmen wir euch ab. Unser Ziel ist es, dass ihr in nur wenigen Tagen euer vollständiges Visibility Bundle in den Händen haltet und somit lauffähig für das nächste Jahr seid. Wir halten unser Visibility Bundle nicht für das finale Brand Design, dass ihr in 5 Jahren mit einer Million Kunden noch haben werdet, aber für den effizientesten Einstieg, der euch die Schaffensruhe gibt, um diese Skalierung erreichen zu können"
           },
           {
-            question: "Erhalte ich die Quelldateien der Designs?",
-            answer: "Ja, wir stellen alle notwendigen Quelldateien zur Verfügung, damit Sie oder Ihr Team zukünftige Anpassungen vornehmen können, wenn sich Ihre Marke weiterentwickelt."
+            question: "Warum sollte ich mein Visibility Bundle von RapidWorks erstellen lassen?",
+            answer: "Wir vereinen in unserem Team Startup-Gründungserfahrung, Design- und Development-Erfahrung. Wir wissen exakt, was ein Startup benötigt, um Kunden erreichen und überzeugen zu können. Zudem sind wir Kosten- und Zeiteffektiv in der Erstellung von Visibility Bundles, da wir bereits die Erstellung einiger Inhalte des Bundles semi-automatisiert haben."
           },
           {
-            question: "Ist die Website vollständig anpassbar?",
-            answer: "Die enthaltene Website ist ein anspruchsvolles, responsives Design. Für fortgeschrittene Anpassungen bieten wir maßgeschneiderte Webentwicklungsdienste an. Bitte kontaktieren Sie uns für ein personalisiertes Angebot."
+            question: "In welcher Form erhalte ich die Inhalte des Visibility Bundles?",
+            answer: "Nach Fertigstellung erhältst du von uns eine E-Mail mit Zugriffslink zu einem Cloud-Storage, welcher sämtliche Bestandteile deines Visibility Bundles in digitaler Form enthält. Jede Datei ist in geeignetem Dateiformat für die jeweilige Rolle abgespeichert und sprechend benannt. Du erhältst zudem jede Datei in einem bearbeitungsoffenen Format. Unser Ziel ist es, dich für die Zukunft handlungsfähig zu machen, anstatt dich in ein Abhängigkeitsverhältnis von uns oder anderen Dienstleistern herein zu zwingen. Du erhältst von uns explizit keine physischen Materialien, du kannst dir diese aber mit unseren Dateien bei jeder Druckerei direkt in beliebiger Stückzahl fertigen lassen."
+          },
+          {
+            question: "Warum verschenkt Rapid Works 3 Visibility Bundles?",
+            answer: "Weil wir selbst ein Startup sind und Geschwindigkeit und glückliche Kunden über Profit wertschätzen. Durch die kostenfreie Vergabe drehen wir den Spieß um und suchen uns gezielt unsere ersten Kunden aus. Anhand der ersten Testkunde validieren wir unsere eigenen Annahmen zu Arbeitsaufwand, Abstimmungsaufwand, geschaffenem Wert für den Kunden und vieles mehr. Im Anschluss werden wir Umfang und Preis unserer Leistung entsprechend den Erfahrungen der kostenfreien Phase anpassen und mit einem unschlagbaren Angebot an jeden herantreten, der sich bis dahin beworben hat. Du brauchst also keine Angst zu haben, auch wenn du nicht in unserer Bewerbungsphase gewinnen solltest, erwartet dich in wenigen Tagen ein unschlagbares Angebot."
+          },
+          {
+            question: "Was geschieht, wenn mein Startup nicht unter den Top 3 landet?",
+            answer: "Bei uns gewinnt jeder. Auch wenn du nicht in unserer Bewerbungsphase gewinnen solltest, erwartet dich in wenigen Tagen ein unschlagbares Angebot."
+          },
+          {
+            question: "Bietet Rapid Works noch weitere Services an?",
+            answer: "Ja, das Visibility Bundle ist unser Markteintritt, unsere Mission geht aber noch viel weiter. Unabhängig vom Visibility Bundle bieten wir Startups persönliches Coaching mit Yannick, MVP-Development und Software-Developmentleistungen zu unschlagbaren Preisen und kostenfreie Finanzierungsberatung an. Für weitere Infos siehe <a href='https://rapidworks.vercel.app/' target='_blank' rel='noopener noreferrer' class='text-violet-600 hover:text-violet-700 underline'>RapidWorks</a>."
+          },
+          {
+            question: "Wie hoch ist die Qualität des Visibility Bundles?",
+            answer: "Vergleichbar mit der Qualität des Rapid Works Visibility Bundles, welches du als Showcase auf dieser Webseite hier siehst. Dein Visibility Bundle wird in Zusammenarbeit von Yannick und Samuel erstellt, exakt so wie das Rapid Works Visibility Bundle. Wir gehen transparent damit um, dass du bei uns kein Design auf dem Level von Apple erwarten kannst. Wir sind allerdings davon überzeugt, dass auch nur kaum ein Startup dieses Level an Design-Qualität bereits in der Early-Stage braucht. Der Dreh und Angelpunkt des Services deines Startups dreht sich um Brand Design auf Weltklasse? Dann sind wir nicht der richtige Partner für dich. In jedem anderen Fall vermutlich schon"
+          },
+          {
+            question: "Was ist, wenn ich Extrawünsche zu meinem Visibility Bundle habe?",
+            answer: "In unserem Formular kannst du Extrawünsche gerne notieren, wir werden diese sichten und dich darüber informieren, ob wir diese im Rahmen des Angebots mit umsetzen, oder uns anderweitig arrangieren können."
+          },
+          {
+            question: "Trete ich Rechte an meinem Visibility Bundle oder meiner Startup Idee ab?",
+            answer: "Dein Startup richtig sich ebenfalls an andere Startups als Zielgruppe und bietet Design-, Coaching-, oder Development-Leistungen an? In diesen Fällen könnte ein Interessenskonflikt zwischen uns vorliegen. Tu uns beiden einen Gefallen und schreib uns nicht deine Billion Dollar Startup Idee für explizit diese Zielgruppe und Leistungen in unser Formular. Wir haben selbst eine Menge weitere innovative Lösungen in diesem Bereich geplant und werden uns mit niemandem die Lorbeeren dafür teilen, weil jemand meint, dass wir seine Idee geklaut hätten. Insofern deine Idee nicht explizit in diesem Bereich liegt, kannst du sie uns bedenkenlos mitteilen. Du behältst ausdrücklich sämtliche Rechte an deiner Idee und deinem Visibility Bundle. Wir geben keinerlei Daten an Dritte weiter. Unabhängig davon fragen wir dich nicht ab, wie deine Idee unter der Haube funktioniert. Alle Daten, die du uns gibst, sind Daten, die du scheinbar sowieso öffentlich sichtbar machen möchtest."
+          },
+          {
+            question: "An wen richtet sich das Startup Visibility Bundle Angebot?",
+            answer: "Kurzum - An Startups. Siehe <a href='https://de.wikipedia.org/wiki/Start-up-Unternehmen' target='_blank' rel='noopener noreferrer' class='text-violet-600 hover:text-violet-700 underline'>Start-up-Unternehmen – Wikipedia</a>. Du bist kein Startup, oder bist dir nicht sicher, ob du eins bist, aber das Visibility Bundle ist genau das was du brauchst? Dann füll gerne unser Formular aus, wir melden uns bei dir."
+          },
+          {
+            question: "Muss ich mein Startup bereits gegründet haben, um ein Visibility Bundle erhalten zu können?",
+            answer: "Nein, du kannst unser Bewerbungsformular auch ausfüllen, wenn du noch nicht gegründet hast."
+          },
+          {
+            question: "Was ist, wenn ich bereits einige Inhalte des Visibility Bundles habe?",
+            answer: "Das ist kein Problem, in unserem Formular kannst du uns beliebige Dateien Hochladen, die du bereits hast und uns dazu schreiben, welche davon wir in welcher Form beim Erstellen des Visibility Bundels aufgreifen sollen."
+          },
+          {
+            question: "Wann bekomme ich mein Visibility Bundle?",
+            answer: "Da wir die Erstellung mehrerer Inhalte des Visibility Bundles bereits zu einem gewissen Grad semi-automatisiert haben, ein eingespieltes Team in der Erstellung von Visibility Bundles sind und eine Menge Erfahrung in der Betreuung von Startups haben, erstellen wir mindestens ein Visibility Bundle pro Woche. Wir arbeiten die Aufträge nach <a href='https://de.wikipedia.org/wiki/First_In_%E2%80%93_First_Out' target='_blank' rel='noopener noreferrer' class='text-violet-600 hover:text-violet-700 underline'>First In – First Out – Wikipedia</a> ab und halten die Anzahl von Aufträgen in unserer Pipeline beabsichtigt sehr klein. Dein Visibility Bundle wird also in jedem Fall sehr zeitnah und schnell abgearbeitet. Deutlich schneller, als du es vermutlich selbst anfertigen oder outsourcen könntest."
           }
         ]
       },
@@ -460,26 +553,23 @@ const VisibiltyBundle = () => {
         title: "So Funktioniert's",
         steps: [
           {
-            icon: "1",
             title: "Teilen Sie Ihre Markeninfo",
-            description: "Teilen Sie Ihre Markenvision, Farben und Präferenzen über unser einfaches Formular mit."
+            description: "Teilen Sie uns Ihre Markenvision, Farbpräferenzen und eventuell vorhandene Grafiken über unser einfaches Formular mit."
           },
           {
-            icon: "2",
-            title: "Wir Erstellen Ihre Assets",
-            description: "Unser Team erstellt Ihr komplettes Markenidentitätspaket innerhalb von 48 Stunden."
+            title: "Wir erstellen Ihre Assets",
+            description: "Wir erstellen Ihr komplettes Visibility Bundle und präsentieren es Ihnen nach Fertigstellung. Wenn Sie mit dem Bundle nicht zufrieden sind, müssen Sie nicht zahlen."
           },
           {
-            icon: "3",
             title: "Prüfen & Verfeinern",
-            description: "Überprüfen Sie Ihre Markenelemente und fordern Sie Anpassungen an, um Ihre Identität zu perfektionieren."
+            description: "Wir helfen Ihnen auch gerne, wenn Sie nachträglich kleine Anpassungswünsche bemerken. Eine kleine Feedback-Iteration nach einigen Tagen ist bereits im Angebot enthalten."
           }
         ]
       },
       // Features section
       features: {
-        title: "Komplettes Markenpaket",
-        subtitle: "Alles, was Sie für eine starke Markenpräsenz benötigen"
+        title: "Inhalt",
+        subtitle: "Das Visibility Bundle enthält alles, was Sie brauchen, um die Aufmerksamkeit von Kunden, Partnern, Investoren und Mitarbeitern auf Ihr Startup zu lenken. Sie werden sofort sichtbar und ein einheitliches Markendesign macht Ihre Marke erkennbar."
       },
       // Process section
       process: {
@@ -546,11 +636,6 @@ const VisibiltyBundle = () => {
       imageSrc: RapidWorksHoodie,
     },
     {
-      title: content.bundleItems.calendar.title,
-      description: content.bundleItems.calendar.description,
-      imageSrc: Calendar,
-    },
-    {
       title: content.bundleItems.more.title,
       description: content.bundleItems.more.description,
       imageSrc: PlaceholderImage,
@@ -589,12 +674,12 @@ const VisibiltyBundle = () => {
                   className="px-4 py-2 rounded-full text-sm font-light bg-violet-50 text-violet-600"
                 >
                   Visibility Bundle
-                </Link>
-              </div>
+              </Link>
+            </div>
 
               {/* Right: CTA & Language - Hidden on mobile */}
               <div className="hidden md:flex items-center space-x-4">
-                <button
+              <button 
                   onClick={() => window.open('https://calendly.com/yannick-familie-heeren/30min', '_blank')}
                   className="px-4 py-2 text-sm font-light text-white rounded-full bg-gradient-to-r from-violet-600 to-violet-500 hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5"
                 >
@@ -617,9 +702,9 @@ const VisibiltyBundle = () => {
                     }`}
                   >
                     DE
-                  </button>
-                </div>
+              </button>
             </div>
+          </div>
 
               {/* Mobile menu button */}
               <button 
@@ -632,7 +717,7 @@ const VisibiltyBundle = () => {
                   <Menu className="h-6 w-6 text-gray-600" />
                 )}
               </button>
-            </div>
+        </div>
           </div>
 
           {/* Mobile menu */}
@@ -709,7 +794,7 @@ const VisibiltyBundle = () => {
                 src={VisibilityHero}
                 alt="Hero background"
               />
-              </div>
+            </div>
 
               {/* Mobile Layout - Flex column for vertical stacking */}
               <div className="flex flex-col md:hidden">
@@ -733,10 +818,10 @@ const VisibiltyBundle = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6 }}
                       className="animate-float"
-                    >
+                      >
                       <span className="inline-block text-violet-600 text-xs md:text-sm uppercase tracking-wider font-light
                         px-2 py-0.5 md:px-4 md:py-1 rounded-full bg-violet-50/80 md:bg-violet-50 border border-violet-100 backdrop-blur-sm shadow-sm"
-                      >
+                        >
                         {content.bundleLabel}
                         </span>
                       </motion.div>
@@ -786,14 +871,14 @@ const VisibiltyBundle = () => {
                         className="group inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 text-sm font-light
                             rounded-full text-gray-600 bg-gray-50 hover:bg-gray-100 transition-all duration-300
                           border border-gray-200 hover:border-gray-300 hover:scale-105 hover:shadow-lg"
-                      >
+                        >
                         {content.seeMore}
                         <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                      </a>
-                    </motion.div>
+                        </a>
+                      </motion.div>
                   </div>
-                </div>
-              </div>
+                    </div>
+                  </div>
 
               {/* Desktop Content - Unchanged */}
               <div className="hidden md:block relative w-full">
@@ -810,7 +895,7 @@ const VisibiltyBundle = () => {
                             className="animate-float"
                           >
                             <span className="inline-block text-violet-600 text-xs md:text-sm uppercase tracking-wider font-light
-                            px-2 py-0.5 md:px-4 md:py-1 rounded-full bg-violet-50/80 md:bg-violet-50 border border-violet-100 backdrop-blur-sm shadow-sm"
+                            px-2 py-0.5 md:px-4 md:py-1 rounded-full bg-violet-50/80 md:bg-violet-50 border border-violet-100 shadow-sm"
                             >
                               {content.bundleLabel}
                             </span>
@@ -880,8 +965,8 @@ const VisibiltyBundle = () => {
 
               {/* Down Arrow */}
             
-        </div>
           </div>
+        </div>
 
           {/* Features Section (Everything You Need) */}
           <section id="features" className="py-40 overflow-hidden bg-gradient-to-b from-white via-gray-50/50 to-white relative">
@@ -891,7 +976,7 @@ const VisibiltyBundle = () => {
               <div className="absolute -bottom-1/2 -left-1/4 w-[800px] h-[800px] bg-violet-50/30 rounded-full blur-3xl" />
               <div className="absolute top-1/4 left-1/2 w-4 h-4 bg-violet-200/20 rounded-full blur-sm" />
               <div className="absolute bottom-1/4 right-1/4 w-6 h-6 bg-violet-200/30 rounded-full blur-md" />
-            </div>
+          </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
               <motion.div
@@ -1013,109 +1098,68 @@ const VisibiltyBundle = () => {
           </div>
         </section>
 
-          {/* How It Works Section */}
-          <section className="py-24 bg-gray-50">
+          {/* FAQ Section */}
+          <section className="py-24 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <h2 className="text-3xl font-light text-center mb-16">
-                {content.howItWorks.title}
+              <div className="text-center mb-16">
+                <h2 className="text-3xl font-light mb-4">
+                  {content.faq.title}
             </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
-                {/* Connecting Lines and Arrows - Only visible on desktop */}
-                <div className="hidden md:block absolute top-1/2 left-0 right-0 -translate-y-1/2 z-0">
-                  <div className="flex justify-between items-center px-20">
-                    {/* First connecting line */}
-                    <div className="flex-1 flex items-center">
-                      <div className="h-[2px] w-full bg-gradient-to-r from-violet-200 to-violet-300" />
-                      <ArrowRight className="w-6 h-6 text-violet-400 flex-shrink-0 -ml-3" />
-                    </div>
-                    {/* Second connecting line */}
-                    <div className="flex-1 flex items-center">
-                      <div className="h-[2px] w-full bg-gradient-to-r from-violet-200 to-violet-300" />
-                      <ArrowRight className="w-6 h-6 text-violet-400 flex-shrink-0 -ml-3" />
-                    </div>
-                  </div>
-                </div>
-
-                {content.howItWorks.steps.map((step, index) => (
-                  <motion.div
+              </div>
+              
+              <div className="max-w-3xl mx-auto divide-y divide-gray-200">
+                {content.faq.items.map((item, index) => (
+                  <FAQItem
                     key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: index * 0.2 }}
-                    className="relative bg-white p-8 rounded-lg shadow-sm z-10"
-                  >
-                    {/* Step Number Badge */}
-                    <div className="absolute -top-4 left-8 bg-violet-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium">
-                      {index + 1}
-                    </div>
-
-                    {/* Icon */}
-                    <div className="mb-6 text-violet-500">
-                      {index === 0 ? (
-                        <CalendarCheck className="w-8 h-8" />
-                      ) : index === 1 ? (
-                        <Palette className="w-8 h-8" />
-                      ) : (
-                        <Package className="w-8 h-8" />
-                      )}
-                    </div>
-
-                    <div className="relative">
-                      <h3 className="text-2xl font-light mb-4 text-gray-900">
-                        {step.title}
-                      </h3>
-                      <p className="text-gray-600">
-                        {step.description}
-                      </p>
-                    </div>
-                  </motion.div>
+                    question={item.question}
+                    answer={item.answer}
+                  />
                 ))}
               </div>
             </div>
-        </section>
+          </section>
 
           {/* Final CTA Section */}
-        <section className="py-20">
-          <div className="container mx-auto px-4 text-center">
-            <h2 className="text-4xl font-light mb-8">{content.finalCta.title}</h2>
-            <p className="text-xl mb-8 max-w-2xl mx-auto text-gray-600">
-              {content.finalCta.subtitle}
-            </p>
-            <button 
-              onClick={() => window.open('https://calendly.com/yannick-familie-heeren/30min', '_blank')}
-              className="bg-black text-white px-8 py-3 rounded-none font-light hover:bg-gray-900 transition duration-300 inline-flex items-center text-lg"
-            >
-              {content.finalCta.cta}
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </button>
+          <section className="py-20">
+            <div className="container mx-auto px-4 text-center">
+              <h2 className="text-4xl font-light mb-8">{content.finalCta.title}</h2>
+              <p className="text-xl mb-8 max-w-2xl mx-auto text-gray-600">
+                {content.finalCta.subtitle}
+              </p>
+              <button 
+                onClick={() => window.open('https://calendly.com/yannick-familie-heeren/30min', '_blank')}
+                className="bg-black text-white px-8 py-3 rounded-none font-light hover:bg-gray-900 transition duration-300 inline-flex items-center text-lg"
+              >
+                {content.finalCta.cta}
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </button>
           </div>
         </section>
 
-        {/* MVP Section - Moved below Final CTA */}
-        <section className="py-12 sm:py-32 bg-black text-white">
+          {/* MVP Section - Moved below Final CTA */}
+          <section className="py-12 sm:py-32 bg-black text-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12">
               <div className="flex-1">
-                <h2 className="text-xl sm:text-4xl font-light mb-2 sm:mb-4">
-                  {content.mvp.title}
+                  <h2 className="text-xl sm:text-4xl font-light mb-2 sm:mb-4">
+                    {content.mvp.title}
                 </h2>
-                <p className="text-sm sm:text-xl text-gray-300 mb-4 sm:mb-8">
-                  {content.mvp.description}
+                  <p className="text-sm sm:text-xl text-gray-300 mb-4 sm:mb-8">
+                    {content.mvp.description}
                 </p>
                 <Link 
                   to="/" 
-                  className="inline-flex items-center px-3 sm:px-6 py-2 sm:py-3 bg-white text-black hover:bg-gray-100 transition-colors font-light text-xs sm:text-base"
+                    className="inline-flex items-center px-3 sm:px-6 py-2 sm:py-3 bg-white text-black hover:bg-gray-100 transition-colors font-light text-xs sm:text-base"
                 >
-                  {content.mvp.cta}
-                  <ArrowRight className="ml-1 sm:ml-2 -mr-1 h-3 w-3 sm:h-5 sm:w-5" />
+                    {content.mvp.cta}
+                    <ArrowRight className="ml-1 sm:ml-2 -mr-1 h-3 w-3 sm:h-5 sm:w-5" />
                 </Link>
               </div>
               <div className="flex-1 flex justify-center">
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-indigo-600 blur-3xl opacity-20"></div>
-                  <div className="relative text-4xl sm:text-6xl md:text-8xl font-bold">
-                    2 <span className="text-violet-500">{content.mvp.weeks}</span>
+                    <div className="relative text-4xl sm:text-6xl md:text-8xl font-bold">
+                      2 <span className="text-violet-500">{content.mvp.weeks}</span>
                   </div>
                 </div>
               </div>
@@ -1137,7 +1181,7 @@ const VisibiltyBundle = () => {
               {/* Newsletter Section */}
               <div className="max-w-md">
                 <NewsletterForm />
-              </div>
+    </div>
             </div>
 
             {/* Bottom Bar */}
