@@ -2,9 +2,42 @@ import { motion, AnimatePresence } from "framer-motion"
 import { X } from "lucide-react"
 import { useState, useEffect } from "react"
 
-const NewsletterPopup = () => {
+// Function to submit data to Airtable
+const submitToAirtable = async (email) => {
+  const apiKey = 'pat4tdlgpeqbxb7JD.7c74864915d51c84a4eca34040c5f9889e997a92f8e2c052816e74bc925952a7';
+  const baseId = 'appujG83wn2tptPbB';
+  const tableName = 'Newsletter';
+
+  const url = `https://api.airtable.com/v0/${baseId}/${tableName}`;
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      fields: {
+        Email: email,
+      },
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to submit data to Airtable');
+  }
+
+  return response.json();
+};
+
+const NewsletterPopup = ({ isOpen: controlledIsOpen, onClose }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [email, setEmail] = useState('')
+  const [status, setStatus] = useState('')
+
+  // Use controlled state if provided
+  const showPopup = controlledIsOpen ?? isOpen
+  const handleClose = onClose ?? (() => setIsOpen(false))
 
   useEffect(() => {
     // First check if user has already subscribed
@@ -26,18 +59,25 @@ const NewsletterPopup = () => {
     }
   }, [])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Handle newsletter signup logic here
-    console.log('Newsletter signup:', email)
-    // After successful signup, prevent popup from showing again
-    localStorage.setItem('newsletterSubscribed', 'true')
-    setIsOpen(false)
+    try {
+      await submitToAirtable(email)
+      setStatus('✓ Successfully subscribed!')
+      // Show success state for 2 seconds before closing
+      setTimeout(() => {
+        setIsOpen(false)
+        setStatus('')
+      }, 2000)
+      localStorage.setItem('newsletterSubscribed', 'true')
+    } catch (error) {
+      setStatus('× Something went wrong. Please try again.')
+    }
   }
 
   return (
     <AnimatePresence>
-      {isOpen && (
+      {showPopup && (
         <>
           {/* Backdrop */}
           <motion.div
@@ -45,7 +85,7 @@ const NewsletterPopup = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[100]"
-            onClick={() => setIsOpen(false)}
+            onClick={handleClose}
           />
 
           {/* Popup Container - Added flex container for better centering */}
@@ -59,7 +99,7 @@ const NewsletterPopup = () => {
             >
               {/* Close button */}
               <button
-                onClick={() => setIsOpen(false)}
+                onClick={handleClose}
                 className="absolute -top-3 -right-3 p-1.5 rounded-full bg-white shadow-lg hover:bg-gray-50 transition-colors z-10"
               >
                 <X className="w-4 h-4 text-gray-500" />
@@ -77,7 +117,9 @@ const NewsletterPopup = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-black"
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-md text-sm 
+                      focus:outline-none focus:ring-1 focus:ring-black
+                      text-gray-900 placeholder:text-gray-500"
                     required
                   />
                   <button
@@ -87,6 +129,16 @@ const NewsletterPopup = () => {
                     Subscribe
                   </button>
                 </form>
+
+                {status && (
+                  <p className={`text-sm mt-4 ${
+                    status.startsWith('✓') 
+                      ? 'text-green-600' 
+                      : 'text-red-600'
+                  }`}>
+                    {status}
+                  </p>
+                )}
               </div>
             </motion.div>
           </div>

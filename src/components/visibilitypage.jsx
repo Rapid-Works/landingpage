@@ -22,6 +22,7 @@ import BundleForm from "./BundleForm"
 import { LanguageContext as AppLanguageContext } from "../App"
 import Modal from './Modal'
 import NewsletterPopup from "./NewsletterPopup"
+import FAQModal, { FAQItem } from './FAQModal'
 
 const BundleItem = ({ title, description, index, imageSrc }) => (
   <motion.div
@@ -41,44 +42,6 @@ const BundleItem = ({ title, description, index, imageSrc }) => (
     <p className="text-gray-600">{description}</p>
   </motion.div>
 )
-
-const FAQItem = ({ question, answer }) => {
-  const [isOpen, setIsOpen] = useState(false)
-
-  return (
-    <div className="py-6">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex justify-between items-center w-full text-left"
-      >
-        <h3 className="text-lg font-light text-gray-900 pr-8">
-          {question}
-        </h3>
-        {isOpen ? (
-          <Minus className="w-5 h-5 text-violet-500 flex-shrink-0" />
-        ) : (
-          <Plus className="w-5 h-5 text-violet-500 flex-shrink-0" />
-        )}
-      </button>
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="overflow-hidden"
-          >
-            <p 
-              className="mt-4 text-gray-600 font-light"
-              dangerouslySetInnerHTML={{ __html: answer }}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  )
-}
 
 const BundleSlider = ({ items, currentIndex, setCurrentIndex }) => {
   useEffect(() => {
@@ -194,39 +157,37 @@ const BundleGridItem = ({ title, description, imageSrc }) => (
 )
 
 const NewsletterForm = () => {
-  const [email, setEmail] = useState('')
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // Handle newsletter signup logic here
-    console.log('Newsletter signup:', email)
-  }
+  const [isPopupOpen, setIsPopupOpen] = useState(false)
 
   return (
-    <div className="bg-[#0F1115] text-white p-8 rounded-lg">
-      <div className="max-w-md">
-        <img src={RapidWorksLogo} alt="Logo" className="h-8 w-8 mb-4" />
-        <p className="text-gray-400 mb-6">
-          All-in-one brand identity platform for your business to manage design assets and much more
-        </p>
-        <h3 className="text-xl font-light mb-4">Join our Newsletter</h3>
-        <form onSubmit={handleSubmit} className="flex gap-2">
+    <>
+      <div className="space-y-4">
+        <h3 className="text-lg font-light">Subscribe to Our Newsletter</h3>
+        <div className="flex gap-2">
           <input
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter Your Email Here"
-            className="flex-1 px-4 py-2 bg-white/10 border border-white/20 rounded-md text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-violet-500"
+            placeholder="Enter your email"
+            className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-violet-500"
+            onFocus={() => setIsPopupOpen(true)} // Open popup on focus
+            readOnly // Make it read-only since we're using the popup
           />
           <button
-            type="submit"
-            className="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-md transition-colors"
+            onClick={() => setIsPopupOpen(true)}
+            className="px-4 py-2 bg-violet-600 text-white rounded-md text-sm hover:bg-violet-700 transition-colors"
           >
-            →
+            Subscribe
           </button>
-        </form>
+        </div>
       </div>
-    </div>
+
+      {/* Controlled Newsletter Popup */}
+      {isPopupOpen && (
+        <NewsletterPopup 
+          isOpen={isPopupOpen} 
+          onClose={() => setIsPopupOpen(false)} 
+        />
+      )}
+    </>
   )
 }
 
@@ -238,6 +199,7 @@ const VisibiltyBundle = () => {
   const [currentLanguage, setCurrentLanguage] = useState(context?.language || 'de')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isFAQModalOpen, setIsFAQModalOpen] = useState(false)
   const formUrl = "https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAMAANEznbRUMkVHMFpWTTVaTjREWlc4Wk5WOEdNOFhMTi4u"
 
   // Update local state when context language changes
@@ -271,10 +233,16 @@ const VisibiltyBundle = () => {
     en: {
       title: "VISIBILITY BUNDLE",
       subtitle: "Transform Your Brand Visibility",
-      subtext: "Convince us of your startup idea and get your free Visibility Bundle within one week free of charge. No hidden costs, no bullshit.",
+      mainText: "Convince us of your startup idea and get your free Visibility Bundle within one week free of charge.",
+      subtext: "No hidden costs, no bullshit.",
       cta: "Apply for your bundle",
       seeMore: "See What's Included",
       bundleLabel: "Visibility Bundle",
+      nav: {
+        mvpDev: "MVP Development",
+        visibilityBundle: "Visibility Bundle",
+        bookCall: "Book a Call"
+      },
       // Bundle items
       bundleItems: {
         website: {
@@ -304,15 +272,12 @@ const VisibiltyBundle = () => {
         apparel: {
           title: "Hoodie print file",
           description: "Without a hoodie you wouldn't be a startup. You would just be self employed. Luckily we got your cofounders and you covered with a hoodie print file."
-        },
-        more: {
-          title: "And More...",
-          description: "Additional brand assets and resources to ensure your complete brand success."
         }
       },
       // FAQ section
       faq: {
         title: "Frequently Asked Questions",
+        showAll: "Show all questions and answers",
         items: [
           {
             question: "What is a Visibility Bundle worth?",
@@ -434,10 +399,16 @@ const VisibiltyBundle = () => {
     de: {
       title: "SICHTBARKEITSPAKET",
       subtitle: "Transformieren Sie Ihre Markensichtbarkeit",
-      subtext: "Überzeugen Sie uns von Ihrer Startup-Idee und erhalten Sie Ihr kostenloses Visibility Bundle innerhalb einer Woche. Keine versteckten Kosten, kein Bullshit.",
+      mainText: "Überzeugen Sie uns von Ihrer Startup-Idee und erhalten Sie Ihr kostenloses Visibility Bundle innerhalb einer Woche.",
+      subtext: "Keine versteckten Kosten, kein Bullshit.",
       cta: "Bewerben Sie sich für Ihr Bundle",
       seeMore: "Sehen Sie, was enthalten ist",
       bundleLabel: "Sichtbarkeits-Paket",
+      nav: {
+        mvpDev: "MVP-Entwicklung",
+        visibilityBundle: "Sichtbarkeitspaket",
+        bookCall: "Gespräch Buchen"
+      },
       // Bundle items
       bundleItems: {
         website: {
@@ -467,15 +438,12 @@ const VisibiltyBundle = () => {
         apparel: {
           title: "Hoodie-Druckdatei",
           description: "Ohne Hoodie wären Sie kein Startup. Sie wären einfach nur selbstständig. Zum Glück haben wir Sie und Ihre Mitgründer mit einer Hoodie-Druckdatei abgedeckt."
-        },
-        more: {
-          title: "Und mehr...",
-          description: "Zusätzliche Markenelemente und Ressourcen für Ihren vollständigen Markenerfolg."
         }
       },
       // FAQ section
       faq: {
         title: "Häufig gestellte Fragen",
+        showAll: "Alle Fragen und Antworten anzeigen",
         items: [
           {
             question: "Was ist ein Visibility Bundle Wert?",
@@ -634,15 +602,19 @@ const VisibiltyBundle = () => {
       title: content.bundleItems.apparel.title,
       description: content.bundleItems.apparel.description,
       imageSrc: RapidWorksHoodie,
-    },
-    {
-      title: content.bundleItems.more.title,
-      description: content.bundleItems.more.description,
-      imageSrc: PlaceholderImage,
     }
   ]
 
   const faqItems = content.faq.items;
+
+  const scrollToFeatures = (e) => {
+    e.preventDefault()
+    const featuresSection = document.getElementById('features')
+    featuresSection.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  // Update the container class definition
+  const containerClass = "max-w-[1280px] w-full mx-auto px-4 sm:px-6 lg:px-8 relative"
 
   return (
     <>
@@ -667,13 +639,13 @@ const VisibiltyBundle = () => {
                   to="/"
                   className="px-4 py-2 rounded-full text-sm font-light text-gray-600 hover:text-gray-900 transition-colors"
                 >
-                  MVP Development
+                  {content.nav.mvpDev}
                 </Link>
                 <Link
                   to="/visibility"
                   className="px-4 py-2 rounded-full text-sm font-light bg-violet-50 text-violet-600"
                 >
-                  Visibility Bundle
+                  {content.nav.visibilityBundle}
               </Link>
             </div>
 
@@ -683,13 +655,15 @@ const VisibiltyBundle = () => {
                   onClick={() => window.open('https://calendly.com/yannick-familie-heeren/30min', '_blank')}
                   className="px-4 py-2 text-sm font-light text-white rounded-full bg-gradient-to-r from-violet-600 to-violet-500 hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5"
                 >
-                  Book a Call
+                  {content.nav.bookCall}
                 </button>
                 <div className="flex items-center space-x-1 text-sm">
                   <button
                     onClick={() => handleLanguageChange('en')}
-                    className={`px-2 py-1 rounded-l ${
-                      language === 'en' ? 'text-violet-600' : 'text-gray-400'
+                    className={`px-2 py-1 rounded-l transition-colors ${
+                      currentLanguage === 'en' 
+                        ? 'text-violet-600 font-medium'
+                        : 'text-gray-400 hover:text-gray-600'
                     }`}
                   >
                     EN
@@ -697,11 +671,13 @@ const VisibiltyBundle = () => {
                   <span className="text-gray-300">/</span>
                   <button
                     onClick={() => handleLanguageChange('de')}
-                    className={`px-2 py-1 rounded-r ${
-                      language === 'de' ? 'text-violet-600' : 'text-gray-400'
+                    className={`px-2 py-1 rounded-r transition-colors ${
+                      currentLanguage === 'de' 
+                        ? 'text-violet-600 font-medium'
+                        : 'text-gray-400 hover:text-gray-600'
                     }`}
                   >
-                    DE
+                      DE
               </button>
             </div>
           </div>
@@ -738,7 +714,7 @@ const VisibiltyBundle = () => {
                     }}
                     className="block px-4 py-2 rounded-lg text-sm font-light text-gray-600"
                   >
-                    MVP Development
+                    {content.nav.mvpDev}
                   </Link>
                   <Link
                     to="/visibility"
@@ -748,19 +724,21 @@ const VisibiltyBundle = () => {
                     }}
                     className="block px-4 py-2 rounded-lg text-sm font-light bg-violet-50 text-violet-600"
                   >
-                    Visibility Bundle
+                    {content.nav.visibilityBundle}
                   </Link>
                   <button
                     onClick={() => window.open('https://calendly.com/yannick-familie-heeren/30min', '_blank')}
                     className="w-full px-4 py-2 text-sm font-light text-white rounded-lg bg-gradient-to-r from-violet-600 to-violet-500"
                   >
-                    Book a Call
+                    {content.nav.bookCall}
                   </button>
                   <div className="flex justify-center items-center space-x-1 text-sm border-t border-gray-100 pt-4">
                     <button
                       onClick={() => handleLanguageChange('en')}
-                      className={`px-4 py-2 rounded ${
-                        language === 'en' ? 'text-violet-600' : 'text-gray-400'
+                      className={`px-4 py-2 rounded transition-colors ${
+                        currentLanguage === 'en' 
+                          ? 'text-violet-600 font-medium'
+                          : 'text-gray-400 hover:text-gray-600'
                       }`}
                     >
                       EN
@@ -768,21 +746,23 @@ const VisibiltyBundle = () => {
                     <span className="text-gray-300">/</span>
                     <button
                       onClick={() => handleLanguageChange('de')}
-                      className={`px-4 py-2 rounded ${
-                        language === 'de' ? 'text-violet-600' : 'text-gray-400'
+                      className={`px-4 py-2 rounded transition-colors ${
+                        currentLanguage === 'de' 
+                          ? 'text-violet-600 font-medium'
+                          : 'text-gray-400 hover:text-gray-600'
                       }`}
                     >
                       DE
                     </button>
-          </div>
-        </div>
+                  </div>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
         </nav>
 
       <main className="relative w-full overflow-x-hidden">
-        <div className="relative w-full">
+        <div className={containerClass}>
             <div className="relative min-h-screen flex flex-col md:items-center">
               {/* Desktop Background Image - Unchanged */}
               <div className="absolute inset-0 translate-y-16 mr-0 md:mr-4 lg:mr-8 xl:mr-16 hidden md:block">
@@ -813,37 +793,32 @@ const VisibiltyBundle = () => {
                 {/* Mobile Text Content Below */}
                 <div className="w-full bg-white px-6 py-8">
                   <div className="max-w-[480px] mx-auto space-y-4 text-center">
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
-                      className="animate-float"
-                      >
-                      <span className="inline-block text-violet-600 text-xs md:text-sm uppercase tracking-wider font-light
-                        px-2 py-0.5 md:px-4 md:py-1 rounded-full bg-violet-50/80 md:bg-violet-50 border border-violet-100 backdrop-blur-sm shadow-sm"
+                      <motion.div className="animate-float">
+                        <span className="inline-block text-violet-600 text-xs md:text-sm uppercase tracking-wider font-light
+                          px-2 py-0.5 md:px-4 md:py-1 rounded-full bg-violet-50 border border-violet-100 backdrop-blur-sm shadow-sm"
                         >
-                        {content.bundleLabel}
+                          {content.title}
                         </span>
                       </motion.div>
 
-                      <motion.h1 
+                      <motion.h1
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.1 }}
-                      className="text-2xl md:text-5xl lg:text-6xl font-bold text-gray-900 md:text-black leading-[1.1] tracking-tight"
+                        className="text-2xl md:text-5xl lg:text-6xl font-bold text-gray-900 md:text-black leading-[1.1] tracking-tight"
                       >
-                      {content.title}
+                        {content.subtitle}
                       </motion.h1>
 
-                      <motion.p 
+                      <motion.p
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.2 }}
-                      className="text-sm md:text-lg font-light leading-relaxed max-w-xl mx-auto md:mx-0"
-                    >
-                      {content.subtitle}
-                      <span className="block mt-1 md:mt-2 text-xs md:text-base text-gray-500 md:text-gray-600">
-                        {content.subtext}
+                        className="text-sm md:text-lg font-light leading-relaxed max-w-xl mx-auto md:mx-0"
+                      >
+                        {content.mainText}
+                        <span className="block mt-1 md:mt-2 text-xs md:text-base text-gray-500 md:text-gray-600">
+                          {content.subtext}
                         </span>
                       </motion.p>
 
@@ -851,7 +826,7 @@ const VisibiltyBundle = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.3 }}
-                      className="flex flex-col sm:flex-row gap-2 md:gap-4 pt-2 md:pt-4 justify-center md:justify-start"
+                        className="flex flex-col sm:flex-row gap-2 md:gap-4 pt-2 md:pt-4 justify-center md:justify-start"
                       >
                         <button 
                           onClick={handleGetBundle}
@@ -862,18 +837,19 @@ const VisibiltyBundle = () => {
                           <span className="relative z-10 flex items-center">
                           {content.cta}
                           <ArrowRight className="ml-2 -mr-1 h-4 w-4 transition-transform group-hover:translate-x-2" />
-                          </span>
+                        </span>
                           <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-violet-500 
                             opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         </button>
                         <a 
                           href="#features" 
-                        className="group inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 text-sm font-light
+                          onClick={scrollToFeatures}
+                          className="group inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 text-sm font-light
                             rounded-full text-gray-600 bg-gray-50 hover:bg-gray-100 transition-all duration-300
                           border border-gray-200 hover:border-gray-300 hover:scale-105 hover:shadow-lg"
                         >
-                        {content.seeMore}
-                        <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                              {content.seeMore}
+                              <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                         </a>
                       </motion.div>
                   </div>
@@ -888,65 +864,61 @@ const VisibiltyBundle = () => {
                       {/* Text Content */}
                       <div className="w-full max-w-[480px] mx-auto md:mx-0">
                         <div className="space-y-2 md:space-y-6 text-center md:text-left px-6 py-3 md:p-0">
-                          <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6 }}
-                            className="animate-float"
-                          >
+                          <motion.div className="animate-float">
                             <span className="inline-block text-violet-600 text-xs md:text-sm uppercase tracking-wider font-light
-                            px-2 py-0.5 md:px-4 md:py-1 rounded-full bg-violet-50/80 md:bg-violet-50 border border-violet-100 shadow-sm"
+                            px-2 py-0.5 md:px-4 md:py-1 rounded-full bg-violet-50 border border-violet-100 backdrop-blur-sm shadow-sm"
                             >
-                              {content.bundleLabel}
-                            </span>
-                          </motion.div>
+                              {content.title}
+                        </span>
+                      </motion.div>
 
-                          <motion.h1
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.1 }}
+                      <motion.h1 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.1 }}
                             className="text-2xl md:text-5xl lg:text-6xl font-bold text-gray-900 md:text-black leading-[1.1] tracking-tight"
-                          >
-                            {content.title}
-                          </motion.h1>
+                      >
+                            {content.subtitle}
+                      </motion.h1>
 
-                          <motion.p
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.2 }}
+                      <motion.p 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
                             className="text-sm md:text-lg font-light leading-relaxed max-w-xl mx-auto md:mx-0"
                           >
-                            {content.subtitle}
+                            {content.mainText}
                             <span className="block mt-1 md:mt-2 text-xs md:text-base text-gray-500 md:text-gray-600">
                               {content.subtext}
-                            </span>
-                          </motion.p>
+                        </span>
+                      </motion.p>
 
-                          <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.3 }}
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.3 }}
                             className="flex flex-col sm:flex-row gap-2 md:gap-4 pt-2 md:pt-4 justify-center md:justify-start"
-                          >
-                            <button
-                              onClick={handleGetBundle}
+                      >
+                        <button 
+                          onClick={handleGetBundle}
                               className="group relative inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 text-sm font-light 
-                              overflow-hidden rounded-full text-white bg-black transition-all duration-300
+                            overflow-hidden rounded-full text-white bg-black transition-all duration-300
                               shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 hover:scale-105"
-                            >
-                              <span className="relative z-10 flex items-center">
+                        >
+                          <span className="relative z-10 flex items-center">
                                 {content.cta}
                                 <ArrowRight className="ml-2 -mr-1 h-4 w-4 transition-transform group-hover:translate-x-2" />
-                              </span>
-                              <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-violet-500 
-                              opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                            </button>
-                            <a
-                              href="#features"
+                          </span>
+                          <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-violet-500 
+                            opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        </button>
+                        <a 
+                          href="#features" 
+                          onClick={scrollToFeatures}
                               className="group inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 text-sm font-light
-                              rounded-full text-gray-600 bg-gray-50 hover:bg-gray-100 transition-all duration-300
+                            rounded-full text-gray-600 bg-gray-50 hover:bg-gray-100 transition-all duration-300
                               border border-gray-200 hover:border-gray-300 hover:scale-105 hover:shadow-lg"
-                            >
+                        >
                               {content.seeMore}
                               <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                         </a>
@@ -970,15 +942,7 @@ const VisibiltyBundle = () => {
 
           {/* Features Section (Everything You Need) */}
           <section id="features" className="py-40 overflow-hidden bg-gradient-to-b from-white via-gray-50/50 to-white relative">
-            {/* Background Decorative Elements */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              <div className="absolute -top-1/2 -right-1/4 w-[800px] h-[800px] bg-violet-50/50 rounded-full blur-3xl" />
-              <div className="absolute -bottom-1/2 -left-1/4 w-[800px] h-[800px] bg-violet-50/30 rounded-full blur-3xl" />
-              <div className="absolute top-1/4 left-1/2 w-4 h-4 bg-violet-200/20 rounded-full blur-sm" />
-              <div className="absolute bottom-1/4 right-1/4 w-6 h-6 bg-violet-200/30 rounded-full blur-md" />
-          </div>
-
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div className={containerClass}>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -1007,7 +971,7 @@ const VisibiltyBundle = () => {
                   <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-violet-300 to-transparent" />
                   <div className="w-32 h-[1px] bg-gradient-to-r from-transparent via-violet-200 to-transparent mt-2" />
                   <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-violet-100 to-transparent mt-2" />
-                </div>
+          </div>
               </motion.div>
 
               {/* Alternating List Items */}
@@ -1099,8 +1063,8 @@ const VisibiltyBundle = () => {
         </section>
 
           {/* FAQ Section */}
-          <section className="py-24 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <section className="py-24 bg-gray-50">
+          <div className={containerClass}>
               <div className="text-center mb-16">
                 <h2 className="text-3xl font-light mb-4">
                   {content.faq.title}
@@ -1108,37 +1072,60 @@ const VisibiltyBundle = () => {
               </div>
               
               <div className="max-w-3xl mx-auto divide-y divide-gray-200">
-                {content.faq.items.map((item, index) => (
+                {/* Show only first 5 FAQs */}
+                {content.faq.items.slice(0, 5).map((item, index) => (
                   <FAQItem
                     key={index}
                     question={item.question}
                     answer={item.answer}
                   />
                 ))}
+                
+                {/* Show all questions button */}
+                <div className="pt-8 text-center">
+                  <button
+                    onClick={() => setIsFAQModalOpen(true)}
+                    className="inline-flex items-center text-violet-600 hover:text-violet-700 font-light"
+                  >
+                    {content.faq.showAll}
+                    <ChevronRight className="ml-2 w-4 h-4" />
+                  </button>
+                    </div>
+                    </div>
               </div>
-            </div>
           </section>
+
+          {/* FAQ Modal */}
+          <FAQModal
+            isOpen={isFAQModalOpen}
+            onClose={() => setIsFAQModalOpen(false)}
+            faqItems={content.faq.items}
+          />
 
           {/* Final CTA Section */}
           <section className="py-20">
-            <div className="container mx-auto px-4 text-center">
-              <h2 className="text-4xl font-light mb-8">{content.finalCta.title}</h2>
-              <p className="text-xl mb-8 max-w-2xl mx-auto text-gray-600">
-                {content.finalCta.subtitle}
-              </p>
-              <button 
-                onClick={() => window.open('https://calendly.com/yannick-familie-heeren/30min', '_blank')}
-                className="bg-black text-white px-8 py-3 rounded-none font-light hover:bg-gray-900 transition duration-300 inline-flex items-center text-lg"
-              >
-                {content.finalCta.cta}
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </button>
+            <div className={containerClass}>
+              <div className="max-w-2xl mx-auto text-center">
+                <h2 className="text-4xl font-light mb-8">
+                  {content.finalCta.title}
+                </h2>
+                <p className="text-xl mb-8 text-gray-600">
+                  {content.finalCta.subtitle}
+                </p>
+                <button 
+                  onClick={() => window.open('https://calendly.com/yannick-familie-heeren/30min', '_blank')}
+                  className="bg-black text-white px-8 py-3 rounded-none font-light hover:bg-gray-900 transition duration-300 inline-flex items-center text-lg"
+                >
+                  {content.finalCta.cta}
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </button>
+            </div>
           </div>
         </section>
 
           {/* MVP Section - Moved below Final CTA */}
           <section className="py-12 sm:py-32 bg-black text-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className={containerClass}>
               <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12">
               <div className="flex-1">
                   <h2 className="text-xl sm:text-4xl font-light mb-2 sm:mb-4">
@@ -1176,7 +1163,7 @@ const VisibiltyBundle = () => {
         <NewsletterPopup />
 
         <footer className="bg-[#0F1115] text-white py-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className={containerClass}>
             <div className="grid grid-cols-1 gap-12">
               {/* Newsletter Section */}
               <div className="max-w-md">
@@ -1192,10 +1179,16 @@ const VisibiltyBundle = () => {
                 </div>
                 <div className="flex gap-6">
                   <Link to="#" className="text-gray-400 hover:text-white transition-colors">Impressum</Link>
+            <button 
+                    onClick={() => setIsFAQModalOpen(true)}
+                    className="text-gray-400 hover:text-white transition-colors"
+            >
+                    FAQ
+            </button>
                   <Link to="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</Link>
                   <Link to="#" className="text-gray-400 hover:text-white transition-colors">Contact Us</Link>
-                </div>
-              </div>
+          </div>
+    </div>
             </div>
           </div>
         </footer>
