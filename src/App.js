@@ -1070,15 +1070,13 @@ const Footer = () => {
 
 function App() {
   const [language, setLanguage] = useState(() => {
-    const saved = localStorage.getItem("language")
-    console.log("Initial language from localStorage:", saved)
-    return saved || "de"
+    // Get saved language from localStorage or default to 'de'
+    return localStorage.getItem('language') || 'de'
   })
 
-  // Add useEffect to persist language changes
+  // Save language to localStorage whenever it changes
   useEffect(() => {
-    console.log("Persisting language change:", language)
-    localStorage.setItem("language", language)
+    localStorage.setItem('language', language)
   }, [language])
 
   const contextValue = useMemo(() => ({
@@ -1088,7 +1086,6 @@ function App() {
       setLanguage(newLang)
     },
     translate: (key) => {
-      console.log("Translating with language:", language)
       const keys = key.split(".")
       let value = translations[language]
       for (const k of keys) {
