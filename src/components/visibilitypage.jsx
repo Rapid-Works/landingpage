@@ -233,10 +233,18 @@ const VisibiltyBundle = () => {
     en: {
       title: "VISIBILITY BUNDLE",
       subtitle: "Transform Your Brand Visibility",
-      mainText: "Convince us of your startup idea and get your free Visibility Bundle within one week free of charge.",
+      mainText: "Convince us of your startup idea and get your free Visibility Bundle within one week free of charge, including:",
+      keyPoints: [
+        "Market Orientation Consulting",
+        "Logo & Brand Design",
+        "Startup Website",
+        "Startup Apparel",
+        "Business Cards",
+        "Rollup"
+      ],
       subtext: "No hidden costs, no bullshit.",
       cta: "Apply for your bundle",
-      seeMore: "See What's Included",
+      seeMore: "and more...",
       bundleLabel: "Visibility Bundle",
       nav: {
         mvpDev: "MVP Development",
@@ -334,6 +342,10 @@ const VisibiltyBundle = () => {
           {
             question: "When will I receive my Visibility Bundle?",
             answer: "Since we've semi-automated the creation of several bundle components and are an experienced team in creating Visibility Bundles, we complete at least one bundle per week. We process orders on a <a href='https://de.wikipedia.org/wiki/First_In_%E2%80%93_First_Out' target='_blank' rel='noopener noreferrer' class='text-violet-600 hover:text-violet-700 underline'>First In – First Out – Wikipedia</a> basis and intentionally keep our pipeline small. Your bundle will be completed promptly and quickly - significantly faster than you could likely create or outsource it yourself."
+          },
+          {
+            question: "How much does it cost to print all the media?",
+            answer: "Depending on the provider, around €100 per rollup, €30 per hoodie, €20 for 500 business cards. We will soon recommend providers with whom we have had good experiences."
           }
         ]
       },
@@ -399,10 +411,18 @@ const VisibiltyBundle = () => {
     de: {
       title: "SICHTBARKEITSPAKET",
       subtitle: "Transformieren Sie Ihre Markensichtbarkeit",
-      mainText: "Überzeugen Sie uns von Ihrer Startup-Idee und erhalten Sie Ihr kostenloses Visibility Bundle innerhalb einer Woche.",
+      mainText: "Überzeugen Sie uns von Ihrer Startup-Idee und erhalten Sie Ihr kostenloses Visibility Bundle innerhalb einer Woche,",
+      keyPoints: [
+        "Marktorientierungsberatung",
+        "Logo & Brand Design",
+        "Startup Website",
+        "Startup Bekleidung",
+        "Visitenkarten",
+        "Rollup"
+      ],
       subtext: "Keine versteckten Kosten, kein Bullshit.",
       cta: "Bewerben Sie sich für Ihr Bundle",
-      seeMore: "Sehen Sie, was enthalten ist",
+      seeMore: "und mehr...",
       bundleLabel: "Sichtbarkeits-Paket",
       nav: {
         mvpDev: "MVP-Entwicklung",
@@ -500,6 +520,10 @@ const VisibiltyBundle = () => {
           {
             question: "Wann bekomme ich mein Visibility Bundle?",
             answer: "Da wir die Erstellung mehrerer Inhalte des Visibility Bundles bereits zu einem gewissen Grad semi-automatisiert haben, ein eingespieltes Team in der Erstellung von Visibility Bundles sind und eine Menge Erfahrung in der Betreuung von Startups haben, erstellen wir mindestens ein Visibility Bundle pro Woche. Wir arbeiten die Aufträge nach <a href='https://de.wikipedia.org/wiki/First_In_%E2%80%93_First_Out' target='_blank' rel='noopener noreferrer' class='text-violet-600 hover:text-violet-700 underline'>First In – First Out – Wikipedia</a> ab und halten die Anzahl von Aufträgen in unserer Pipeline beabsichtigt sehr klein. Dein Visibility Bundle wird also in jedem Fall sehr zeitnah und schnell abgearbeitet. Deutlich schneller, als du es vermutlich selbst anfertigen oder outsourcen könntest."
+          },
+          {
+            question: "Wie viel kostet es, alle Printmedien drucken zu lassen?",
+            answer: "Je nach Anbieter um die 100€ pro Rollup, 30€ pro Hoodie, 20€ für 500 Visitenkarten. Wir werden in Kürze auch Anbieter empfehlen mit denen wir gute Erfahrungen gemacht haben."
           }
         ]
       },
@@ -793,7 +817,7 @@ const VisibiltyBundle = () => {
                 {/* Mobile Text Content Below */}
                 <div className="w-full bg-white px-6 py-8">
                   <div className="max-w-[480px] mx-auto space-y-4 text-center">
-                      <motion.div className="animate-float">
+                      <motion.div className="animate-float pt-16 md:pt-0">
                         <span className="inline-block text-violet-600 text-xs md:text-sm uppercase tracking-wider font-light
                           px-2 py-0.5 md:px-4 md:py-1 rounded-full bg-violet-50 border border-violet-100 backdrop-blur-sm shadow-sm"
                         >
@@ -814,43 +838,63 @@ const VisibiltyBundle = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.2 }}
-                        className="text-sm md:text-lg font-light leading-relaxed max-w-xl mx-auto md:mx-0"
+                        className="text-sm md:text-lg font-light leading-relaxed"
                       >
                         {content.mainText}
-                        <span className="block mt-1 md:mt-2 text-xs md:text-base text-gray-500 md:text-gray-600">
-                          {content.subtext}
-                        </span>
                       </motion.p>
 
+                      {/* New key points list - horizontal pills */}
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.3 }}
-                        className="flex flex-col sm:flex-row gap-2 md:gap-4 pt-2 md:pt-4 justify-center md:justify-start"
+                        className="flex flex-wrap gap-2 py-2"
                       >
-                        <button 
-                          onClick={handleGetBundle}
+                        {content.keyPoints.map((point, index) => (
+                          <span
+                            key={index}
+                            className="inline-flex items-center px-3 py-1 rounded-full 
+                              bg-violet-50 border border-violet-100 text-violet-800
+                              text-sm font-light whitespace-nowrap"
+                          >
+                            {point}
+                          </span>
+                        ))}
+                      </motion.div>
+
+                      {/* "and more..." link - adjusted spacing */}
+                      <motion.a
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.4 }}
+                        href="#features"
+                        onClick={scrollToFeatures}
+                        className="inline-block text-violet-600 hover:text-violet-700 text-sm mt-2"
+                      >
+                        {content.seeMore}
+                      </motion.a>
+
+                      {/* Apply button */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.5 }}
+                        className="pt-4"
+                      >
+                        <CurvedArrow />
+                        <button
+                          onClick={() => setIsModalOpen(true)}
                           className="group relative inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 text-sm font-light 
                             overflow-hidden rounded-full text-white bg-black transition-all duration-300
-                          shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 hover:scale-105"
+                            shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 hover:scale-105"
                         >
                           <span className="relative z-10 flex items-center">
-                          {content.cta}
-                          <ArrowRight className="ml-2 -mr-1 h-4 w-4 transition-transform group-hover:translate-x-2" />
-                        </span>
+                            {content.cta}
+                            <ArrowRight className="ml-2 -mr-1 h-4 w-4 transition-transform group-hover:translate-x-2" />
+                          </span>
                           <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-violet-500 
                             opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         </button>
-                        <a 
-                          href="#features" 
-                          onClick={scrollToFeatures}
-                          className="group inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 text-sm font-light
-                            rounded-full text-gray-600 bg-gray-50 hover:bg-gray-100 transition-all duration-300
-                          border border-gray-200 hover:border-gray-300 hover:scale-105 hover:shadow-lg"
-                        >
-                              {content.seeMore}
-                              <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                        </a>
                       </motion.div>
                   </div>
                     </div>
@@ -863,8 +907,8 @@ const VisibiltyBundle = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-32 items-center">
                       {/* Text Content */}
                       <div className="w-full max-w-[480px] mx-auto md:mx-0">
-                        <div className="space-y-2 md:space-y-6 text-center md:text-left px-6 py-3 md:p-0">
-                          <motion.div className="animate-float">
+                        <div className="space-y-2 md:space-y-4 text-center md:text-left px-6 py-3 md:p-0">
+                          <motion.div className="animate-float pt-16 md:pt-0">
                             <span className="inline-block text-violet-600 text-xs md:text-sm uppercase tracking-wider font-light
                             px-2 py-0.5 md:px-4 md:py-1 rounded-full bg-violet-50 border border-violet-100 backdrop-blur-sm shadow-sm"
                             >
@@ -885,25 +929,55 @@ const VisibiltyBundle = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.2 }}
-                            className="text-sm md:text-lg font-light leading-relaxed max-w-xl mx-auto md:mx-0"
-                          >
+                            className="text-sm md:text-lg font-light leading-relaxed"
+                      >
                             {content.mainText}
-                            <span className="block mt-1 md:mt-2 text-xs md:text-base text-gray-500 md:text-gray-600">
-                              {content.subtext}
-                        </span>
                       </motion.p>
 
+                          {/* New key points list - horizontal pills */}
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.3 }}
-                            className="flex flex-col sm:flex-row gap-2 md:gap-4 pt-2 md:pt-4 justify-center md:justify-start"
-                      >
+                            className="flex flex-wrap gap-2 py-2"
+                          >
+                            {content.keyPoints.map((point, index) => (
+                              <span
+                                key={index}
+                                className="inline-flex items-center px-3 py-1 rounded-full 
+                                  bg-violet-50 border border-violet-100 text-violet-800
+                                  text-sm font-light whitespace-nowrap"
+                              >
+                                {point}
+                          </span>
+                            ))}
+                          </motion.div>
+
+                          {/* "and more..." link - adjusted spacing */}
+                          <motion.a
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.6, delay: 0.4 }}
+                          href="#features" 
+                            onClick={scrollToFeatures}
+                            className="inline-block text-violet-600 hover:text-violet-700 text-sm mt-2"
+                          >
+                            {content.seeMore}
+                          </motion.a>
+
+                          {/* Apply button */}
+                          <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.6, delay: 0.5 }}
+                            className="pt-4"
+                          >
+                            <CurvedArrow />
                         <button 
-                          onClick={handleGetBundle}
+                              onClick={() => setIsModalOpen(true)}
                               className="group relative inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 text-sm font-light 
                             overflow-hidden rounded-full text-white bg-black transition-all duration-300
-                              shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 hover:scale-105"
+                                shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 hover:scale-105"
                         >
                           <span className="relative z-10 flex items-center">
                                 {content.cta}
@@ -912,16 +986,6 @@ const VisibiltyBundle = () => {
                           <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-violet-500 
                             opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         </button>
-                        <a 
-                          href="#features" 
-                          onClick={scrollToFeatures}
-                              className="group inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 text-sm font-light
-                            rounded-full text-gray-600 bg-gray-50 hover:bg-gray-100 transition-all duration-300
-                              border border-gray-200 hover:border-gray-300 hover:scale-105 hover:shadow-lg"
-                        >
-                              {content.seeMore}
-                              <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                        </a>
                       </motion.div>
                     </div>
                   </div>
@@ -1196,6 +1260,47 @@ const VisibiltyBundle = () => {
     </>
   )
 }
+
+
+
+
+const CurvedArrow = () => {
+  return (
+    <div className="absolute w-full h-24 bottom-0 left-0 overflow-visible pointer-events-none">
+      <svg
+        viewBox="0 0 400 100"
+        className="w-full h-full"
+        style={{ transform: 'translateY(50%)' }}
+      >
+        <path
+          d="M350,10 Q200,120 50,10"
+          fill="none"
+          stroke="#FF4500"
+          strokeWidth="3"
+          strokeLinecap="round"
+          className="animate-draw"
+        >
+          <animate
+            attributeName="strokeDashoffset"
+            from="1000"
+            to="0"
+            dur="2s"
+            fill="freeze"
+          />
+        </path>
+        {/* Arrow head pointing to the button */}
+        <path
+          d="M60,10 L50,10 L55,20"
+          fill="none"
+          stroke="#FF4500"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </div>
+  );
+};
 
 export default VisibiltyBundle
 
