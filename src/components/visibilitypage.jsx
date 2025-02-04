@@ -881,7 +881,7 @@ const VisibiltyBundle = () => {
                         transition={{ duration: 0.6, delay: 0.5 }}
                         className="pt-4"
                       >
-                        <CurvedArrow />
+                        {/* <CurvedArrow /> */}
                         <button
                           onClick={() => setIsModalOpen(true)}
                           className="group relative inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 text-sm font-light 
@@ -972,7 +972,7 @@ const VisibiltyBundle = () => {
                             transition={{ duration: 0.6, delay: 0.5 }}
                             className="pt-4"
                           >
-                            <CurvedArrow />
+                            {/* <CurvedArrow /> */}
                         <button 
                               onClick={() => setIsModalOpen(true)}
                               className="group relative inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 text-sm font-light 

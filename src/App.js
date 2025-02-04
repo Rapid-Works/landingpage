@@ -72,11 +72,12 @@ const translations = {
         title: "Funding Guidance",
         description: "We assist startups in securing government funding to support their growth and development.",
         features: [
-          "Up to €35,000 in government funding",
+          "35,000€ in government funding",
           "Guidance through the application process",
           "Support for startups in North Rhine-Westphalia",
         ],
-        specialNote: "* This funding is specific to NRW, but we can support startups in other regions as well.",
+        specialNote: "* This funding is specific to NRW, but we can support startups in other regions as well. Learn more at: ",
+        specialNoteLink: "https://www.wirtschaft.nrw/go-to-market",
       },
     },
     approach: {
@@ -224,15 +225,14 @@ const translations = {
       },
       funding: {
         title: "Fördermittelberatung",
-        description:
-          "Wir unterstützen Startups bei der Beschaffung von staatlichen Fördermitteln zur Förderung ihres Wachstums und ihrer Entwicklung.",
+        description: "Wir unterstützen Startups bei der Beschaffung von staatlichen Fördermitteln zur Förderung ihres Wachstums und ihrer Entwicklung.",
         features: [
-          "Bis zu 35.000 € staatliche Förderung",
+          "35.000€ staatliche Förderung",
           "Betreuung während des Antragsverfahrens",
           "Unterstützung für Startups in Nordrhein-Westfalen",
         ],
-        specialNote:
-          "* Diese Förderung gilt speziell für NRW, wir können aber auch Startups in anderen Regionen unterstützen.",
+        specialNote: "* Diese Förderung gilt speziell für NRW, wir können aber auch Startups in anderen Regionen unterstützen. Mehr Informationen unter: ",
+        specialNoteLink: "https://www.wirtschaft.nrw/go-to-market",
       },
     },
     approach: {
@@ -661,6 +661,7 @@ const ServicesSection = ({ fadeIn }) => {
             description={translate("services.funding.description")}
             features={translate("services.funding.features")}
             specialNote={translate("services.funding.specialNote")}
+            specialNoteLink={translate("services.funding.specialNoteLink")}
             logo={NRWLogo}
           />
           <ServiceCard
@@ -681,17 +682,17 @@ const ServicesSection = ({ fadeIn }) => {
   )
 }
 
-const ServiceCard = ({ icon: Icon, title, description, features, specialNote, logo }) => (
+const ServiceCard = ({ icon: Icon, title, description, features, specialNote, specialNoteLink, logo }) => (
   <motion.div initial="initial" whileInView="animate" viewport={{ once: true }}>
-    <Card className="bg-gray-50 border-none shadow-lg hover:shadow-xl transition-shadow relative">
+    <Card className="bg-gray-50 border-none shadow-lg hover:shadow-xl transition-shadow relative min-h-[420px]">
       {logo && <img src={logo || "/placeholder.svg"} alt="NRW Logo" className="absolute top-4 right-4 w-12 h-12" />}
       <CardHeader>
         <Icon className="w-10 h-10 text-violet-500 mb-2" />
         <CardTitle className="text-2xl">{title}</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex flex-col h-full">
         <p className="text-gray-600">{description}</p>
-        <ul className="mt-4 space-y-2">
+        <ul className="mt-4 space-y-2 flex-grow">
           {features.map((feature, index) => (
             <li key={index} className="flex items-center">
               <CheckCircle className="h-5 w-5 text-violet-500 mr-2" />
@@ -699,7 +700,19 @@ const ServiceCard = ({ icon: Icon, title, description, features, specialNote, lo
             </li>
           ))}
         </ul>
-        {specialNote && <p className="mt-4 text-xs text-gray-500">{specialNote}</p>}
+        {specialNote && (
+          <p className="mt-4 text-xs text-gray-500">
+            {specialNote}
+            <a 
+              href={specialNoteLink} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-violet-600 hover:text-violet-700 hover:underline"
+            >
+              {specialNoteLink}
+            </a>
+          </p>
+        )}
       </CardContent>
     </Card>
   </motion.div>
