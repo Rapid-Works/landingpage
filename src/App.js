@@ -29,6 +29,7 @@ import platformBg from "./images/platform-bg.png"
 import Navbar from './components/Navbar'
 import ScrollToTop from './components/ScrollToTop'
 import NewsletterPopup from './components/NewsletterPopup'
+import Footer from './components/Footer'
 
 // Create and export Language Context with initial values
 export const LanguageContext = createContext({
@@ -588,7 +589,7 @@ function HeroSection({ fadeIn }) {
                     {renderTitle()}
                   </motion.h1>
 
-                  <motion.p 
+                  <motion.p
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.2 }}
@@ -703,9 +704,9 @@ const ServiceCard = ({ icon: Icon, title, description, features, specialNote, sp
         {specialNote && (
           <p className="mt-4 text-xs text-gray-500">
             {specialNote}
-            <a 
-              href={specialNoteLink} 
-              target="_blank" 
+            <a
+              href={specialNoteLink}
+              target="_blank"
               rel="noopener noreferrer"
               className="text-violet-600 hover:text-violet-700 hover:underline"
             >
@@ -981,113 +982,11 @@ const VisibilityCTA = ({ fadeIn }) => {
   )
 }
 
-const ImpressumSection = () => {
-  const { translate } = useContext(LanguageContext)
-
-  return (
-    <section className="w-full py-12 md:py-24 bg-white">
-      <div className="container px-4 md:px-6">
-        <h2 className="text-3xl font-bold mb-8">{translate("impressum.title")}</h2>
-
-        <div className="space-y-8">
-          <div>
-            <h3 className="text-xl font-semibold mb-4">{translate("impressum.companyInfo.title")}</h3>
-            <p>{translate("impressum.companyInfo.name")}</p>
-            <p>{translate("impressum.companyInfo.street")}</p>
-            <p>{translate("impressum.companyInfo.city")}</p>
-            <p>{translate("impressum.companyInfo.country")}</p>
-            <p>Email: {translate("impressum.companyInfo.email")}</p>
-            <p>Tel: {translate("impressum.companyInfo.phone")}</p>
-            <p>
-              {translate("impressum.companyInfo.managing")}: {translate("impressum.companyInfo.managingName")}
-            </p>
-          </div>
-
-          <div>
-            <h3 className="text-xl font-semibold mb-4">{translate("impressum.registration.title")}</h3>
-            <p>{translate("impressum.registration.court")}</p>
-            <p>{translate("impressum.registration.number")}</p>
-            <p>{translate("impressum.registration.vatId")}</p>
-          </div>
-
-          <div>
-            <h3 className="text-xl font-semibold mb-4">{translate("impressum.responsibility.title")}</h3>
-            <p>{translate("impressum.responsibility.name")}</p>
-            <p>{translate("impressum.responsibility.address")}</p>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-const Footer = () => {
-  const { translate } = useContext(LanguageContext)
-  const [showImpressum, setShowImpressum] = useState(false)
-
-  return (
-    <>
-      <footer className="w-full py-6 bg-white border-t border-gray-200">
-        <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-            <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
-              <Rocket className="h-6 w-6 text-violet-500" />
-              <p className="text-center text-sm leading-loose text-gray-600 md:text-left">
-                {translate("footer.copyright")}
-              </p>
-            </div>
-            <nav className="flex gap-4 sm:gap-6">
-              <button
-                className="text-sm font-medium hover:underline underline-offset-4 text-gray-500"
-                onClick={() => setShowImpressum(true)}
-              >
-                {translate("nav.impressum")}
-              </button>
-              <a className="text-sm font-medium hover:underline underline-offset-4 text-gray-500" href="#">
-                {translate("footer.terms")}
-              </a>
-              <a className="text-sm font-medium hover:underline underline-offset-4 text-gray-500" href="#">
-                {translate("footer.privacy")}
-              </a>
-            </nav>
-          </div>
-        </div>
-      </footer>
-
-      {/* Impressum Modal */}
-      {showImpressum && (
-        <div
-          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
-          onClick={() => setShowImpressum(false)}
-        >
-          <div
-            className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
-          >
-            <div className="p-6 relative">
-              <button
-                onClick={() => setShowImpressum(false)}
-                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-                aria-label="Close"
-              >
-                <X className="h-6 w-6" />
-              </button>
-              <ImpressumSection />
-            </div>
-          </div>
-        </div>
-      )}
-    </>
-  )
-}
-
 function App() {
   const [language, setLanguage] = useState(() => {
-    // Get saved language from localStorage or default to 'de'
     return localStorage.getItem('language') || 'de'
   })
 
-  // Save language to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('language', language)
   }, [language])
@@ -1095,7 +994,6 @@ function App() {
   const contextValue = useMemo(() => ({
     language,
     setLanguage: (newLang) => {
-      console.log("Setting language to:", newLang)
       setLanguage(newLang)
     },
     translate: (key) => {
