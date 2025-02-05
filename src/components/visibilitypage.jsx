@@ -23,6 +23,7 @@ import { LanguageContext as AppLanguageContext } from "../App"
 import Modal from './Modal'
 import NewsletterPopup from "./NewsletterPopup"
 import FAQModal, { FAQItem } from './FAQModal'
+import Footer from './Footer'
 
 const BundleItem = ({ title, description, index, imageSrc }) => (
   <motion.div
@@ -1025,54 +1026,23 @@ const VisibiltyBundle = () => {
 
                 <h2 className="text-4xl md:text-6xl font-light mb-8 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 bg-clip-text text-transparent">
                   {content.features.title}
-            </h2>
+                </h2>
                 <p className="text-gray-600 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
                   {content.features.subtitle}
                 </p>
-
-                {/* Enhanced Decorative Elements */}
-                <div className="absolute left-1/2 -translate-x-1/2 mt-12">
-                  <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-violet-300 to-transparent" />
-                  <div className="w-32 h-[1px] bg-gradient-to-r from-transparent via-violet-200 to-transparent mt-2" />
-                  <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-violet-100 to-transparent mt-2" />
-          </div>
               </motion.div>
 
               {/* Alternating List Items */}
               <div className="space-y-24 relative">
-                {/* Enhanced Connecting Line with Animation */}
-                <div className="absolute left-1/2 top-0 bottom-0 w-[1px] hidden md:block">
+                {bundleItems.map((item, index) => (
                   <motion.div
-                    initial={{ scaleY: 0 }}
-                    whileInView={{ scaleY: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1.5, ease: "easeOut" }}
-                    className="h-full origin-top"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-b from-violet-200 via-violet-200/50 to-transparent" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-violet-200/30 via-transparent to-transparent" />
-                  </motion.div>
-                </div>
-
-              {bundleItems.map((item, index) => (
-                  <motion.div
-                  key={index}
+                    key={index}
                     className="relative group"
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true, margin: "-100px" }}
                     transition={{ duration: 0.8, delay: 0.2 }}
                   >
-                    {/* Enhanced Connecting Dot */}
-                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:block">
-                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-violet-100 to-violet-200 border-2 border-violet-300 relative shadow-lg">
-                        <div className="absolute -inset-1 rounded-full border border-violet-200/50 animate-ping" />
-                        <div className="absolute inset-0 rounded-full bg-violet-400/20 animate-pulse" />
-                        <div className="absolute -inset-2 rounded-full border border-violet-200/50" />
-                        <div className="absolute -inset-3 rounded-full border border-violet-100/30" />
-                      </div>
-                    </div>
-
                     {/* Content Container */}
                     <div className={`flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-16 md:gap-32`}>
                       {/* Image Side */}
@@ -1084,10 +1054,6 @@ const VisibiltyBundle = () => {
                               alt={item.title}
                               className="w-full h-full object-contain mix-blend-multiply filter contrast-125"
                             />
-                            {/* Keep gradient effects but remove hover transitions */}
-                            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gray-50/30" />
-                            <div className="absolute inset-0 bg-gradient-to-tr from-violet-50/10 to-transparent" />
-                            <div className="absolute inset-0 border border-gray-200/20 rounded-3xl shadow-[0_8px_32px_-4px_rgba(0,0,0,0.1)]" />
                           </div>
                         </div>
                       </div>
@@ -1095,11 +1061,6 @@ const VisibiltyBundle = () => {
                       {/* Content Side */}
                       <div className="w-full md:w-1/2">
                         <div className="relative pl-16 md:pl-0">
-                          {/* Enhanced Item Number */}
-                          <span className="absolute -left-4 md:-left-12 top-1 text-8xl md:text-[10rem] font-extralight text-violet-200/10 select-none">
-                            {(index + 1).toString().padStart(2, '0')}
-                          </span>
-
                           <div className="space-y-8">
                             <div className="space-y-6">
                               <h3 className="text-3xl md:text-5xl font-light tracking-tight bg-gradient-to-br from-gray-900 to-gray-700 bg-clip-text text-transparent leading-relaxed pb-1">
@@ -1109,22 +1070,15 @@ const VisibiltyBundle = () => {
                                 {item.description}
                               </p>
                             </div>
-
-                            {/* Enhanced Decorative Elements */}
-                            <div className="relative">
-                              <div className="w-32 h-[2px] bg-gradient-to-r from-gray-900 to-gray-700 rounded-full opacity-40" />
-                              <div className="absolute top-0 left-0 w-16 h-[2px] bg-gradient-to-r from-gray-800 to-transparent rounded-full animate-pulse" />
-                              <div className="absolute top-2 left-0 w-24 h-[1px] bg-gradient-to-r from-gray-700 to-transparent rounded-full opacity-20" />
-                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </motion.div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
 
           {/* FAQ Section */}
           <section className="py-24 bg-gray-50">
@@ -1132,7 +1086,7 @@ const VisibiltyBundle = () => {
               <div className="text-center mb-16">
                 <h2 className="text-3xl font-light mb-4">
                   {content.faq.title}
-            </h2>
+                </h2>
               </div>
               
               <div className="max-w-3xl mx-auto divide-y divide-gray-200">
@@ -1154,10 +1108,10 @@ const VisibiltyBundle = () => {
                     {content.faq.showAll}
                     <ChevronRight className="ml-2 w-4 h-4" />
                   </button>
-                    </div>
-                    </div>
+                </div>
               </div>
-          </section>
+          </div>
+        </section>
 
           {/* FAQ Modal */}
           <FAQModal
@@ -1183,9 +1137,9 @@ const VisibiltyBundle = () => {
                   {content.finalCta.cta}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </button>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
 
           {/* MVP Section - Moved below Final CTA */}
           <section className="py-12 sm:py-32 bg-black text-white">
@@ -1226,36 +1180,10 @@ const VisibiltyBundle = () => {
 
         <NewsletterPopup />
 
-        <footer className="bg-[#0F1115] text-white py-16">
-          <div className={containerClass}>
-            <div className="grid grid-cols-1 gap-12">
-              {/* Newsletter Section */}
-              <div className="max-w-md">
-                <NewsletterForm />
-    </div>
-            </div>
-
-            {/* Bottom Bar */}
-            <div className="mt-16 pt-8 border-t border-white/10">
-              <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                <div className="text-gray-400">
-                  Copyright © 2024 RapidWorks. All rights reserved.
-                </div>
-                <div className="flex gap-6">
-                  <Link to="#" className="text-gray-400 hover:text-white transition-colors">Impressum</Link>
-            <button 
-                    onClick={() => setIsFAQModalOpen(true)}
-                    className="text-gray-400 hover:text-white transition-colors"
-            >
-                    FAQ
-            </button>
-                  <Link to="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</Link>
-                  <Link to="#" className="text-gray-400 hover:text-white transition-colors">Contact Us</Link>
-          </div>
-    </div>
-            </div>
-          </div>
-        </footer>
+        <Footer 
+          showFAQ={true} 
+          onFAQClick={() => setIsFAQModalOpen(true)} 
+        />
     </div>
     </>
   )
