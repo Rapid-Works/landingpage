@@ -201,15 +201,18 @@ const VisibiltyBundle = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isFAQModalOpen, setIsFAQModalOpen] = useState(false)
-  const formUrl = "https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAMAANEznbRUMkVHMFpWTTVaTjREWlc4Wk5WOEdNOFhMTi4u"
+  const [isLoading, setIsLoading] = useState(true)
 
-  // Update local state when context language changes
+  const { language, setLanguage } = context
+  // Retrieve language from localStorage on component mount
   useEffect(() => {
-    if (context?.language) {
-      setCurrentLanguage(context.language)
-      console.log("Language updated to:", context.language)
+    const storedLanguage = localStorage.getItem('language')
+    if (storedLanguage) {
+      setCurrentLanguage(storedLanguage)
+      setLanguage(storedLanguage)
     }
-  }, [context?.language])
+    setIsLoading(false)
+  }, [setLanguage])
 
   // Add safety check after all hooks
   if (!context) {
@@ -217,12 +220,23 @@ const VisibiltyBundle = () => {
     return <div>Loading...</div>
   }
 
-  const { language, setLanguage } = context
-
+  // Function to change language and store it in localStorage
   const handleLanguageChange = (newLang) => {
-    console.log("handleLanguageChange called with:", newLang)
     setLanguage(newLang)
-    setCurrentLanguage(newLang) // Update local state immediately
+    setCurrentLanguage(newLang)
+    localStorage.setItem('language', newLang)
+  }
+  
+  // Define form URLs for different languages
+  const formUrls = {
+    en: "https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAMAANEznbRUMkVHMFpWTTVaTjREWlc4Wk5WOEdNOFhMTi4u",
+    de: "https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAMAANEznbRUMks3UVRKVTlQU0Y1NEVTNDNVQjBRVlpUMy4u"
+  }
+
+  // Function to get the correct form URL based on language
+  const getFormUrl = () => {
+    const storedLanguage = localStorage.getItem('language') || currentLanguage
+    return formUrls[storedLanguage] || formUrls.en // fallback to English if language not found
   }
   
   const handleGetBundle = () => {
@@ -592,6 +606,10 @@ const VisibiltyBundle = () => {
   // Use currentLanguage instead of language from context
   const content = pageContent[currentLanguage]
 
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
+
   const bundleItems = [
     {
       title: content.bundleItems.website.title,
@@ -671,18 +689,18 @@ const VisibiltyBundle = () => {
                   className="px-4 py-2 rounded-full text-sm font-light bg-violet-50 text-violet-600"
                 >
                   {content.nav.visibilityBundle}
-              </Link>
-            </div>
+                </Link>
+              </div>
 
-              {/* Right: CTA & Language - Hidden on mobile */}
-              <div className="hidden md:flex items-center space-x-4">
-              <button 
+              {/* Right: CTA & Language - Visible on all views */}
+              <div className="flex items-center space-x-4">
+                <button 
                   onClick={() => window.open('https://calendly.com/yannick-familie-heeren/30min', '_blank')}
                   className="px-4 py-2 text-sm font-light text-white rounded-full bg-gradient-to-r from-violet-600 to-violet-500 hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5"
                 >
                   {content.nav.bookCall}
                 </button>
-                <div className="flex items-center space-x-1 text-sm">
+                <div className="hidden md:flex items-center space-x-1 text-sm">
                   <button
                     onClick={() => handleLanguageChange('en')}
                     className={`px-2 py-1 rounded-l transition-colors ${
@@ -702,10 +720,10 @@ const VisibiltyBundle = () => {
                         : 'text-gray-400 hover:text-gray-600'
                     }`}
                   >
-                      DE
-              </button>
-            </div>
-          </div>
+                    DE
+                  </button>
+                </div>
+              </div>
 
               {/* Mobile menu button */}
               <button 
@@ -751,12 +769,6 @@ const VisibiltyBundle = () => {
                   >
                     {content.nav.visibilityBundle}
                   </Link>
-                  <button
-                    onClick={() => window.open('https://calendly.com/yannick-familie-heeren/30min', '_blank')}
-                    className="w-full px-4 py-2 text-sm font-light text-white rounded-lg bg-gradient-to-r from-violet-600 to-violet-500"
-                  >
-                    {content.nav.bookCall}
-                  </button>
                   <div className="flex justify-center items-center space-x-1 text-sm border-t border-gray-100 pt-4">
                     <button
                       onClick={() => handleLanguageChange('en')}
@@ -890,8 +902,8 @@ const VisibiltyBundle = () => {
                             shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 hover:scale-105"
                         >
                           <span className="relative z-10 flex items-center">
-                            {content.cta}
-                            <ArrowRight className="ml-2 -mr-1 h-4 w-4 transition-transform group-hover:translate-x-2" />
+                                {content.cta}
+                                <ArrowRight className="ml-2 -mr-1 h-4 w-4 transition-transform group-hover:translate-x-2" />
                           </span>
                           <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-violet-500 
                             opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -1176,7 +1188,11 @@ const VisibiltyBundle = () => {
       {showForm && <BundleForm onClose={() => setShowForm(false)} />}
 
         {/* MS Forms Modal */}
-        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+        <Modal 
+          isOpen={isModalOpen} 
+          onClose={() => setIsModalOpen(false)}
+          formUrl={getFormUrl()} // Pass the correct form URL
+        />
 
         <NewsletterPopup />
 
@@ -1231,4 +1247,3 @@ const CurvedArrow = () => {
 };
 
 export default VisibiltyBundle
-

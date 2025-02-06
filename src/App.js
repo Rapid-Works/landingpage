@@ -963,7 +963,7 @@ const VisibilityCTA = ({ fadeIn }) => {
           variants={fadeIn}
         >
           <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-white">
-            Transform Your Brand in 24 Hours
+            Transform Your Brand
           </h2>
           <p className="mx-auto max-w-[700px] text-xl text-violet-100 md:text-2xl">
             Get a complete professional brand identity package, website, and marketing essentials - all delivered in just one day.
@@ -1051,4 +1051,3 @@ function App() {
 }
 
 export default App
-
