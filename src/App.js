@@ -966,7 +966,7 @@ const VisibilityCTA = ({ fadeIn }) => {
             Transform Your Brand
           </h2>
           <p className="mx-auto max-w-[700px] text-xl text-violet-100 md:text-2xl">
-            Get a complete professional brand identity package, website, and marketing essentials - all delivered in just one day.
+            Get a complete professional brand identity package, website, and marketing essentials - all delivered within days.
           </p>
           <Link
             to="/visibility"
