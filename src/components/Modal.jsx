@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/react';
 import { motion, AnimatePresence } from "framer-motion"
 import { X } from "lucide-react"
 
@@ -36,6 +37,7 @@ const Modal = ({ isOpen, onClose, formUrl }) => {
           </div>
         </div>
       </div>
+      <Analytics />
     </div>
   );
 };
