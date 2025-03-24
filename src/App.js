@@ -1,5 +1,6 @@
 import React, { useState, createContext, useContext, useEffect, useMemo } from "react"
 import { motion } from "framer-motion"
+import { Analytics } from "@vercel/analytics/react"
 import {
   Rocket,
   Lightbulb,
@@ -1018,6 +1019,7 @@ function App() {
         <div className="flex flex-col min-h-screen bg-white">
           <ScrollToTop />
           <Navbar />
+          <Analytics />
           <Routes>
             <Route
               path="/"

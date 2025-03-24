@@ -25,7 +25,6 @@ import NewsletterPopup from "./NewsletterPopup"
 import FAQModal, { FAQItem } from './FAQModal'
 import Footer from './Footer'
 import AirtableForm from "./AirtableForm"
-import { track } from '@vercel/analytics'
 
 const BundleItem = ({ title, description, index, imageSrc }) => (
   <motion.div
@@ -227,11 +226,6 @@ const VisibiltyBundle = () => {
     setLanguage(newLang)
     setCurrentLanguage(newLang)
     localStorage.setItem('language', newLang)
-    // Track language changes
-    track('language_changed', { 
-      from: currentLanguage,
-      to: newLang 
-    })
   }
   
   // Define form URLs for different languages with language parameter
@@ -248,10 +242,6 @@ const VisibiltyBundle = () => {
   
   const handleGetBundle = () => {
     setIsModalOpen(true)
-    // Track when users open the form
-    track('visibility_form_opened', { 
-      language: currentLanguage 
-    })
   }
 
   // Update the pageContent object with more translations
