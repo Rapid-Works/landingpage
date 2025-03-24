@@ -251,6 +251,7 @@ const BundleForm = () => {
                     handleInputChange(formSteps[currentStep].id, option.value);
                     nextStep();
                   }}
+                  
                   className="w-full p-4 text-left text-xl bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
                 >
                   {option.label}
