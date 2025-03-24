@@ -24,6 +24,8 @@ import Modal from './Modal'
 import NewsletterPopup from "./NewsletterPopup"
 import FAQModal, { FAQItem } from './FAQModal'
 import Footer from './Footer'
+import AirtableForm from "./AirtableForm"
+import { track } from '@vercel/analytics'
 
 const BundleItem = ({ title, description, index, imageSrc }) => (
   <motion.div
@@ -225,12 +227,17 @@ const VisibiltyBundle = () => {
     setLanguage(newLang)
     setCurrentLanguage(newLang)
     localStorage.setItem('language', newLang)
+    // Track language changes
+    track('language_changed', { 
+      from: currentLanguage,
+      to: newLang 
+    })
   }
   
-  // Define form URLs for different languages
+  // Define form URLs for different languages with language parameter
   const formUrls = {
-    en: "https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAMAANEznbRUMkVHMFpWTTVaTjREWlc4Wk5WOEdNOFhMTi4u",
-    de: "https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAMAANEznbRUMks3UVRKVTlQU0Y1NEVTNDNVQjBRVlpUMy4u"
+    en: "https://vbforms.vercel.app/?lang=en",
+    de: "https://vbforms.vercel.app/?lang=de"
   }
 
   // Function to get the correct form URL based on language
@@ -241,6 +248,10 @@ const VisibiltyBundle = () => {
   
   const handleGetBundle = () => {
     setIsModalOpen(true)
+    // Track when users open the form
+    track('visibility_form_opened', { 
+      language: currentLanguage 
+    })
   }
 
   // Update the pageContent object with more translations
@@ -661,6 +672,7 @@ const VisibiltyBundle = () => {
 
   return (
     <>
+    {/* <AirtableForm /> */}
     <div className="min-h-screen bg-white">
         {/* Updated Navbar */}
         <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md">
