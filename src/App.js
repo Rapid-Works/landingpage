@@ -31,6 +31,7 @@ import Navbar from './components/Navbar'
 import ScrollToTop from './components/ScrollToTop'
 import NewsletterPopup from './components/NewsletterPopup'
 import Footer from './components/Footer'
+import RapidWorksPage from "./components/new_landing_page"
 
 // Create and export Language Context with initial values
 export const LanguageContext = createContext({
@@ -1018,10 +1019,10 @@ function App() {
       <>
         <div className="flex flex-col min-h-screen bg-white">
           <ScrollToTop />
-          <Navbar />
+          {/* <Navbar /> */}
           <Analytics />
           <Routes>
-            <Route
+            {/* <Route
               path="/"
               element={
                 <main className="flex-1">
@@ -1033,6 +1034,14 @@ function App() {
                   <ContactSection fadeIn={fadeIn} />
                   <VisibilityCTA fadeIn={fadeIn} />
                   <NewsletterPopup />
+                </main>
+              }
+            /> */}
+            <Route
+              path="/"
+              element={
+                <main className="flex-1">
+                  <RapidWorksPage />
                 </main>
               }
             />
