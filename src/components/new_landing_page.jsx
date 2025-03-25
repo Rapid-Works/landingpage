@@ -205,8 +205,7 @@ export default function RapidWorksPage() {
                 {/* Decorative elements */}
                 <div className="absolute top-1/2 right-0 w-64 h-64 bg-gradient-to-r from-purple-400/30 to-indigo-400/30 rounded-full -translate-x-1/4 -translate-y-1/2 blur-xl z-0"></div>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-500 font-medium">Starting at</span>
+              <div className="flex justify-end items-center">
                 <button className="flex items-center gap-2 text-purple-600 font-medium group-hover:gap-3 transition-all">
                   Learn more <ArrowRight className="h-4 w-4" />
                 </button>
@@ -238,8 +237,7 @@ export default function RapidWorksPage() {
                 {/* Decorative elements */}
                 <div className="absolute top-1/2 right-0 w-64 h-64 bg-gradient-to-r from-blue-400/30 to-sky-400/30 rounded-full -translate-x-1/4 -translate-y-1/2 blur-xl z-0"></div>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-500 font-medium">Starting at</span>
+              <div className="flex justify-end items-center">
                 <button className="flex items-center gap-2 text-blue-600 font-medium group-hover:gap-3 transition-all">
                   Learn more <ArrowRight className="h-4 w-4" />
                 </button>
