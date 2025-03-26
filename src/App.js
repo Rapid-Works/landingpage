@@ -32,6 +32,12 @@ import ScrollToTop from './components/ScrollToTop'
 import NewsletterPopup from './components/NewsletterPopup'
 import Footer from './components/Footer'
 import RapidWorksPage from "./components/new_landing_page"
+import TeamPage from "./components/team_page"
+import BlueprintComingSoon from "./components/blueprint"
+import BlueprintPage from "./components/blueprint"
+import WorkshopsPage from "./components/workshop"
+import CoachingPage from "./components/coaching"
+import FinancingPage from "./components/financing"
 
 // Create and export Language Context with initial values
 export const LanguageContext = createContext({
@@ -1019,24 +1025,8 @@ function App() {
       <>
         <div className="flex flex-col min-h-screen bg-white">
           <ScrollToTop />
-          {/* <Navbar /> */}
           <Analytics />
           <Routes>
-            {/* <Route
-              path="/"
-              element={
-                <main className="flex-1">
-                  <HeroSection fadeIn={fadeIn} />
-                  <ServicesSection fadeIn={fadeIn} />
-                  <ApproachSection fadeIn={fadeIn} />
-                  <WhyChooseUsSection fadeIn={fadeIn} />
-                  <PostMVPOfferSection fadeIn={fadeIn} />
-                  <ContactSection fadeIn={fadeIn} />
-                  <VisibilityCTA fadeIn={fadeIn} />
-                  <NewsletterPopup />
-                </main>
-              }
-            /> */}
             <Route
               path="/"
               element={
@@ -1046,10 +1036,50 @@ function App() {
               }
             />
             <Route
+              path="/team"
+              element={
+                <main className="flex-1">
+                  <TeamPage />
+                </main>
+              }
+            />
+            <Route
+              path="/blueprint"
+              element={
+                <main className="flex-1">
+                  <BlueprintPage />
+                </main>
+              }
+            />
+            <Route
+              path="/workshop"
+              element={
+                <main className="flex-1">
+                  <WorkshopsPage />
+                </main>
+              }
+            />
+            <Route
               path="/visibility"
               element={
                 <main className="flex-1">
                   <VisibiltyBundle />
+                </main>
+              }
+            />
+            <Route
+              path="/coaching"
+              element={
+                <main className="flex-1">
+                  <CoachingPage />
+                </main>
+              }
+            />
+            <Route
+              path="/financing"
+              element={
+                <main className="flex-1">
+                  <FinancingPage />
                 </main>
               }
             />
