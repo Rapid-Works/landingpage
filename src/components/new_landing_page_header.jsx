@@ -27,20 +27,20 @@ export default function RapidWorksHeader() {
 
   // Determine which nav item is active based on current path
   const isActive = (path) => {
-    if (path === "/" && location.pathname === "/") return true
-    if (path !== "/" && location.pathname.startsWith(path)) return true
-    return false
+    if (path === "/" && location.pathname === "/") return false;
+    if (path !== "/" && location.pathname.startsWith(path)) return true;
+    return false;
   }
 
   // Navigation items with paths
   const navItems = [
-    { name: "Branding", icon: <Megaphone className="h-4 w-4" />, path: "/" },
+    { name: "Branding", icon: <Megaphone className="h-4 w-4" />, path: "/visibility" },
     { name: "Team", icon: <Users className="h-4 w-4" />, path: "/team" },
     { name: "Blueprint", icon: <FileText className="h-4 w-4" />, path: "/blueprint" },
     { name: "Coaching", icon: <Compass className="h-4 w-4" />, path: "/coaching" },
     { name: "Workshops", icon: <FileText className="h-4 w-4" />, path: "/workshop" },
     { name: "Financing", icon: <Euro className="h-4 w-4" />, path: "/financing" },
-    { name: "Bundle", icon: <Package className="h-4 w-4" />, path: "/visibility" },
+    { name: "Bundle", icon: <Package className="h-4 w-4" />, path: "/bundle" },
   ]
 
   return (
@@ -85,7 +85,7 @@ export default function RapidWorksHeader() {
               href="https://calendly.com/yannick-familie-heeren/30min" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="ml-4 px-8 py-2.5 bg-black text-white rounded-full hover:shadow-lg hover:translate-y-[-2px] active:translate-y-[0px] transition-all duration-300 font-medium text-sm"
+              className="ml-4 px-8 py-2.5 bg-black hover:bg-gradient-to-r hover:from-purple-600 hover:to-indigo-600 text-white rounded-full hover:shadow-lg hover:translate-y-[-2px] active:translate-y-[0px] transition-all duration-300 font-medium text-sm"
             >
               Book a Call
             </a>
@@ -104,7 +104,7 @@ export default function RapidWorksHeader() {
               href="https://calendly.com/yannick-familie-heeren/30min" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="px-5 py-2 bg-black text-white rounded-full hover:bg-gray-900 transition-all duration-300 font-medium text-sm"
+              className="px-5 py-2 bg-black hover:bg-gradient-to-r hover:from-purple-600 hover:to-indigo-600 text-white rounded-full hover:shadow-lg transition-all duration-300 font-medium text-sm"
             >
               Book a Call
             </a>

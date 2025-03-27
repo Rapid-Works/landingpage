@@ -116,19 +116,6 @@ const BlueprintPage = () => {
                     primaryColor="indigo"
                     onSubmit={handleSubmit}
                   />
-                  
-                  <div className="bg-gray-50 p-6 border-t border-gray-100 rounded-b-3xl border border-gray-100 border-t-0 shadow-xl">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-indigo-100 p-2 rounded-full">
-                      <Clock className="h-5 w-5 text-indigo-600" />
-                    </div>
-                    <div>
-                      <p className="text-gray-600 text-sm">
-                        <span className="font-bold">Limited spots available!</span> We're accepting only 50 companies for our beta program.
-                      </p>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>

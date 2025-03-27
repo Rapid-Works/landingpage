@@ -20,7 +20,7 @@ import EmailWaitlistForm from "./EmailWaitlistForm"
 const WorkshopsPage = () => {
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [selectedWorkshop, setSelectedWorkshop] = useState(null)
+  const [selectedWorkshops, setSelectedWorkshops] = useState([])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -62,6 +62,17 @@ const WorkshopsPage = () => {
     },
   ]
 
+  // Function to toggle workshop selection
+  const toggleWorkshopSelection = (workshopId) => {
+    setSelectedWorkshops((prevSelected) => {
+      if (prevSelected.includes(workshopId)) {
+        return prevSelected.filter((id) => id !== workshopId);
+      } else {
+        return [...prevSelected, workshopId];
+      }
+    });
+  };
+
   // Additional form field for Workshop selection
   const workshopSelection = (
     <div>
@@ -72,18 +83,23 @@ const WorkshopsPage = () => {
         Select a workshop above to indicate your preference (optional)
       </p>
 
-      {selectedWorkshop && (
+      {selectedWorkshops.length > 0 && (
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
           <div className="bg-amber-100 p-2 rounded-lg">
-            {workshops.find((w) => w.id === selectedWorkshop)?.icon}
+            {workshops.find((w) => w.id === selectedWorkshops[0])?.icon}
           </div>
           <div>
             <h4 className="font-bold text-gray-900">
-              {workshops.find((w) => w.id === selectedWorkshop)?.title}
+              {workshops.find((w) => w.id === selectedWorkshops[0])?.title}
             </h4>
             <p className="text-gray-600 text-sm">
-              {workshops.find((w) => w.id === selectedWorkshop)?.description}
+              {workshops.find((w) => w.id === selectedWorkshops[0])?.description}
             </p>
+            {selectedWorkshops.length > 1 && (
+              <span className="ml-2 bg-amber-200 text-amber-800 text-xs font-semibold px-2.5 py-0.5 rounded">
+                +{selectedWorkshops.length - 1} more
+              </span>
+            )}
           </div>
         </div>
       )}
@@ -159,16 +175,16 @@ const WorkshopsPage = () => {
                       <div
                         key={workshop.id}
                         className={`p-4 rounded-xl border transition-all duration-300 cursor-pointer ${
-                          selectedWorkshop === workshop.id
+                          selectedWorkshops.includes(workshop.id)
                             ? "border-amber-300 bg-amber-50"
                             : "border-gray-200 hover:border-amber-200 hover:bg-amber-50/50"
                         }`}
-                        onClick={() => setSelectedWorkshop(workshop.id)}
+                        onClick={() => toggleWorkshopSelection(workshop.id)}
                       >
                         <div className="flex items-start gap-3">
                           <div
                             className={`p-2 rounded-lg ${
-                              selectedWorkshop === workshop.id ? "bg-amber-100" : "bg-gray-100"
+                              selectedWorkshops.includes(workshop.id) ? "bg-amber-100" : "bg-gray-100"
                             }`}
                           >
                             {workshop.icon}
@@ -180,10 +196,10 @@ const WorkshopsPage = () => {
                           <div className="ml-auto">
                             <div
                               className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                                selectedWorkshop === workshop.id ? "border-amber-500 bg-amber-500" : "border-gray-300"
+                                selectedWorkshops.includes(workshop.id) ? "border-amber-500 bg-amber-500" : "border-gray-300"
                               }`}
                             >
-                              {selectedWorkshop === workshop.id && <Check className="h-3 w-3 text-white" />}
+                              {selectedWorkshops.includes(workshop.id) && <Check className="h-3 w-3 text-white" />}
                             </div>
                           </div>
                         </div>
@@ -198,11 +214,6 @@ const WorkshopsPage = () => {
                   <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2"></div>
 
                   <div className="relative z-10">
-                    <h3 className="text-xl font-bold text-white mb-2">Limited Seats Available</h3>
-                    <p className="text-white/80 mb-6">
-                      Each workshop is limited to 20 participants to ensure personalized attention and maximum value.
-                    </p>
-
                     <div className="flex items-center gap-3">
                       <div className="bg-white/20 backdrop-blur-md p-2 rounded-lg">
                         <Calendar className="h-5 w-5 text-white" />
@@ -227,7 +238,7 @@ const WorkshopsPage = () => {
                 primaryColor="amber"
                 onSubmit={handleSubmit}
                 additionalFields={workshopSelection}
-                selectedItem={selectedWorkshop}
+                selectedItem={selectedWorkshops.length > 0 ? selectedWorkshops[0] : null}
               />
               
               <div className="bg-gray-50 p-6 border-t border-gray-100 rounded-b-3xl border border-gray-100 border-t-0 shadow-xl mt-[-20px]">

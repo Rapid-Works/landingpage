@@ -24,6 +24,7 @@ import RapidWorksHeader from "./new_landing_page_header"
 // Import custom images
 import YannickProfile from "../images/yannickprofile.jpg"
 import BrandingImage from "../images/more.png"
+import RapidWorkLaptop from "../images/rapidworkdlaptop.png"
 
 export default function RapidWorksPage() {
   const [scrolled, setScrolled] = useState(false)
@@ -91,7 +92,7 @@ export default function RapidWorksPage() {
             <div className="flex flex-wrap justify-center gap-4">
               <button 
                 onClick={scrollToCTA}
-                className="px-8 py-4 bg-black text-white rounded-full hover:shadow-xl hover:translate-y-[-2px] active:translate-y-[0px] transition-all duration-300 font-medium">
+                className="px-8 py-4 bg-black hover:bg-gradient-to-r hover:from-purple-600 hover:to-indigo-600 text-white rounded-full hover:shadow-xl hover:translate-y-[-2px] active:translate-y-[0px] transition-all duration-300 font-medium">
                 Get Started
               </button>
               <button 
@@ -120,11 +121,11 @@ export default function RapidWorksPage() {
             {/* Rapid Branding */}
             <div className="group">
               <div className="relative overflow-hidden rounded-2xl aspect-[4/3] mb-6">
-                {/* Using the custom branding image with overlay */}
+                {/* Using the custom laptop image with overlay */}
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-600/90 via-purple-600/80 to-indigo-600/90 mix-blend-multiply z-10"></div>
                 <img
-                  src={BrandingImage}
-                  alt="Branding illustration"
+                  src={RapidWorkLaptop}
+                  alt="Rapid Works Laptop Display"
                   className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
                 />
 
@@ -140,19 +141,20 @@ export default function RapidWorksPage() {
                   </div>
                   <div>
                     <h3 className="text-3xl font-bold text-white mb-2">Rapid Branding</h3>
-                    <p className="text-white/90 max-w-md">
+                    <p className="text-white/90 max-w-md mb-3">
                       Get visible to your market in 1 week cheaper than building it yourself!
                     </p>
+                    <Link 
+                      to="/visibility" 
+                      className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-4 py-2 rounded-lg hover:bg-white/30 transition-all"
+                    >
+                      Learn more <ArrowRight className="h-4 w-4" />
+                    </Link>
                   </div>
                 </div>
 
                 {/* Decorative elements */}
                 <div className="absolute top-1/2 right-0 w-64 h-64 bg-gradient-to-r from-purple-400/30 to-indigo-400/30 rounded-full -translate-x-1/4 -translate-y-1/2 blur-xl z-0"></div>
-              </div>
-              <div className="flex justify-end items-center">
-                <Link to="/" className="flex items-center gap-2 text-purple-600 font-medium group-hover:gap-3 transition-all">
-                  Learn more <ArrowRight className="h-4 w-4" />
-                </Link>
               </div>
             </div>
 
@@ -179,17 +181,18 @@ export default function RapidWorksPage() {
                   </div>
                   <div>
                     <h3 className="text-3xl font-bold text-white mb-2">Rapid Team</h3>
-                    <p className="text-white/90 max-w-md">Find your expert the same day cheaper than own employees!</p>
+                    <p className="text-white/90 max-w-md mb-3">Find your expert the same day cheaper than own employees!</p>
+                    <Link 
+                      to="/team" 
+                      className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-4 py-2 rounded-lg hover:bg-white/30 transition-all"
+                    >
+                      Learn more <ArrowRight className="h-4 w-4" />
+                    </Link>
                   </div>
                 </div>
 
                 {/* Decorative elements */}
                 <div className="absolute top-1/2 right-0 w-64 h-64 bg-gradient-to-r from-blue-400/30 to-sky-400/30 rounded-full -translate-x-1/4 -translate-y-1/2 blur-xl z-0"></div>
-              </div>
-              <div className="flex justify-end items-center">
-                <Link to="/team" className="flex items-center gap-2 text-blue-600 font-medium group-hover:gap-3 transition-all">
-                  Learn more <ArrowRight className="h-4 w-4" />
-                </Link>
               </div>
             </div>
           </div>
@@ -219,19 +222,20 @@ export default function RapidWorksPage() {
                   </div>
                   <div>
                     <h3 className="text-2xl font-bold text-white mb-2">Rapid Blueprint</h3>
-                    <p className="text-white/90 max-w-md text-sm">
+                    <p className="text-white/90 max-w-md text-sm mb-3">
                       Own your processes in 1 week. You don't need dozens of tools!
                     </p>
+                    <Link 
+                      to="/blueprint" 
+                      className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-lg text-sm hover:bg-white/30 transition-all"
+                    >
+                      Learn more <ArrowRight className="h-4 w-4" />
+                    </Link>
                   </div>
                 </div>
 
                 {/* Decorative elements */}
                 <div className="absolute top-1/2 right-0 w-40 h-40 bg-gradient-to-r from-indigo-400/30 to-indigo-600/30 rounded-full -translate-x-1/4 -translate-y-1/2 blur-xl z-0"></div>
-              </div>
-              <div className="flex justify-end items-center">
-                <Link to="/blueprint" className="flex items-center gap-2 text-indigo-600 font-medium group-hover:gap-3 transition-all">
-                  Learn more <ArrowRight className="h-4 w-4" />
-                </Link>
               </div>
             </div>
 
@@ -258,19 +262,20 @@ export default function RapidWorksPage() {
                   </div>
                   <div>
                     <h3 className="text-2xl font-bold text-white mb-2">Rapid Coaching</h3>
-                    <p className="text-white/90 max-w-md text-sm">
+                    <p className="text-white/90 max-w-md text-sm mb-3">
                       Unleash your full potential with year-round coaching by a veteran founder!
                     </p>
+                    <Link 
+                      to="/coaching" 
+                      className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-lg text-sm hover:bg-white/30 transition-all"
+                    >
+                      Learn more <ArrowRight className="h-4 w-4" />
+                    </Link>
                   </div>
                 </div>
 
                 {/* Decorative elements */}
                 <div className="absolute top-1/2 right-0 w-40 h-40 bg-gradient-to-r from-amber-400/30 to-amber-600/30 rounded-full -translate-x-1/4 -translate-y-1/2 blur-xl z-0"></div>
-              </div>
-              <div className="flex justify-end items-center">
-                <Link to="/coaching" className="flex items-center gap-2 text-amber-600 font-medium group-hover:gap-3 transition-all">
-                  Learn more <ArrowRight className="h-4 w-4" />
-                </Link>
               </div>
             </div>
 
@@ -297,19 +302,20 @@ export default function RapidWorksPage() {
                   </div>
                   <div>
                     <h3 className="text-2xl font-bold text-white mb-2">Rapid Workshops</h3>
-                    <p className="text-white/90 max-w-md text-sm">
+                    <p className="text-white/90 max-w-md text-sm mb-3">
                       Close your business knowledge gaps. Don't become reliant on consultants!
                     </p>
+                    <Link 
+                      to="/workshop" 
+                      className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-lg text-sm hover:bg-white/30 transition-all"
+                    >
+                      Learn more <ArrowRight className="h-4 w-4" />
+                    </Link>
                   </div>
                 </div>
 
                 {/* Decorative elements */}
                 <div className="absolute top-1/2 right-0 w-40 h-40 bg-gradient-to-r from-emerald-400/30 to-emerald-600/30 rounded-full -translate-x-1/4 -translate-y-1/2 blur-xl z-0"></div>
-              </div>
-              <div className="flex justify-end items-center">
-                <Link to="/workshop" className="flex items-center gap-2 text-emerald-600 font-medium group-hover:gap-3 transition-all">
-                  Learn more <ArrowRight className="h-4 w-4" />
-                </Link>
               </div>
             </div>
           </div>
@@ -332,10 +338,13 @@ export default function RapidWorksPage() {
                     <Euro className="h-6 w-6 text-white" />
                   </div>
                   <h3 className="text-3xl font-bold text-white mb-3">Rapid Financing</h3>
-                  <p className="text-white/90 max-w-md text-lg">
+                  <p className="text-white/90 max-w-md text-lg mb-4">
                     Don't know how to finance your growth now? Did you know you can get up to 70% of our services subsidized? 
                     There are multiple options, reach out to us to find out for free!
                   </p>
+                  <Link to="/financing" className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-4 py-2 rounded-lg hover:bg-white/30 transition-all">
+                    Learn more <ArrowRight className="h-4 w-4" />
+                  </Link>
                 </div>
 
                 <Link to="/financing" className="bg-white text-rose-600 px-8 py-4 rounded-full font-medium hover:shadow-lg transition-all flex items-center gap-2">
@@ -371,9 +380,9 @@ export default function RapidWorksPage() {
                   <Package className="h-12 w-12 text-white" />
                 </div>
 
-                <h3 className="text-3xl md:text-4xl font-bold mb-6 text-white">Rapid Bundle</h3>
+                <h3 className="text-3xl md:text-4xl font-bold mb-6 text-white">Rapid Branding</h3>
                 <p className="text-white/80 text-xl mb-8">
-                  Reach the next level with all our services in one epic bundle!
+                  Reach the next level with comprehensive branding services!
                 </p>
 
                 <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl mb-8">
@@ -384,7 +393,7 @@ export default function RapidWorksPage() {
                 </div>
 
                 <Link to="/visibility" className="bg-white text-black px-8 py-4 rounded-full font-medium hover:shadow-lg hover:shadow-white/20 transition-all flex items-center gap-2 inline-flex">
-                  Get the Bundle <ArrowRight className="h-5 w-5" />
+                  Get Your Brand <ArrowRight className="h-5 w-5" />
                 </Link>
               </div>
 
@@ -430,7 +439,7 @@ export default function RapidWorksPage() {
             </p>
             <button 
               onClick={openCalendly}
-              className="px-8 py-4 bg-black text-white rounded-full hover:shadow-xl hover:translate-y-[-2px] active:translate-y-[0px] transition-all duration-300 font-medium text-lg"
+              className="px-8 py-4 bg-black hover:bg-gradient-to-r hover:from-purple-600 hover:to-indigo-600 text-white rounded-full hover:shadow-xl hover:translate-y-[-2px] active:translate-y-[0px] transition-all duration-300 font-medium text-lg"
             >
               Book a Call Now
             </button>

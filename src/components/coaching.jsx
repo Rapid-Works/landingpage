@@ -3,31 +3,31 @@
 // Correctly import the image
 import YannickProfile from "../images/yannickprofile.jpg"
 import { useState } from "react"
-import { ArrowRight, BookOpen, Calendar, Check, Target, TrendingUp, MessageSquare } from "lucide-react"
+import { ArrowRight, BookOpen, Calendar, Check, Target, TrendingUp, MessageSquare, MapPin } from "lucide-react"
 import RapidWorksHeader from "./new_landing_page_header"
 
 // Single coach data
 const coach = {
   name: "Yannick Heeren",
-  role: "Lead Startup Strategist",
+  role: "CEO RapidWorks",
   // Correctly use the imported image - no curly braces needed
   image: YannickProfile,
-  bio: "Former founder with multiple successful ventures and over 15 years of experience in the startup ecosystem. Yannick specializes in go-to-market strategy, product-market fit, and scaling operations for early-stage companies. He has helped over 50 startups achieve significant growth and secure funding.",
+  bio: "I am Yannick, the Founder and CEO of RapidWorks, the 3rd Startup I cofounded so far. In my Startup journey so far I built amazing software products, recruited hundreds of employees, sold amazing services to thousands of customers, scaled Startups quickly bootstrapped as well as investor financed but crucially made tons of mistakes down the road. As your Coach I will help you gaining the best results for your Startup and avoiding unnecessary mistakes.",
   expertise: [
-    "Product Strategy", 
-    "Market Validation", 
-    "Growth Hacking", 
-    "Pitch Development", 
-    "Investor Relations",
-    "Team Building"
+    "Product Strategy",
+    "Process optimization",
+    "Market Validation",
+    "Growth Hacking",
+    "Team Building",
+    "Fundraising"
   ],
-    experience: "15+ years",
-  education: "MSc in Business Strategy, University of Amsterdam",
+  experience: "Coached 50 Startups",
+  education: "BSc Mathematical Technical Software Engineer, FH Aachen",
   achievements: [
-    "Led multiple companies to successful exits",
-    "Helped startups raise over €50M in funding",
-    "Published author on startup methodology",
-    "Guest lecturer at leading business schools"
+    "Recruited 1,700 freelancers and 40 FTEs",
+    "Served 6,500 customers making 7 figure revenue",
+    "Scaled both Startups to 8 figure valuations",
+    "Coached 50 Startups in the DigitalHUB Aachen"
   ]
 }
 
@@ -86,10 +86,13 @@ const CoachingPage = () => {
                   accountability, and support you need to navigate challenges and accelerate your growth.
                 </p>
 
-              <button className="bg-white text-purple-600 px-8 py-4 rounded-full font-medium hover:shadow-lg hover:shadow-purple-900/20 transition-all flex items-center gap-2 group mx-auto">
-                  Schedule a Free Session
-                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                </button>
+              <button
+                className="bg-white text-purple-600 px-8 py-4 rounded-full font-medium hover:shadow-lg hover:shadow-purple-900/20 transition-all flex items-center gap-2 group mx-auto"
+                onClick={() => window.open("https://calendly.com/yannick-familie-heeren/30min", "_blank")}
+              >
+                Schedule a Free Session
+                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </button>
             </div>
           </div>
 
@@ -156,7 +159,10 @@ const CoachingPage = () => {
                     </div>
                   </div>
 
-                  <button className="w-full py-4 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors flex items-center justify-center gap-2 mt-6">
+                  <button
+                    className="w-full py-4 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors flex items-center justify-center gap-2 mt-6"
+                    onClick={() => window.open("https://calendly.com/yannick-familie-heeren/30min", "_blank")}
+                  >
                     <Calendar className="h-5 w-5" />
                     Schedule a Session with Yannick
                   </button>
@@ -181,7 +187,7 @@ const CoachingPage = () => {
                 </div>
                 <div className="mb-4">
                   <div className="bg-purple-100 p-3 rounded-xl inline-block">
-                    <Target className="h-6 w-6 text-purple-600" />
+                    <MapPin className="h-6 w-6 text-purple-600" />
                   </div>
                 </div>
                 <h3 className="text-xl font-bold mb-3">Initial Assessment</h3>

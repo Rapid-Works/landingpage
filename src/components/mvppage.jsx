@@ -13,13 +13,13 @@ import {
     UserCheck,
     CreditCard,
 } from "lucide-react"
-import { Input } from "./components/ui/input"
-import { Textarea } from "./components/ui/textarea"
-import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card"
-import HeroImage from "./images/heroimage.jpg"
-import HeroImage1 from "./images/heroimage2.jpg"
-import HeroImage2 from "./images/heroimage3.jpg"
-import NRWLogo from "./images/nwrlogo.png"
+import { Input } from "../components/ui/input"
+import { Textarea } from "../components/ui/textarea"
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
+import HeroImage from "../images/heroimage.jpg"
+import HeroImage1 from "../images/heroimage2.jpg"
+import HeroImage2 from "../images/heroimage3.jpg"
+import NRWLogo from "../images/nwrlogo.png"
 
 // Create Language Context
 const LanguageContext = createContext()
@@ -981,7 +981,7 @@ const Footer = () => {
     )
 }
 
-function App() {
+function MVPpage() {
     // Initialize language from localStorage or default to 'en'
     const [language, setLanguage] = useState(() => {
         const saved = localStorage.getItem("language")
@@ -1027,5 +1027,5 @@ function App() {
     )
 }
 
-export default App
+export default MVPpage
 

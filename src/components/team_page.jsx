@@ -48,10 +48,10 @@ const teamMembers = [
     image: SamuelProfile, // Using Samuel's profile image
     calendlyLink: "https://calendly.com/example-link",
     skills: ["Full Stack Development", "Agile Software Development", "Cloud Computing & DevOps"],
-    color: "from-blue-600 to-sky-600",
-    lightColor: "bg-blue-100",
-    textColor: "text-blue-700",
-    accentColor: "border-blue-300",
+    color: "from-purple-600 to-indigo-600",
+    lightColor: "bg-purple-100",
+    textColor: "text-purple-700",
+    accentColor: "border-purple-300",
     quote: "Building scalable solutions with cutting-edge technologies",
     experience: "5+ years",
   },
@@ -62,10 +62,10 @@ const teamMembers = [
     image: null,
     calendlyLink: "https://calendly.com/example-link",
     skills: ["UI/UX Design", "Prototyping & Wireframing", "Brand Identity Design"],
-    color: "from-rose-600 to-pink-600",
-    lightColor: "bg-rose-100",
-    textColor: "text-rose-700",
-    accentColor: "border-rose-300",
+    color: "from-purple-600 to-indigo-600",
+    lightColor: "bg-purple-100",
+    textColor: "text-purple-700",
+    accentColor: "border-purple-300",
     quote: "Creating beautiful, functional designs that delight users",
     experience: null,
   },
@@ -76,10 +76,10 @@ const teamMembers = [
     image: null,
     calendlyLink: "https://calendly.com/example-link",
     skills: ["Financial Planning & Analysis", "Investment Strategy", "Accounting & Tax Optimization"],
-    color: "from-emerald-600 to-teal-600",
-    lightColor: "bg-emerald-100",
-    textColor: "text-emerald-700",
-    accentColor: "border-emerald-300",
+    color: "from-purple-600 to-indigo-600",
+    lightColor: "bg-purple-100",
+    textColor: "text-purple-700",
+    accentColor: "border-purple-300",
     quote: "Optimizing financial strategies for sustainable growth",
     experience: null,
   },
@@ -95,9 +95,11 @@ const benefits = [
   },
   {
     id: 2,
-    text: "Cheaper than german salaries",
+    text: "Up to 70% cheaper with subsidies",
     icon: <Check className="h-5 w-5" />,
-    description: "Save up to 70% compared to hiring locally in Germany",
+    description: "Save significantly with our Rapid Financing subsidy solutions",
+    linkTo: "/financing",
+    linkText: "Learn about subsidies"
   },
   {
     id: 3,
@@ -167,7 +169,7 @@ const TeamPage = () => {
                 <div className="p-8">
                   <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
                     <Shield className="h-6 w-6 text-purple-600" />
-                    <span>Why Choose Our Team?</span>
+                    <span>Why Choose The Rapid Team?</span>
                   </h2>
 
                   {/* Benefits */}
@@ -179,12 +181,20 @@ const TeamPage = () => {
                       >
                         <div className="bg-gradient-to-br from-purple-600 to-indigo-600 p-3 rounded-xl text-white shadow-md">
                           {benefit.icon}
-              </div>
+                        </div>
                         <div>
                           <h3 className="font-bold text-gray-900">{benefit.text}</h3>
                           <p className="text-gray-600 text-sm mt-1">{benefit.description}</p>
-                </div>
-                  </div>
+                          {benefit.linkTo && (
+                            <a 
+                              href={benefit.linkTo} 
+                              className="text-purple-600 text-sm font-medium mt-1 flex items-center gap-1 hover:gap-2 transition-all"
+                            >
+                              {benefit.linkText} <ChevronRight className="h-3 w-3" />
+                            </a>
+                          )}
+                        </div>
+                      </div>
                     ))}
                   </div>
 
