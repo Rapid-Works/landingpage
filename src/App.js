@@ -38,6 +38,8 @@ import BlueprintPage from "./components/blueprint"
 import WorkshopsPage from "./components/workshop"
 import CoachingPage from "./components/coaching"
 import FinancingPage from "./components/financing"
+import MVPpage from "./components/mvppage"
+import BundlePage from "./components/bundle"
 
 // Create and export Language Context with initial values
 export const LanguageContext = createContext({
@@ -1080,6 +1082,22 @@ function App() {
               element={
                 <main className="flex-1">
                   <FinancingPage />
+                </main>
+              }
+            />
+            <Route
+              path="/mvp"
+              element={
+                <main className="flex-1">
+                  <MVPpage />
+                </main>
+              }
+            />
+            <Route
+              path="/bundle"
+              element={
+                <main className="flex-1">
+                  <BundlePage />
                 </main>
               }
             />

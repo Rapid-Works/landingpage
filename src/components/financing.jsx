@@ -1,9 +1,24 @@
 "use client"
 
-import { ArrowRight, Euro } from "lucide-react"
+import { ArrowRight, Euro, X } from "lucide-react"
 import RapidWorksHeader from "./new_landing_page_header"
+import { useState, useEffect } from "react"
 
 const FinancingPage = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false)
+
+    // Prevent body scroll when modal is open
+    useEffect(() => {
+        if (isModalOpen) {
+            document.body.style.overflow = 'hidden'
+        } else {
+            document.body.style.overflow = 'auto'
+        }
+        return () => {
+            document.body.style.overflow = 'auto'
+        }
+    }, [isModalOpen])
+
     return (
         <div className="min-h-screen bg-white font-sans selection:bg-rose-200 selection:text-rose-900">
             {/* Noise overlay */}
@@ -54,22 +69,51 @@ const FinancingPage = () => {
                         </div>
 
                         <div className="relative z-10 p-8 md:p-12 text-center">
-                                <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-                                    The right financing at the right time
-                                </h2>
+                            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+                                The right financing at the right time
+                            </h2>
                             <p className="text-white/90 text-lg mb-8 mx-auto max-w-3xl">
-                                    Every stage of your startup journey requires different financing strategies. We work with you to
-                                    identify the optimal funding mix for your current needs and future growth plans.
-                                </p>
+                                Every stage of your startup journey requires different financing strategies. We work with you to
+                                identify the optimal funding mix for your current needs and future growth plans.
+                            </p>
 
-                            <button className="bg-white text-rose-600 px-8 py-4 rounded-full font-medium hover:shadow-lg hover:shadow-rose-900/20 transition-all flex items-center gap-2 group mx-auto">
-                                    Free Consultation
-                                    <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                                </button>
+                            <button 
+                                className="bg-white text-rose-600 px-8 py-4 rounded-full font-medium hover:shadow-lg hover:shadow-rose-900/20 transition-all flex items-center gap-2 group mx-auto"
+                                onClick={() => setIsModalOpen(true)}
+                            >
+                                Free Consultation
+                                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                            </button>
                         </div>
                     </div>
                 </div>
             </main>
+
+            {/* Calendly Modal */}
+            {isModalOpen && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-2xl w-full max-w-4xl h-[80vh] relative flex flex-col">
+                        <div className="flex justify-between items-center p-4 border-b">
+                            <h3 className="font-bold text-lg">Schedule a Free Consultation</h3>
+                            <button 
+                                onClick={() => setIsModalOpen(false)}
+                                className="p-2 rounded-full hover:bg-gray-100"
+                            >
+                                <X className="h-5 w-5" />
+                            </button>
+                        </div>
+                        <div className="flex-grow">
+                            <iframe
+                                src="https://calendly.com/yannick-familie-heeren/30min?primary_color=dc2626&text_color=374151&hide_gdpr_banner=1&name_field=0&a1=Rapid%20Financing"
+                                width="100%"
+                                height="100%"
+                                frameBorder="0"
+                                title="Schedule a meeting"
+                            ></iframe>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
