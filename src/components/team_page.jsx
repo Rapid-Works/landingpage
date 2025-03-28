@@ -151,10 +151,10 @@ const TeamPage = () => {
           {/* Page intro */}
           <div className="text-center mb-16 max-w-3xl mx-auto">
             <div className="inline-block mb-4 px-4 py-1.5 bg-gradient-to-r from-purple-100 to-indigo-100 rounded-full text-purple-700 font-medium text-sm">
-              Rapid Team
-            </div>
+                Rapid Team
+              </div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
               We have all the{" "}
               <span className="relative inline-block">
                 <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600">
@@ -202,7 +202,7 @@ const TeamPage = () => {
                         >
                           <div className={`bg-gradient-to-br ${gradient} p-3 rounded-xl text-white shadow-md`}>
                             {benefit.icon}
-                          </div>
+                </div>
                           <div>
                             <h3 className="font-bold text-gray-900">{benefit.text}</h3>
                             <p className="text-gray-600 text-sm mt-1">{benefit.description}</p>
@@ -215,7 +215,7 @@ const TeamPage = () => {
                               </a>
                             )}
                           </div>
-                        </div>
+                  </div>
                       );
                     })}
                   </div>
@@ -269,7 +269,7 @@ const TeamPage = () => {
                           {member.role}
                         </div>
                       </div>
-                    </div>
+              </div>
 
                     {/* Profile section */}
                     <div className="px-8 pt-8 pb-6 relative">
@@ -280,22 +280,22 @@ const TeamPage = () => {
                             <img
                               src={member.image || "/placeholder.svg"}
                               alt={member.name}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
+                    className="w-full h-full object-cover"
+                  />
+                </div>
                         ) : (
                           <div className="w-24 h-24 rounded-2xl border-4 border-white shadow-lg bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                             <Users className="h-10 w-10 text-gray-400" />
-                          </div>
+                  </div>
                         )}
-                      </div>
+                  </div>
 
                       {/* Name and quote */}
                       <div className="mt-12">
                         <h3 className="text-xl font-bold text-gray-900 mb-2">{member.name}</h3>
                         <p className={`${member.textColor} text-sm italic mb-4`}>"{member.quote}"</p>
-                      </div>
-                    </div>
+                  </div>
+                </div>
 
                     {/* Skills section */}
                     <div className="px-8 pb-8">
@@ -307,9 +307,9 @@ const TeamPage = () => {
                             className={`${member.lightColor} ${member.textColor} px-4 py-2 rounded-lg text-sm font-medium`}
                           >
                             {skill}
-                          </div>
+              </div>
                         ))}
-                      </div>
+            </div>
 
                       <div className="mt-4">
                         <button
@@ -317,8 +317,8 @@ const TeamPage = () => {
                         >
                           ...and more
                         </button>
-                      </div>
-                    </div>
+                  </div>
+                  </div>
                   </div>
                 ))}
               </div>

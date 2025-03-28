@@ -1,7 +1,7 @@
 "use client"
 
 // Correctly import the image
-import YannickProfile from "../images/yannickprofile.jpg"
+import YannickProfile from "../images/yannickprofile.png"
 import { useState } from "react"
 import { ArrowRight, BookOpen, Calendar, Check, Target, TrendingUp, MessageSquare, MapPin } from "lucide-react"
 import RapidWorksHeader from "./new_landing_page_header"

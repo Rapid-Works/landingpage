@@ -18,11 +18,12 @@ import {
   Megaphone,
   Euro,
   Compass,
+  Loader2
 } from "lucide-react"
 import RapidWorksHeader from "./new_landing_page_header"
 
 // Import custom images
-import YannickProfile from "../images/yannickprofile.jpg"
+import YannickProfile from "../images/yannickprofile.png"
 import BrandingImage from "../images/more.png"
 import RapidWorkLaptop from "../images/rapidworkdlaptop.png"
 
@@ -31,6 +32,9 @@ export default function RapidWorksPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const servicesRef = useRef(null)
   const ctaRef = useRef(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isCalendlyLoading, setIsCalendlyLoading] = useState(true)
+  const iframeRef = useRef(null)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,6 +43,21 @@ export default function RapidWorksPage() {
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
+
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'auto'
+    }
+    return () => {
+      document.body.style.overflow = 'auto'
+    }
+  }, [isModalOpen])
+
+  const handleIframeLoad = () => {
+    setIsCalendlyLoading(false)
+  }
 
   const scrollToServices = () => {
     servicesRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -50,6 +69,11 @@ export default function RapidWorksPage() {
 
   const openCalendly = () => {
     window.open('https://calendly.com/yannick-familie-heeren/30min', '_blank')
+  }
+
+  const openCalendlyModal = () => {
+    setIsCalendlyLoading(true)
+    setIsModalOpen(true)
   }
 
   return (
@@ -322,35 +346,36 @@ export default function RapidWorksPage() {
           {/* Financing Card - Special Design */}
           <div className="mb-16">
             <div className="relative overflow-hidden rounded-2xl h-auto min-h-[300px] md:h-80">
-              {/* Image with gradient overlay */}
+              {/* Image with gradient overlay - Using the specific image you requested */}
               <div className="absolute inset-0 bg-gradient-to-r from-rose-600/90 via-rose-600/80 to-orange-600/90 mix-blend-multiply z-10"></div>
               <img
-                src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80"
-                alt="Financing illustration"
+                src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1415&q=80"
+                alt="Person using MacBook Pro with financial data"
                 className="absolute inset-0 w-full h-full object-cover object-center"
               />
 
               {/* Content */}
-              <div className="absolute inset-0 z-20 p-6 md:p-12 flex flex-col items-start md:flex-row md:items-center justify-between">
+              <div className="absolute inset-0 z-20 p-6 md:p-12 flex flex-col md:flex-row items-center justify-between">
                 <div className="mb-8 md:mb-0 w-full md:w-3/5">
-                  <div className="bg-white/20 backdrop-blur-md w-14 h-14 rounded-2xl flex items-center justify-center mb-4">
+                  <div className="bg-white/20 backdrop-blur-md w-14 h-14 rounded-2xl flex items-center justify-center mb-6">
                     <Euro className="h-6 w-6 text-white" />
                   </div>
-                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">Rapid Financing</h3>
+                  <h3 className="text-3xl font-bold text-white mb-3">Rapid Financing</h3>
                   <p className="text-white/90 text-sm md:text-lg mb-4">
                     Don't know how to finance your growth now? Did you know you can get up to 70% of our services subsidized?
                     There are multiple options, reach out to us to find out for free!
                   </p>
-                  <Link to="/financing" className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-3 py-1.5 md:px-4 md:py-2 rounded-lg hover:bg-white/30 transition-all text-sm md:text-base">
+                  <Link to="/financing" className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-4 py-2 rounded-lg hover:bg-white/30 transition-all">
                     Learn more <ArrowRight className="h-4 w-4" />
                   </Link>
                 </div>
 
-                <div className="w-full md:w-auto">
-                  <Link to="/financing" className="w-full md:w-auto bg-white text-rose-600 px-6 py-3 md:px-8 md:py-4 rounded-full font-medium hover:shadow-lg transition-all flex items-center justify-center md:justify-start gap-2">
-                    Free Consultation <ArrowRight className="h-5 w-5" />
-                  </Link>
-                </div>
+                <button 
+                  onClick={openCalendlyModal}
+                  className="bg-white text-rose-600 px-8 py-4 rounded-full font-medium hover:shadow-lg transition-all flex items-center gap-2"
+                >
+                  Free Consultation <ArrowRight className="h-5 w-5" />
+                </button>
               </div>
 
               {/* Decorative elements */}
@@ -383,7 +408,7 @@ export default function RapidWorksPage() {
 
                 <h3 className="text-3xl md:text-4xl font-bold mb-6 text-white">Rapid Bundle</h3>
                 <p className="text-white/80 text-xl mb-8">
-                  Reach the next level with comprehensive branding services!
+                  Reach the next level with all our Services combined in one bundle!
                 </p>
 
                 <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl mb-8">
@@ -447,6 +472,41 @@ export default function RapidWorksPage() {
           </div>
         </div>
       </section>
+
+      {/* Add Calendly Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-2">
+          <div className="bg-white rounded-2xl w-full max-w-7xl h-[95vh] relative flex flex-col">
+            <div className="flex justify-between items-center p-4 border-b">
+              <h3 className="font-bold text-lg">Schedule a Free Consultation</h3>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="p-2 rounded-full hover:bg-gray-100"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="flex-grow relative">
+              {isCalendlyLoading && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-white">
+                  <Loader2 className="h-10 w-10 text-rose-600 animate-spin mb-4" />
+                  <p className="text-gray-600">Loading scheduling calendar...</p>
+                </div>
+              )}
+              <iframe
+                ref={iframeRef}
+                src="https://calendly.com/yannick-familie-heeren/30min?primary_color=dc2626&text_color=374151&hide_gdpr_banner=1&name_field=0&a1=Rapid%20Financing"
+                width="100%"
+                height="100%"
+                frameBorder="0"
+                title="Schedule a meeting"
+                onLoad={handleIframeLoad}
+                className={isCalendlyLoading ? "opacity-0" : "opacity-100"}
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
