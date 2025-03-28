@@ -1,11 +1,13 @@
 "use client"
 
-import { ArrowRight, Euro, X } from "lucide-react"
+import { ArrowRight, Euro, X, Loader2 } from "lucide-react"
 import RapidWorksHeader from "./new_landing_page_header"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 
 const FinancingPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isCalendlyLoading, setIsCalendlyLoading] = useState(true)
+    const iframeRef = useRef(null)
 
     // Prevent body scroll when modal is open
     useEffect(() => {
@@ -18,6 +20,11 @@ const FinancingPage = () => {
             document.body.style.overflow = 'auto'
         }
     }, [isModalOpen])
+
+    // Handle iframe load event
+    const handleIframeLoad = () => {
+        setIsCalendlyLoading(false)
+    }
 
     return (
         <div className="min-h-screen bg-white font-sans selection:bg-rose-200 selection:text-rose-900">
@@ -79,7 +86,10 @@ const FinancingPage = () => {
 
                             <button 
                                 className="bg-white text-rose-600 px-8 py-4 rounded-full font-medium hover:shadow-lg hover:shadow-rose-900/20 transition-all flex items-center gap-2 group mx-auto"
-                                onClick={() => setIsModalOpen(true)}
+                                onClick={() => {
+                                    setIsCalendlyLoading(true);
+                                    setIsModalOpen(true);
+                                }}
                             >
                                     Free Consultation
                                     <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -89,10 +99,10 @@ const FinancingPage = () => {
                         </div>
             </main>
 
-            {/* Calendly Modal */}
+            {/* Calendly Modal - Making it even larger */}
             {isModalOpen && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl w-full max-w-4xl h-[80vh] relative flex flex-col">
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-2">
+                    <div className="bg-white rounded-2xl w-full max-w-7xl h-[95vh] relative flex flex-col">
                         <div className="flex justify-between items-center p-4 border-b">
                             <h3 className="font-bold text-lg">Schedule a Free Consultation</h3>
                                             <button
@@ -102,13 +112,22 @@ const FinancingPage = () => {
                                 <X className="h-5 w-5" />
                                             </button>
                         </div>
-                        <div className="flex-grow">
+                        <div className="flex-grow relative">
+                            {isCalendlyLoading && (
+                                <div className="absolute inset-0 flex flex-col items-center justify-center bg-white">
+                                    <Loader2 className="h-10 w-10 text-rose-600 animate-spin mb-4" />
+                                    <p className="text-gray-600">Loading scheduling calendar...</p>
+                                </div>
+                            )}
                             <iframe
+                                ref={iframeRef}
                                 src="https://calendly.com/yannick-familie-heeren/30min?primary_color=dc2626&text_color=374151&hide_gdpr_banner=1&name_field=0&a1=Rapid%20Financing"
                                 width="100%"
                                 height="100%"
                                 frameBorder="0"
                                 title="Schedule a meeting"
+                                onLoad={handleIframeLoad}
+                                className={isCalendlyLoading ? "opacity-0" : "opacity-100"}
                             ></iframe>
                         </div>
                     </div>
