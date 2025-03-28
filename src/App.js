@@ -40,6 +40,7 @@ import CoachingPage from "./components/coaching"
 import FinancingPage from "./components/financing"
 import MVPpage from "./components/mvppage"
 import BundlePage from "./components/bundle"
+import RapidWorksHeader from "./components/new_landing_page_header"
 
 // Create and export Language Context with initial values
 export const LanguageContext = createContext({
@@ -992,6 +993,7 @@ const VisibilityCTA = ({ fadeIn }) => {
   )
 }
 
+
 function App() {
   const [language, setLanguage] = useState(() => {
     return localStorage.getItem('language') || 'de'
@@ -1020,6 +1022,24 @@ function App() {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
     transition: { duration: 0.6 },
+  }
+
+
+  const NewMVPpage = () => {
+    return (
+      <div>
+         <RapidWorksHeader />
+        <main className="flex-1 pt-16">
+          <HeroSection fadeIn={fadeIn} />
+          <ServicesSection fadeIn={fadeIn} />
+          <ApproachSection fadeIn={fadeIn} />
+          <WhyChooseUsSection fadeIn={fadeIn} />
+          <PostMVPOfferSection fadeIn={fadeIn} />
+          <ContactSection fadeIn={fadeIn} />
+        </main>
+        {/* <Footer /> */}
+      </div>
+    )
   }
 
   return (
@@ -1089,7 +1109,7 @@ function App() {
               path="/mvp"
               element={
                 <main className="flex-1">
-                  <MVPpage />
+                  <NewMVPpage />
                 </main>
               }
             />

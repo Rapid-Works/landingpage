@@ -90,9 +90,9 @@ const CoachingPage = () => {
                 className="bg-white text-purple-600 px-8 py-4 rounded-full font-medium hover:shadow-lg hover:shadow-purple-900/20 transition-all flex items-center gap-2 group mx-auto"
                 onClick={() => window.open("https://calendly.com/yannick-familie-heeren/30min", "_blank")}
               >
-                Schedule a Free Session
-                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </button>
+                  Schedule a Free Session
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                </button>
             </div>
           </div>
 

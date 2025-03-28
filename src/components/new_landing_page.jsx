@@ -79,23 +79,22 @@ export default function RapidWorksPage() {
               </span>{" "}
               Agency for{" "}
               <span className="relative inline-block px-2">
-                <span className="relative z-10">Startups</span>
+                <span className="relative z-10">your Startup</span>
                 <span className="absolute bottom-2 left-0 w-full h-4 bg-red-300 rounded-lg -z-10 opacity-70"></span>
               </span>
             </h2>
 
             <p className="text-xl md:text-2xl max-w-3xl mx-auto text-gray-600 leading-relaxed mb-10">
-              Being a founder is the hardest job in the world. With our services we adress the main challenges of
-              building an aspiring company.
+              You are not alone, 80% of the problems faced by startups are identical. We solve these 80% at unbeatable prices, so you can spend your time and capital on your core business.
             </p>
 
             <div className="flex flex-wrap justify-center gap-4">
-              <button 
+              <button
                 onClick={scrollToCTA}
                 className="px-8 py-4 bg-black hover:bg-gradient-to-r hover:from-purple-600 hover:to-indigo-600 text-white rounded-full hover:shadow-xl hover:translate-y-[-2px] active:translate-y-[0px] transition-all duration-300 font-medium">
                 Get Started
               </button>
-              <button 
+              <button
                 onClick={scrollToServices}
                 className="px-8 py-4 bg-white border border-gray-200 text-gray-800 rounded-full hover:shadow-xl hover:translate-y-[-2px] active:translate-y-[0px] transition-all duration-300 font-medium"
               >
@@ -132,7 +131,7 @@ export default function RapidWorksPage() {
                 {/* Content */}
                 <div className="absolute inset-0 z-20 p-8 flex flex-col justify-between">
                   <div className="flex justify-between items-start w-full">
-                    <div className="bg-white/20 backdrop-blur-md w-14 h-14 rounded-2xl flex items-center justify-center">
+                  <div className="bg-white/20 backdrop-blur-md w-14 h-14 rounded-2xl flex items-center justify-center">
                       <Megaphone className="h-6 w-6 text-white" />
                     </div>
                     <span className="text-xs font-medium text-white bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
@@ -144,8 +143,8 @@ export default function RapidWorksPage() {
                     <p className="text-white/90 max-w-md mb-3">
                       Get visible to your market in 1 week cheaper than building it yourself!
                     </p>
-                    <Link 
-                      to="/visibility" 
+                    <Link
+                      to="/visibility"
                       className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-4 py-2 rounded-lg hover:bg-white/30 transition-all"
                     >
                       Learn more <ArrowRight className="h-4 w-4" />
@@ -172,8 +171,8 @@ export default function RapidWorksPage() {
                 {/* Content */}
                 <div className="absolute inset-0 z-20 p-8 flex flex-col justify-between">
                   <div className="flex justify-between items-start w-full">
-                    <div className="bg-white/20 backdrop-blur-md w-14 h-14 rounded-2xl flex items-center justify-center">
-                      <Users className="h-6 w-6 text-white" />
+                  <div className="bg-white/20 backdrop-blur-md w-14 h-14 rounded-2xl flex items-center justify-center">
+                    <Users className="h-6 w-6 text-white" />
                     </div>
                     <span className="text-xs font-medium text-white bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
                       Experts
@@ -182,8 +181,8 @@ export default function RapidWorksPage() {
                   <div>
                     <h3 className="text-3xl font-bold text-white mb-2">Rapid Team</h3>
                     <p className="text-white/90 max-w-md mb-3">Find your expert the same day cheaper than own employees!</p>
-                    <Link 
-                      to="/team" 
+                    <Link
+                      to="/team"
                       className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-4 py-2 rounded-lg hover:bg-white/30 transition-all"
                     >
                       Learn more <ArrowRight className="h-4 w-4" />
@@ -215,18 +214,18 @@ export default function RapidWorksPage() {
                   <div className="flex justify-between items-start w-full">
                     <div className="bg-white/20 backdrop-blur-md w-12 h-12 rounded-xl flex items-center justify-center">
                       <FileText className="h-5 w-5 text-white" />
-                    </div>
-                    <span className="text-xs font-medium text-white bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
-                      Process
-                    </span>
-                  </div>
+                </div>
+                  <span className="text-xs font-medium text-white bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
+                    Process
+                  </span>
+                </div>
                   <div>
                     <h3 className="text-2xl font-bold text-white mb-2">Rapid Blueprint</h3>
                     <p className="text-white/90 max-w-md text-sm mb-3">
-                      Own your processes in 1 week. You don't need dozens of tools!
-                    </p>
-                    <Link 
-                      to="/blueprint" 
+                  Own your processes in 1 week. You don't need dozens of tools!
+                </p>
+                    <Link
+                      to="/blueprint"
                       className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-lg text-sm hover:bg-white/30 transition-all"
                     >
                       Learn more <ArrowRight className="h-4 w-4" />
@@ -255,18 +254,18 @@ export default function RapidWorksPage() {
                   <div className="flex justify-between items-start w-full">
                     <div className="bg-white/20 backdrop-blur-md w-12 h-12 rounded-xl flex items-center justify-center">
                       <Compass className="h-5 w-5 text-white" />
-                    </div>
-                    <span className="text-xs font-medium text-white bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
-                      Growth
-                    </span>
-                  </div>
+                </div>
+                  <span className="text-xs font-medium text-white bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
+                    Growth
+                  </span>
+                </div>
                   <div>
                     <h3 className="text-2xl font-bold text-white mb-2">Rapid Coaching</h3>
                     <p className="text-white/90 max-w-md text-sm mb-3">
-                      Unleash your full potential with year-round coaching by a veteran founder!
-                    </p>
-                    <Link 
-                      to="/coaching" 
+                  Unleash your full potential with year-round coaching by a veteran founder!
+                </p>
+                    <Link
+                      to="/coaching"
                       className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-lg text-sm hover:bg-white/30 transition-all"
                     >
                       Learn more <ArrowRight className="h-4 w-4" />
@@ -295,18 +294,18 @@ export default function RapidWorksPage() {
                   <div className="flex justify-between items-start w-full">
                     <div className="bg-white/20 backdrop-blur-md w-12 h-12 rounded-xl flex items-center justify-center">
                       <Presentation className="h-5 w-5 text-white" />
-                    </div>
-                    <span className="text-xs font-medium text-white bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
-                      Knowledge
-                    </span>
-                  </div>
+                </div>
+                  <span className="text-xs font-medium text-white bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
+                    Knowledge
+                  </span>
+                </div>
                   <div>
                     <h3 className="text-2xl font-bold text-white mb-2">Rapid Workshops</h3>
                     <p className="text-white/90 max-w-md text-sm mb-3">
-                      Close your business knowledge gaps. Don't become reliant on consultants!
-                    </p>
-                    <Link 
-                      to="/workshop" 
+                  Close your business knowledge gaps. Don't become reliant on consultants!
+                </p>
+                    <Link
+                      to="/workshop"
                       className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-lg text-sm hover:bg-white/30 transition-all"
                     >
                       Learn more <ArrowRight className="h-4 w-4" />
@@ -322,7 +321,7 @@ export default function RapidWorksPage() {
 
           {/* Financing Card - Special Design */}
           <div className="mb-16">
-            <div className="relative overflow-hidden rounded-2xl h-80">
+            <div className="relative overflow-hidden rounded-2xl h-auto min-h-[300px] md:h-80">
               {/* Image with gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-r from-rose-600/90 via-rose-600/80 to-orange-600/90 mix-blend-multiply z-10"></div>
               <img
@@ -332,24 +331,26 @@ export default function RapidWorksPage() {
               />
 
               {/* Content */}
-              <div className="absolute inset-0 z-20 p-8 md:p-12 flex flex-col md:flex-row items-center justify-between">
-                <div className="mb-6 md:mb-0">
-                  <div className="bg-white/20 backdrop-blur-md w-14 h-14 rounded-2xl flex items-center justify-center mb-6">
+              <div className="absolute inset-0 z-20 p-6 md:p-12 flex flex-col items-start md:flex-row md:items-center justify-between">
+                <div className="mb-8 md:mb-0 w-full md:w-3/5">
+                  <div className="bg-white/20 backdrop-blur-md w-14 h-14 rounded-2xl flex items-center justify-center mb-4">
                     <Euro className="h-6 w-6 text-white" />
                   </div>
-                  <h3 className="text-3xl font-bold text-white mb-3">Rapid Financing</h3>
-                  <p className="text-white/90 max-w-md text-lg mb-4">
-                    Don't know how to finance your growth now? Did you know you can get up to 70% of our services subsidized? 
+                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">Rapid Financing</h3>
+                  <p className="text-white/90 text-sm md:text-lg mb-4">
+                    Don't know how to finance your growth now? Did you know you can get up to 70% of our services subsidized?
                     There are multiple options, reach out to us to find out for free!
                   </p>
-                  <Link to="/financing" className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-4 py-2 rounded-lg hover:bg-white/30 transition-all">
+                  <Link to="/financing" className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-3 py-1.5 md:px-4 md:py-2 rounded-lg hover:bg-white/30 transition-all text-sm md:text-base">
                     Learn more <ArrowRight className="h-4 w-4" />
                   </Link>
                 </div>
 
-                <Link to="/financing" className="bg-white text-rose-600 px-8 py-4 rounded-full font-medium hover:shadow-lg transition-all flex items-center gap-2">
-                  Free Consultation <ArrowRight className="h-5 w-5" />
-                </Link>
+                <div className="w-full md:w-auto">
+                  <Link to="/financing" className="w-full md:w-auto bg-white text-rose-600 px-6 py-3 md:px-8 md:py-4 rounded-full font-medium hover:shadow-lg transition-all flex items-center justify-center md:justify-start gap-2">
+                    Free Consultation <ArrowRight className="h-5 w-5" />
+                  </Link>
+                </div>
               </div>
 
               {/* Decorative elements */}
@@ -380,7 +381,7 @@ export default function RapidWorksPage() {
                   <Package className="h-12 w-12 text-white" />
                 </div>
 
-                <h3 className="text-3xl md:text-4xl font-bold mb-6 text-white">Rapid Branding</h3>
+                <h3 className="text-3xl md:text-4xl font-bold mb-6 text-white">Rapid Bundle</h3>
                 <p className="text-white/80 text-xl mb-8">
                   Reach the next level with comprehensive branding services!
                 </p>
@@ -392,8 +393,8 @@ export default function RapidWorksPage() {
                   </p>
                 </div>
 
-                <Link to="/visibility" className="bg-white text-black px-8 py-4 rounded-full font-medium hover:shadow-lg hover:shadow-white/20 transition-all flex items-center gap-2 inline-flex">
-                  Get Your Brand <ArrowRight className="h-5 w-5" />
+                <Link to="/bundle" className="bg-white text-black px-8 py-4 rounded-full font-medium hover:shadow-lg hover:shadow-white/20 transition-all flex items-center gap-2 inline-flex">
+                  Get Your Bundle <ArrowRight className="h-5 w-5" />
                 </Link>
               </div>
 
@@ -413,7 +414,7 @@ export default function RapidWorksPage() {
                       { icon: <Presentation className="h-8 w-8" />, color: "bg-emerald-500/20", path: "/workshop" },
                       { icon: <Euro className="h-8 w-8" />, color: "bg-rose-500/20", path: "/financing" },
                     ].map((item, index) => (
-                      <Link 
+                      <Link
                         key={index}
                         to={item.path}
                         className={`${item.color} backdrop-blur-sm p-6 rounded-2xl flex items-center justify-center text-white hover:scale-105 transition-transform cursor-pointer`}
@@ -437,7 +438,7 @@ export default function RapidWorksPage() {
             <p className="text-xl text-gray-600 mb-10">
               Book a call with our team and discover how RapidWorks can help you build and scale your company.
             </p>
-            <button 
+            <button
               onClick={openCalendly}
               className="px-8 py-4 bg-black hover:bg-gradient-to-r hover:from-purple-600 hover:to-indigo-600 text-white rounded-full hover:shadow-xl hover:translate-y-[-2px] active:translate-y-[0px] transition-all duration-300 font-medium text-lg"
             >

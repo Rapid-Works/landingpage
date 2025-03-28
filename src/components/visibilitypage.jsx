@@ -1066,10 +1066,10 @@ const VisibiltyBundle = () => {
 
         <NewsletterPopup />
 
-        <Footer
+        {/* <Footer
           showFAQ={true}
           onFAQClick={() => setIsFAQModalOpen(true)}
-        />
+        /> */}
       </div>
     </>
   )

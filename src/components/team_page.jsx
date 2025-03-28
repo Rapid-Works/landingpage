@@ -17,6 +17,10 @@ import {
   Star,
   Shield,
   Zap,
+  Code,
+  Megaphone,
+  Palette,
+  Euro,
 } from "lucide-react"
 
 // Import the header component from new_landing_page.jsx
@@ -32,8 +36,9 @@ const teamMembers = [
     name: "Prince Ardiabah",
     role: "Marketing Expert",
     image: PrinceArdiabah, // Using Prince's profile image
+    icon: <Megaphone className="h-5 w-5" />,
     calendlyLink: "https://calendly.com/example-link",
-    skills: ["Strategic Marketing Planning", "Content Marketing & SEO", "Social Media Advertisement"],
+    skills: ["Digital Marketing", "SEO", "Content Strategy"],
     color: "from-purple-600 to-indigo-600",
     lightColor: "bg-purple-100",
     textColor: "text-purple-700",
@@ -46,8 +51,9 @@ const teamMembers = [
     name: "Samuel Donkor",
     role: "Software Expert",
     image: SamuelProfile, // Using Samuel's profile image
+    icon: <Code className="h-5 w-5" />,
     calendlyLink: "https://calendly.com/example-link",
-    skills: ["Full Stack Development", "Agile Software Development", "Cloud Computing & DevOps"],
+    skills: ["Backend Development", "Frontend Development", "API Integration"],
     color: "from-purple-600 to-indigo-600",
     lightColor: "bg-purple-100",
     textColor: "text-purple-700",
@@ -60,8 +66,9 @@ const teamMembers = [
     name: "Coming Soon",
     role: "Design Expert",
     image: null,
+    icon: <Palette className="h-5 w-5" />,
     calendlyLink: "https://calendly.com/example-link",
-    skills: ["UI/UX Design", "Prototyping & Wireframing", "Brand Identity Design"],
+    skills: ["UI/UX Design", "Branding", "Visual Design"],
     color: "from-purple-600 to-indigo-600",
     lightColor: "bg-purple-100",
     textColor: "text-purple-700",
@@ -74,8 +81,9 @@ const teamMembers = [
     name: "Coming Soon",
     role: "Finance Expert",
     image: null,
+    icon: <Euro className="h-5 w-5" />,
     calendlyLink: "https://calendly.com/example-link",
-    skills: ["Financial Planning & Analysis", "Investment Strategy", "Accounting & Tax Optimization"],
+    skills: ["Financial Planning", "Investment Strategy", "Budget Management"],
     color: "from-purple-600 to-indigo-600",
     lightColor: "bg-purple-100",
     textColor: "text-purple-700",
@@ -130,8 +138,9 @@ const TeamPage = () => {
       <div className="fixed inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMzAwdjMwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDUiLz48L3N2Zz4=')] opacity-30 pointer-events-none z-0"></div>
 
       {/* Decorative elements */}
-      <div className="fixed top-0 right-0 w-1/3 h-1/3 bg-purple-200 rounded-full filter blur-3xl opacity-20 -z-10 transform translate-x-1/3 -translate-y-1/3"></div>
-      <div className="fixed bottom-0 left-0 w-1/3 h-1/3 bg-blue-200 rounded-full filter blur-3xl opacity-20 -z-10 transform -translate-x-1/3 translate-y-1/3"></div>
+      <div className="fixed top-0 right-0 w-1/3 h-1/3 bg-gradient-to-br from-purple-200 to-blue-200 rounded-full filter blur-3xl opacity-20 -z-10 transform translate-x-1/3 -translate-y-1/3"></div>
+      <div className="fixed bottom-0 left-0 w-1/3 h-1/3 bg-gradient-to-br from-indigo-200 to-pink-200 rounded-full filter blur-3xl opacity-20 -z-10 transform -translate-x-1/3 translate-y-1/3"></div>
+      <div className="fixed bottom-1/2 right-1/4 w-1/4 h-1/4 bg-gradient-to-br from-amber-200 to-emerald-200 rounded-full filter blur-3xl opacity-10 -z-10"></div>
 
       {/* Import header from new_landing_page.jsx instead of using the built-in header */}
       <RapidWorksHeader />
@@ -141,17 +150,17 @@ const TeamPage = () => {
         <div className="container mx-auto px-6">
           {/* Page intro */}
           <div className="text-center mb-16 max-w-3xl mx-auto">
-              <div className="inline-block mb-4 px-4 py-1.5 bg-purple-100 rounded-full text-purple-700 font-medium text-sm">
-                Rapid Team
-              </div>
+            <div className="inline-block mb-4 px-4 py-1.5 bg-gradient-to-r from-purple-100 to-indigo-100 rounded-full text-purple-700 font-medium text-sm">
+              Rapid Team
+            </div>
 
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
               We have all the{" "}
               <span className="relative inline-block">
                 <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600">
                   Expertise
                 </span>
-                <span className="absolute bottom-2 left-0 w-full h-4 bg-purple-200 rounded-lg -z-10 opacity-70"></span>
+                <span className="absolute bottom-2 left-0 w-full h-4 bg-gradient-to-r from-purple-200 to-indigo-200 rounded-lg -z-10 opacity-70"></span>
               </span>{" "}
               you need
             </h1>
@@ -174,28 +183,41 @@ const TeamPage = () => {
 
                   {/* Benefits */}
                   <div className="space-y-4">
-                    {benefits.map((benefit) => (
-                      <div
-                        key={benefit.id}
-                        className="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors duration-300"
-                      >
-                        <div className="bg-gradient-to-br from-purple-600 to-indigo-600 p-3 rounded-xl text-white shadow-md">
-                          {benefit.icon}
+                    {benefits.map((benefit, index) => {
+                      // Create a rotating set of gradients for the icons
+                      const gradients = [
+                        "from-purple-600 to-indigo-600",
+                        "from-blue-600 to-indigo-600",
+                        "from-rose-500 to-pink-600",
+                        "from-amber-500 to-orange-600",
+                        "from-emerald-500 to-teal-600"
+                      ];
+                      
+                      const gradient = gradients[index % gradients.length];
+                      
+                      return (
+                        <div
+                          key={benefit.id}
+                          className="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors duration-300"
+                        >
+                          <div className={`bg-gradient-to-br ${gradient} p-3 rounded-xl text-white shadow-md`}>
+                            {benefit.icon}
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-gray-900">{benefit.text}</h3>
+                            <p className="text-gray-600 text-sm mt-1">{benefit.description}</p>
+                            {benefit.linkTo && (
+                              <a 
+                                href={benefit.linkTo} 
+                                className="text-purple-600 text-sm font-medium mt-1 flex items-center gap-1 hover:gap-2 transition-all"
+                              >
+                                {benefit.linkText} <ChevronRight className="h-3 w-3" />
+                              </a>
+                            )}
+                          </div>
                         </div>
-                        <div>
-                          <h3 className="font-bold text-gray-900">{benefit.text}</h3>
-                          <p className="text-gray-600 text-sm mt-1">{benefit.description}</p>
-                          {benefit.linkTo && (
-                            <a 
-                              href={benefit.linkTo} 
-                              className="text-purple-600 text-sm font-medium mt-1 flex items-center gap-1 hover:gap-2 transition-all"
-                            >
-                              {benefit.linkText} <ChevronRight className="h-3 w-3" />
-                            </a>
-                          )}
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
 
                   <div className="mt-6 pt-6 border-t border-gray-100">
@@ -242,11 +264,12 @@ const TeamPage = () => {
 
                       {/* Role badge */}
                       <div className="absolute bottom-0 right-0 m-4">
-                        <div className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-white text-sm font-medium">
+                        <div className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-white text-sm font-medium flex items-center gap-2">
+                          {member.icon}
                           {member.role}
                         </div>
                       </div>
-              </div>
+                    </div>
 
                     {/* Profile section */}
                     <div className="px-8 pt-8 pb-6 relative">
@@ -257,22 +280,22 @@ const TeamPage = () => {
                             <img
                               src={member.image || "/placeholder.svg"}
                               alt={member.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
                         ) : (
                           <div className="w-24 h-24 rounded-2xl border-4 border-white shadow-lg bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                             <Users className="h-10 w-10 text-gray-400" />
-                  </div>
+                          </div>
                         )}
-                  </div>
+                      </div>
 
                       {/* Name and quote */}
                       <div className="mt-12">
                         <h3 className="text-xl font-bold text-gray-900 mb-2">{member.name}</h3>
                         <p className={`${member.textColor} text-sm italic mb-4`}>"{member.quote}"</p>
-                  </div>
-                </div>
+                      </div>
+                    </div>
 
                     {/* Skills section */}
                     <div className="px-8 pb-8">
@@ -284,9 +307,9 @@ const TeamPage = () => {
                             className={`${member.lightColor} ${member.textColor} px-4 py-2 rounded-lg text-sm font-medium`}
                           >
                             {skill}
-              </div>
+                          </div>
                         ))}
-            </div>
+                      </div>
 
                       <div className="mt-4">
                         <button
@@ -294,22 +317,25 @@ const TeamPage = () => {
                         >
                           ...and more
                         </button>
-                  </div>
-                  </div>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
 
               {/* Team expansion note */}
-              <div className="mt-12 bg-gray-50 rounded-2xl p-8 border border-gray-200">
-                <h3 className="text-xl font-bold mb-3">Our team is growing!</h3>
-                <p className="text-gray-700 mb-4">
-                  We're constantly expanding our team of experts to better serve your needs. Check back soon to meet our
-                  new Design and Finance specialists.
-                </p>
-                <button className="text-purple-600 font-medium flex items-center gap-1 hover:gap-2 transition-all">
-                  Get notified when new experts join <ChevronRight className="h-4 w-4" />
-                </button>
+              <div className="mt-12 bg-gradient-to-br from-gray-50 to-white rounded-2xl p-8 border border-gray-200 relative overflow-hidden">
+                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiBmaWxsPSJub25lIj48Y2lyY2xlIGN4PSIyIiBjeT0iMiIgcj0iMiIgZmlsbD0iI0UwRTdGRiIvPjwvc3ZnPg==')] opacity-20"></div>
+                <div className="relative z-10">
+                  <h3 className="text-xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-purple-700 to-indigo-700">Our team is growing!</h3>
+                  <p className="text-gray-700 mb-4">
+                    We're constantly expanding our team of experts to better serve your needs. Check back soon to meet our
+                    new Design and Finance specialists.
+                  </p>
+                  <button className="text-purple-600 font-medium flex items-center gap-1 hover:gap-2 transition-all">
+                    Get notified when new experts join <ChevronRight className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
