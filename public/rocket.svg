@@ -1,0 +1,17 @@
+<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+  <!-- Define the gradient -->
+  <defs>
+    <linearGradient id="rocket-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9333ea" /> <!-- purple-600 -->
+      <stop offset="100%" stop-color="#4f46e5" /> <!-- indigo-600 -->
+    </linearGradient>
+  </defs>
+  
+  <!-- Background rounded rectangle with gradient -->
+  <rect x="2" y="2" width="36" height="36" rx="6" fill="url(#rocket-gradient)" />
+  
+  <!-- Rocket icon in white -->
+  <path d="M20 10.236c2.347 1.214 4.55 3.417 5.764 5.764 1.215-2.347 3.418-4.55 5.765-5.764-2.347-1.214-4.55-3.417-5.765-5.764-1.214 2.347-3.417 4.55-5.764 5.764zm9.45 9.45c-.647.647-1.419 1.033-2.236 1.16V31a.5.5 0 01-.5.5h-2a.5.5 0 01-.5-.5v-4l-3 3v4a.5.5 0 01-.5.5h-2a.5.5 0 01-.5-.5V24.98l-10.236 5.764 5.764-10.236H8a.5.5 0 01-.5-.5v-2a.5.5 0 01.5-.5h10.155c.126-.817.511-1.589 1.158-2.236L20 10a10 10 0 110 10l-.687-.687z" 
+        fill="white" 
+        transform="translate(8, 8) scale(0.6)" />
+</svg>
