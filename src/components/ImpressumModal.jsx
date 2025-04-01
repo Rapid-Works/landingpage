@@ -28,13 +28,13 @@ const ImpressumModal = ({ onClose }) => {
             <div className="space-y-8">
               <div>
                 <h3 className="text-xl font-semibold mb-4">{translate("impressum.companyInfo.title")}</h3>
-                <p>{translate("impressum.companyInfo.name")}</p>
-                <p>{translate("impressum.companyInfo.street")}</p>
-                <p>{translate("impressum.companyInfo.city")}</p>
-                <p>{translate("impressum.companyInfo.country")}</p>
-                <p>Email: {translate("impressum.companyInfo.email")}</p>
-                <p>Tel: {translate("impressum.companyInfo.phone")}</p>
-                <p>{translate("impressum.companyInfo.managing")}: {translate("impressum.companyInfo.managingName")}</p>
+                <p>RapidWorks GmbH</p>
+                <p>Tulpenweg 24a</p>
+                <p>52222 Stolberg</p>
+                <p>Germany</p>
+                <p>Email: contact@rapidworks.de</p>
+                <p>Tel: +49 (0) 157 823 244 53</p>
+                <p>{translate("impressum.companyInfo.managing")}: Yannick Heeren</p>
               </div>
 
               <div>
@@ -46,8 +46,9 @@ const ImpressumModal = ({ onClose }) => {
 
               <div>
                 <h3 className="text-xl font-semibold mb-4">{translate("impressum.responsibility.title")}</h3>
-                <p>{translate("impressum.responsibility.name")}</p>
-                <p>{translate("impressum.responsibility.address")}</p>
+                <p>Yannick Heeren</p>
+                <p>Tulpenweg 24a</p>
+                <p>52222 Stolberg</p>
               </div>
             </div>
           </section>

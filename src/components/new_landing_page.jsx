@@ -84,48 +84,53 @@ export default function RapidWorksPage() {
       <RapidWorksHeader />
 
       {/* Hero Section */}
-      <section className="pt-40 pb-20 relative overflow-hidden">
+      <section className="pb-16 relative overflow-hidden">
         {/* Background elements */}
         <div className="absolute top-20 right-0 w-96 h-96 bg-purple-200 rounded-full filter blur-3xl opacity-20 -z-10"></div>
         <div className="absolute bottom-0 left-10 w-72 h-72 bg-blue-200 rounded-full filter blur-3xl opacity-20 -z-10"></div>
 
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="max-w-5xl mx-auto text-center">
-            <div className="inline-block mb-4 px-4 py-1.5 bg-purple-100 rounded-full text-purple-700 font-medium text-sm">
-              Startup Acceleration Platform
+        <div className="bg-gradient-to-br from-purple-600 to-indigo-600 text-white relative overflow-hidden">
+          <div className="container mx-auto px-6 pt-28 pb-28">
+            <div className="text-center mb-8">
+              <p className="inline-block mb-4 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-sm">
+                Startup Acceleration Platform
+              </p>
+              
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight tracking-tight">
+                The Full Service Agency for
+                <span className="relative block mt-2">
+                  your Startup
+                  <span className="absolute bottom-2 left-0 w-full h-4 bg-white/20 rounded-lg -z-10"></span>
+                </span>
+              </h1>
+              
+              <p className="text-xl text-white/90 leading-relaxed max-w-3xl mx-auto">
+                You are not alone, 80% of the problems faced by startups are identical.
+                We solve these 80% at unbeatable prices, so you can spend your time
+                and capital on your core business.
+              </p>
             </div>
-
-            <h2 className="text-5xl sm:text-6xl md:text-7xl font-extrabold mb-8 leading-tight tracking-tight">
-              The{" "}
-              <span className="relative inline-block px-2">
-                <span className="relative z-10">Full Service</span>
-                <span className="absolute bottom-2 left-0 w-full h-4 bg-red-300 rounded-lg -z-10 opacity-70"></span>
-              </span>{" "}
-              Agency for{" "}
-              <span className="relative inline-block px-2">
-                <span className="relative z-10">your Startup</span>
-                <span className="absolute bottom-2 left-0 w-full h-4 bg-red-300 rounded-lg -z-10 opacity-70"></span>
-              </span>
-            </h2>
-
-            <p className="text-xl md:text-2xl max-w-3xl mx-auto text-gray-600 leading-relaxed mb-10">
-              You are not alone, 80% of the problems faced by startups are identical. We solve these 80% at unbeatable prices, so you can spend your time and capital on your core business.
-            </p>
-
-            <div className="flex flex-wrap justify-center gap-4">
-              <button
-                onClick={scrollToCTA}
-                className="px-8 py-4 bg-black hover:bg-gradient-to-r hover:from-purple-600 hover:to-indigo-600 text-white rounded-full hover:shadow-xl hover:translate-y-[-2px] active:translate-y-[0px] transition-all duration-300 font-medium">
+            
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
+              <button className="px-8 py-4 bg-white text-purple-700 hover:bg-white/90 rounded-full font-medium text-lg shadow-lg hover:shadow-xl transition-all">
                 Get Started
               </button>
-              <button
-                onClick={scrollToServices}
-                className="px-8 py-4 bg-white border border-gray-200 text-gray-800 rounded-full hover:shadow-xl hover:translate-y-[-2px] active:translate-y-[0px] transition-all duration-300 font-medium"
-              >
+              <button className="px-8 py-4 bg-transparent border border-white/30 hover:bg-white/10 text-white rounded-full font-medium text-lg transition-all">
                 Learn More
               </button>
             </div>
           </div>
+          
+          {/* Scroll down indicator - made clickable with onClick handler */}
+          <button 
+            onClick={() => servicesRef.current?.scrollIntoView({ behavior: "smooth" })}
+            className="absolute bottom-6 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none"
+            aria-label="Scroll to services"
+          >
+            <svg className="w-8 h-8 text-white/70 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+          </button>
         </div>
       </section>
 
@@ -140,10 +145,10 @@ export default function RapidWorksPage() {
           </div>
 
           {/* Featured Services - First Row with larger cards */}
-          <div className="grid md:grid-cols-2 gap-10 mb-16">
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
             {/* Rapid Branding */}
             <div className="group">
-              <div className="relative overflow-hidden rounded-2xl aspect-[4/3] mb-6">
+              <div className="relative overflow-hidden rounded-2xl aspect-[4/3] mb-0">
                 {/* Using the custom laptop image with overlay */}
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-600/90 via-purple-600/80 to-indigo-600/90 mix-blend-multiply z-10"></div>
                 <img
@@ -181,14 +186,14 @@ export default function RapidWorksPage() {
               </div>
             </div>
 
-            {/* Rapid Team */}
+            {/* Rapid Experts */}
             <div className="group">
-              <div className="relative overflow-hidden rounded-2xl aspect-[4/3] mb-6">
+              <div className="relative overflow-hidden rounded-2xl aspect-[4/3] mb-0">
                 {/* Image with gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-600/90 via-blue-600/80 to-sky-600/90 mix-blend-multiply z-10"></div>
                 <img
                   src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-                  alt="Team illustration"
+                  alt="Experts illustration"
                   className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
                 />
 
@@ -203,14 +208,22 @@ export default function RapidWorksPage() {
                     </span>
                   </div>
                   <div>
-                    <h3 className="text-3xl font-bold text-white mb-2">Rapid Team</h3>
+                    <h3 className="text-3xl font-bold text-white mb-2">Rapid Experts</h3>
                     <p className="text-white/90 max-w-md mb-3">Find your expert the same day cheaper than own employees!</p>
-                    <Link
-                      to="/team"
-                      className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-4 py-2 rounded-lg hover:bg-white/30 transition-all"
-                    >
-                      Learn more <ArrowRight className="h-4 w-4" />
-                    </Link>
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <Link
+                        to="/team"
+                        className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-4 py-2 rounded-lg hover:bg-white/30 transition-all"
+                      >
+                        Learn more <ArrowRight className="h-4 w-4" />
+                      </Link>
+                      <Link
+                        to="/team"
+                        className="inline-flex items-center gap-2 text-blue-600 font-medium bg-white px-4 py-2 rounded-lg hover:bg-blue-50 transition-all"
+                      >
+                        Get 1 hour free <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    </div>
                   </div>
                 </div>
 
@@ -221,10 +234,10 @@ export default function RapidWorksPage() {
           </div>
 
           {/* Secondary Services */}
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
+          <div className="grid md:grid-cols-3 gap-8 mb-8">
             {/* Rapid Blueprint */}
             <div className="group">
-              <div className="relative overflow-hidden rounded-2xl aspect-[3/2] mb-6">
+              <div className="relative overflow-hidden rounded-2xl aspect-[3/2] mb-0">
                 {/* Image with gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/90 via-indigo-600/80 to-indigo-800/90 mix-blend-multiply z-10"></div>
                 <img
@@ -264,7 +277,7 @@ export default function RapidWorksPage() {
 
             {/* Rapid Coaching */}
             <div className="group">
-              <div className="relative overflow-hidden rounded-2xl aspect-[3/2] mb-6">
+              <div className="relative overflow-hidden rounded-2xl aspect-[3/2] mb-0">
                 {/* Using Yannick's profile image for coaching with overlay */}
                 <div className="absolute inset-0 bg-gradient-to-br from-amber-600/90 via-amber-600/80 to-amber-800/90 mix-blend-multiply z-10"></div>
                 <img
@@ -304,7 +317,7 @@ export default function RapidWorksPage() {
 
             {/* Rapid Workshops */}
             <div className="group">
-              <div className="relative overflow-hidden rounded-2xl aspect-[3/2] mb-6">
+              <div className="relative overflow-hidden rounded-2xl aspect-[3/2] mb-0">
                 {/* Image with gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-br from-emerald-600/90 via-emerald-600/80 to-emerald-800/90 mix-blend-multiply z-10"></div>
                 <img
@@ -344,7 +357,7 @@ export default function RapidWorksPage() {
           </div>
 
           {/* Financing Card - Special Design */}
-          <div className="mb-16">
+          <div className="mb-0">
             <div className="relative overflow-hidden rounded-2xl h-auto min-h-[300px] md:h-80">
               {/* Image with gradient overlay - Using the specific image you requested */}
               <div className="absolute inset-0 bg-gradient-to-r from-rose-600/90 via-rose-600/80 to-orange-600/90 mix-blend-multiply z-10"></div>
