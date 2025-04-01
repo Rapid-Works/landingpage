@@ -3,7 +3,7 @@
 // Correctly import the image
 import YannickProfile from "../images/yannickprofile.png"
 import { useState } from "react"
-import { ArrowRight, BookOpen, Calendar, Check, Target, TrendingUp, MessageSquare, MapPin } from "lucide-react"
+import { ArrowRight, Compass, Calendar, Check, Target, TrendingUp, MessageSquare, MapPin } from "lucide-react"
 import RapidWorksHeader from "./new_landing_page_header"
 
 // Single coach data
@@ -12,7 +12,7 @@ const coach = {
   role: "CEO RapidWorks",
   // Correctly use the imported image - no curly braces needed
   image: YannickProfile,
-  bio: "I am Yannick, the Founder and CEO of RapidWorks, the 3rd Startup I cofounded so far. In my Startup journey so far I built amazing software products, recruited hundreds of employees, sold amazing services to thousands of customers, scaled Startups quickly bootstrapped as well as investor financed but crucially made tons of mistakes down the road. As your Coach I will help you gaining the best results for your Startup and avoiding unnecessary mistakes.",
+  bio: "I am Yannick, the Founder and CEO of RapidWorks, the 3rd Startup I cofounded so far. In my Startup journey until now I built amazing software products, recruited hundreds of employees, sold amazing services to thousands of customers, scaled Startups quickly bootstrapped as well as investor financed but crucially made tons of mistakes down the road. As your Coach I will help you gaining the best results for your Startup and avoiding unnecessary mistakes.",
   expertise: [
     "Product Strategy",
     "Process optimization",
@@ -21,7 +21,7 @@ const coach = {
     "Team Building",
     "Fundraising"
   ],
-  experience: "Coached 50 Startups",
+  experience: "Coached 50+ Startups",
   education: "BSc Mathematical Technical Software Engineer, FH Aachen",
   achievements: [
     "Recruited 1,700 freelancers and 40 FTEs",
@@ -33,13 +33,13 @@ const coach = {
 
 const CoachingPage = () => {
   return (
-    <div className="min-h-screen bg-white font-sans selection:bg-purple-200 selection:text-purple-900">
+    <div className="min-h-screen bg-white font-sans selection:bg-orange-200 selection:text-orange-900">
       {/* Noise overlay */}
       <div className="fixed inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMzAwdjMwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIwLjA1Ii8+PC9zdmc+')] opacity-30 pointer-events-none z-0"></div>
 
       {/* Decorative elements */}
-      <div className="fixed top-0 right-0 w-1/3 h-1/3 bg-purple-200 rounded-full filter blur-3xl opacity-20 -z-10 transform translate-x-1/3 -translate-y-1/3"></div>
-      <div className="fixed bottom-0 left-0 w-1/3 h-1/3 bg-blue-200 rounded-full filter blur-3xl opacity-20 -z-10 transform -translate-x-1/3 translate-y-1/3"></div>
+      <div className="fixed top-0 right-0 w-1/3 h-1/3 bg-orange-200 rounded-full filter blur-3xl opacity-20 -z-10 transform translate-x-1/3 -translate-y-1/3"></div>
+      <div className="fixed bottom-0 left-0 w-1/3 h-1/3 bg-amber-200 rounded-full filter blur-3xl opacity-20 -z-10 transform -translate-x-1/3 translate-y-1/3"></div>
 
       {/* Replace custom header with shared header component */}
       <RapidWorksHeader />
@@ -49,18 +49,18 @@ const CoachingPage = () => {
         <div className="container mx-auto px-6">
           {/* Page intro */}
           <div className="text-center mb-16 max-w-3xl mx-auto">
-            <div className="inline-block mb-4 px-4 py-1.5 bg-purple-100 rounded-full text-purple-700 font-medium text-sm">
-              <BookOpen className="h-4 w-4 inline mr-1" />
+            <div className="inline-block mb-4 px-4 py-1.5 bg-orange-100 rounded-full text-orange-700 font-medium text-sm">
+              <Compass className="h-4 w-4 inline mr-1" />
               Rapid Coaching
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
               Unleash your{" "}
               <span className="relative inline-block">
-                <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600">
+                <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-amber-600">
                   Full Potential
                 </span>
-                <span className="absolute bottom-2 left-0 w-full h-4 bg-purple-200 rounded-lg -z-10 opacity-70"></span>
+                <span className="absolute bottom-2 left-0 w-full h-4 bg-orange-200 rounded-lg -z-10 opacity-70"></span>
               </span>
             </h1>
 
@@ -70,7 +70,7 @@ const CoachingPage = () => {
           </div>
 
           {/* Hero Section */}
-          <div className="bg-gradient-to-br from-purple-600 to-indigo-600 rounded-3xl overflow-hidden mb-20 relative">
+          <div className="bg-gradient-to-br from-orange-600 to-amber-600 rounded-3xl overflow-hidden mb-20 relative">
             <div className="absolute inset-0 opacity-10">
               <img
                 src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
@@ -87,7 +87,7 @@ const CoachingPage = () => {
                 </p>
 
               <button
-                className="bg-white text-purple-600 px-8 py-4 rounded-full font-medium hover:shadow-lg hover:shadow-purple-900/20 transition-all flex items-center gap-2 group mx-auto"
+                className="bg-white text-orange-600 px-8 py-4 rounded-full font-medium hover:shadow-lg hover:shadow-orange-900/20 transition-all flex items-center gap-2 group mx-auto"
                 onClick={() => window.open("https://calendly.com/yannick-familie-heeren/30min", "_blank")}
               >
                   Schedule a Free Session
@@ -116,7 +116,7 @@ const CoachingPage = () => {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent md:bg-gradient-to-r"></div>
                     <div className="absolute bottom-0 left-0 p-6 md:p-8">
-                      <div className="bg-purple-100 text-purple-700 text-xs font-medium px-2 py-1 rounded-full inline-block mb-2">
+                      <div className="bg-orange-100 text-orange-700 text-xs font-medium px-2 py-1 rounded-full inline-block mb-2">
                         {coach.experience}
                       </div>
                       <h3 className="text-2xl font-bold text-white">{coach.name}</h3>
@@ -136,7 +136,7 @@ const CoachingPage = () => {
                     <ul className="space-y-2">
                       {coach.achievements.map((achievement, index) => (
                         <li key={index} className="flex items-start gap-2">
-                          <div className="text-purple-600 mt-1">
+                          <div className="text-orange-600 mt-1">
                             <Check className="h-4 w-4" />
                           </div>
                           <span className="text-gray-700">{achievement}</span>
@@ -151,7 +151,7 @@ const CoachingPage = () => {
                       {coach.expertise.map((skill, index) => (
                         <span
                           key={index}
-                          className="bg-purple-50 text-purple-700 px-3 py-1 rounded-full text-sm font-medium"
+                          className="bg-orange-50 text-orange-700 px-3 py-1 rounded-full text-sm font-medium"
                         >
                           {skill}
                         </span>
@@ -160,7 +160,7 @@ const CoachingPage = () => {
                   </div>
 
                   <button
-                    className="w-full py-4 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors flex items-center justify-center gap-2 mt-6"
+                    className="w-full py-4 bg-orange-600 text-white rounded-xl hover:bg-orange-700 transition-colors flex items-center justify-center gap-2 mt-6"
                     onClick={() => window.open("https://calendly.com/yannick-familie-heeren/30min", "_blank")}
                   >
                     <Calendar className="h-5 w-5" />
@@ -182,12 +182,12 @@ const CoachingPage = () => {
 
             <div className="grid md:grid-cols-4 gap-8">
               <div className="bg-white rounded-2xl shadow-md p-6 border border-gray-100 relative">
-                <div className="absolute -top-4 -left-4 w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold">
+                <div className="absolute -top-4 -left-4 w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold">
                   1
                 </div>
                 <div className="mb-4">
-                  <div className="bg-purple-100 p-3 rounded-xl inline-block">
-                    <MapPin className="h-6 w-6 text-purple-600" />
+                  <div className="bg-orange-100 p-3 rounded-xl inline-block">
+                    <MapPin className="h-6 w-6 text-orange-600" />
                   </div>
                 </div>
                 <h3 className="text-xl font-bold mb-3">Initial Assessment</h3>
@@ -197,12 +197,12 @@ const CoachingPage = () => {
               </div>
 
               <div className="bg-white rounded-2xl shadow-md p-6 border border-gray-100 relative">
-                <div className="absolute -top-4 -left-4 w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold">
+                <div className="absolute -top-4 -left-4 w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold">
                   2
                 </div>
                 <div className="mb-4">
-                  <div className="bg-purple-100 p-3 rounded-xl inline-block">
-                    <Target className="h-6 w-6 text-purple-600" />
+                  <div className="bg-orange-100 p-3 rounded-xl inline-block">
+                    <Target className="h-6 w-6 text-orange-600" />
                   </div>
                 </div>
                 <h3 className="text-xl font-bold mb-3">Strategy Development</h3>
@@ -212,12 +212,12 @@ const CoachingPage = () => {
               </div>
 
               <div className="bg-white rounded-2xl shadow-md p-6 border border-gray-100 relative">
-                <div className="absolute -top-4 -left-4 w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold">
+                <div className="absolute -top-4 -left-4 w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold">
                   3
                 </div>
                 <div className="mb-4">
-                  <div className="bg-purple-100 p-3 rounded-xl inline-block">
-                    <MessageSquare className="h-6 w-6 text-purple-600" />
+                  <div className="bg-orange-100 p-3 rounded-xl inline-block">
+                    <MessageSquare className="h-6 w-6 text-orange-600" />
                   </div>
                 </div>
                 <h3 className="text-xl font-bold mb-3">Regular Sessions</h3>
@@ -227,12 +227,12 @@ const CoachingPage = () => {
               </div>
 
               <div className="bg-white rounded-2xl shadow-md p-6 border border-gray-100 relative">
-                <div className="absolute -top-4 -left-4 w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold">
+                <div className="absolute -top-4 -left-4 w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold">
                   4
                 </div>
                 <div className="mb-4">
-                  <div className="bg-purple-100 p-3 rounded-xl inline-block">
-                    <TrendingUp className="h-6 w-6 text-purple-600" />
+                  <div className="bg-orange-100 p-3 rounded-xl inline-block">
+                    <TrendingUp className="h-6 w-6 text-orange-600" />
                   </div>
                 </div>
                 <h3 className="text-xl font-bold mb-3">Measure & Adjust</h3>

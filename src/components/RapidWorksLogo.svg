@@ -1,0 +1,21 @@
+<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- The exact gradient background from the header -->
+  <rect width="36" height="36" rx="8" fill="url(#gradient)" />
+  
+  <!-- The Rocket icon from lucide-react with the exact dimensions (h-5 w-5) -->
+  <g transform="translate(8, 8)" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- This is the exact path data for the Lucide Rocket icon -->
+    <path d="M10 2C9.05719 2 4.66675 3.47177 4.66675 10V14L2 16.6667H10H18L15.3334 14V10C15.3334 3.47177 10.9428 2 10 2Z"></path>
+    <path d="M7.33325 16.6667V20.6667"></path>
+    <path d="M12.6667 16.6667V20.6667"></path>
+    <path d="M10 2V7.33333"></path>
+  </g>
+  
+  <!-- Gradient definition for the purple-to-indigo background -->
+  <defs>
+    <linearGradient id="gradient" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#9333EA"></stop> <!-- TailwindCSS purple-600 -->
+      <stop offset="100%" stop-color="#4F46E5"></stop> <!-- TailwindCSS indigo-600 -->
+    </linearGradient>
+  </defs>
+</svg> 
