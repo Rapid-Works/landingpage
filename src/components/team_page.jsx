@@ -151,7 +151,7 @@ const TeamPage = () => {
           {/* Page intro */}
           <div className="text-center mb-16 max-w-3xl mx-auto">
             <div className="inline-block mb-4 px-4 py-1.5 bg-gradient-to-r from-purple-100 to-indigo-100 rounded-full text-purple-700 font-medium text-sm">
-                Rapid Team
+                Rapid Experts
               </div>
 
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
@@ -178,7 +178,7 @@ const TeamPage = () => {
                 <div className="p-8">
                   <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
                     <Shield className="h-6 w-6 text-purple-600" />
-                    <span>Why Choose The Rapid Team?</span>
+                    <span>Why Choose The Rapid Experts?</span>
                   </h2>
 
                   {/* Benefits */}
