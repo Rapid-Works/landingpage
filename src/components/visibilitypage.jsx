@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowRight, Plus, Minus, ChevronLeft, ChevronRight, CheckCircle, ChevronDown, Menu, X, CalendarCheck, Palette, Package } from "lucide-react"
+import { ArrowRight, Plus, Minus, ChevronLeft, ChevronRight, CheckCircle, ChevronDown, Menu, X, CalendarCheck, Palette, Package, Megaphone, FileText, Users, BookOpen, Euro, Compass, Presentation } from "lucide-react"
 import HeroImage2 from "../images/heroimage3.jpg"
 import RapidWorksWebsite from "../images/laptop.png"
 import RapidWorksLogo from "../images/logo512.png"
@@ -248,9 +248,9 @@ const VisibiltyBundle = () => {
   // Update the pageContent object with more translations
   const pageContent = {
     en: {
-      title: "VISIBILITY BUNDLE",
+      title: "RAPID BRANDING",
       subtitle: "Transform Your Brand Visibility",
-      mainText: "Convince us of your startup idea and get your free Visibility Bundle within one week free of charge, including:",
+      mainText: "Convince us of your startup idea and get your free Rapid Branding within one week free of charge, including:",
       keyPoints: [
         "Market Orientation Consulting",
         "Logo & Brand Design",
@@ -260,12 +260,12 @@ const VisibiltyBundle = () => {
         "Rollup"
       ],
       subtext: "No hidden costs, no bullshit.",
-      cta: "Apply for your bundle",
+      cta: "Apply for your branding",
       seeMore: "and more...",
-      bundleLabel: "Visibility Bundle",
+      bundleLabel: "Rapid Branding",
       nav: {
         mvpDev: "MVP Development",
-        visibilityBundle: "Visibility Bundle",
+        visibilityBundle: "Rapid Branding",
         bookCall: "Book a Call"
       },
       // Bundle items
@@ -305,23 +305,23 @@ const VisibiltyBundle = () => {
         showAll: "Show all questions and answers",
         items: [
           {
-            question: "What is a Visibility Bundle worth?",
-            answer: "Only you can determine its true value to your business. At agencies, the combined cost of all Visibility Bundle components would typically range between €10,000 and €15,000, involving several weeks of waiting time and countless additional hours of coordination on your part. We drastically reduce costs by using a combination of automation and smart processes."
+            question: "What is a Rapid Branding worth?",
+            answer: "Only you can determine its true value to your business. At agencies, the combined cost of all Rapid Branding components would typically range between €10,000 and €15,000, involving several weeks of waiting time and countless additional hours of coordination on your part. We drastically reduce costs by using a combination of automation and smart processes."
           },
           {
-            question: "Why is a Visibility Bundle so important for startups?",
-            answer: "Our honest opinion? It's not. Startup founders have more important things to do than worry about design. We believe the founding team's most important task is to focus on their market and product. However, from both our own founding experience and consulting over 50 startups, we've recognized that developing brand visibility consumes a disproportionate amount of resources in terms of time and money, and contains too many pitfalls for inexperienced founders. While not as complex as the problems startups solve, the connection and coordination of visibility elements is detailed and meticulous. We handle these details for you, aiming to deliver your complete Visibility Bundle within days, making you operational for the next year."
+            question: "Why is a Rapid Branding so important for startups?",
+            answer: "Our honest opinion? It's not. Startup founders have more important things to do than worry about design. We believe the founding team's most important task is to focus on their market and product. However, from both our own founding experience and consulting over 50 startups, we've recognized that developing brand visibility consumes a disproportionate amount of resources in terms of time and money, and contains too many pitfalls for inexperienced founders. While not as complex as the problems startups solve, the connection and coordination of visibility elements is detailed and meticulous. We handle these details for you, aiming to deliver your complete Rapid Branding within days, making you operational for the next year."
           },
           {
-            question: "Why should I have RapidWorks create my Visibility Bundle?",
-            answer: "Our team combines startup founding experience with design and development expertise. We know exactly what a startup needs to reach and convince customers. We're also cost and time-efficient in creating Visibility Bundles, having semi-automated the creation of several bundle components."
+            question: "Why should I have RapidWorks create my Rapid Branding?",
+            answer: "Our team combines startup founding experience with design and development expertise. We know exactly what a startup needs to reach and convince customers. We're also cost and time-efficient in creating Rapid Brandings, having semi-automated the creation of several bundle components."
           },
           {
-            question: "In what form do I receive the Visibility Bundle contents?",
-            answer: "Upon completion, you'll receive an email with access to cloud storage containing all components of your Visibility Bundle in digital form. Each file is saved in an appropriate format and clearly named. You'll also receive each file in an editable format. Our goal is to make you self-sufficient rather than creating dependency on us or other service providers. We don't provide physical materials, but you can use our files to have them produced at any print shop."
+            question: "In what form do I receive the Rapid Branding contents?",
+            answer: "Upon completion, you'll receive an email with access to cloud storage containing all components of your Rapid Branding in digital form. Each file is saved in an appropriate format and clearly named. You'll also receive each file in an editable format. Our goal is to make you self-sufficient rather than creating dependency on us or other service providers. We don't provide physical materials, but you can use our files to have them produced at any print shop."
           },
           {
-            question: "Why is RapidWorks giving away 3 Visibility Bundles?",
+            question: "Why is RapidWorks giving away 3 Rapid Brandings?",
             answer: "As a startup ourselves, we value speed and happy customers over profit. Through free distribution, we're turning the tables and carefully selecting our first customers. We validate our own assumptions about workload, coordination effort, customer value, and more through initial test customers."
           },
           {
@@ -330,35 +330,35 @@ const VisibiltyBundle = () => {
           },
           {
             question: "Does RapidWorks offer other services?",
-            answer: "Yes, the Visibility Bundle is our market entry, but our mission goes much further. We offer personal coaching with Yannick, MVP development, software development services at unbeatable prices, and free financing consultation. See <a href='https://rapidworks.vercel.app/' target='_blank' rel='noopener noreferrer' class='text-violet-600 hover:text-violet-700 underline'>RapidWorks</a> for more information."
+            answer: "Yes, the Rapid Branding is our market entry, but our mission goes much further. We offer personal coaching with Yannick, MVP development, software development services at unbeatable prices, and free financing consultation. See <a href='https://rapidworks.vercel.app/' target='_blank' rel='noopener noreferrer' class='text-violet-600 hover:text-violet-700 underline'>RapidWorks</a> for more information."
           },
           {
-            question: "What's the quality level of the Visibility Bundle?",
-            answer: "Comparable to the RapidWorks Visibility Bundle you see showcased on this website. Your bundle will be created by Yannick and Samuel, exactly like the RapidWorks Visibility Bundle. We're transparent that you shouldn't expect Apple-level design from us, but we're convinced that few startups need that level of design quality in the early stage."
+            question: "What's the quality level of the Rapid Branding?",
+            answer: "Comparable to the RapidWorks Rapid Branding you see showcased on this website. Your bundle will be created by Yannick and Samuel, exactly like the RapidWorks Rapid Branding. We're transparent that you shouldn't expect Apple-level design from us, but we're convinced that few startups need that level of design quality in the early stage."
           },
           {
-            question: "What if I have special requests for my Visibility Bundle?",
+            question: "What if I have special requests for my Rapid Branding?",
             answer: "You can note special requests in our form. We'll review them and inform you whether we can implement them within the offer or arrange an alternative solution."
           },
           {
-            question: "Do I give up rights to my Visibility Bundle or startup idea?",
-            answer: "You retain all rights to your idea and Visibility Bundle. We don't share any data with third parties. However, if your startup targets other startups with design, coaching, or development services, there might be a conflict of interest."
+            question: "Do I give up rights to my Rapid Branding or startup idea?",
+            answer: "You retain all rights to your idea and Rapid Branding. We don't share any data with third parties. However, if your startup targets other startups with design, coaching, or development services, there might be a conflict of interest."
           },
           {
-            question: "Who is the Startup Visibility Bundle offer for?",
-            answer: "In short - startups. See <a href='https://de.wikipedia.org/wiki/Start-up-Unternehmen' target='_blank' rel='noopener noreferrer' class='text-violet-600 hover:text-violet-700 underline'>Start-up-Unternehmen – Wikipedia</a>. If you're not sure whether you're a startup but need the Visibility Bundle, feel free to fill out our form."
+            question: "Who is the Startup Rapid Branding offer for?",
+            answer: "In short - startups. See <a href='https://de.wikipedia.org/wiki/Start-up-Unternehmen' target='_blank' rel='noopener noreferrer' class='text-violet-600 hover:text-violet-700 underline'>Start-up-Unternehmen – Wikipedia</a>. If you're not sure whether you're a startup but need the Rapid Branding, feel free to fill out our form."
           },
           {
-            question: "Do I need to have already founded my startup to receive a Visibility Bundle?",
+            question: "Do I need to have already founded my startup to receive a Rapid Branding?",
             answer: "No, you can fill out our application form even if you haven't founded your company yet."
           },
           {
-            question: "What if I already have some contents of the Visibility Bundle?",
-            answer: "No problem. In our form, you can upload any files you already have and tell us how to incorporate them into your Visibility Bundle."
+            question: "What if I already have some contents of the Rapid Branding?",
+            answer: "No problem. In our form, you can upload any files you already have and tell us how to incorporate them into your Rapid Branding."
           },
           {
-            question: "When will I receive my Visibility Bundle?",
-            answer: "Since we've semi-automated the creation of several bundle components and are an experienced team in creating Visibility Bundles, we complete at least one bundle per week. We process orders on a <a href='https://de.wikipedia.org/wiki/First_In_%E2%80%93_First_Out' target='_blank' rel='noopener noreferrer' class='text-violet-600 hover:text-violet-700 underline'>First In – First Out – Wikipedia</a> basis and intentionally keep our pipeline small. Your bundle will be completed promptly and quickly - significantly faster than you could likely create or outsource it yourself."
+            question: "When will I receive my Rapid Branding?",
+            answer: "Since we've semi-automated the creation of several bundle components and are an experienced team in creating Rapid Brandings, we complete at least one bundle per week. We process orders on a <a href='https://de.wikipedia.org/wiki/First_In_%E2%80%93_First_Out' target='_blank' rel='noopener noreferrer' class='text-violet-600 hover:text-violet-700 underline'>First In – First Out – Wikipedia</a> basis and intentionally keep our pipeline small. Your bundle will be completed promptly and quickly - significantly faster than you could likely create or outsource it yourself."
           },
           {
             question: "How much does it cost to print all the media?",
@@ -389,7 +389,7 @@ const VisibiltyBundle = () => {
           },
           {
             title: "We Create Your Assets",
-            description: "We craft your complete visibility bundle and present it to you once finished. If you are not satisfied with the bundle you don't have to pay."
+            description: "We craft your complete Rapid Branding and present it to you once finished. If you are not satisfied with the bundle you don't have to pay."
           },
           {
             title: "Review & Refine",
@@ -400,7 +400,7 @@ const VisibiltyBundle = () => {
       // Features section
       features: {
         title: "Contents",
-        subtitle: "The Visibility Bundle contains everything you need to draw the attention of customers, partners, investors and employees to your startup. You immediately become visible and a uniform brand design makes your brand recognizable."
+        subtitle: "The Rapid Branding contains everything you need to draw the attention of customers, partners, investors and employees to your startup. You immediately become visible and a uniform brand design makes your brand recognizable."
       },
       // Process section
       process: {
@@ -423,12 +423,19 @@ const VisibiltyBundle = () => {
             description: "Receive your complete brand package"
           }
         ]
+      },
+      // Explore more section
+      exploreMore: {
+        badge: "Explore More",
+        title: "Did you know we do more than just Branding?",
+        description: "Check out our other services to help you grow your startup - from expert assistance to MVP development, coaching, and financing solutions.",
+        cta: "Explore all services"
       }
     },
     de: {
-      title: "SICHTBARKEITSPAKET",
+      title: "RAPID BRANDING",
       subtitle: "Transformieren Sie Ihre Markensichtbarkeit",
-      mainText: "Überzeugen Sie uns von Ihrer Startup-Idee und erhalten Sie Ihr kostenloses Visibility Bundle innerhalb einer Woche,",
+      mainText: "Überzeugen Sie uns von Ihrer Startup-Idee und erhalten Sie Ihr kostenloses Rapid Branding innerhalb einer Woche,",
       keyPoints: [
         "Marktorientierungsberatung",
         "Logo & Brand Design",
@@ -438,9 +445,9 @@ const VisibiltyBundle = () => {
         "Rollup"
       ],
       subtext: "Keine versteckten Kosten, kein Bullshit.",
-      cta: "Bewerben Sie sich für Ihr Bundle",
+      cta: "Bewerben Sie sich für Ihr Branding",
       seeMore: "und mehr...",
-      bundleLabel: "Sichtbarkeits-Paket",
+      bundleLabel: "Rapid Branding",
       nav: {
         mvpDev: "MVP-Entwicklung",
         visibilityBundle: "Sichtbarkeitspaket",
@@ -483,23 +490,23 @@ const VisibiltyBundle = () => {
         showAll: "Alle Fragen und Antworten anzeigen",
         items: [
           {
-            question: "Was ist ein Visibility Bundle Wert?",
-            answer: "Was es Wert ist, kannst nur du selbst bestimmen, was alle Inhalte des Visibility Bundles zusammengerechnet bei Agenturen kosten würden, liegt etwa zwischen 10.000€ und 15.000€ und wäre mit mehreren Wochen an Wartezeit und unzähligen zusätzlichen Stunden an Koordinationsaufwand von deiner Seite verbunden. Wir reduzieren die Kosten drastisch, indem wir auf eine Kombination aus Automation und smarten Prozessen setzen."
+            question: "Was ist ein Rapid Branding Wert?",
+            answer: "Was es Wert ist, kannst nur du selbst bestimmen, was alle Inhalte des Rapid Brandings zusammengerechnet bei Agenturen kosten würden, liegt etwa zwischen 10.000€ und 15.000€ und wäre mit mehreren Wochen an Wartezeit und unzähligen zusätzlichen Stunden an Koordinationsaufwand von deiner Seite verbunden. Wir reduzieren die Kosten drastisch, indem wir auf eine Kombination aus Automation und smarten Prozessen setzen."
           },
           {
-            question: "Warum ist ein Visibility Bundle so wichtig für Startups?",
-            answer: "Unsere ehrliche Meinung? Ist es nicht. Startup Gründer haben wichtigeres zu tun, als sich mit Design zu beschäftigen. Wir sind davon überzeugt, dass es die wichtigste Aufgabe des Gründerteams ist, sich mit ihrem Markt und ihrem Produkt zu beschäftigen. Wir haben jedoch sowohl aus eigener Gründungserfahrung als auch aus der Beratung von über 50 Startups erkannt, dass die Entwicklung der Markenvisibilität eine überdimensionierte Menge der Ressourcen eines jungen Startups in Form von Zeit und Geld verschlingt und zu viele Fallstricke für unerfahrene Gründer beinhaltet. Die Verbindung und Abstimmung der einzelnen Elemente des Visibility Bundles eines Startups ist im Vergleich zu den Problemen, die ein Startup löst, nicht komplex. Aber sie ist kleinteilig und penibel. Genau diese kleinteiligen Schritte nehmen wir euch ab. Unser Ziel ist es, dass ihr in nur wenigen Tagen euer vollständiges Visibility Bundle in den Händen haltet und somit lauffähig für das nächste Jahr seid. Wir halten unser Visibility Bundle nicht für das finale Brand Design, dass ihr in 5 Jahren mit einer Million Kunden noch haben werdet, aber für den effizientesten Einstieg, der euch die Schaffensruhe gibt, um diese Skalierung erreichen zu können"
+            question: "Warum ist ein Rapid Branding so wichtig für Startups?",
+            answer: "Unsere ehrliche Meinung? Ist es nicht. Startup Gründer haben wichtigeres zu tun, als sich mit Design zu beschäftigen. Wir sind davon überzeugt, dass es die wichtigste Aufgabe des Gründerteams ist, sich mit ihrem Markt und ihrem Produkt zu beschäftigen. Wir haben jedoch sowohl aus eigener Gründungserfahrung als auch aus der Beratung von über 50 Startups erkannt, dass die Entwicklung der Markenvisibilität eine überdimensionierte Menge der Ressourcen eines jungen Startups in Form von Zeit und Geld verschlingt und zu viele Fallstricke für unerfahrene Gründer beinhaltet. Die Verbindung und Abstimmung der einzelnen Elemente des Rapid Brandings eines Startups ist im Vergleich zu den Problemen, die ein Startup löst, nicht komplex. Aber sie ist kleinteilig und penibel. Genau diese kleinteiligen Schritte nehmen wir euch ab. Unser Ziel ist es, dass ihr in nur wenigen Tagen euer vollständiges Rapid Branding in den Händen haltet und somit lauffähig für das nächste Jahr seid. Wir halten unser Rapid Branding nicht für das finale Brand Design, dass ihr in 5 Jahren mit einer Million Kunden noch haben werdet, aber für den effizientesten Einstieg, der euch die Schaffensruhe gibt, um diese Skalierung erreichen zu können"
           },
           {
-            question: "Warum sollte ich mein Visibility Bundle von RapidWorks erstellen lassen?",
-            answer: "Wir vereinen in unserem Team Startup-Gründungserfahrung, Design- und Development-Erfahrung. Wir wissen exakt, was ein Startup benötigt, um Kunden erreichen und überzeugen zu können. Zudem sind wir Kosten- und Zeiteffektiv in der Erstellung von Visibility Bundles, da wir bereits die Erstellung einiger Inhalte des Bundles semi-automatisiert haben."
+            question: "Warum sollte ich mein Rapid Branding von RapidWorks erstellen lassen?",
+            answer: "Wir vereinen in unserem Team Startup-Gründungserfahrung, Design- und Development-Erfahrung. Wir wissen exakt, was ein Startup benötigt, um Kunden erreichen und überzeugen zu können. Zudem sind wir Kosten- und Zeiteffektiv in der Erstellung von Rapid Brandings, da wir bereits die Erstellung einiger Inhalte des Bundles semi-automatisiert haben."
           },
           {
-            question: "In welcher Form erhalte ich die Inhalte des Visibility Bundles?",
-            answer: "Nach Fertigstellung erhältst du von uns eine E-Mail mit Zugriffslink zu einem Cloud-Storage, welcher sämtliche Bestandteile deines Visibility Bundles in digitaler Form enthält. Jede Datei ist in geeignetem Dateiformat für die jeweilige Rolle abgespeichert und sprechend benannt. Du erhältst zudem jede Datei in einem bearbeitungsoffenen Format. Unser Ziel ist es, dich für die Zukunft handlungsfähig zu machen, anstatt dich in ein Abhängigkeitsverhältnis von uns oder anderen Dienstleistern herein zu zwingen. Du erhältst von uns explizit keine physischen Materialien, du kannst dir diese aber mit unseren Dateien bei jeder Druckerei direkt in beliebiger Stückzahl fertigen lassen."
+            question: "In welcher Form erhalte ich die Inhalte des Rapid Brandings?",
+            answer: "Nach Fertigstellung erhältst du von uns eine E-Mail mit Zugriffslink zu einem Cloud-Storage, welcher sämtliche Bestandteile deines Rapid Brandings in digitaler Form enthält. Jede Datei ist in geeignetem Dateiformat für die jeweilige Rolle abgespeichert und sprechend benannt. Du erhältst zudem jede Datei in einem bearbeitungsoffenen Format. Unser Ziel ist es, dich für die Zukunft handlungsfähig zu machen, anstatt dich in ein Abhängigkeitsverhältnis von uns oder anderen Dienstleistern herein zu zwingen. Du erhältst von uns explizit keine physischen Materialien, du kannst dir diese aber mit unseren Dateien bei jeder Druckerei direkt in beliebiger Stückzahl fertigen lassen."
           },
           {
-            question: "Warum verschenkt Rapid Works 3 Visibility Bundles?",
+            question: "Warum verschenkt Rapid Works 3 Rapid Brandings?",
             answer: "Weil wir selbst ein Startup sind und Geschwindigkeit und glückliche Kunden über Profit wertschätzen. Durch die kostenfreie Vergabe drehen wir den Spieß um und suchen uns gezielt unsere ersten Kunden aus. Anhand der ersten Testkunde validieren wir unsere eigenen Annahmen zu Arbeitsaufwand, Abstimmungsaufwand, geschaffenem Wert für den Kunden und vieles mehr. Im Anschluss werden wir Umfang und Preis unserer Leistung entsprechend den Erfahrungen der kostenfreien Phase anpassen und mit einem unschlagbaren Angebot an jeden herantreten, der sich bis dahin beworben hat. Du brauchst also keine Angst zu haben, auch wenn du nicht in unserer Bewerbungsphase gewinnen solltest, erwartet dich in wenigen Tagen ein unschlagbares Angebot."
           },
           {
@@ -508,35 +515,35 @@ const VisibiltyBundle = () => {
           },
           {
             question: "Bietet Rapid Works noch weitere Services an?",
-            answer: "Ja, das Visibility Bundle ist unser Markteintritt, unsere Mission geht aber noch viel weiter. Unabhängig vom Visibility Bundle bieten wir Startups persönliches Coaching mit Yannick, MVP-Development und Software-Developmentleistungen zu unschlagbaren Preisen und kostenfreie Finanzierungsberatung an. Für weitere Infos siehe <a href='https://rapidworks.vercel.app/' target='_blank' rel='noopener noreferrer' class='text-violet-600 hover:text-violet-700 underline'>RapidWorks</a>."
+            answer: "Ja, das Rapid Branding ist unser Markteintritt, unsere Mission geht aber noch viel weiter. Unabhängig vom Rapid Branding bieten wir Startups persönliches Coaching mit Yannick, MVP-Development und Software-Developmentleistungen zu unschlagbaren Preisen und kostenfreie Finanzierungsberatung an. Für weitere Infos siehe <a href='https://rapidworks.vercel.app/' target='_blank' rel='noopener noreferrer' class='text-violet-600 hover:text-violet-700 underline'>RapidWorks</a>."
           },
           {
-            question: "Wie hoch ist die Qualität des Visibility Bundles?",
-            answer: "Vergleichbar mit der Qualität des Rapid Works Visibility Bundles, welches du als Showcase auf dieser Webseite hier siehst. Dein Visibility Bundle wird in Zusammenarbeit von Yannick und Samuel erstellt, exakt so wie das Rapid Works Visibility Bundle. Wir gehen transparent damit um, dass du bei uns kein Design auf dem Level von Apple erwarten kannst. Wir sind allerdings davon überzeugt, dass auch nur kaum ein Startup dieses Level an Design-Qualität bereits in der Early-Stage braucht. Der Dreh und Angelpunkt des Services deines Startups dreht sich um Brand Design auf Weltklasse? Dann sind wir nicht der richtige Partner für dich. In jedem anderen Fall vermutlich schon"
+            question: "Wie hoch ist die Qualität des Rapid Brandings?",
+            answer: "Vergleichbar mit der Qualität des Rapid Works Rapid Brandings, welches du als Showcase auf dieser Webseite hier siehst. Dein Rapid Branding wird in Zusammenarbeit von Yannick und Samuel erstellt, exakt so wie das Rapid Works Rapid Branding. Wir gehen transparent damit um, dass du bei uns kein Design auf dem Level von Apple erwarten kannst. Wir sind allerdings davon überzeugt, dass auch nur kaum ein Startup dieses Level an Design-Qualität bereits in der Early-Stage braucht. Der Dreh und Angelpunkt des Services deines Startups dreht sich um Brand Design auf Weltklasse? Dann sind wir nicht der richtige Partner für dich. In jedem anderen Fall vermutlich schon"
           },
           {
-            question: "Was ist, wenn ich Extrawünsche zu meinem Visibility Bundle habe?",
+            question: "Was ist, wenn ich Extrawünsche zu meinem Rapid Branding habe?",
             answer: "In unserem Formular kannst du Extrawünsche gerne notieren, wir werden diese sichten und dich darüber informieren, ob wir diese im Rahmen des Angebots mit umsetzen, oder uns anderweitig arrangieren können."
           },
           {
-            question: "Trete ich Rechte an meinem Visibility Bundle oder meiner Startup Idee ab?",
-            answer: "Dein Startup richtig sich ebenfalls an andere Startups als Zielgruppe und bietet Design-, Coaching-, oder Development-Leistungen an? In diesen Fällen könnte ein Interessenskonflikt zwischen uns vorliegen. Tu uns beiden einen Gefallen und schreib uns nicht deine Billion Dollar Startup Idee für explizit diese Zielgruppe und Leistungen in unser Formular. Wir haben selbst eine Menge weitere innovative Lösungen in diesem Bereich geplant und werden uns mit niemandem die Lorbeeren dafür teilen, weil jemand meint, dass wir seine Idee geklaut hätten. Insofern deine Idee nicht explizit in diesem Bereich liegt, kannst du sie uns bedenkenlos mitteilen. Du behältst ausdrücklich sämtliche Rechte an deiner Idee und deinem Visibility Bundle. Wir geben keinerlei Daten an Dritte weiter. Unabhängig davon fragen wir dich nicht ab, wie deine Idee unter der Haube funktioniert. Alle Daten, die du uns gibst, sind Daten, die du scheinbar sowieso öffentlich sichtbar machen möchtest."
+            question: "Trete ich Rechte an meinem Rapid Branding oder meiner Startup Idee ab?",
+            answer: "Dein Startup richtig sich ebenfalls an andere Startups als Zielgruppe und bietet Design-, Coaching-, oder Development-Leistungen an? In diesen Fällen könnte ein Interessenskonflikt zwischen uns vorliegen. Tu uns beiden einen Gefallen und schreib uns nicht deine Billion Dollar Startup Idee für explizit diese Zielgruppe und Leistungen in unser Formular. Wir haben selbst eine Menge weitere innovative Lösungen in diesem Bereich geplant und werden uns mit niemandem die Lorbeeren dafür teilen, weil jemand meint, dass wir seine Idee geklaut hätten. Insofern deine Idee nicht explizit in diesem Bereich liegt, kannst du sie uns bedenkenlos mitteilen. Du behältst ausdrücklich sämtliche Rechte an deiner Idee und deinem Rapid Branding. Wir geben keinerlei Daten an Dritte weiter. Unabhängig davon fragen wir dich nicht ab, wie deine Idee unter der Haube funktioniert. Alle Daten, die du uns gibst, sind Daten, die du scheinbar sowieso öffentlich sichtbar machen möchtest."
           },
           {
-            question: "An wen richtet sich das Startup Visibility Bundle Angebot?",
-            answer: "Kurzum - An Startups. Siehe <a href='https://de.wikipedia.org/wiki/Start-up-Unternehmen' target='_blank' rel='noopener noreferrer' class='text-violet-600 hover:text-violet-700 underline'>Start-up-Unternehmen – Wikipedia</a>. Du bist kein Startup, oder bist dir nicht sicher, ob du eins bist, aber das Visibility Bundle ist genau das was du brauchst? Dann füll gerne unser Formular aus, wir melden uns bei dir."
+            question: "An wen richtet sich das Startup Rapid Branding Angebot?",
+            answer: "Kurzum - An Startups. Siehe <a href='https://de.wikipedia.org/wiki/Start-up-Unternehmen' target='_blank' rel='noopener noreferrer' class='text-violet-600 hover:text-violet-700 underline'>Start-up-Unternehmen – Wikipedia</a>. Du bist kein Startup, oder bist dir nicht sicher, ob du eins bist, aber das Rapid Branding ist genau das was du brauchst? Dann füll gerne unser Formular aus, wir melden uns bei dir."
           },
           {
-            question: "Muss ich mein Startup bereits gegründet haben, um ein Visibility Bundle erhalten zu können?",
+            question: "Muss ich mein Startup bereits gegründet haben, um ein Rapid Branding erhalten zu können?",
             answer: "Nein, du kannst unser Bewerbungsformular auch ausfüllen, wenn du noch nicht gegründet hast."
           },
           {
-            question: "Was ist, wenn ich bereits einige Inhalte des Visibility Bundles habe?",
+            question: "Was ist, wenn ich bereits einige Inhalte des Rapid Brandings habe?",
             answer: "Das ist kein Problem, in unserem Formular kannst du uns beliebige Dateien Hochladen, die du bereits hast und uns dazu schreiben, welche davon wir in welcher Form beim Erstellen des Visibility Bundels aufgreifen sollen."
           },
           {
-            question: "Wann bekomme ich mein Visibility Bundle?",
-            answer: "Da wir die Erstellung mehrerer Inhalte des Visibility Bundles bereits zu einem gewissen Grad semi-automatisiert haben, ein eingespieltes Team in der Erstellung von Visibility Bundles sind und eine Menge Erfahrung in der Betreuung von Startups haben, erstellen wir mindestens ein Visibility Bundle pro Woche. Wir arbeiten die Aufträge nach <a href='https://de.wikipedia.org/wiki/First_In_%E2%80%93_First_Out' target='_blank' rel='noopener noreferrer' class='text-violet-600 hover:text-violet-700 underline'>First In – First Out – Wikipedia</a> ab und halten die Anzahl von Aufträgen in unserer Pipeline beabsichtigt sehr klein. Dein Visibility Bundle wird also in jedem Fall sehr zeitnah und schnell abgearbeitet. Deutlich schneller, als du es vermutlich selbst anfertigen oder outsourcen könntest."
+            question: "Wann bekomme ich mein Rapid Branding?",
+            answer: "Da wir die Erstellung mehrerer Inhalte des Rapid Brandings bereits zu einem gewissen Grad semi-automatisiert haben, ein eingespieltes Team in der Erstellung von Rapid Brandings sind und eine Menge Erfahrung in der Betreuung von Startups haben, erstellen wir mindestens ein Rapid Branding pro Woche. Wir arbeiten die Aufträge nach <a href='https://de.wikipedia.org/wiki/First_In_%E2%80%93_First_Out' target='_blank' rel='noopener noreferrer' class='text-violet-600 hover:text-violet-700 underline'>First In – First Out – Wikipedia</a> ab und halten die Anzahl von Aufträgen in unserer Pipeline beabsichtigt sehr klein. Dein Rapid Branding wird also in jedem Fall sehr zeitnah und schnell abgearbeitet. Deutlich schneller, als du es vermutlich selbst anfertigen oder outsourcen könntest."
           },
           {
             question: "Wie viel kostet es, alle Printmedien drucken zu lassen?",
@@ -567,7 +574,7 @@ const VisibiltyBundle = () => {
           },
           {
             title: "Wir erstellen Ihre Assets",
-            description: "Wir erstellen Ihr komplettes Visibility Bundle und präsentieren es Ihnen nach Fertigstellung. Wenn Sie mit dem Bundle nicht zufrieden sind, müssen Sie nicht zahlen."
+            description: "Wir erstellen Ihr komplettes Rapid Branding und präsentieren es Ihnen nach Fertigstellung. Wenn Sie mit dem Bundle nicht zufrieden sind, müssen Sie nicht zahlen."
           },
           {
             title: "Prüfen & Verfeinern",
@@ -578,7 +585,7 @@ const VisibiltyBundle = () => {
       // Features section
       features: {
         title: "Inhalt",
-        subtitle: "Das Visibility Bundle enthält alles, was Sie brauchen, um die Aufmerksamkeit von Kunden, Partnern, Investoren und Mitarbeitern auf Ihr Startup zu lenken. Sie werden sofort sichtbar und ein einheitliches Markendesign macht Ihre Marke erkennbar."
+        subtitle: "Das Rapid Branding enthält alles, was Sie brauchen, um die Aufmerksamkeit von Kunden, Partnern, Investoren und Mitarbeitern auf Ihr Startup zu lenken. Sie werden sofort sichtbar und ein einheitliches Markendesign macht Ihre Marke erkennbar."
       },
       // Process section
       process: {
@@ -601,6 +608,13 @@ const VisibiltyBundle = () => {
             description: "Erhalten Sie Ihr komplettes Markenpaket"
           }
         ]
+      },
+      // Explore more section
+      exploreMore: {
+        badge: "Mehr Entdecken",
+        title: "Wussten Sie, dass wir mehr als nur Branding anbieten?",
+        description: "Entdecken Sie unsere weiteren Dienstleistungen, die Ihnen beim Wachstum Ihres Startups helfen - von Expertenunterstützung über MVP-Entwicklung bis hin zu Coaching und Finanzierungslösungen.",
+        cta: "Alle Services entdecken"
       }
     }
   }
@@ -768,7 +782,7 @@ const VisibiltyBundle = () => {
                       <button
                         onClick={() => setIsModalOpen(true)}
                         className="group relative inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 text-sm font-light 
-                            overflow-hidden rounded-full text-white bg-black transition-all duration-300
+                            overflow-hidden rounded-full text-white bg-[#0F1115] transition-all duration-300
                             shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 hover:scale-105"
                       >
                         <span className="relative z-10 flex items-center">
@@ -859,7 +873,7 @@ const VisibiltyBundle = () => {
                             <button
                               onClick={() => setIsModalOpen(true)}
                               className="group relative inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 text-sm font-light 
-                            overflow-hidden rounded-full text-white bg-black transition-all duration-300
+                            overflow-hidden rounded-full text-white bg-[#0F1115] transition-all duration-300
                                 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 hover:scale-105"
                             >
                               <span className="relative z-10 flex items-center">
@@ -888,13 +902,13 @@ const VisibiltyBundle = () => {
           </div>
 
           {/* Features Section (Everything You Need) */}
-          <section id="features" className="py-40 overflow-hidden bg-gradient-to-b from-white via-gray-50/50 to-white relative">
-            <div className={containerClass}>
+          <section id="features" className="py-20 md:py-40 overflow-hidden bg-gradient-to-b from-white via-gray-50/50 to-white relative">
+            <div className="max-w-[1280px] w-full mx-auto px-4 sm:px-6 lg:px-8 md:px-12 relative">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="text-center mb-40 relative"
+                className="text-center mb-20 md:mb-40 relative"
               >
                 <motion.span
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -925,10 +939,10 @@ const VisibiltyBundle = () => {
                     viewport={{ once: true, margin: "-100px" }}
                     transition={{ duration: 0.8, delay: 0.2 }}
                   >
-                    {/* Content Container */}
-                    <div className={`flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-16 md:gap-32`}>
-                      {/* Image Side */}
-                      <div className="w-full md:w-1/2">
+                    {/* Content Container - ensure images are properly contained */}
+                    <div className={`flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-8 md:gap-16 lg:gap-24`}>
+                      {/* Image Side - Ensure proper containment */}
+                      <div className="w-full md:w-1/2 px-2 md:px-4">
                         <div className="relative aspect-[4/3] overflow-hidden group rounded-3xl">
                           <div className="h-full transform-gpu">
                             <img
@@ -940,15 +954,15 @@ const VisibiltyBundle = () => {
                         </div>
                       </div>
 
-                      {/* Content Side */}
-                      <div className="w-full md:w-1/2">
-                        <div className="relative pl-16 md:pl-0">
-                          <div className="space-y-8">
-                            <div className="space-y-6">
-                              <h3 className="text-3xl md:text-5xl font-light tracking-tight bg-gradient-to-br from-gray-900 to-gray-700 bg-clip-text text-transparent leading-relaxed pb-1">
+                      {/* Content Side - Adjusted padding */}
+                      <div className="w-full md:w-1/2 px-2 md:px-4">
+                        <div className="relative md:pl-0">
+                          <div className="space-y-6 md:space-y-8">
+                            <div className="space-y-4 md:space-y-6">
+                              <h3 className="text-2xl md:text-4xl lg:text-5xl font-light tracking-tight bg-gradient-to-br from-gray-900 to-gray-700 bg-clip-text text-transparent leading-relaxed pb-1">
                                 {item.title}
                               </h3>
-                              <p className="text-gray-600 text-lg md:text-xl leading-relaxed">
+                              <p className="text-gray-600 text-base md:text-lg lg:text-xl leading-relaxed">
                                 {item.description}
                               </p>
                             </div>
@@ -1014,7 +1028,7 @@ const VisibiltyBundle = () => {
                 </p>
                 <button
                   onClick={() => window.open('https://calendly.com/yannick-familie-heeren/30min', '_blank')}
-                  className="bg-black text-white px-8 py-3 rounded-none font-light hover:bg-gray-900 transition duration-300 inline-flex items-center text-lg"
+                  className="bg-[#0F1115] text-white px-8 py-3 rounded-none font-light hover:bg-gray-900 transition duration-300 inline-flex items-center text-lg"
                 >
                   {content.finalCta.cta}
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -1023,33 +1037,56 @@ const VisibiltyBundle = () => {
             </div>
           </section>
 
-          {/* MVP Section - Moved below Final CTA */}
-          <section className="py-12 sm:py-32 bg-black text-white">
-            <div className={containerClass}>
-              <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12">
-                <div className="flex-1">
-                  <h2 className="text-xl sm:text-4xl font-light mb-2 sm:mb-4">
-                    {content.mvp.title}
-                  </h2>
-                  <p className="text-sm sm:text-xl text-gray-300 mb-4 sm:mb-8">
-                    {content.mvp.description}
-                  </p>
-                  <Link
-                    to="/"
-                    className="inline-flex items-center px-3 sm:px-6 py-2 sm:py-3 bg-white text-black hover:bg-gray-100 transition-colors font-light text-xs sm:text-base"
-                  >
-                    {content.mvp.cta}
-                    <ArrowRight className="ml-1 sm:ml-2 -mr-1 h-3 w-3 sm:h-5 sm:w-5" />
-                  </Link>
+          {/* Cross-Reference Section - Enhanced with color and visual elements */}
+          <section className="py-16 sm:py-32 bg-gradient-to-br from-violet-900 via-indigo-900 to-purple-900 text-white relative overflow-hidden">
+            {/* Decorative elements */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/30 rounded-full -translate-y-1/2 translate-x-1/2 blur-xl"></div>
+            <div className="absolute bottom-0 left-0 w-72 h-72 bg-indigo-500/30 rounded-full translate-y-1/2 -translate-x-1/4 blur-xl"></div>
+            
+            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMzAwdjMwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDUiLz48L3N2Zz4=')] opacity-30 pointer-events-none"></div>
+            
+            <div className={containerClass + " relative z-10"}>
+              <div className="max-w-3xl mx-auto text-center">
+                <div className="inline-flex items-center gap-2 text-violet-300 text-sm uppercase tracking-wider font-light mb-6 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm mx-auto">
+                  <span className="w-2 h-2 rounded-full bg-violet-400 animate-pulse"></span>
+                  {content.exploreMore.badge}
                 </div>
-                <div className="flex-1 flex justify-center">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-indigo-600 blur-3xl opacity-20"></div>
-                    <div className="relative text-4xl sm:text-6xl md:text-8xl font-bold">
-                      2 <span className="text-violet-500">{content.mvp.weeks}</span>
+                
+                <h2 className="text-2xl sm:text-4xl md:text-5xl font-light mb-6 bg-gradient-to-r from-violet-200 via-white to-indigo-200 bg-clip-text text-transparent">
+                  {content.exploreMore.title}
+                </h2>
+                
+                <p className="text-sm sm:text-xl text-indigo-100 mb-10 leading-relaxed max-w-2xl mx-auto">
+                  {content.exploreMore.description}
+                </p>
+                
+                {/* Service icons in a grid - updated with all 6 services */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-w-2xl mx-auto mb-10">
+                  {[
+                    { icon: <Megaphone className="h-6 w-6" />, label: "Branding" },
+                    { icon: <Users className="h-6 w-6" />, label: "Experts" },
+                    { icon: <FileText className="h-6 w-6" />, label: "Blueprint" },
+                    { icon: <Compass className="h-6 w-6" />, label: "Coaching" },
+                    { icon: <Presentation className="h-6 w-6" />, label: "Workshops" },
+                    { icon: <Euro className="h-6 w-6" />, label: "Financing" }
+                  ].map((item, index) => (
+                    <div key={index} className="bg-white/10 backdrop-blur-sm p-4 rounded-xl flex flex-col items-center gap-2 hover:bg-white/20 transition-colors">
+                      {item.icon}
+                      <span className="text-sm">{item.label}</span>
                     </div>
-                  </div>
+                  ))}
                 </div>
+                
+                <Link
+                  to="/"
+                  className="group relative inline-flex items-center justify-center px-6 py-3 text-sm font-medium overflow-hidden rounded-full text-violet-900 bg-white transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                >
+                  <span className="relative z-10 flex items-center">
+                    {content.exploreMore.cta}
+                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  </span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-violet-200 to-indigo-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </Link>
               </div>
             </div>
           </section>

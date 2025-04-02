@@ -475,7 +475,7 @@ function Header() {
             <Link to="/#approach" className="text-gray-600 hover:text-gray-900">
               {translate("nav.approach")}
             </Link>
-            <Link to="/visibility" className="text-gray-600 hover:text-gray-900">
+            <Link to="/branding" className="text-gray-600 hover:text-gray-900">
               {translate("nav.visibility")}
             </Link>
             <Link to="/#contact" className="text-gray-600 hover:text-gray-900">
@@ -517,7 +517,7 @@ function Header() {
                 {translate("nav.approach")}
               </Link>
               <Link
-                to="/visibility"
+                to="/branding"
                 className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900"
               >
                 {translate("nav.visibility")}
@@ -980,7 +980,7 @@ const VisibilityCTA = ({ fadeIn }) => {
             Get a complete professional brand identity package, website, and marketing essentials - all delivered within days.
           </p>
           <Link
-            to="/visibility"
+            to="/branding"
             onClick={() => window.scrollTo(0, 0)}
             className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-violet-600 bg-white rounded-full hover:bg-violet-50 transition-colors duration-300"
           >
@@ -1058,7 +1058,7 @@ function App() {
               }
             />
             <Route
-              path="/team"
+              path="/experts"
               element={
                 <main className="flex-1">
                   <TeamPage />
@@ -1082,7 +1082,7 @@ function App() {
               }
             />
             <Route
-              path="/visibility"
+              path="/branding"
               element={
                 <main className="flex-1">
                   <VisibiltyBundle />

@@ -15,6 +15,7 @@ import {
   ArrowDown,
 } from "lucide-react"
 import RapidWorksHeader from "./new_landing_page_header"
+import { submitToAirtable } from '../utils/airtableService'
 
 const WorkshopsPage = () => {
   const [scrolled, setScrolled] = useState(false)
@@ -38,7 +39,7 @@ const WorkshopsPage = () => {
     }
   }, [selectedWorkshops])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
     if (!email) {
@@ -51,10 +52,25 @@ const WorkshopsPage = () => {
       return
     }
 
-    // Here you would typically send the email to your backend
-    console.log("Email submitted:", email, "Workshops:", selectedWorkshops)
-    setSubmitted(true)
-    setError("")
+    try {
+      // Format the selected workshops as a string for the Notes field
+      const workshopNotes = selectedWorkshops.map(id => {
+        const workshop = workshops.find(w => w.id === id)
+        return workshop ? workshop.title : id
+      }).join(", ")
+
+      await submitToAirtable({
+        email,
+        service: "Workshops",
+        notes: `Selected workshops: ${workshopNotes}`
+      })
+      
+      setSubmitted(true)
+      setError("")
+    } catch (error) {
+      setError("Failed to submit your request. Please try again.")
+      console.error("Submission error:", error)
+    }
   }
 
   const toggleWorkshop = (workshopId) => {
