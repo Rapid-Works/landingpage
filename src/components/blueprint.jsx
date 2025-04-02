@@ -2,10 +2,22 @@ import React from 'react';
 import { Calendar, Clock, Shield, AlertCircle, FileText, Check } from 'lucide-react';
 import RapidWorksHeader from './new_landing_page_header';
 import EmailWaitlistForm from './EmailWaitlistForm';
+import { submitToAirtable } from '../utils/airtableService';
 
 const BlueprintPage = () => {
-  const handleSubmit = (email) => {
-    console.log('Email submitted:', email);
+  const handleSubmit = async (email) => {
+    try {
+      await submitToAirtable({
+        email,
+        service: "Blueprint",
+        notes: "Joined Blueprint waitlist"
+      });
+      console.log('Email submitted to Airtable:', email);
+      return true; // Return success for the EmailWaitlistForm component
+    } catch (error) {
+      console.error("Error submitting to Airtable:", error);
+      return false; // Return failure for the EmailWaitlistForm component
+    }
   };
 
   return (

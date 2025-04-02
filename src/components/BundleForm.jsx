@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ArrowLeft, X, CheckCircle } from 'lucide-react';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
+import { submitToAirtable } from '../utils/airtableService';
 
 const formSteps = [
   {
@@ -136,9 +137,30 @@ const BundleForm = () => {
   };
 
   const handleSubmit = async () => {
-    // Add your submission logic here
-    console.log('Form submitted:', formData);
-    nextStep();
+    try {
+      // Create a summary of the form data for the Notes field
+      const notes = `
+Company: ${formData.companyName || 'N/A'}
+Industry: ${formData.industry || 'N/A'}
+Target Audience: ${formData.targetAudience || 'N/A'}
+Business Type: ${formData.businessType || 'N/A'}
+Website Goal: ${formData.websiteGoal || 'N/A'}
+Brand Values: ${(formData.brandValues || []).join(', ')}
+Founders: ${formData.founderCount || 1}
+      `;
+
+      await submitToAirtable({
+        email: formData.email,
+        service: "Brand Identity Form",
+        notes: notes.trim()
+      });
+      
+      console.log('Form submitted to Airtable:', formData);
+      nextStep(); // Proceed to the success screen
+    } catch (error) {
+      console.error("Error submitting to Airtable:", error);
+      alert("There was a problem submitting your form. Please try again.");
+    }
   };
 
   const renderFounderFields = (index) => (

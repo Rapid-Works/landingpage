@@ -9,7 +9,8 @@ import {
   X,
   Euro,
   Megaphone,
-  Compass
+  Compass,
+  Presentation
 } from "lucide-react"
 
 export default function RapidWorksHeader() {
@@ -34,13 +35,13 @@ export default function RapidWorksHeader() {
 
   // Define color schemes for each product page
   const getColorScheme = () => {
-    if (location.pathname.startsWith("/visibility")) {
+    if (location.pathname.startsWith("/branding")) {
       return {
         logoGradient: "from-purple-600 to-indigo-600",
         logoText: "from-purple-600 to-indigo-600",
         buttonHover: "hover:from-purple-600 hover:to-indigo-600"
       }
-    } else if (location.pathname.startsWith("/team")) {
+    } else if (location.pathname.startsWith("/experts")) {
       return {
         logoGradient: "from-blue-600 to-blue-700",
         logoText: "from-blue-600 to-blue-700",
@@ -90,11 +91,11 @@ export default function RapidWorksHeader() {
 
   // Navigation items with paths and their specific colors
   const navItems = [
-    { name: "Branding", icon: <Megaphone className="h-4 w-4" />, path: "/visibility", color: "purple" },
-    { name: "Experts", icon: <Users className="h-4 w-4" />, path: "/team", color: "blue" },
+    { name: "Branding", icon: <Megaphone className="h-4 w-4" />, path: "/branding", color: "purple" },
+    { name: "Experts", icon: <Users className="h-4 w-4" />, path: "/experts", color: "blue" },
     { name: "Blueprint", icon: <FileText className="h-4 w-4" />, path: "/blueprint", color: "indigo" },
     { name: "Coaching", icon: <Compass className="h-4 w-4" />, path: "/coaching", color: "orange" },
-    { name: "Workshops", icon: <FileText className="h-4 w-4" />, path: "/workshop", color: "green" },
+    { name: "Workshops", icon: <Presentation className="h-4 w-4" />, path: "/workshop", color: "green" },
     { name: "Financing", icon: <Euro className="h-4 w-4" />, path: "/financing", color: "rose" },
     { name: "Bundle", icon: <Package className="h-4 w-4" />, path: "/bundle", color: "gray" },
   ]

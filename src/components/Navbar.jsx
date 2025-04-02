@@ -72,10 +72,10 @@ const Navbar = () => {
             >
               Book a Call
             </button>
-            <div className="hidden md:flex items-center space-x-1 text-sm">
+            <div className="hidden md:flex items-center space-x-1 text-sm font-sans">
               <button
                 onClick={() => changeLanguage('en')}
-                className={`px-2 py-1 rounded-l ${language === 'en' ? 'text-violet-600' : 'text-gray-400'
+                className={`px-2 py-1 rounded-l font-sans ${language === 'en' ? 'text-violet-600' : 'text-gray-400'
                   }`}
               >
                 EN
@@ -83,7 +83,7 @@ const Navbar = () => {
               <span className="text-gray-300">/</span>
               <button
                 onClick={() => changeLanguage('de')}
-                className={`px-2 py-1 rounded-r ${language === 'de' ? 'text-violet-600' : 'text-gray-400'
+                className={`px-2 py-1 rounded-r font-sans ${language === 'de' ? 'text-violet-600' : 'text-gray-400'
                   }`}
               >
                 DE
@@ -137,10 +137,10 @@ const Navbar = () => {
               >
                 Visibility Bundle
               </Link>
-              <div className="flex justify-center items-center space-x-1 text-sm border-t border-gray-100 pt-4">
+              <div className="flex justify-center items-center space-x-1 text-sm border-t border-gray-100 pt-4 font-sans">
                 <button
                   onClick={() => changeLanguage('en')}
-                  className={`px-4 py-2 rounded ${language === 'en' ? 'text-violet-600' : 'text-gray-400'
+                  className={`px-4 py-2 rounded font-sans ${language === 'en' ? 'text-violet-600' : 'text-gray-400'
                     }`}
                 >
                   EN
@@ -148,7 +148,7 @@ const Navbar = () => {
                 <span className="text-gray-300">/</span>
                 <button
                   onClick={() => changeLanguage('de')}
-                  className={`px-4 py-2 rounded ${language === 'de' ? 'text-violet-600' : 'text-gray-400'
+                  className={`px-4 py-2 rounded font-sans ${language === 'de' ? 'text-violet-600' : 'text-gray-400'
                     }`}
                 >
                   DE

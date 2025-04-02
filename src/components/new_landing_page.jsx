@@ -106,7 +106,7 @@ export default function RapidWorksPage() {
               
               <p className="text-xl text-white/90 leading-relaxed max-w-3xl mx-auto">
                 You are not alone, 80% of the problems faced by startups are identical.
-                We solve these 80% at unbeatable prices, so you can spend your time
+                We solve these at unbeatable prices, so you can spend your time
                 and capital on your core business.
               </p>
             </div>
@@ -173,7 +173,7 @@ export default function RapidWorksPage() {
                       Get visible to your market in 1 week cheaper than building it yourself!
                     </p>
                     <Link
-                      to="/visibility"
+                      to="/branding"
                       className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-4 py-2 rounded-lg hover:bg-white/30 transition-all"
                     >
                       Learn more <ArrowRight className="h-4 w-4" />
@@ -210,15 +210,16 @@ export default function RapidWorksPage() {
                   <div>
                     <h3 className="text-3xl font-bold text-white mb-2">Rapid Experts</h3>
                     <p className="text-white/90 max-w-md mb-3">Find your expert the same day cheaper than own employees!</p>
-                    <div className="flex flex-col sm:flex-row gap-2">
+                    <div className="flex justify-between items-center">
                       <Link
-                        to="/team"
+                        to="/experts"
                         className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-4 py-2 rounded-lg hover:bg-white/30 transition-all"
                       >
                         Learn more <ArrowRight className="h-4 w-4" />
                       </Link>
+                      
                       <Link
-                        to="/team"
+                        to="/experts"
                         className="inline-flex items-center gap-2 text-blue-600 font-medium bg-white px-4 py-2 rounded-lg hover:bg-blue-50 transition-all"
                       >
                         Get 1 hour free <ArrowRight className="h-4 w-4" />
@@ -446,7 +447,7 @@ export default function RapidWorksPage() {
                   <div className="grid grid-cols-2 gap-6 p-8">
                     {[
                       { icon: <Megaphone className="h-8 w-8" />, color: "bg-purple-500/20", path: "/" },
-                      { icon: <Users className="h-8 w-8" />, color: "bg-blue-500/20", path: "/team" },
+                      { icon: <Users className="h-8 w-8" />, color: "bg-blue-500/20", path: "/experts" },
                       { icon: <FileText className="h-8 w-8" />, color: "bg-indigo-500/20", path: "/blueprint" },
                       { icon: <Compass className="h-8 w-8" />, color: "bg-amber-500/20", path: "/coaching" },
                       { icon: <Presentation className="h-8 w-8" />, color: "bg-emerald-500/20", path: "/workshop" },

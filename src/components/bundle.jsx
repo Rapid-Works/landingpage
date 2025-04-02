@@ -17,6 +17,7 @@ import {
 } from "lucide-react"
 import RapidWorksHeader from "./new_landing_page_header"
 import EmailWaitlistForm from "./EmailWaitlistForm"
+import { submitToAirtable } from '../utils/airtableService'
 
 const BundlePage = () => {
   const [scrolled, setScrolled] = useState(false)
@@ -29,8 +30,19 @@ const BundlePage = () => {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  const handleSubmit = (email) => {
-    console.log("Email submitted:", email)
+  const handleSubmit = async (email) => {
+    try {
+      await submitToAirtable({
+        email,
+        service: "Bundle",
+        notes: "Requested early access to Rapid Bundle"
+      });
+      console.log('Email submitted to Airtable:', email);
+      return true; // Return success for the EmailWaitlistForm component
+    } catch (error) {
+      console.error("Error submitting to Airtable:", error);
+      return false; // Return failure for the EmailWaitlistForm component
+    }
   }
 
   const openCalendly = () => {
@@ -101,8 +113,8 @@ const BundlePage = () => {
           <div className="text-center mb-16 max-w-3xl mx-auto">
             <div className="inline-flex items-center justify-center mb-5 px-4 py-1.5 bg-gray-100 border border-gray-200 rounded-full text-gray-700 font-medium text-xs shadow-sm mx-auto">
               <span className="relative flex h-2 w-2 mr-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gray-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-gray-800"></span>
               </span>
               Coming Soon
             </div>
