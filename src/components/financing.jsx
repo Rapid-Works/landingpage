@@ -2,12 +2,65 @@
 
 import { ArrowRight, Euro, X, Loader2 } from "lucide-react"
 import RapidWorksHeader from "./new_landing_page_header"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useContext } from "react"
+import { LanguageContext as AppLanguageContext } from "../App"
 
 const FinancingPage = () => {
+    const context = useContext(AppLanguageContext);
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isCalendlyLoading, setIsCalendlyLoading] = useState(true)
+    const [isLoading, setIsLoading] = useState(true)
     const iframeRef = useRef(null)
+
+    useEffect(() => {
+        if (context) {
+            setIsLoading(false);
+        }
+    }, [context]);
+
+    // Page content with translations
+    const pageContent = {
+        en: {
+            badge: {
+                text: "Rapid Financing"
+            },
+            hero: {
+                title: "Don't know how to",
+                highlight: "Finance",
+                titleEnd: "your growth?",
+                subtitle: "We help startups navigate the complex world of financing, from grants and subsidies to venture capital and strategic partnerships."
+            },
+            mainSection: {
+                title: "The right financing at the right time",
+                description: "Every stage of your startup journey requires different financing strategies. We work with you to identify the optimal funding mix for your current needs and future growth plans.",
+                buttonText: "Free Consultation"
+            },
+            modal: {
+                title: "Schedule a Free Consultation",
+                loading: "Loading scheduling calendar..."
+            }
+        },
+        de: {
+            badge: {
+                text: "Rapid Finanzierung"
+            },
+            hero: {
+                title: "Wissen Sie nicht, wie Sie",
+                highlight: "Finanzierung",
+                titleEnd: "für Ihr Wachstum finden?",
+                subtitle: "Wir helfen Startups, sich in der komplexen Welt der Finanzierung zurechtzufinden - von Zuschüssen und Subventionen bis hin zu Risikokapital und strategischen Partnerschaften."
+            },
+            mainSection: {
+                title: "Die richtige Finanzierung zum richtigen Zeitpunkt",
+                description: "Jede Phase Ihrer Startup-Reise erfordert unterschiedliche Finanzierungsstrategien. Wir arbeiten mit Ihnen zusammen, um den optimalen Finanzierungsmix für Ihre aktuellen Bedürfnisse und zukünftigen Wachstumspläne zu identifizieren.",
+                buttonText: "Kostenlose Beratung"
+            },
+            modal: {
+                title: "Kostenlose Beratung planen",
+                loading: "Terminkalender wird geladen..."
+            }
+        }
+    };
 
     // Prevent body scroll when modal is open
     useEffect(() => {
@@ -25,6 +78,15 @@ const FinancingPage = () => {
     const handleIframeLoad = () => {
         setIsCalendlyLoading(false)
     }
+
+    if (isLoading || !context) {
+        return <div className="flex justify-center items-center h-screen">
+            <Loader2 className="h-12 w-12 animate-spin text-rose-600" />
+        </div>;
+    }
+
+    const { language } = context;
+    const content = pageContent[language];
 
     return (
         <div className="min-h-screen bg-white font-sans selection:bg-rose-200 selection:text-rose-900">
@@ -45,23 +107,22 @@ const FinancingPage = () => {
                     <div className="text-center mb-16 max-w-3xl mx-auto">
                         <div className="inline-block mb-4 px-4 py-1.5 bg-rose-100 rounded-full text-rose-700 font-medium text-sm">
                             <Euro className="h-4 w-4 inline mr-1" />
-                            Rapid Financing
+                            {content.badge.text}
                         </div>
 
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
-                            Don't know how to{" "}
+                            {content.hero.title}{" "}
                             <span className="relative inline-block">
                                 <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-pink-600">
-                                    Finance
+                                    {content.hero.highlight}
                                 </span>
                                 <span className="absolute bottom-2 left-0 w-full h-4 bg-rose-200 rounded-lg -z-10 opacity-70"></span>
                             </span>{" "}
-                            your growth?
+                            {content.hero.titleEnd}
                         </h1>
 
                         <p className="text-xl text-gray-700 leading-relaxed">
-                            We help startups navigate the complex world of financing, from grants and subsidies to venture capital and
-                            strategic partnerships.
+                            {content.hero.subtitle}
                         </p>
                     </div>
 
@@ -76,13 +137,12 @@ const FinancingPage = () => {
                         </div>
 
                         <div className="relative z-10 p-8 md:p-12 text-center">
-                                <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-                                    The right financing at the right time
-                                </h2>
+                            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+                                {content.mainSection.title}
+                            </h2>
                             <p className="text-white/90 text-lg mb-8 mx-auto max-w-3xl">
-                                    Every stage of your startup journey requires different financing strategies. We work with you to
-                                    identify the optimal funding mix for your current needs and future growth plans.
-                                </p>
+                                {content.mainSection.description}
+                            </p>
 
                             <button 
                                 className="bg-white text-rose-600 px-8 py-4 rounded-full font-medium hover:shadow-lg hover:shadow-rose-900/20 transition-all flex items-center gap-2 group mx-auto"
@@ -91,12 +151,12 @@ const FinancingPage = () => {
                                     setIsModalOpen(true);
                                 }}
                             >
-                                    Free Consultation
-                                    <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                                </button>
+                                {content.mainSection.buttonText}
+                                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                            </button>
                         </div>
                     </div>
-                        </div>
+                </div>
             </main>
 
             {/* Calendly Modal - Making it even larger */}
@@ -104,19 +164,19 @@ const FinancingPage = () => {
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-2">
                     <div className="bg-white rounded-2xl w-full max-w-7xl h-[95vh] relative flex flex-col">
                         <div className="flex justify-between items-center p-4 border-b">
-                            <h3 className="font-bold text-lg">Schedule a Free Consultation</h3>
-                                            <button
+                            <h3 className="font-bold text-lg">{content.modal.title}</h3>
+                            <button
                                 onClick={() => setIsModalOpen(false)}
                                 className="p-2 rounded-full hover:bg-gray-100"
                             >
                                 <X className="h-5 w-5" />
-                                            </button>
+                            </button>
                         </div>
                         <div className="flex-grow relative">
                             {isCalendlyLoading && (
                                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-white">
                                     <Loader2 className="h-10 w-10 text-rose-600 animate-spin mb-4" />
-                                    <p className="text-gray-600">Loading scheduling calendar...</p>
+                                    <p className="text-gray-600">{content.modal.loading}</p>
                                 </div>
                             )}
                             <iframe

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useContext } from "react"
 import {
   Rocket,
   Package,
@@ -13,14 +13,166 @@ import {
   Users,
   FileText,
   Compass,
-  Presentation
+  Presentation,
+  Loader2
 } from "lucide-react"
+import { LanguageContext as AppLanguageContext } from "../App"
 import RapidWorksHeader from "./new_landing_page_header"
 import EmailWaitlistForm from "./EmailWaitlistForm"
 import { submitToAirtable } from '../utils/airtableService'
 
 const BundlePage = () => {
+  const context = useContext(AppLanguageContext);
   const [scrolled, setScrolled] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Page content with translations
+  const pageContent = {
+    en: {
+      badge: {
+        text: "Coming Soon"
+      },
+      hero: {
+        title: "Rapid",
+        highlight: "Bundle",
+        subtitle: "Focus on what really matters. Let us handle everything else."
+      },
+      mainCard: {
+        title: "The Perfect Time to Start",
+        description: "There has never been a better time to found a startup in North Rhine Westphalia. Current subsidies can finance up to 70% of your startup costs!",
+        bundleDescription: "Our bundle provides everything your startup needs - from brand development to product creation, coaching to marketing. You focus on your vision while we handle the rest.",
+        financing: {
+          title: "Subsidized Excellence",
+          description: "We'll help you navigate available subsidies and assist with your application - completely free of charge. Schedule a call to discuss your financing options.",
+          buttonText: "Discuss Financing Options"
+        }
+      },
+      services: {
+        title: "Everything Your Startup Needs",
+        items: [
+          {
+            title: "Rapid Branding",
+            description: "Establish your market presence with a complete branding package"
+          },
+          {
+            title: "Rapid Coaching",
+            description: "Receive strategic guidance from experienced startup founders"
+          },
+          {
+            title: "Rapid Team",
+            description: "Access expert talent on-demand without the cost of full-time hires"
+          },
+          {
+            title: "Rapid Blueprint",
+            description: "Streamline your operational processes and tool infrastructure"
+          },
+          {
+            title: "Rapid Workshops",
+            description: "Build your team's knowledge with targeted training sessions"
+          },
+          {
+            title: "Rapid Financing",
+            description: "Navigate subsidies and funding options for maximum value"
+          }
+        ]
+      },
+      opportunity: {
+        title: "Limited Time Opportunity",
+        description: "Current subsidies make this an unprecedented opportunity to launch or scale your startup with significant cost savings. Don't miss out!",
+        benefits: [
+          "Up to 70% of costs covered by subsidies",
+          "Free consultation on available financing options",
+          "Assistance with subsidy application process"
+        ]
+      },
+      waitlist: {
+        title: "Join the Waitlist",
+        description: "Be the first to know when our comprehensive Rapid Bundle becomes available. We'll notify you with exclusive early access opportunities.",
+        buttonText: "Get Early Access",
+        successText: "You're on the List!",
+        successDescription: "Thank you for your interest in our Rapid Bundle. We'll notify you as soon as it's available.",
+        checkboxText: "I agree to receive updates about Rapid Bundle and financing options"
+      },
+      consultation: {
+        buttonText: "Schedule a Free Consultation"
+      }
+    },
+    de: {
+      badge: {
+        text: "Demnächst verfügbar"
+      },
+      hero: {
+        title: "Rapid",
+        highlight: "Bundle",
+        subtitle: "Konzentrieren Sie sich auf das Wesentliche. Wir kümmern uns um den Rest."
+      },
+      mainCard: {
+        title: "Der perfekte Zeitpunkt zum Start",
+        description: "Es gab nie einen besseren Zeitpunkt, ein Startup in Nordrhein-Westfalen zu gründen. Aktuelle Fördermittel können bis zu 70% Ihrer Startup-Kosten finanzieren!",
+        bundleDescription: "Unser Bundle bietet alles, was Ihr Startup braucht - von der Markenentwicklung bis zur Produkterstellung, vom Coaching bis zum Marketing. Sie konzentrieren sich auf Ihre Vision, während wir uns um den Rest kümmern.",
+        financing: {
+          title: "Geförderte Exzellenz",
+          description: "Wir helfen Ihnen bei der Navigation durch verfügbare Fördermittel und unterstützen Sie bei Ihrer Bewerbung - völlig kostenfrei. Vereinbaren Sie ein Gespräch, um Ihre Finanzierungsmöglichkeiten zu besprechen.",
+          buttonText: "Finanzierungsoptionen besprechen"
+        }
+      },
+      services: {
+        title: "Alles, was Ihr Startup braucht",
+        items: [
+          {
+            title: "Rapid Branding",
+            description: "Etablieren Sie Ihre Marktpräsenz mit einem kompletten Branding-Paket"
+          },
+          {
+            title: "Rapid Coaching",
+            description: "Erhalten Sie strategische Beratung von erfahrenen Startup-Gründern"
+          },
+          {
+            title: "Rapid Team",
+            description: "Greifen Sie bei Bedarf auf Experten zu, ohne die Kosten für Vollzeitmitarbeiter"
+          },
+          {
+            title: "Rapid Blueprint",
+            description: "Optimieren Sie Ihre Betriebsprozesse und Tool-Infrastruktur"
+          },
+          {
+            title: "Rapid Workshops",
+            description: "Erweitern Sie das Wissen Ihres Teams durch gezielte Schulungen"
+          },
+          {
+            title: "Rapid Financing",
+            description: "Navigieren Sie durch Fördermittel und Finanzierungsoptionen für maximalen Mehrwert"
+          }
+        ]
+      },
+      opportunity: {
+        title: "Zeitlich begrenzte Gelegenheit",
+        description: "Die aktuellen Fördermittel bieten eine einmalige Gelegenheit, Ihr Startup mit erheblichen Kosteneinsparungen zu starten oder zu skalieren. Verpassen Sie diese Chance nicht!",
+        benefits: [
+          "Bis zu 70% der Kosten durch Fördermittel gedeckt",
+          "Kostenlose Beratung zu verfügbaren Finanzierungsoptionen",
+          "Unterstützung beim Förderantragsprozess"
+        ]
+      },
+      waitlist: {
+        title: "Warteliste beitreten",
+        description: "Seien Sie der Erste, der erfährt, wenn unser umfassendes Rapid Bundle verfügbar wird. Wir informieren Sie über exklusive Frühzugangs-Möglichkeiten.",
+        buttonText: "Frühzugang sichern",
+        successText: "Sie sind auf der Liste!",
+        successDescription: "Vielen Dank für Ihr Interesse an unserem Rapid Bundle. Wir benachrichtigen Sie, sobald es verfügbar ist.",
+        checkboxText: "Ich stimme zu, Updates über Rapid Bundle und Finanzierungsoptionen zu erhalten"
+      },
+      consultation: {
+        buttonText: "Kostenlose Beratung vereinbaren"
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (context) {
+      setIsLoading(false);
+    }
+  }, [context]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,50 +201,38 @@ const BundlePage = () => {
     window.open('https://calendly.com/yannick-familie-heeren/30min?a1=Rapid%20Bundle', '_blank')
   }
 
-  const bundleServices = [
-    {
-      title: "Rapid Branding",
-      description: "Establish your market presence with a complete branding package",
-      icon: <Megaphone className="h-5 w-5" />,
-      color: "bg-purple-100",
-      textColor: "text-purple-600"
-    },
-    {
-      title: "Rapid Coaching",
-      description: "Receive strategic guidance from experienced startup founders",
-      icon: <Compass className="h-5 w-5" />,
-      color: "bg-amber-100",
-      textColor: "text-amber-600"
-    },
-    {
-      title: "Rapid Team",
-      description: "Access expert talent on-demand without the cost of full-time hires",
-      icon: <Users className="h-5 w-5" />,
-      color: "bg-blue-100",
-      textColor: "text-blue-600"
-    },
-    {
-      title: "Rapid Blueprint",
-      description: "Streamline your operational processes and tool infrastructure",
-      icon: <FileText className="h-5 w-5" />,
-      color: "bg-indigo-100",
-      textColor: "text-indigo-600"
-    },
-    {
-      title: "Rapid Workshops",
-      description: "Build your team's knowledge with targeted training sessions",
-      icon: <Presentation className="h-5 w-5" />,
-      color: "bg-emerald-100",
-      textColor: "text-emerald-600"
-    },
-    {
-      title: "Rapid Financing",
-      description: "Navigate subsidies and funding options for maximum value",
-      icon: <Euro className="h-5 w-5" />,
-      color: "bg-rose-100",
-      textColor: "text-rose-600"
-    }
-  ]
+  const getServiceIcon = (index) => {
+    const icons = [
+      <Megaphone className="h-5 w-5" />,
+      <Compass className="h-5 w-5" />,
+      <Users className="h-5 w-5" />,
+      <FileText className="h-5 w-5" />,
+      <Presentation className="h-5 w-5" />,
+      <Euro className="h-5 w-5" />
+    ];
+    return icons[index];
+  };
+
+  const getServiceColors = (index) => {
+    const colors = [
+      { bg: "bg-purple-100", text: "text-purple-600" },
+      { bg: "bg-amber-100", text: "text-amber-600" },
+      { bg: "bg-blue-100", text: "text-blue-600" },
+      { bg: "bg-indigo-100", text: "text-indigo-600" },
+      { bg: "bg-emerald-100", text: "text-emerald-600" },
+      { bg: "bg-rose-100", text: "text-rose-600" }
+    ];
+    return colors[index];
+  };
+
+  if (isLoading || !context) {
+    return <div className="flex justify-center items-center h-screen">
+      <Loader2 className="h-12 w-12 animate-spin text-gray-600" />
+    </div>;
+  }
+
+  const { language } = context;
+  const content = pageContent[language];
 
   return (
     <div className="min-h-screen bg-white font-sans selection:bg-gray-200 selection:text-gray-900">
@@ -116,21 +256,21 @@ const BundlePage = () => {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gray-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-gray-800"></span>
               </span>
-              Coming Soon
+              {content.badge.text}
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
-              Rapid{" "}
+              {content.hero.title}{" "}
               <span className="relative inline-block">
                 <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-gray-700 to-gray-900">
-                  Bundle
+                  {content.hero.highlight}
                 </span>
                 <span className="absolute bottom-2 left-0 w-full h-4 bg-gray-200 rounded-lg -z-10 opacity-70"></span>
               </span>
             </h1>
 
             <p className="text-xl text-gray-700 leading-relaxed">
-              Focus on what really matters. Let us handle everything else.
+              {content.hero.subtitle}
             </p>
           </div>
 
@@ -150,53 +290,53 @@ const BundlePage = () => {
                     <Package className="h-8 w-8 text-white" />
                   </div>
                   
-                  <h2 className="text-3xl font-bold text-white mb-4">The Perfect Time to Start</h2>
+                  <h2 className="text-3xl font-bold text-white mb-4">{content.mainCard.title}</h2>
                   <p className="text-white/90 text-lg mb-6 leading-relaxed">
-                    There has never been a better time to found a startup in North Rhine Westphalia. 
-                    Current subsidies can finance up to <span className="font-bold">70%</span> of your startup costs!
+                    {content.mainCard.description}
                   </p>
                   
                   <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl mb-6">
                     <p className="text-white font-medium">
-                      Our bundle provides everything your startup needs - from brand development to product creation, 
-                      coaching to marketing. You focus on your vision while we handle the rest.
+                      {content.mainCard.bundleDescription}
                     </p>
                   </div>
                   
                   <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
                     <Euro className="h-5 w-5" /> 
-                    Subsidized Excellence
+                    {content.mainCard.financing.title}
                   </h3>
                   <p className="text-white/80 mb-6">
-                    We'll help you navigate available subsidies and assist with your application - completely free of charge.
-                    Schedule a call to discuss your financing options.
+                    {content.mainCard.financing.description}
                   </p>
                   
                   <button
                     onClick={openCalendly}
                     className="bg-white hover:bg-gradient-to-r hover:from-purple-600 hover:to-indigo-600 hover:text-white text-black px-8 py-4 rounded-xl font-medium transition-all duration-300 flex items-center gap-2"
                   >
-                    Discuss Financing Options
+                    {content.mainCard.financing.buttonText}
                     <ArrowRight className="h-5 w-5" />
                   </button>
                 </div>
               </div>
               
               <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-8">
-                <h3 className="text-xl font-bold mb-6">Everything Your Startup Needs</h3>
+                <h3 className="text-xl font-bold mb-6">{content.services.title}</h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {bundleServices.map((service, index) => (
-                    <div key={index} className="flex items-start gap-3 p-4 rounded-xl border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all">
-                      <div className={`${service.color} p-2 rounded-lg ${service.textColor}`}>
-                        {service.icon}
+                  {content.services.items.map((service, index) => {
+                    const colors = getServiceColors(index);
+                    return (
+                      <div key={index} className="flex items-start gap-3 p-4 rounded-xl border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all">
+                        <div className={`${colors.bg} p-2 rounded-lg ${colors.text}`}>
+                          {getServiceIcon(index)}
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-gray-900">{service.title}</h4>
+                          <p className="text-gray-600 text-sm">{service.description}</p>
+                        </div>
                       </div>
-                      <div>
-                        <h4 className="font-bold text-gray-900">{service.title}</h4>
-                        <p className="text-gray-600 text-sm">{service.description}</p>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -215,51 +355,39 @@ const BundlePage = () => {
                         <AlertCircle className="h-6 w-6" />
                       </div>
                       <div>
-                        <h3 className="font-bold text-xl mb-2">Limited Time Opportunity</h3>
+                        <h3 className="font-bold text-xl mb-2">{content.opportunity.title}</h3>
                         <p className="text-white/80">
-                          Current subsidies make this an unprecedented opportunity to launch or scale your startup with 
-                          significant cost savings. Don't miss out!
+                          {content.opportunity.description}
                         </p>
                       </div>
                     </div>
                     
                     <div className="space-y-4">
-                      <div className="flex items-start gap-3">
-                        <div className="bg-green-500/20 p-1 rounded-full mt-1">
-                          <Check className="h-4 w-4 text-green-500" />
+                      {content.opportunity.benefits.map((benefit, index) => (
+                        <div key={index} className="flex items-start gap-3">
+                          <div className="bg-green-500/20 p-1 rounded-full mt-1">
+                            <Check className="h-4 w-4 text-green-500" />
+                          </div>
+                          <p className="text-white/90">{benefit}</p>
                         </div>
-                        <p className="text-white/90">Up to 70% of costs covered by subsidies</p>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="bg-green-500/20 p-1 rounded-full mt-1">
-                          <Check className="h-4 w-4 text-green-500" />
-                        </div>
-                        <p className="text-white/90">Free consultation on available financing options</p>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="bg-green-500/20 p-1 rounded-full mt-1">
-                          <Check className="h-4 w-4 text-green-500" />
-                        </div>
-                        <p className="text-white/90">Assistance with subsidy application process</p>
-                      </div>
+                      ))}
                     </div>
                   </div>
                   
                   <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 mb-8">
                     <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
                       <Calendar className="h-5 w-5 text-gray-700" />
-                      Join the Waitlist
+                      {content.waitlist.title}
                     </h3>
                     <p className="text-gray-600 mb-6">
-                      Be the first to know when our comprehensive Rapid Bundle becomes available. 
-                      We'll notify you with exclusive early access opportunities.
+                      {content.waitlist.description}
                     </p>
                     
                     <EmailWaitlistForm 
-                      buttonText="Get Early Access"
-                      successText="You're on the List!"
-                      successDescription="Thank you for your interest in our Rapid Bundle. We'll notify you as soon as it's available."
-                      checkboxText="I agree to receive updates about Rapid Bundle and financing options"
+                      buttonText={content.waitlist.buttonText}
+                      successText={content.waitlist.successText}
+                      successDescription={content.waitlist.successDescription}
+                      checkboxText={content.waitlist.checkboxText}
                       primaryColor="gray"
                       onSubmit={handleSubmit}
                     />
@@ -269,7 +397,7 @@ const BundlePage = () => {
                     onClick={openCalendly}
                     className="w-full bg-black hover:bg-gradient-to-r hover:from-purple-600 hover:to-indigo-600 text-white py-4 rounded-xl font-medium transition-all duration-300 flex items-center justify-center gap-2"
                   >
-                    Schedule a Free Consultation
+                    {content.consultation.buttonText}
                     <ArrowRight className="h-5 w-5" />
                   </button>
                 </div>
