@@ -197,55 +197,37 @@ const NewsletterForm = () => {
 const VisibiltyBundle = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [showForm, setShowForm] = useState(false)
-  const navigate = useNavigate();
   const context = useContext(AppLanguageContext)
-  const [currentLanguage, setCurrentLanguage] = useState(context?.language || 'de')
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isFAQModalOpen, setIsFAQModalOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
-  const { language, setLanguage } = context
-  // Retrieve language from localStorage on component mount
   useEffect(() => {
-    const storedLanguage = localStorage.getItem('language')
-    if (storedLanguage) {
-      setCurrentLanguage(storedLanguage)
-      setLanguage(storedLanguage)
-    }
-    setIsLoading(false)
-  }, [setLanguage])
+      if (context) {
+          setIsLoading(false);
+      }
+  }, [context]);
 
-  // Add safety check after all hooks
-  if (!context) {
-    console.log("No context available - rendering loading state")
+  if (isLoading || !context) {
+    console.log("VisibilityBundle: Waiting for context or still loading...")
     return <div>Loading...</div>
   }
 
-  // Function to change language and store it in localStorage
-  const handleLanguageChange = (newLang) => {
-    setLanguage(newLang)
-    setCurrentLanguage(newLang)
-    localStorage.setItem('language', newLang)
-  }
+  const { language } = context
 
-  // Define form URLs for different languages with language parameter
   const formUrls = {
     en: "https://vbforms.vercel.app/?lang=en",
     de: "https://vbforms.vercel.app/?lang=de"
   }
 
-  // Function to get the correct form URL based on language
   const getFormUrl = () => {
-    const storedLanguage = localStorage.getItem('language') || currentLanguage
-    return formUrls[storedLanguage] || formUrls.en // fallback to English if language not found
+    return formUrls[language] || formUrls.en
   }
 
   const handleGetBundle = () => {
     setIsModalOpen(true)
   }
 
-  // Update the pageContent object with more translations
   const pageContent = {
     en: {
       title: "RAPID BRANDING",
@@ -268,7 +250,6 @@ const VisibiltyBundle = () => {
         visibilityBundle: "Rapid Branding",
         bookCall: "Book a Call"
       },
-      // Bundle items
       bundleItems: {
         website: {
           title: "Your Startup Website",
@@ -299,7 +280,6 @@ const VisibiltyBundle = () => {
           description: "Without a hoodie you wouldn't be a startup. You would just be self employed. Luckily we got your cofounders and you covered with a hoodie print file."
         }
       },
-      // FAQ section
       faq: {
         title: "Frequently Asked Questions",
         showAll: "Show all questions and answers",
@@ -366,20 +346,17 @@ const VisibiltyBundle = () => {
           }
         ]
       },
-      // MVP section
       mvp: {
         title: "Need an MVP in 2 Weeks?",
         description: "Transform your idea into a working product with our rapid MVP development service. Zero upfront cost, pay only when amazed.",
         cta: "Learn More",
         weeks: "Weeks"
       },
-      // Final CTA section
       finalCta: {
         title: "Ready to Transform Your Brand?",
         subtitle: "Get your complete brand identity package today.",
         cta: "Get Your Bundle Now"
       },
-      // How it Works section
       howItWorks: {
         title: "How It Works",
         steps: [
@@ -397,12 +374,10 @@ const VisibiltyBundle = () => {
           }
         ]
       },
-      // Features section
       features: {
         title: "Contents",
         subtitle: "The Rapid Branding contains everything you need to draw the attention of customers, partners, investors and employees to your startup. You immediately become visible and a uniform brand design makes your brand recognizable."
       },
-      // Process section
       process: {
         title: "Our Process",
         steps: [
@@ -424,7 +399,6 @@ const VisibiltyBundle = () => {
           }
         ]
       },
-      // Explore more section
       exploreMore: {
         badge: "Explore More",
         title: "Did you know we do more than just Branding?",
@@ -453,7 +427,6 @@ const VisibiltyBundle = () => {
         visibilityBundle: "Sichtbarkeitspaket",
         bookCall: "Gespräch Buchen"
       },
-      // Bundle items
       bundleItems: {
         website: {
           title: "Ihre Startup-Website",
@@ -484,7 +457,6 @@ const VisibiltyBundle = () => {
           description: "Ohne Hoodie wären Sie kein Startup. Sie wären einfach nur selbstständig. Zum Glück haben wir Sie und Ihre Mitgründer mit einer Hoodie-Druckdatei abgedeckt."
         }
       },
-      // FAQ section
       faq: {
         title: "Häufig gestellte Fragen",
         showAll: "Alle Fragen und Antworten anzeigen",
@@ -551,20 +523,17 @@ const VisibiltyBundle = () => {
           }
         ]
       },
-      // MVP section
       mvp: {
         title: "Benötigen Sie einen MVP in 2 Wochen?",
         description: "Verwandeln Sie Ihre Idee in ein funktionierendes Produkt mit unserem schnellen MVP-Entwicklungsservice. Keine Vorabkosten, Zahlung nur bei Zufriedenheit.",
         cta: "Mehr erfahren",
         weeks: "Wochen"
       },
-      // Final CTA section
       finalCta: {
         title: "Bereit, Ihre Marke zu transformieren?",
         subtitle: "Holen Sie sich heute Ihr komplettes Markenidentitätspaket.",
         cta: "Jetzt Bundle sichern"
       },
-      // How it Works section
       howItWorks: {
         title: "So Funktioniert's",
         steps: [
@@ -582,12 +551,10 @@ const VisibiltyBundle = () => {
           }
         ]
       },
-      // Features section
       features: {
         title: "Inhalt",
         subtitle: "Das Rapid Branding enthält alles, was Sie brauchen, um die Aufmerksamkeit von Kunden, Partnern, Investoren und Mitarbeitern auf Ihr Startup zu lenken. Sie werden sofort sichtbar und ein einheitliches Markendesign macht Ihre Marke erkennbar."
       },
-      // Process section
       process: {
         title: "Unser Prozess",
         steps: [
@@ -601,15 +568,14 @@ const VisibiltyBundle = () => {
           },
           {
             title: "Verfeinerung",
-            description: "Optimieren Sie Ihre Assets bis zur Perfektion"
+            description: "Fine-tune your assets until they're perfect"
           },
           {
             title: "Lieferung",
-            description: "Erhalten Sie Ihr komplettes Markenpaket"
+            description: "Receive your complete brand package"
           }
         ]
       },
-      // Explore more section
       exploreMore: {
         badge: "Mehr Entdecken",
         title: "Wussten Sie, dass wir mehr als nur Branding anbieten?",
@@ -619,8 +585,7 @@ const VisibiltyBundle = () => {
     }
   }
 
-  // Use currentLanguage instead of language from context
-  const content = pageContent[currentLanguage]
+  const content = pageContent[language]
 
   if (isLoading) {
     return <div>Loading...</div>
@@ -669,37 +634,35 @@ const VisibiltyBundle = () => {
   const scrollToFeatures = (e) => {
     e.preventDefault()
     const featuresSection = document.getElementById('features')
-    featuresSection.scrollIntoView({ behavior: 'smooth' })
+    if (featuresSection) {
+        featuresSection.scrollIntoView({ behavior: 'smooth' })
+    } else {
+        console.warn("Features section not found for scrolling.");
+    }
   }
 
-  // Update the container class definition
   const containerClass = "max-w-[1280px] w-full mx-auto px-4 sm:px-6 lg:px-8 relative"
 
   return (
     <>
-      {/* <AirtableForm /> */}
       <div className="min-h-screen bg-white">
-        {/* Updated Navbar */}
         <RapidWorksHeader />
 
         <main className="relative w-full overflow-x-hidden">
           <div className={containerClass}>
             <div className="relative min-h-screen flex flex-col md:items-center">
-              {/* Desktop Background Image - Unchanged */}
-              <div className="absolute inset-0 translate-y-16 mr-0 md:mr-4 lg:mr-8 xl:mr-16 hidden md:block">
+              <div className="absolute top-0 left-0 bottom-0 right-0 md:right-4 lg:right-8 xl:right-16 translate-y-16 hidden md:block overflow-hidden">
                 <motion.img
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 1.5, ease: "easeOut" }}
-                  className="h-full w-full object-cover object-center transition-transform duration-700"
+                  className="h-full w-full object-cover object-right transition-transform duration-700"
                   src={VisibilityHero}
                   alt="Hero background"
                 />
               </div>
 
-              {/* Mobile Layout - Flex column for vertical stacking */}
               <div className="flex flex-col md:hidden">
-                {/* Mobile Image First - Adjusted scaling and padding */}
                 <div className="w-full h-[70vh] pt-16">
                   <motion.img
                     initial={{ opacity: 0 }}
@@ -711,7 +674,6 @@ const VisibiltyBundle = () => {
                   />
                 </div>
 
-                {/* Mobile Text Content Below */}
                 <div className="w-full bg-white px-6 py-8">
                   <div className="max-w-[480px] mx-auto space-y-4 text-center">
                     <motion.div className="animate-float pt-16 md:pt-0">
@@ -740,7 +702,6 @@ const VisibiltyBundle = () => {
                       {content.mainText}
                     </motion.p>
 
-                    {/* New key points list - horizontal pills */}
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -759,7 +720,6 @@ const VisibiltyBundle = () => {
                       ))}
                     </motion.div>
 
-                    {/* "and more..." link - adjusted spacing */}
                     <motion.a
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -771,14 +731,12 @@ const VisibiltyBundle = () => {
                       {content.seeMore}
                     </motion.a>
 
-                    {/* Apply button */}
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: 0.5 }}
                       className="pt-4"
                     >
-                      {/* <CurvedArrow /> */}
                       <button
                         onClick={() => setIsModalOpen(true)}
                         className="group relative inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 text-sm font-light 
@@ -797,22 +755,12 @@ const VisibiltyBundle = () => {
                 </div>
               </div>
 
-              {/* Desktop Content - Unchanged */}
               <div className="hidden md:block relative w-full">
                 <div className="relative min-h-screen flex items-center">
                   <div className="w-full pl-0 sm:pl-4 md:pl-8 lg:pl-16">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-32 items-center">
-                      {/* Text Content */}
                       <div className="w-full max-w-[480px] mx-auto md:mx-0">
                         <div className="space-y-2 md:space-y-4 text-center md:text-left px-6 py-3 md:p-0">
-                          <motion.div className="animate-float pt-16 md:pt-0">
-                            {/* <span className="inline-block text-violet-600 text-xs md:text-sm uppercase tracking-wider font-light
-                            px-2 py-0.5 md:px-4 md:py-1 rounded-full bg-violet-50 border border-violet-100 backdrop-blur-sm shadow-sm"
-                            >
-                              {content.title}
-                            </span> */}
-                          </motion.div>
-
                           <motion.h1
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -831,7 +779,6 @@ const VisibiltyBundle = () => {
                             {content.mainText}
                           </motion.p>
 
-                          {/* New key points list - horizontal pills */}
                           <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -850,7 +797,6 @@ const VisibiltyBundle = () => {
                             ))}
                           </motion.div>
 
-                          {/* "and more..." link - adjusted spacing */}
                           <motion.a
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -862,14 +808,12 @@ const VisibiltyBundle = () => {
                             {content.seeMore}
                           </motion.a>
 
-                          {/* Apply button */}
                           <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: 0.5 }}
                             className="pt-4"
                           >
-                            {/* <CurvedArrow /> */}
                             <button
                               onClick={() => setIsModalOpen(true)}
                               className="group relative inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 text-sm font-light 
@@ -887,7 +831,6 @@ const VisibiltyBundle = () => {
                         </div>
                       </div>
 
-                      {/* Right Column - Unchanged */}
                       <div className="hidden lg:block">
                         {/* Empty for image placement */}
                       </div>
@@ -896,12 +839,9 @@ const VisibiltyBundle = () => {
                 </div>
               </div>
 
-              {/* Down Arrow */}
-
             </div>
           </div>
 
-          {/* Features Section (Everything You Need) */}
           <section id="features" className="py-20 md:py-40 overflow-hidden bg-gradient-to-b from-white via-gray-50/50 to-white relative">
             <div className="max-w-[1280px] w-full mx-auto px-4 sm:px-6 lg:px-8 md:px-12 relative">
               <motion.div
@@ -928,7 +868,6 @@ const VisibiltyBundle = () => {
                 </p>
               </motion.div>
 
-              {/* Alternating List Items */}
               <div className="space-y-24 relative">
                 {bundleItems.map((item, index) => (
                   <motion.div
@@ -939,9 +878,7 @@ const VisibiltyBundle = () => {
                     viewport={{ once: true, margin: "-100px" }}
                     transition={{ duration: 0.8, delay: 0.2 }}
                   >
-                    {/* Content Container - ensure images are properly contained */}
                     <div className={`flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-8 md:gap-16 lg:gap-24`}>
-                      {/* Image Side - Ensure proper containment */}
                       <div className="w-full md:w-1/2 px-2 md:px-4">
                         <div className="relative aspect-[4/3] overflow-hidden group rounded-3xl">
                           <div className="h-full transform-gpu">
@@ -954,7 +891,6 @@ const VisibiltyBundle = () => {
                         </div>
                       </div>
 
-                      {/* Content Side - Adjusted padding */}
                       <div className="w-full md:w-1/2 px-2 md:px-4">
                         <div className="relative md:pl-0">
                           <div className="space-y-6 md:space-y-8">
@@ -976,7 +912,6 @@ const VisibiltyBundle = () => {
             </div>
           </section>
 
-          {/* FAQ Section */}
           <section className="py-24 bg-gray-50">
             <div className={containerClass}>
               <div className="text-center mb-16">
@@ -986,8 +921,7 @@ const VisibiltyBundle = () => {
               </div>
 
               <div className="max-w-3xl mx-auto divide-y divide-gray-200">
-                {/* Show only first 5 FAQs */}
-                {content.faq.items.slice(0, 5).map((item, index) => (
+                {faqItems.slice(0, 5).map((item, index) => (
                   <FAQItem
                     key={index}
                     question={item.question}
@@ -995,7 +929,6 @@ const VisibiltyBundle = () => {
                   />
                 ))}
 
-                {/* Show all questions button */}
                 <div className="pt-8 text-center">
                   <button
                     onClick={() => setIsFAQModalOpen(true)}
@@ -1009,14 +942,6 @@ const VisibiltyBundle = () => {
             </div>
           </section>
 
-          {/* FAQ Modal */}
-          <FAQModal
-            isOpen={isFAQModalOpen}
-            onClose={() => setIsFAQModalOpen(false)}
-            faqItems={content.faq.items}
-          />
-
-          {/* Final CTA Section */}
           <section className="py-20">
             <div className={containerClass}>
               <div className="max-w-2xl mx-auto text-center">
@@ -1037,13 +962,9 @@ const VisibiltyBundle = () => {
             </div>
           </section>
 
-          {/* Cross-Reference Section - Enhanced with color and visual elements */}
           <section className="py-16 sm:py-32 bg-gradient-to-br from-violet-900 via-indigo-900 to-purple-900 text-white relative overflow-hidden">
-            {/* Decorative elements */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/30 rounded-full -translate-y-1/2 translate-x-1/2 blur-xl"></div>
             <div className="absolute bottom-0 left-0 w-72 h-72 bg-indigo-500/30 rounded-full translate-y-1/2 -translate-x-1/4 blur-xl"></div>
-            
-            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMzAwdjMwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDUiLz48L3N2Zz4=')] opacity-30 pointer-events-none"></div>
             
             <div className={containerClass + " relative z-10"}>
               <div className="max-w-3xl mx-auto text-center">
@@ -1060,7 +981,6 @@ const VisibiltyBundle = () => {
                   {content.exploreMore.description}
                 </p>
                 
-                {/* Service icons in a grid - updated with all 6 services */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-w-2xl mx-auto mb-10">
                   {[
                     { icon: <Megaphone className="h-6 w-6" />, label: "Branding" },
@@ -1090,30 +1010,23 @@ const VisibiltyBundle = () => {
               </div>
             </div>
           </section>
+
         </main>
 
         {showForm && <BundleForm onClose={() => setShowForm(false)} />}
 
-        {/* MS Forms Modal */}
         <Modal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          formUrl={getFormUrl()} // Pass the correct form URL
+          formUrl={getFormUrl()}
         />
 
         <NewsletterPopup />
 
-        {/* <Footer
-          showFAQ={true}
-          onFAQClick={() => setIsFAQModalOpen(true)}
-        /> */}
       </div>
     </>
   )
 }
-
-
-
 
 const CurvedArrow = () => {
   return (
@@ -1139,7 +1052,6 @@ const CurvedArrow = () => {
             fill="freeze"
           />
         </path>
-        {/* Arrow head pointing to the button */}
         <path
           d="M60,10 L50,10 L55,20"
           fill="none"

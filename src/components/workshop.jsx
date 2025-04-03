@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import {
   ChevronDown,
   Presentation,
@@ -13,17 +13,27 @@ import {
   BookOpen,
   Users,
   ArrowDown,
+  Loader2,
 } from "lucide-react"
 import RapidWorksHeader from "./new_landing_page_header"
 import { submitToAirtable } from '../utils/airtableService'
+import { LanguageContext as AppLanguageContext } from "../App"
 
 const WorkshopsPage = () => {
+  const context = useContext(AppLanguageContext);
   const [scrolled, setScrolled] = useState(false)
   const [email, setEmail] = useState("")
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState("")
   const [selectedWorkshops, setSelectedWorkshops] = useState([])
   const [showSelectionPrompt, setShowSelectionPrompt] = useState(true)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    if (context) {
+      setIsLoading(false);
+    }
+  }, [context]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -55,9 +65,9 @@ const WorkshopsPage = () => {
     try {
       // Format the selected workshops as a string for the Notes field
       const workshopNotes = selectedWorkshops.map(id => {
-        const workshop = workshops.find(w => w.id === id)
-        return workshop ? workshop.title : id
-      }).join(", ")
+        const workshopContent = getWorkshopContent(id);
+        return workshopContent ? workshopContent.title : id;
+      }).join(", ");
 
       await submitToAirtable({
         email,
@@ -83,33 +93,181 @@ const WorkshopsPage = () => {
     })
   }
 
-  // Workshop data
-  const workshops = [
+  // Page content object with translations
+  const pageContent = {
+    en: {
+      badge: {
+        text: "Coming Soon"
+      },
+      hero: {
+        title: "Rapid",
+        highlight: "Workshops",
+        subtitle: "Close your business knowledge gaps. Don't become reliant on consultants! Our expert-led workshops will empower you with practical skills and knowledge."
+      },
+      workshops: {
+        title: "Interactive Learning Experience",
+        subtitle: "Our workshops combine theory with hands-on practice to ensure you can immediately apply what you learn.",
+        selectionTitle: "Select Workshop Topics",
+        selectionSubtitle: "(Select multiple)",
+        items: [
     {
       id: "startup-finance",
       title: "Startup Finance Essentials",
-      icon: <DollarSign className="h-5 w-5" />,
-      description: "Master the fundamentals of startup financial planning and fundraising",
+            description: "Master the fundamentals of startup financial planning and fundraising"
     },
     {
       id: "product-market-fit",
       title: "Finding Product-Market Fit",
-      icon: <Target className="h-5 w-5" />,
-      description: "Strategies to validate your product and find your ideal market",
+            description: "Strategies to validate your product and find your ideal market"
     },
     {
       id: "team-building",
       title: "Building High-Performance Teams",
-      icon: <Users className="h-5 w-5" />,
-      description: "Learn how to recruit, manage, and retain top talent for your startup",
+            description: "Learn how to recruit, manage, and retain top talent for your startup"
     },
     {
       id: "growth-hacking",
       title: "Growth Hacking Masterclass",
-      icon: <TrendingUp className="h-5 w-5" />,
-      description: "Proven tactics to accelerate your startup growth on a limited budget",
+            description: "Proven tactics to accelerate your startup growth on a limited budget"
+          }
+        ],
+        limitedSeats: {
+          title: "Limited Seats Available",
+          subtitle: "Each workshop is limited to 20 participants to ensure personalized attention and maximum value.",
+          launchDate: "Launching Q3 2025",
+          waitlist: "Join the waitlist to secure your spot"
+        }
+      },
+      form: {
+        title: "Join the Waitlist",
+        emailLabel: "Email Address",
+        emailPlaceholder: "you@example.com",
+        selectedTopics: "Selected Workshop Topics",
+        consent: {
+          checkbox: "I agree to receive updates about Rapid Workshops",
+          subtitle: "We'll never share your email with anyone else."
+        },
+        button: "Join the Waitlist",
+        success: {
+          title: "You're on the List!",
+          message: "Thank you for your interest in our workshops. We'll notify you when registration opens.",
+          anotherEmail: "Sign up with another email"
+        }
+      },
+      promise: {
+        title: "Our Promise",
+        text: "Every workshop comes with a satisfaction guarantee. If you're not completely satisfied, we'll refund your registration fee."
+      },
+      selectionPrompt: {
+        title: "Select Workshops First",
+        message: "Please select at least one workshop topic that interests you from the left panel.",
+        mobileText: "Scroll up to select",
+        desktopText: "Select from the left"
+      }
     },
-  ]
+    de: {
+      badge: {
+        text: "Demnächst verfügbar"
+      },
+      hero: {
+        title: "Rapid",
+        highlight: "Workshops",
+        subtitle: "Schließe deine Wissenslücken im Business-Bereich. Mache dich nicht von Beratern abhängig! Unsere von Experten geleiteten Workshops vermitteln dir praktische Fähigkeiten und Wissen."
+      },
+      workshops: {
+        title: "Interaktive Lernerfahrung",
+        subtitle: "Unsere Workshops verbinden Theorie mit praktischen Übungen, damit du das Gelernte sofort anwenden kannst.",
+        selectionTitle: "Wähle Workshop-Themen",
+        selectionSubtitle: "(Mehrfachauswahl möglich)",
+        items: [
+          {
+            id: "startup-finance",
+            title: "Startup-Finanzen Grundlagen",
+            description: "Beherrsche die Grundlagen der Startup-Finanzplanung und Kapitalbeschaffung"
+          },
+          {
+            id: "product-market-fit",
+            title: "Product-Market Fit finden",
+            description: "Strategien zur Validierung deines Produkts und Findung deines idealen Marktes"
+          },
+          {
+            id: "team-building",
+            title: "Hochleistungsteams aufbauen",
+            description: "Lerne, wie du Top-Talente für dein Startup rekrutierst, managst und hältst"
+          },
+          {
+            id: "growth-hacking",
+            title: "Growth Hacking Masterclass",
+            description: "Bewährte Taktiken zur Beschleunigung deines Startup-Wachstums mit begrenztem Budget"
+          }
+        ],
+        limitedSeats: {
+          title: "Begrenzte Plätze verfügbar",
+          subtitle: "Jeder Workshop ist auf 20 Teilnehmer begrenzt, um persönliche Betreuung und maximalen Nutzen zu gewährleisten.",
+          launchDate: "Start in Q3 2025",
+          waitlist: "Trage dich in die Warteliste ein, um deinen Platz zu sichern"
+        }
+      },
+      form: {
+        title: "Warteliste beitreten",
+        emailLabel: "E-Mail-Adresse",
+        emailPlaceholder: "du@beispiel.com",
+        selectedTopics: "Ausgewählte Workshop-Themen",
+        consent: {
+          checkbox: "Ich stimme zu, Updates über Rapid Workshops zu erhalten",
+          subtitle: "Wir werden deine E-Mail niemals mit Dritten teilen."
+        },
+        button: "Warteliste beitreten",
+        success: {
+          title: "Du bist auf der Liste!",
+          message: "Danke für dein Interesse an unseren Workshops. Wir benachrichtigen dich, wenn die Anmeldung öffnet.",
+          anotherEmail: "Mit einer anderen E-Mail anmelden"
+        }
+      },
+      promise: {
+        title: "Unser Versprechen",
+        text: "Jeder Workshop kommt mit einer Zufriedenheitsgarantie. Wenn du nicht vollständig zufrieden bist, erstatten wir dir die Anmeldegebühr."
+      },
+      selectionPrompt: {
+        title: "Wähle zuerst Workshops aus",
+        message: "Bitte wähle mindestens ein Workshop-Thema aus, das dich interessiert.",
+        mobileText: "Nach oben scrollen zum Auswählen",
+        desktopText: "Links auswählen"
+      }
+    }
+  };
+
+  if (isLoading || !context) {
+    return <div className="flex justify-center items-center h-screen"><Loader2 className="h-12 w-12 animate-spin text-emerald-600" /></div>;
+  }
+
+  const { language } = context;
+  const content = pageContent[language];
+
+  const getWorkshopContent = (workshopId) => {
+    const workshopItem = content.workshops.items.find(item => item.id === workshopId);
+    return {
+      id: workshopId,
+      title: workshopItem?.title || '',
+      description: workshopItem?.description || '',
+      icon: getWorkshopIcon(workshopId), // Helper function to get the icon
+    };
+  };
+
+  const getWorkshopIcon = (workshopId) => {
+    switch (workshopId) {
+      case 'startup-finance':
+        return <DollarSign className="h-5 w-5" />;
+      case 'product-market-fit':
+        return <Target className="h-5 w-5" />;
+      case 'team-building':
+        return <Users className="h-5 w-5" />;
+      case 'growth-hacking':
+        return <TrendingUp className="h-5 w-5" />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white font-sans selection:bg-emerald-200 selection:text-emerald-900">
@@ -133,22 +291,21 @@ const WorkshopsPage = () => {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
-              Coming Soon
+              {content.badge.text}
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
-              Rapid{" "}
+              {content.hero.title}{" "}
               <span className="relative inline-block">
                 <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-green-600">
-                  Workshops
+                  {content.hero.highlight}
                 </span>
                 <span className="absolute bottom-2 left-0 w-full h-4 bg-emerald-200 rounded-lg -z-10 opacity-70"></span>
               </span>
             </h1>
 
             <p className="text-xl text-gray-700 leading-relaxed">
-              Close your business knowledge gaps. Don't become reliant on consultants! Our expert-led workshops will
-              empower you with practical skills and knowledge.
+              {content.hero.subtitle}
             </p>
           </div>
 
@@ -164,21 +321,23 @@ const WorkshopsPage = () => {
                         <Presentation className="h-6 w-6 text-emerald-600" />
                       </div>
                       <div>
-                        <h2 className="text-2xl font-bold mb-2">Interactive Learning Experience</h2>
+                        <h2 className="text-2xl font-bold mb-2">{content.workshops.title}</h2>
                         <p className="text-gray-600">
-                          Our workshops combine theory with hands-on practice to ensure you can immediately apply what you learn.
+                          {content.workshops.subtitle}
                         </p>
                       </div>
                     </div>
 
                     <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
                       <BookOpen className="h-5 w-5 text-emerald-600" />
-                      Select Workshop Topics
-                      <span className="text-xs font-normal text-emerald-600 ml-2">(Select multiple)</span>
+                      {content.workshops.selectionTitle}
+                      <span className="text-xs font-normal text-emerald-600 ml-2">{content.workshops.selectionSubtitle}</span>
                     </h3>
 
                     <div className="space-y-4">
-                      {workshops.map((workshop) => (
+                      {content.workshops.items.map((workshop) => {
+                        const workshopContent = getWorkshopContent(workshop.id);
+                        return (
                         <div
                           key={workshop.id}
                           className={`p-4 rounded-xl border transition-all duration-300 cursor-pointer ${
@@ -194,7 +353,7 @@ const WorkshopsPage = () => {
                                 selectedWorkshops.includes(workshop.id) ? "bg-emerald-100" : "bg-gray-100"
                               }`}
                             >
-                              {workshop.icon}
+                                {getWorkshopIcon(workshop.id)}
                             </div>
                             <div>
                               <h4 className="font-bold text-gray-900">{workshop.title}</h4>
@@ -213,7 +372,8 @@ const WorkshopsPage = () => {
                             </div>
                           </div>
                         </div>
-                      ))}
+                        );
+                      })}
                     </div>
 
                     <div className="mt-6 pt-6 border-t border-gray-100">
@@ -223,9 +383,9 @@ const WorkshopsPage = () => {
                         <div className="absolute bottom-0 left-0 w-16 h-16 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2"></div>
 
                         <div className="relative z-10">
-                          <h3 className="text-lg font-bold mb-2">Limited Seats Available</h3>
+                          <h3 className="text-lg font-bold mb-2">{content.workshops.limitedSeats.title}</h3>
                           <p className="text-white/80 mb-4 text-sm">
-                            Each workshop is limited to 20 participants to ensure personalized attention and maximum value.
+                            {content.workshops.limitedSeats.subtitle}
                           </p>
 
                           <div className="flex items-center gap-3">
@@ -233,8 +393,8 @@ const WorkshopsPage = () => {
                               <Calendar className="h-5 w-5 text-white" />
                             </div>
                             <div>
-                              <p className="text-white font-medium">Launching Q3 2025</p>
-                              <p className="text-white/80 text-sm">Join the waitlist to secure your spot</p>
+                              <p className="text-white font-medium">{content.workshops.limitedSeats.launchDate}</p>
+                              <p className="text-white/80 text-sm">{content.workshops.limitedSeats.waitlist}</p>
                             </div>
                           </div>
                         </div>
@@ -249,26 +409,26 @@ const WorkshopsPage = () => {
                   {showSelectionPrompt && selectedWorkshops.length === 0 && (
                     <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 backdrop-blur-sm z-20 lg:flex">
                       <div className="bg-white rounded-xl p-6 max-w-sm mx-8">
-                        <h3 className="font-bold text-lg mb-2 text-emerald-700">Select Workshops First</h3>
-                        <p className="text-gray-600 mb-4">Please select at least one workshop topic that interests you from the left panel.</p>
+                        <h3 className="font-bold text-lg mb-2 text-emerald-700">{content.selectionPrompt.title}</h3>
+                        <p className="text-gray-600 mb-4">{content.selectionPrompt.message}</p>
                         <div className="text-emerald-600 flex items-center justify-center gap-2 font-medium">
                           <ArrowDown className="h-5 w-5 lg:hidden" />
-                          <span className="lg:hidden">Scroll up to select</span>
+                          <span className="lg:hidden">{content.selectionPrompt.mobileText}</span>
                           <ArrowDown className="h-5 w-5 transform -rotate-90 hidden lg:block" />
-                          <span className="hidden lg:block">Select from the left</span>
+                          <span className="hidden lg:block">{content.selectionPrompt.desktopText}</span>
                         </div>
                       </div>
                     </div>
                   )}
 
                   <div className="p-8">
-                    <h2 className="text-2xl font-bold mb-6">Join the Waitlist</h2>
+                    <h2 className="text-2xl font-bold mb-6">{content.form.title}</h2>
 
                     {!submitted ? (
                       <form onSubmit={handleSubmit} className="space-y-6">
                         <div>
                           <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                            Email Address
+                            {content.form.emailLabel}
                           </label>
                           <div className="relative">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -278,7 +438,7 @@ const WorkshopsPage = () => {
                               type="email"
                               id="email"
                               className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                              placeholder="you@example.com"
+                              placeholder={content.form.emailPlaceholder}
                               value={email}
                               onChange={(e) => setEmail(e.target.value)}
                             />
@@ -289,19 +449,19 @@ const WorkshopsPage = () => {
                         {selectedWorkshops.length > 0 && (
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
-                              Selected Workshop Topics
+                              {content.form.selectedTopics}
                             </label>
                             <div className="space-y-2 mt-2">
                               {selectedWorkshops.map((workshopId) => {
-                                const workshop = workshops.find(w => w.id === workshopId);
+                                const workshopContent = getWorkshopContent(workshopId);
                                 return (
                                   <div key={workshopId} className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex items-start gap-3">
                                     <div className="bg-emerald-100 p-2 rounded-lg">
-                                      {workshop?.icon}
+                                      {getWorkshopIcon(workshopId)}
                                     </div>
                                     <div>
                                       <h4 className="font-bold text-gray-900">
-                                        {workshop?.title}
+                                        {workshopContent.title}
                                       </h4>
                                     </div>
                                     <button 
@@ -330,9 +490,9 @@ const WorkshopsPage = () => {
                           </div>
                           <div className="ml-3 text-sm">
                             <label htmlFor="terms" className="font-medium text-gray-700">
-                              I agree to receive updates about Rapid Workshops
+                              {content.form.consent.checkbox}
                             </label>
-                            <p className="text-gray-500">We'll never share your email with anyone else.</p>
+                            <p className="text-gray-500">{content.form.consent.subtitle}</p>
                           </div>
                         </div>
 
@@ -343,7 +503,7 @@ const WorkshopsPage = () => {
                           }`}
                           disabled={selectedWorkshops.length === 0}
                         >
-                          Join the Waitlist
+                          {content.form.button}
                         </button>
                       </form>
                     ) : (
@@ -351,9 +511,9 @@ const WorkshopsPage = () => {
                         <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                           <Check className="h-8 w-8 text-green-600" />
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900 mb-2">You're on the List!</h3>
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">{content.form.success.title}</h3>
                         <p className="text-gray-600 mb-4">
-                          Thank you for your interest in our workshops. We'll notify you when registration opens.
+                          {content.form.success.message}
                         </p>
                         <button
                           onClick={() => {
@@ -364,7 +524,7 @@ const WorkshopsPage = () => {
                           }}
                           className="text-emerald-600 font-medium hover:text-emerald-700"
                         >
-                          Sign up with another email
+                          {content.form.success.anotherEmail}
                         </button>
                       </div>
                     )}
@@ -376,10 +536,9 @@ const WorkshopsPage = () => {
                         <Shield className="h-5 w-5 text-emerald-600" />
                       </div>
                       <div>
-                        <h3 className="font-bold text-gray-900 mb-1">Our Promise</h3>
+                        <h3 className="font-bold text-gray-900 mb-1">{content.promise.title}</h3>
                         <p className="text-gray-600 text-sm">
-                          Every workshop comes with a satisfaction guarantee. If you're not completely satisfied, we'll
-                          refund your registration fee.
+                          {content.promise.text}
                         </p>
                       </div>
                     </div>
