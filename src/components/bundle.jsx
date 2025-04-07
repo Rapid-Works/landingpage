@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useContext } from "react"
+import { useEffect, useState, useContext, useRef } from "react"
 import {
   Rocket,
   Package,
@@ -25,6 +25,7 @@ const BundlePage = () => {
   const context = useContext(AppLanguageContext);
   const [scrolled, setScrolled] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const contentSectionRef = useRef(null);
 
   // Page content with translations
   const pageContent = {
@@ -35,7 +36,8 @@ const BundlePage = () => {
       hero: {
         title: "Rapid",
         highlight: "Bundle",
-        subtitle: "Focus on what really matters. Let us handle everything else."
+        subtitle: "Focus on what really matters. Let us handle everything else.",
+        scrollIndicatorAria: "Scroll to content"
       },
       mainCard: {
         title: "The Perfect Time to Start",
@@ -104,7 +106,8 @@ const BundlePage = () => {
       hero: {
         title: "Rapid",
         highlight: "Bundle",
-        subtitle: "Konzentrieren Sie sich auf das Wesentliche. Wir kümmern uns um den Rest."
+        subtitle: "Konzentrieren Sie sich auf das Wesentliche. Wir kümmern uns um den Rest.",
+        scrollIndicatorAria: "Zum Inhalt scrollen"
       },
       mainCard: {
         title: "Der perfekte Zeitpunkt zum Start",
@@ -225,6 +228,10 @@ const BundlePage = () => {
     return colors[index];
   };
 
+  const scrollToContent = () => {
+    contentSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+  }
+
   if (isLoading || !context) {
     return <div className="flex justify-center items-center h-screen">
       <Loader2 className="h-12 w-12 animate-spin text-gray-600" />
@@ -246,35 +253,57 @@ const BundlePage = () => {
       {/* Import shared header component */}
       <RapidWorksHeader />
 
-      {/* Main Content */}
-      <main className="pt-32 pb-20">
-        <div className="container mx-auto px-6">
+      {/* Hero Section Wrapper */}
+      <section className="bg-gradient-to-br from-gray-800 to-black text-white relative overflow-hidden">
+        <div className="container mx-auto px-6 pt-28 pb-28">
           {/* Page intro */}
           <div className="text-center mb-16 max-w-3xl mx-auto">
-            <div className="inline-flex items-center justify-center mb-5 px-4 py-1.5 bg-gray-100 border border-gray-200 rounded-full text-gray-700 font-medium text-xs shadow-sm mx-auto">
+            {/* Updated badge style */}
+            <div className="inline-flex items-center justify-center mb-5 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-xs shadow-sm mx-auto">
               <span className="relative flex h-2 w-2 mr-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gray-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-gray-800"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-gray-500"></span>
               </span>
               {content.badge.text}
             </div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
+            {/* Ensure text is white */}
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-white">
               {content.hero.title}{" "}
               <span className="relative inline-block">
-                <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-gray-700 to-gray-900">
+                {/* Updated highlight style */}
+                <span className="relative z-10">
                   {content.hero.highlight}
                 </span>
-                <span className="absolute bottom-2 left-0 w-full h-4 bg-gray-200 rounded-lg -z-10 opacity-70"></span>
+                <span className="absolute bottom-2 left-0 w-full h-4 bg-white/20 rounded-lg -z-10"></span>
               </span>
             </h1>
 
-            <p className="text-xl text-gray-700 leading-relaxed">
+            {/* Ensure text is white/lighter */}
+            <p className="text-xl text-white/90 leading-relaxed">
               {content.hero.subtitle}
             </p>
           </div>
+        </div>
 
-          <div className="flex flex-col lg:flex-row gap-16 items-start">
+        {/* Scroll Down Arrow */}
+        <button 
+          onClick={scrollToContent}
+          className="absolute bottom-6 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none"
+          aria-label={content.hero.scrollIndicatorAria}
+        >
+          <svg className="w-8 h-8 text-white/70 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+        </button>
+      </section>
+
+      {/* Main Content - Adjust padding */}
+      <main className="py-20">
+        <div className="container mx-auto px-6">
+
+          {/* Add ref to the content section */}
+          <div ref={contentSectionRef} className="flex flex-col lg:flex-row gap-16 items-start">
             {/* Left Column - Bundle Info */}
             <div className="lg:w-1/2">
               <div className="bg-gradient-to-br from-gray-900 to-black rounded-3xl overflow-hidden shadow-xl relative mb-8">

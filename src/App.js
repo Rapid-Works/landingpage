@@ -41,6 +41,7 @@ import FinancingPage from "./components/financing"
 import MVPpage from "./components/mvppage"
 import BundlePage from "./components/bundle"
 import RapidWorksHeader from "./components/new_landing_page_header"
+import WebinarFAB from "./components/WebinarFAB"
 
 // Create and export Language Context with initial values
 export const LanguageContext = createContext({
@@ -1028,7 +1029,6 @@ function App() {
   const NewMVPpage = () => {
     return (
       <div>
-         <RapidWorksHeader />
         <main className="flex-1 pt-16">
           <HeroSection fadeIn={fadeIn} />
           <ServicesSection fadeIn={fadeIn} />
@@ -1037,7 +1037,6 @@ function App() {
           <PostMVPOfferSection fadeIn={fadeIn} />
           <ContactSection fadeIn={fadeIn} />
         </main>
-        {/* <Footer /> */}
       </div>
     )
   }
@@ -1122,6 +1121,7 @@ function App() {
               }
             />
           </Routes>
+          <WebinarFAB />
           <Footer />
         </div>
       </>

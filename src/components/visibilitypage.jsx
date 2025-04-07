@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowRight, Plus, Minus, ChevronLeft, ChevronRight, CheckCircle, ChevronDown, Menu, X, CalendarCheck, Palette, Package, Megaphone, FileText, Users, BookOpen, Euro, Compass, Presentation } from "lucide-react"
+import { ArrowRight, Plus, Minus, ChevronLeft, ChevronRight, CheckCircle, ChevronDown, Menu, X, CalendarCheck, Palette, Package, Megaphone, FileText, Users, BookOpen, Euro, Compass, Presentation, Loader2 } from "lucide-react"
 import HeroImage2 from "../images/heroimage3.jpg"
 import RapidWorksWebsite from "../images/laptop.png"
 import RapidWorksLogo from "../images/logo512.png"
@@ -26,6 +26,7 @@ import FAQModal, { FAQItem } from './FAQModal'
 import Footer from './Footer'
 import AirtableForm from "./AirtableForm"
 import RapidWorksHeader from "./new_landing_page_header"
+import ExploreMoreSection from "./ExploreMoreSection"
 
 const BundleItem = ({ title, description, index, imageSrc }) => (
   <motion.div
@@ -210,7 +211,7 @@ const VisibiltyBundle = () => {
 
   if (isLoading || !context) {
     console.log("VisibilityBundle: Waiting for context or still loading...")
-    return <div>Loading...</div>
+    return <div className="flex justify-center items-center h-screen"><Loader2 className="h-12 w-12 animate-spin text-purple-600" /></div>;
   }
 
   const { language } = context
@@ -587,10 +588,6 @@ const VisibiltyBundle = () => {
 
   const content = pageContent[language]
 
-  if (isLoading) {
-    return <div>Loading...</div>
-  }
-
   const bundleItems = [
     {
       title: content.bundleItems.website.title,
@@ -645,8 +642,8 @@ const VisibiltyBundle = () => {
 
   return (
     <>
+      <RapidWorksHeader />
       <div className="min-h-screen bg-white">
-        <RapidWorksHeader />
 
         <main className="relative w-full overflow-x-hidden">
           <div className={containerClass}>
@@ -962,54 +959,7 @@ const VisibiltyBundle = () => {
             </div>
           </section>
 
-          <section className="py-16 sm:py-32 bg-gradient-to-br from-violet-900 via-indigo-900 to-purple-900 text-white relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/30 rounded-full -translate-y-1/2 translate-x-1/2 blur-xl"></div>
-            <div className="absolute bottom-0 left-0 w-72 h-72 bg-indigo-500/30 rounded-full translate-y-1/2 -translate-x-1/4 blur-xl"></div>
-            
-            <div className={containerClass + " relative z-10"}>
-              <div className="max-w-3xl mx-auto text-center">
-                <div className="inline-flex items-center gap-2 text-violet-300 text-sm uppercase tracking-wider font-light mb-6 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm mx-auto">
-                  <span className="w-2 h-2 rounded-full bg-violet-400 animate-pulse"></span>
-                  {content.exploreMore.badge}
-                </div>
-                
-                <h2 className="text-2xl sm:text-4xl md:text-5xl font-light mb-6 bg-gradient-to-r from-violet-200 via-white to-indigo-200 bg-clip-text text-transparent">
-                  {content.exploreMore.title}
-                </h2>
-                
-                <p className="text-sm sm:text-xl text-indigo-100 mb-10 leading-relaxed max-w-2xl mx-auto">
-                  {content.exploreMore.description}
-                </p>
-                
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-w-2xl mx-auto mb-10">
-                  {[
-                    { icon: <Megaphone className="h-6 w-6" />, label: "Branding" },
-                    { icon: <Users className="h-6 w-6" />, label: "Experts" },
-                    { icon: <FileText className="h-6 w-6" />, label: "Blueprint" },
-                    { icon: <Compass className="h-6 w-6" />, label: "Coaching" },
-                    { icon: <Presentation className="h-6 w-6" />, label: "Workshops" },
-                    { icon: <Euro className="h-6 w-6" />, label: "Financing" }
-                  ].map((item, index) => (
-                    <div key={index} className="bg-white/10 backdrop-blur-sm p-4 rounded-xl flex flex-col items-center gap-2 hover:bg-white/20 transition-colors">
-                      {item.icon}
-                      <span className="text-sm">{item.label}</span>
-                    </div>
-                  ))}
-                </div>
-                
-                <Link
-                  to="/"
-                  className="group relative inline-flex items-center justify-center px-6 py-3 text-sm font-medium overflow-hidden rounded-full text-violet-900 bg-white transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-                >
-                  <span className="relative z-10 flex items-center">
-                    {content.exploreMore.cta}
-                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                  </span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-violet-200 to-indigo-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                </Link>
-              </div>
-            </div>
-          </section>
+          <ExploreMoreSection excludeService="Branding" />
 
         </main>
 
@@ -1022,6 +972,12 @@ const VisibiltyBundle = () => {
         />
 
         <NewsletterPopup />
+
+        <FAQModal 
+          isOpen={isFAQModalOpen}
+          onClose={() => setIsFAQModalOpen(false)}
+          faqItems={faqItems}
+        />
 
       </div>
     </>
