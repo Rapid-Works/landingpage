@@ -1,7 +1,7 @@
 "use client"
 
 // import type React from "react"
-import { useState, useEffect, useContext } from "react"
+import { useState, useEffect, useContext, useRef } from "react"
 import {
   Rocket,
   ArrowRight,
@@ -25,6 +25,7 @@ import {
 } from "lucide-react"
 import RapidWorksHeader from "./new_landing_page_header" 
 import { LanguageContext as AppLanguageContext } from "../App"
+import ExploreMoreSection from "./ExploreMoreSection" // Import the new component
 
 // Import team profile images
 import SamuelProfile from "../images/SamuelProfile.jpg"
@@ -133,12 +134,17 @@ const benefits = [
 const TeamPage = () => {
   const context = useContext(AppLanguageContext)
   const [isLoading, setIsLoading] = useState(true)
+  const benefitsRef = useRef(null)
 
   useEffect(() => {
     if (context) {
       setIsLoading(false);
     }
   }, [context]);
+
+  const scrollToBenefits = () => {
+    benefitsRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
 
   const pageContent = {
     en: {
@@ -148,6 +154,7 @@ const TeamPage = () => {
         titleHighlight: "Expertise",
         title2: "you need",
         subtitle: "Why build an expensive team in Germany with 3+ months of hiring time when our team can start work on your project in just 1 day?",
+        scrollIndicatorAria: "Scroll to benefits"
       },
       benefits: {
         title: "Why Choose The Rapid Experts?",
@@ -194,6 +201,7 @@ const TeamPage = () => {
         titleHighlight: "Expertise",
         title2: "die du brauchst",
         subtitle: "Warum ein teures Team in Deutschland aufbauen mit 3+ Monaten Einstellungszeit, wenn unser Team in nur 1 Tag mit der Arbeit an deinem Projekt beginnen kann?",
+        scrollIndicatorAria: "Zu den Vorteilen scrollen"
       },
       benefits: {
         title: "Warum die Rapid Experts wählen?",
@@ -257,32 +265,49 @@ const TeamPage = () => {
       {/* Import header from new_landing_page.jsx instead of using the built-in header */}
       <RapidWorksHeader />
 
-      {/* Main Content */}
-      <main className="pt-32 pb-20">
-        <div className="container mx-auto px-6">
+      {/* Hero Section Wrapper */}
+      <section className="bg-gradient-to-br from-purple-600 to-indigo-600 text-white relative overflow-hidden">
+        <div className="container mx-auto px-6 pt-28 pb-28">
           {/* Page intro */}
           <div className="text-center mb-16 max-w-3xl mx-auto">
-            <div className="inline-block mb-4 px-4 py-1.5 bg-gradient-to-r from-purple-100 to-indigo-100 rounded-full text-purple-700 font-medium text-sm">
-                {content.pageTitle}
-              </div>
+            <div className="inline-block mb-4 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-sm">
+              {content.pageTitle}
+            </div>
 
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-white">
               {content.hero.title1}{" "}
               <span className="relative inline-block">
-                <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600">
+                <span className="relative z-10">
                   {content.hero.titleHighlight}
                 </span>
-                <span className="absolute bottom-2 left-0 w-full h-4 bg-gradient-to-r from-purple-200 to-indigo-200 rounded-lg -z-10 opacity-70"></span>
+                <span className="absolute bottom-2 left-0 w-full h-4 bg-white/20 rounded-lg -z-10"></span>
               </span>{" "}
               {content.hero.title2}
             </h1>
 
-            <p className="text-xl text-gray-700 leading-relaxed">
+            <p className="text-xl text-white/90 leading-relaxed">
               {content.hero.subtitle}
             </p>
           </div>
+        </div>
 
-          <div className="flex flex-col lg:flex-row gap-16 items-start">
+        {/* Scroll Down Arrow */}
+        <button 
+          onClick={scrollToBenefits}
+          className="absolute bottom-6 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none"
+          aria-label={content.hero.scrollIndicatorAria}
+        >
+          <svg className="w-8 h-8 text-white/70 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+        </button>
+      </section>
+
+      {/* Main Content - Add ref to the benefits container */}
+      <main className="py-20">
+        <div className="container mx-auto px-6">
+          {/* Add ref={benefitsRef} to the container holding the benefits section */}
+          <div ref={benefitsRef} className="flex flex-col lg:flex-row gap-16 items-start">
             {/* Left Column - Benefits */}
             <div className="lg:w-5/12 lg:sticky lg:top-32">
               <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
@@ -312,7 +337,7 @@ const TeamPage = () => {
                         >
                           <div className={`bg-gradient-to-br ${gradient} p-3 rounded-xl text-white shadow-md`}>
                             {originalBenefit?.icon || <Star className="h-5 w-5" />}
-                </div>
+                          </div>
                           <div>
                             <h3 className="font-bold text-gray-900">{benefit.text}</h3>
                             <p className="text-gray-600 text-sm mt-1">{benefit.description}</p>
@@ -325,7 +350,7 @@ const TeamPage = () => {
                               </a>
                             )}
                           </div>
-                  </div>
+                        </div>
                       );
                     })}
                   </div>
@@ -387,7 +412,7 @@ const TeamPage = () => {
                             {memberRole}
                         </div>
                       </div>
-              </div>
+                    </div>
 
                     {/* Profile section */}
                     <div className="px-8 pt-8 pb-6 relative">
@@ -458,6 +483,10 @@ const TeamPage = () => {
           </div>
         </div>
       </main>
+      
+      {/* Add the new component */}
+      <ExploreMoreSection excludeService="Experts" />
+
     </div>
   )
 }

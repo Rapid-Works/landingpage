@@ -118,20 +118,20 @@ export default function RapidWorksHeader() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white py-3 shadow-sm`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white py-2 shadow-sm`}
     >
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center group">
-            <div className={`bg-gradient-to-br ${colors.logoGradient} group-hover:from-purple-600 group-hover:to-indigo-600 p-1.5 rounded-lg shadow-lg transform group-hover:rotate-12 transition-all duration-300`}>
-              <Rocket className="h-5 w-5 text-white" />
+            <div className={`bg-gradient-to-br ${colors.logoGradient} group-hover:from-purple-600 group-hover:to-indigo-600 p-1 rounded-lg shadow-lg transform group-hover:rotate-12 transition-all duration-300`}>
+              <Rocket className="h-4 w-4 text-white" />
             </div>
             <div className="ml-2 hidden md:block">
-              <h1 className={`text-xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r ${colors.logoText} group-hover:from-purple-600 group-hover:to-indigo-600 transition-all duration-300`}>
+              <h1 className={`text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r ${colors.logoText} group-hover:from-purple-600 group-hover:to-indigo-600 transition-all duration-300`}>
                 RapidWorks
               </h1>
-              <p className="text-[10px] text-gray-500 font-medium tracking-wider uppercase">
-                Empowering Entrepreneurs
+              <p className="text-[8px] text-gray-500 font-medium tracking-wider uppercase leading-tight">
+                EMPOWERING ENTREPRENEURS
               </p>
             </div>
           </Link>
@@ -161,7 +161,7 @@ export default function RapidWorksHeader() {
               href="https://calendly.com/yannick-familie-heeren/30min" 
               target="_blank" 
               rel="noopener noreferrer"
-              className={`ml-4 px-8 py-2.5 bg-black hover:bg-gradient-to-r ${colors.buttonHover} text-white rounded-full hover:shadow-lg hover:translate-y-[-2px] active:translate-y-[0px] transition-all duration-300 font-medium text-sm`}
+              className={`ml-2 px-6 py-2 bg-black hover:bg-gradient-to-r ${colors.buttonHover} text-white rounded-full hover:shadow-lg hover:translate-y-[-2px] active:translate-y-[0px] transition-all duration-300 font-medium text-xs`}
             >
               Book a Call
             </a>

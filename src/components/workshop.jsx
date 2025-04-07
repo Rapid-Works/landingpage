@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useContext } from "react"
+import { useState, useEffect, useContext, useRef } from "react"
 import {
   ChevronDown,
   Presentation,
@@ -14,10 +14,14 @@ import {
   Users,
   ArrowDown,
   Loader2,
+  DollarSign,
+  Target,
+  TrendingUp
 } from "lucide-react"
 import RapidWorksHeader from "./new_landing_page_header"
 import { submitToAirtable } from '../utils/airtableService'
 import { LanguageContext as AppLanguageContext } from "../App"
+import ExploreMoreSection from "./ExploreMoreSection"
 
 const WorkshopsPage = () => {
   const context = useContext(AppLanguageContext);
@@ -28,6 +32,7 @@ const WorkshopsPage = () => {
   const [selectedWorkshops, setSelectedWorkshops] = useState([])
   const [showSelectionPrompt, setShowSelectionPrompt] = useState(true)
   const [isLoading, setIsLoading] = useState(true)
+  const contentSectionRef = useRef(null);
 
   useEffect(() => {
     if (context) {
@@ -48,6 +53,10 @@ const WorkshopsPage = () => {
       setShowSelectionPrompt(false)
     }
   }, [selectedWorkshops])
+
+  const scrollToContentSection = () => {
+    contentSectionRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -102,7 +111,8 @@ const WorkshopsPage = () => {
       hero: {
         title: "Rapid",
         highlight: "Workshops",
-        subtitle: "Close your business knowledge gaps. Don't become reliant on consultants! Our expert-led workshops will empower you with practical skills and knowledge."
+        subtitle: "Close your business knowledge gaps. Don't become reliant on consultants! Our expert-led workshops will empower you with practical skills and knowledge.",
+        scrollIndicatorAria: "Scroll to workshops"
       },
       workshops: {
         title: "Interactive Learning Experience",
@@ -172,7 +182,8 @@ const WorkshopsPage = () => {
       hero: {
         title: "Rapid",
         highlight: "Workshops",
-        subtitle: "Schließe deine Wissenslücken im Business-Bereich. Mache dich nicht von Beratern abhängig! Unsere von Experten geleiteten Workshops vermitteln dir praktische Fähigkeiten und Wissen."
+        subtitle: "Schließe deine Wissenslücken im Business-Bereich. Mache dich nicht von Beratern abhängig! Unsere von Experten geleiteten Workshops vermitteln dir praktische Fähigkeiten und Wissen.",
+        scrollIndicatorAria: "Zu den Workshops scrollen"
       },
       workshops: {
         title: "Interaktive Lernerfahrung",
@@ -272,21 +283,22 @@ const WorkshopsPage = () => {
   return (
     <div className="min-h-screen bg-white font-sans selection:bg-emerald-200 selection:text-emerald-900">
       {/* Noise overlay */}
-      <div className="fixed inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMzAwdjMwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDUiLz48L3N2Zz4=')] opacity-30 pointer-events-none z-0"></div>
+      <div className="fixed inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMzAwdjMwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIwLjA1Ii8+PC9zdmc+')] opacity-30 pointer-events-none z-0"></div>
 
       {/* Decorative elements */}
-      <div className="fixed top-0 right-0 w-1/3 h-1/3 bg-emerald-200 rounded-full filter blur-3xl opacity-20 -z-10 transform translate-x-1/3 -translate-y-1/3"></div>
-      <div className="fixed bottom-0 left-0 w-1/3 h-1/3 bg-green-200 rounded-full filter blur-3xl opacity-20 -z-10 transform -translate-x-1/3 translate-y-1/3"></div>
+      {/* <div className="fixed top-0 right-0 w-1/3 h-1/3 bg-emerald-200 rounded-full filter blur-3xl opacity-20 -z-10 transform translate-x-1/3 -translate-y-1/3"></div> */}
+      {/* <div className="fixed bottom-0 left-0 w-1/3 h-1/3 bg-green-200 rounded-full filter blur-3xl opacity-20 -z-10 transform -translate-x-1/3 translate-y-1/3"></div> */}
 
       {/* Import the shared header component */}
       <RapidWorksHeader />
 
-      {/* Main Content */}
-      <main className="pt-32 pb-20">
-        <div className="container mx-auto px-6">
-          {/* Page intro */}
-          <div className="text-center mb-16 max-w-3xl mx-auto">
-            <div className="inline-flex items-center justify-center mb-5 px-4 py-1.5 bg-emerald-50 border border-emerald-200 rounded-full text-emerald-700 font-medium text-xs shadow-sm">
+      {/* Hero Section Wrapper */}
+      <section className="bg-gradient-to-br from-emerald-600 to-green-600 text-white relative overflow-hidden">
+        <div className="container mx-auto px-6 pt-28 pb-28">
+           {/* Page intro */}
+           <div className="text-center mb-16 max-w-3xl mx-auto">
+            {/* Updated badge style */}
+            <div className="inline-flex items-center justify-center mb-5 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-xs shadow-sm">
               <span className="relative flex h-2 w-2 mr-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
@@ -294,22 +306,43 @@ const WorkshopsPage = () => {
               {content.badge.text}
             </div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
+            {/* Ensure text is white */}
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-white">
               {content.hero.title}{" "}
               <span className="relative inline-block">
-                <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-green-600">
+                {/* Updated highlight style */}
+                <span className="relative z-10">
                   {content.hero.highlight}
                 </span>
-                <span className="absolute bottom-2 left-0 w-full h-4 bg-emerald-200 rounded-lg -z-10 opacity-70"></span>
+                <span className="absolute bottom-2 left-0 w-full h-4 bg-white/20 rounded-lg -z-10"></span>
               </span>
             </h1>
 
-            <p className="text-xl text-gray-700 leading-relaxed">
+            {/* Ensure text is white/lighter */}
+            <p className="text-xl text-white/90 leading-relaxed">
               {content.hero.subtitle}
             </p>
           </div>
+        </div>
 
-          <div className="flex flex-col lg:flex-row gap-8 items-start">
+        {/* Scroll Down Arrow */}
+        <button 
+          onClick={scrollToContentSection}
+          className="absolute bottom-6 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none"
+          aria-label={content.hero.scrollIndicatorAria}
+        >
+          <svg className="w-8 h-8 text-white/70 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+        </button>
+      </section>
+
+      {/* Main Content - Adjust padding */}
+      <main className="py-20">
+        <div className="container mx-auto px-6">
+
+          {/* Add ref to the main content container */}
+          <div ref={contentSectionRef} className="flex flex-col lg:flex-row gap-8 items-start">
             {/* Combined Card with shared border */}
             <div className="bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-200 w-full">
               <div className="lg:flex">
@@ -549,63 +582,13 @@ const WorkshopsPage = () => {
           </div>
         </div>
       </main>
+      
+      {/* Add the new component */}
+      <ExploreMoreSection excludeService="Workshops" />
+
     </div>
   )
 }
-
-// Missing imports
-const DollarSign = (props) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <line x1="12" y1="1" x2="12" y2="23"></line>
-    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-  </svg>
-)
-const Target = (props) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <circle cx="12" cy="12" r="10"></circle>
-    <circle cx="12" cy="12" r="6"></circle>
-    <circle cx="12" cy="12" r="2"></circle>
-  </svg>
-)
-const TrendingUp = (props) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-    <polyline points="17 6 23 6 23 12"></polyline>
-  </svg>
-)
 
 export default WorkshopsPage
 

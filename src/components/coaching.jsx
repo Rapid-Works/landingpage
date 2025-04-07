@@ -1,10 +1,11 @@
 "use client"
 
-import { useState, useEffect, useContext } from "react"
+import { useState, useEffect, useContext, useRef } from "react"
 import { ArrowRight, Compass, Calendar, Check, Target, TrendingUp, MessageSquare, MapPin, Loader2 } from "lucide-react"
 import YannickProfile from "../images/yannickprofile.png"
 import RapidWorksHeader from "./new_landing_page_header"
 import { LanguageContext as AppLanguageContext } from "../App"
+import ExploreMoreSection from "./ExploreMoreSection"
 
 // Single coach data
 const coach = {
@@ -33,12 +34,17 @@ const coach = {
 const CoachingPage = () => {
   const context = useContext(AppLanguageContext);
   const [isLoading, setIsLoading] = useState(true);
+  const whySectionRef = useRef(null);
 
   useEffect(() => {
     if (context) {
       setIsLoading(false);
     }
   }, [context]);
+
+  const scrollToWhySection = () => {
+    whySectionRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
 
   // --- Page Content Object ---
   const pageContent = {
@@ -47,6 +53,7 @@ const CoachingPage = () => {
       heroTitle: "Unleash your",
       heroHighlight: "Full Potential",
       heroSubtitle: "Year-round coaching by veteran founders who have been in your shoes and know what it takes to succeed.",
+      scrollIndicatorAria: "Scroll to why coaching matters",
       whySection: {
         title: "Why Founder Coaching Matters",
         description: "Being a founder is the hardest job in the world. Our coaching program provides the guidance, accountability, and support you need to navigate challenges and accelerate your growth.",
@@ -95,6 +102,7 @@ const CoachingPage = () => {
       heroTitle: "Entfessle dein",
       heroHighlight: "volles Potenzial",
       heroSubtitle: "Ganzjähriges Coaching durch erfahrene Gründer, die in deinen Schuhen gesteckt haben und wissen, was zum Erfolg führt.",
+      scrollIndicatorAria: "Scrollen, warum Coaching wichtig ist",
       whySection: {
         title: "Warum Gründer-Coaching wichtig ist",
         description: "Gründer zu sein ist der härteste Job der Welt. Unser Coaching-Programm bietet die Anleitung, Verantwortlichkeit und Unterstützung, die du brauchst, um Herausforderungen zu meistern und dein Wachstum zu beschleunigen.",
@@ -153,60 +161,68 @@ const CoachingPage = () => {
       <div className="fixed inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMzAwdjMwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIwLjA1Ii8+PC9zdmc+')] opacity-30 pointer-events-none z-0"></div>
 
       {/* Decorative elements */}
-      <div className="fixed top-0 right-0 w-1/3 h-1/3 bg-orange-200 rounded-full filter blur-3xl opacity-20 -z-10 transform translate-x-1/3 -translate-y-1/3"></div>
-      <div className="fixed bottom-0 left-0 w-1/3 h-1/3 bg-amber-200 rounded-full filter blur-3xl opacity-20 -z-10 transform -translate-x-1/3 translate-y-1/3"></div>
+      {/* <div className="fixed top-0 right-0 w-1/3 h-1/3 bg-orange-200 rounded-full filter blur-3xl opacity-20 -z-10 transform translate-x-1/3 -translate-y-1/3"></div> */}
+      {/* <div className="fixed bottom-0 left-0 w-1/3 h-1/3 bg-amber-200 rounded-full filter blur-3xl opacity-20 -z-10 transform -translate-x-1/3 translate-y-1/3"></div> */}
 
       {/* Replace custom header with shared header component */}
       <RapidWorksHeader />
 
-      {/* Main Content */}
-      <main className="pt-32 pb-20">
-        <div className="container mx-auto px-6">
+      {/* Hero Section Wrapper */}
+      <section className="bg-gradient-to-br from-orange-600 to-amber-600 text-white relative overflow-hidden">
+        <div className="container mx-auto px-6 pt-28 pb-28">
           {/* Page intro */}
           <div className="text-center mb-16 max-w-3xl mx-auto">
-            <div className="inline-block mb-4 px-4 py-1.5 bg-orange-100 rounded-full text-orange-700 font-medium text-sm">
+            <div className="inline-flex items-center mb-4 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-sm">
               <Compass className="h-4 w-4 inline mr-1" />
               {content.pageBadge}
             </div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-white">
               {content.heroTitle}{" "}
               <span className="relative inline-block">
-                <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-amber-600">
+                <span className="relative z-10">
                   {content.heroHighlight}
                 </span>
-                <span className="absolute bottom-2 left-0 w-full h-4 bg-orange-200 rounded-lg -z-10 opacity-70"></span>
+                <span className="absolute bottom-2 left-0 w-full h-4 bg-white/20 rounded-lg -z-10"></span>
               </span>
             </h1>
 
-            <p className="text-xl text-gray-700 leading-relaxed">
+            <p className="text-xl text-white/90 leading-relaxed">
               {content.heroSubtitle}
             </p>
           </div>
+        </div>
 
-          {/* Hero Section */}
-          <div className="bg-gradient-to-br from-orange-600 to-amber-600 rounded-3xl overflow-hidden mb-20 relative">
-            <div className="absolute inset-0 opacity-10">
-              <img
-                src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-                alt="Coaching session"
-                className="w-full h-full object-cover"
-              />
-            </div>
+        {/* Scroll Down Arrow */}
+        <button 
+          onClick={scrollToWhySection}
+          className="absolute bottom-6 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none"
+          aria-label={content.scrollIndicatorAria}
+        >
+          <svg className="w-8 h-8 text-white/70 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+        </button>
+      </section>
 
-            <div className="relative z-10 p-8 md:p-12 text-center">
-                <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">{content.whySection.title}</h2>
-              <p className="text-white/90 text-lg mb-8 mx-auto max-w-3xl">
-                  {content.whySection.description}
-                </p>
+      {/* Main Content */}
+      <main className="py-20">
+        <div className="container mx-auto px-6">
+          {/* Add ref to the "Why" Section */}
+          <div ref={whySectionRef} className="bg-gradient-to-br from-white to-orange-50 rounded-3xl overflow-hidden mb-20 relative p-8 md:p-12 text-center shadow-lg border border-orange-100">
+            <div className="relative z-10">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">{content.whySection.title}</h2>
+              <p className="text-gray-700 text-lg mb-8 mx-auto max-w-3xl">
+                {content.whySection.description}
+              </p>
 
               <button
-                className="bg-white text-orange-600 px-8 py-4 rounded-full font-medium hover:shadow-lg hover:shadow-orange-900/20 transition-all flex items-center gap-2 group mx-auto"
+                className="bg-orange-600 text-white px-8 py-4 rounded-full font-medium hover:bg-orange-700 hover:shadow-lg hover:shadow-orange-900/20 transition-all flex items-center gap-2 group mx-auto"
                 onClick={() => window.open("https://calendly.com/yannick-familie-heeren/30min", "_blank")}
               >
-                  {content.whySection.ctaButton}
-                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                </button>
+                {content.whySection.ctaButton}
+                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </button>
             </div>
           </div>
 
@@ -318,6 +334,10 @@ const CoachingPage = () => {
           </div>
         </div>
       </main>
+
+      {/* Add the new component */}
+      <ExploreMoreSection excludeService="Coaching" />
+
     </div>
   )
 }

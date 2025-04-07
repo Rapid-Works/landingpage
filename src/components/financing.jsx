@@ -4,6 +4,7 @@ import { ArrowRight, Euro, X, Loader2 } from "lucide-react"
 import RapidWorksHeader from "./new_landing_page_header"
 import { useState, useEffect, useRef, useContext } from "react"
 import { LanguageContext as AppLanguageContext } from "../App"
+import ExploreMoreSection from "./ExploreMoreSection"
 
 const FinancingPage = () => {
     const context = useContext(AppLanguageContext);
@@ -11,12 +12,18 @@ const FinancingPage = () => {
     const [isCalendlyLoading, setIsCalendlyLoading] = useState(true)
     const [isLoading, setIsLoading] = useState(true)
     const iframeRef = useRef(null)
+    const contentSectionRef = useRef(null);
 
     useEffect(() => {
         if (context) {
             setIsLoading(false);
         }
     }, [context]);
+
+    // Function to scroll
+    const scrollToContent = () => {
+        contentSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
 
     // Page content with translations
     const pageContent = {
@@ -28,7 +35,8 @@ const FinancingPage = () => {
                 title: "Don't know how to",
                 highlight: "Finance",
                 titleEnd: "your growth?",
-                subtitle: "We help startups navigate the complex world of financing, from grants and subsidies to venture capital and strategic partnerships."
+                subtitle: "We help startups navigate the complex world of financing, from grants and subsidies to venture capital and strategic partnerships.",
+                scrollIndicatorAria: "Scroll to content"
             },
             mainSection: {
                 title: "The right financing at the right time",
@@ -48,7 +56,8 @@ const FinancingPage = () => {
                 title: "Wissen Sie nicht, wie Sie",
                 highlight: "Finanzierung",
                 titleEnd: "für Ihr Wachstum finden?",
-                subtitle: "Wir helfen Startups, sich in der komplexen Welt der Finanzierung zurechtzufinden - von Zuschüssen und Subventionen bis hin zu Risikokapital und strategischen Partnerschaften."
+                subtitle: "Wir helfen Startups, sich in der komplexen Welt der Finanzierung zurechtzufinden - von Zuschüssen und Subventionen bis hin zu Risikokapital und strategischen Partnerschaften.",
+                scrollIndicatorAria: "Zum Inhalt scrollen"
             },
             mainSection: {
                 title: "Die richtige Finanzierung zum richtigen Zeitpunkt",
@@ -100,52 +109,61 @@ const FinancingPage = () => {
             {/* Import shared header component */}
             <RapidWorksHeader />
 
-            {/* Main Content */}
-            <main className="pt-32 pb-20">
-                <div className="container mx-auto px-6">
+            {/* Hero Section Wrapper */}
+            <section className="bg-gradient-to-br from-rose-600 to-pink-600 text-white relative overflow-hidden">
+                <div className="container mx-auto px-6 pt-28 pb-28">
                     {/* Page intro */}
                     <div className="text-center mb-16 max-w-3xl mx-auto">
-                        <div className="inline-block mb-4 px-4 py-1.5 bg-rose-100 rounded-full text-rose-700 font-medium text-sm">
+                        <div className="inline-flex items-center mb-4 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-sm">
                             <Euro className="h-4 w-4 inline mr-1" />
                             {content.badge.text}
                         </div>
 
-                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
+                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-white">
                             {content.hero.title}{" "}
                             <span className="relative inline-block">
-                                <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-pink-600">
+                                <span className="relative z-10">
                                     {content.hero.highlight}
                                 </span>
-                                <span className="absolute bottom-2 left-0 w-full h-4 bg-rose-200 rounded-lg -z-10 opacity-70"></span>
+                                <span className="absolute bottom-2 left-0 w-full h-4 bg-white/20 rounded-lg -z-10"></span>
                             </span>{" "}
                             {content.hero.titleEnd}
                         </h1>
 
-                        <p className="text-xl text-gray-700 leading-relaxed">
+                        <p className="text-xl text-white/90 leading-relaxed">
                             {content.hero.subtitle}
                         </p>
                     </div>
+                </div>
 
-                    {/* Hero Section */}
-                    <div className="bg-gradient-to-br from-rose-600 to-pink-600 rounded-3xl overflow-hidden mb-20 relative">
-                        <div className="absolute inset-0 opacity-10">
-                            <img
-                                src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80"
-                                alt="Finance background"
-                                className="w-full h-full object-cover"
-                            />
-                        </div>
+                {/* Scroll Down Arrow */}
+                <button 
+                  onClick={scrollToContent}
+                  className="absolute bottom-6 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none"
+                  aria-label={content.hero.scrollIndicatorAria}
+                >
+                  <svg className="w-8 h-8 text-white/70 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                  </svg>
+                </button>
+            </section>
 
-                        <div className="relative z-10 p-8 md:p-12 text-center">
-                            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+            {/* Main Content - Adjust padding */}
+            <main className="py-20">
+                <div className="container mx-auto px-6">
+                    
+                    {/* Add ref to the content section */}
+                    <div ref={contentSectionRef} className="bg-gradient-to-br from-white to-rose-50 rounded-3xl overflow-hidden mb-20 relative p-8 md:p-12 text-center shadow-lg border border-rose-100">
+                        <div className="relative z-10">
+                            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
                                 {content.mainSection.title}
                             </h2>
-                            <p className="text-white/90 text-lg mb-8 mx-auto max-w-3xl">
+                            <p className="text-gray-700 text-lg mb-8 mx-auto max-w-3xl">
                                 {content.mainSection.description}
                             </p>
 
                             <button 
-                                className="bg-white text-rose-600 px-8 py-4 rounded-full font-medium hover:shadow-lg hover:shadow-rose-900/20 transition-all flex items-center gap-2 group mx-auto"
+                                className="bg-rose-600 text-white px-8 py-4 rounded-full font-medium hover:bg-rose-700 hover:shadow-lg hover:shadow-rose-900/20 transition-all flex items-center gap-2 group mx-auto"
                                 onClick={() => {
                                     setIsCalendlyLoading(true);
                                     setIsModalOpen(true);
@@ -158,6 +176,9 @@ const FinancingPage = () => {
                     </div>
                 </div>
             </main>
+
+            {/* Add the new component */}
+            <ExploreMoreSection excludeService="Financing" />
 
             {/* Calendly Modal - Making it even larger */}
             {isModalOpen && (

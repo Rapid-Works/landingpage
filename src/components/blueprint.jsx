@@ -1,19 +1,25 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Calendar, Clock, Shield, AlertCircle, FileText, Check, Loader2 } from 'lucide-react';
 import RapidWorksHeader from './new_landing_page_header';
 import EmailWaitlistForm from './EmailWaitlistForm';
 import { submitToAirtable } from '../utils/airtableService';
 import { LanguageContext as AppLanguageContext } from "../App";
+import ExploreMoreSection from "./ExploreMoreSection"; // Import the new component
 
 const BlueprintPage = () => {
   const context = useContext(AppLanguageContext);
   const [isLoading, setIsLoading] = useState(true);
+  const contentSectionRef = useRef(null);
 
   useEffect(() => {
     if (context) {
       setIsLoading(false);
     }
   }, [context]);
+
+  const scrollToContent = () => {
+    contentSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+  }
 
   const handleSubmit = async (email) => {
     try {
@@ -23,10 +29,10 @@ const BlueprintPage = () => {
         notes: "Joined Blueprint waitlist"
       });
       console.log('Email submitted to Airtable:', email);
-      return true; // Return success for the EmailWaitlistForm component
+      return true;
     } catch (error) {
       console.error("Error submitting to Airtable:", error);
-      return false; // Return failure for the EmailWaitlistForm component
+      return false;
     }
   };
 
@@ -36,6 +42,7 @@ const BlueprintPage = () => {
       titleHighlight: "Blueprint",
       titlePrefix: "Rapid",
       subtitle: "Own your processes in 1 week. You don't need dozens of tools! Our Blueprint service is designed to streamline your business operations and create efficient workflows.",
+      scrollIndicatorAria: "Scroll to content",
       features: [
         { title: "Streamlined Processes", description: "Optimize your business operations with custom-designed workflows" },
         { title: "Tool Consolidation", description: "Reduce tool sprawl and integrate only what you need" },
@@ -59,6 +66,7 @@ const BlueprintPage = () => {
       titleHighlight: "Blueprint",
       titlePrefix: "Rapid",
       subtitle: "Beherrsche deine Prozesse in 1 Woche. Du brauchst keine Dutzend Tools! Unser Blueprint-Service wurde entwickelt, um deine Geschäftsabläufe zu optimieren und effiziente Workflows zu erstellen.",
+      scrollIndicatorAria: "Zum Inhalt scrollen",
       features: [
         { title: "Optimierte Prozesse", description: "Optimiere deine Geschäftsabläufe mit individuell gestalteten Workflows" },
         { title: "Tool-Konsolidierung", description: "Reduziere die Tool-Vielfalt und integriere nur das, was du brauchst" },
@@ -98,34 +106,58 @@ const BlueprintPage = () => {
       {/* Import shared header component */}
       <RapidWorksHeader />
 
-      {/* Main Content */}
-      <main className="pt-32 pb-20">
+      {/* Hero Section Wrapper */}
+      <section className="bg-gradient-to-br from-indigo-600 to-blue-600 text-white relative overflow-hidden">
+        <div className="container mx-auto px-6 pt-28 pb-28">
+          {/* Page intro content moved here */}
+          <div className="text-center mb-16 max-w-3xl mx-auto">
+             {/* Updated badge style */}
+             <div className="inline-flex items-center justify-center mb-5 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-xs shadow-sm">
+              <span className="relative flex h-2 w-2 mr-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+              </span>
+              {content.comingSoon}
+            </div>
+            
+            {/* Ensure text is white */}
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-white">
+              {content.titlePrefix}{" "}
+              <span className="relative inline-block">
+                {/* Updated highlight style */}
+                <span className="relative z-10">
+                  {content.titleHighlight}
+                </span>
+                <span className="absolute bottom-2 left-0 w-full h-4 bg-white/20 rounded-lg -z-10"></span>
+              </span>
+            </h1>
+            
+            {/* Ensure text is white/lighter */}
+            <p className="text-xl text-white/90 leading-relaxed">
+              {content.subtitle}
+            </p>
+          </div>
+        </div>
+
+        {/* Scroll Down Arrow */}
+        <button 
+          onClick={scrollToContent}
+          className="absolute bottom-6 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none"
+          aria-label={content.scrollIndicatorAria}
+        >
+          <svg className="w-8 h-8 text-white/70 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+        </button>
+      </section>
+
+      {/* Main Content - Adjust padding */}
+      <main className="py-20">
         <div className="container mx-auto px-6">
-          <div className="flex flex-col lg:flex-row gap-16 items-center">
+          {/* Add ref to the main content flex container */}
+          <div ref={contentSectionRef} className="flex flex-col lg:flex-row gap-16 items-center">
             {/* Left Column - Content */}
             <div className="lg:w-1/2">
-              <div className="inline-flex items-center justify-center mb-5 px-4 py-1.5 bg-indigo-50 border border-indigo-200 rounded-full text-indigo-700 font-medium text-xs shadow-sm">
-                <span className="relative flex h-2 w-2 mr-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
-                </span>
-                {content.comingSoon}
-              </div>
-              
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
-                {content.titlePrefix}{" "}
-                <span className="relative inline-block">
-                  <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-blue-600">
-                    {content.titleHighlight}
-                  </span>
-                  <span className="absolute bottom-2 left-0 w-full h-4 bg-indigo-200 rounded-lg -z-10 opacity-70"></span>
-                </span>
-              </h1>
-              
-              <p className="text-xl text-gray-700 leading-relaxed mb-8">
-                {content.subtitle}
-              </p>
-              
               <div className="space-y-4 mb-10">
                 {content.features.map((feature, index) => (
                   <div key={index} className="flex items-start gap-3">
@@ -185,6 +217,10 @@ const BlueprintPage = () => {
           </div>
         </div>
       </main>
+
+      {/* Add the new component */}
+      <ExploreMoreSection excludeService="Blueprint" />
+
     </div>
   );
 };
