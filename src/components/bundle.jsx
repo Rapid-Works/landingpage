@@ -34,8 +34,7 @@ const BundlePage = () => {
         text: "Coming Soon"
       },
       hero: {
-        title: "Rapid",
-        highlight: "Bundle",
+        title: "Everything in one bundle",
         subtitle: "Focus on what really matters. Let us handle everything else.",
         scrollIndicatorAria: "Scroll to content"
       },
@@ -104,8 +103,7 @@ const BundlePage = () => {
         text: "Demnächst verfügbar"
       },
       hero: {
-        title: "Rapid",
-        highlight: "Bundle",
+        title: "Alles in einem Paket",
         subtitle: "Konzentrieren Sie sich auf das Wesentliche. Wir kümmern uns um den Rest.",
         scrollIndicatorAria: "Zum Inhalt scrollen"
       },
@@ -267,16 +265,9 @@ const BundlePage = () => {
               {content.badge.text}
             </div>
 
-            {/* Ensure text is white */}
+            {/* Simplified H1 */}
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-white">
-              {content.hero.title}{" "}
-              <span className="relative inline-block">
-                {/* Updated highlight style */}
-                <span className="relative z-10">
-                  {content.hero.highlight}
-                </span>
-                <span className="absolute bottom-2 left-0 w-full h-4 bg-white/20 rounded-lg -z-10"></span>
-              </span>
+              {content.hero.title}
             </h1>
 
             {/* Ensure text is white/lighter */}

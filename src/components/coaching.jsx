@@ -70,7 +70,7 @@ const CoachingPage = () => {
         experience: "Coached 50+ Startups",
         ctaButton: "Schedule a Session with Yannick",
         badgeText: "Your Coach",
-        subtext: "Founded 2 Startups and coached 50+ Startups"
+        subtext: "Founded 3 Startups and coached 50+ Startups"
       },
       howItWorks: {
         title: "How Our Coaching Works",
@@ -80,7 +80,10 @@ const CoachingPage = () => {
           { title: "Strategy Development", description: "Together, we create a customized coaching plan with clear objectives and key results (OKRs)." },
           { title: "Regular Sessions", description: "Ongoing coaching sessions focused on implementation, problem-solving, and accountability." },
           { title: "Measure & Adjust", description: "Regular progress reviews to celebrate wins, learn from setbacks, and refine your strategy." }
-        ]
+        ],
+        ctaButton: "Sitzung mit Yannick vereinbaren",
+        badgeText: "Dein Coach",
+        subtext: "3 Startups gegründet und 50+ Startups gecoacht"
       },
       expertise: {
         productStrategy: "Product Strategy",
@@ -119,7 +122,7 @@ const CoachingPage = () => {
         experience: "50+ Startups gecoacht",
         ctaButton: "Sitzung mit Yannick vereinbaren",
         badgeText: "Dein Coach",
-        subtext: "2 Startups gegründet und 50+ Startups gecoacht"
+        subtext: "3 Startups gegründet und 50+ Startups gecoacht"
       },
       howItWorks: {
         title: "Wie unser Coaching funktioniert",
@@ -129,7 +132,10 @@ const CoachingPage = () => {
           { title: "Strategieentwicklung", description: "Gemeinsam erstellen wir einen maßgeschneiderten Coaching-Plan mit klaren Zielen und Schlüsselergebnissen (OKRs)." },
           { title: "Regelmäßige Sitzungen", description: "Laufende Coaching-Sitzungen mit Fokus auf Umsetzung, Problemlösung und Verantwortlichkeit." },
           { title: "Messen & Anpassen", description: "Regelmäßige Fortschrittsüberprüfungen, um Erfolge zu feiern, aus Rückschlägen zu lernen und deine Strategie zu verfeinern." }
-        ]
+        ],
+        ctaButton: "Sitzung mit Yannick vereinbaren",
+        badgeText: "Dein Coach",
+        subtext: "3 Startups gegründet und 50+ Startups gecoacht"
       },
       expertise: {
         productStrategy: "Produktstrategie",

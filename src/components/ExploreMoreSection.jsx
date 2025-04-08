@@ -80,7 +80,7 @@ const ExploreMoreSection = ({ excludeService }) => {
             {content.badge}
           </div>
           
-          <h2 className="text-2xl sm:text-4xl md:text-5xl font-light mb-6 bg-gradient-to-r from-violet-200 via-white to-indigo-200 bg-clip-text text-transparent">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-light mb-6 bg-gradient-to-r from-violet-200 via-white to-indigo-200 bg-clip-text text-transparent md:leading-snug">
             {dynamicTitle}
           </h2>
           

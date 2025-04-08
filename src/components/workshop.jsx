@@ -109,8 +109,7 @@ const WorkshopsPage = () => {
         text: "Coming Soon"
       },
       hero: {
-        title: "Rapid",
-        highlight: "Workshops",
+        title: "All you Need to know",
         subtitle: "Close your business knowledge gaps. Don't become reliant on consultants! Our expert-led workshops will empower you with practical skills and knowledge.",
         scrollIndicatorAria: "Scroll to workshops"
       },
@@ -180,8 +179,7 @@ const WorkshopsPage = () => {
         text: "Demnächst verfügbar"
       },
       hero: {
-        title: "Rapid",
-        highlight: "Workshops",
+        title: "Alles, was du wissen musst",
         subtitle: "Schließe deine Wissenslücken im Business-Bereich. Mache dich nicht von Beratern abhängig! Unsere von Experten geleiteten Workshops vermitteln dir praktische Fähigkeiten und Wissen.",
         scrollIndicatorAria: "Zu den Workshops scrollen"
       },
@@ -306,16 +304,9 @@ const WorkshopsPage = () => {
               {content.badge.text}
             </div>
 
-            {/* Ensure text is white */}
+            {/* Simplified H1 */}
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-white">
-              {content.hero.title}{" "}
-              <span className="relative inline-block">
-                {/* Updated highlight style */}
-                <span className="relative z-10">
-                  {content.hero.highlight}
-                </span>
-                <span className="absolute bottom-2 left-0 w-full h-4 bg-white/20 rounded-lg -z-10"></span>
-              </span>
+              {content.hero.title}
             </h1>
 
             {/* Ensure text is white/lighter */}
