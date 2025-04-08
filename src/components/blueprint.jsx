@@ -39,8 +39,7 @@ const BlueprintPage = () => {
   const pageContent = {
     en: {
       comingSoon: "Coming Soon",
-      titleHighlight: "Blueprint",
-      titlePrefix: "Rapid",
+      title: "Streamline your Processes",
       subtitle: "Own your processes in 1 week. You don't need dozens of tools! Our Blueprint service is designed to streamline your business operations and create efficient workflows.",
       scrollIndicatorAria: "Scroll to content",
       features: [
@@ -63,8 +62,7 @@ const BlueprintPage = () => {
     },
     de: {
       comingSoon: "Kommt Bald",
-      titleHighlight: "Blueprint",
-      titlePrefix: "Rapid",
+      title: "Optimiere deine Prozesse",
       subtitle: "Beherrsche deine Prozesse in 1 Woche. Du brauchst keine Dutzend Tools! Unser Blueprint-Service wurde entwickelt, um deine Geschäftsabläufe zu optimieren und effiziente Workflows zu erstellen.",
       scrollIndicatorAria: "Zum Inhalt scrollen",
       features: [
@@ -120,16 +118,9 @@ const BlueprintPage = () => {
               {content.comingSoon}
             </div>
             
-            {/* Ensure text is white */}
+            {/* Simplified H1 */}
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-white">
-              {content.titlePrefix}{" "}
-              <span className="relative inline-block">
-                {/* Updated highlight style */}
-                <span className="relative z-10">
-                  {content.titleHighlight}
-                </span>
-                <span className="absolute bottom-2 left-0 w-full h-4 bg-white/20 rounded-lg -z-10"></span>
-              </span>
+              {content.title}
             </h1>
             
             {/* Ensure text is white/lighter */}

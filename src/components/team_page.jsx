@@ -150,9 +150,9 @@ const TeamPage = () => {
     en: {
       pageTitle: "Rapid Experts",
       hero: {
-        title1: "We have all the",
+        title1: "All the ",
         titleHighlight: "Expertise",
-        title2: "you need",
+        title2: " you need",
         subtitle: "Why build an expensive team in Germany with 3+ months of hiring time when our team can start work on your project in just 1 day?",
         scrollIndicatorAria: "Scroll to benefits"
       },
@@ -161,9 +161,9 @@ const TeamPage = () => {
         items: [
           { text: "No upfront cost", description: "Start working with our experts without any initial investment" },
           { text: "Up to 70% cheaper with subsidies", description: "Save significantly with our Rapid Financing subsidy solutions", linkText: "Learn about subsidies" },
+          { text: "First hour for free", description: "Try our services with no risk or obligation" },
           { text: "Pay by the hour", description: "Flexible payment model - only pay for the time you need" },
           { text: "Always available", description: "Our experts are ready to start within a day" },
-          { text: "First hour for free", description: "Try our services with no risk or obligation" },
         ],
         discoverMore: "Discover more benefits",
       },
@@ -197,9 +197,9 @@ const TeamPage = () => {
     de: {
       pageTitle: "Rapid Experts",
       hero: {
-        title1: "Wir haben die gesamte",
-        titleHighlight: "Expertise",
-        title2: "die du brauchst",
+        title1: "",
+        titleHighlight: "Alle Expertise",
+        title2: ", die du brauchst",
         subtitle: "Warum ein teures Team in Deutschland aufbauen mit 3+ Monaten Einstellungszeit, wenn unser Team in nur 1 Tag mit der Arbeit an deinem Projekt beginnen kann?",
         scrollIndicatorAria: "Zu den Vorteilen scrollen"
       },
@@ -208,9 +208,9 @@ const TeamPage = () => {
         items: [
           { text: "Keine Vorauskosten", description: "Beginne die Zusammenarbeit mit unseren Experten ohne anfängliche Investition" },
           { text: "Bis zu 70% günstiger mit Förderungen", description: "Spare erheblich mit unseren Rapid Financing Förderlösungen", linkText: "Erfahre mehr über Förderungen" },
+          { text: "Erste Stunde kostenlos", description: "Teste unsere Dienstleistungen ohne Risiko oder Verpflichtung" },
           { text: "Stundenweise bezahlen", description: "Flexibles Zahlungsmodell - bezahle nur für die Zeit, die du benötigst" },
           { text: "Immer verfügbar", description: "Unsere Experten sind bereit, innerhalb eines Tages zu starten" },
-          { text: "Erste Stunde kostenlos", description: "Teste unsere Dienstleistungen ohne Risiko oder Verpflichtung" },
         ],
         discoverMore: "Entdecke weitere Vorteile",
       },
@@ -270,18 +270,21 @@ const TeamPage = () => {
         <div className="container mx-auto px-6 pt-28 pb-28">
           {/* Page intro */}
           <div className="text-center mb-16 max-w-3xl mx-auto">
-            <div className="inline-block mb-4 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-sm">
+            <div className="inline-flex items-center mb-4 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-sm">
+              <Users className="h-4 w-4 inline mr-1.5" />
               {content.pageTitle}
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-white">
-              {content.hero.title1}{" "}
-              <span className="relative inline-block">
-                <span className="relative z-10">
-                  {content.hero.titleHighlight}
+              {content.hero.title1} 
+              {content.hero.titleHighlight && (
+                <span className="relative inline-block">
+                  <span className="relative z-10">
+                    {content.hero.titleHighlight}
+                  </span>
+                  <span className="absolute bottom-2 left-0 w-full h-4 bg-white/20 rounded-lg -z-10"></span>
                 </span>
-                <span className="absolute bottom-2 left-0 w-full h-4 bg-white/20 rounded-lg -z-10"></span>
-              </span>{" "}
+              )}
               {content.hero.title2}
             </h1>
 

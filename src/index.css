@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  overflow-y: scroll;
+}
+
 body {
   font-family: 'Inter', sans-serif;
+  @apply font-sans antialiased;
+  overflow-x: hidden;
 }

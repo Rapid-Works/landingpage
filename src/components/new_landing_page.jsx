@@ -18,10 +18,12 @@ import {
   Megaphone,
   Euro,
   Compass,
-  Loader2
+  Loader2,
+  CalendarCheck
 } from "lucide-react"
 import RapidWorksHeader from "./new_landing_page_header"
 import { LanguageContext as AppLanguageContext } from "../App"
+import WebinarModal from './WebinarModal'
 
 // Import custom images
 import YannickProfile from "../images/yannickprofile.png"
@@ -36,6 +38,7 @@ export default function RapidWorksPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isCalendlyLoading, setIsCalendlyLoading] = useState(true)
   const iframeRef = useRef(null)
+  const [isWebinarModalOpen, setIsWebinarModalOpen] = useState(false)
 
   const context = useContext(AppLanguageContext)
   const [isLoading, setIsLoading] = useState(true)
@@ -86,6 +89,25 @@ export default function RapidWorksPage() {
     setIsModalOpen(true)
   }
 
+  const getNextWebinarDates = () => {
+    const dates = [];
+    let currentDate = new Date('2025-04-25T10:00:00');
+    const now = new Date();
+    while (currentDate < now) {
+      currentDate.setDate(currentDate.getDate() + 14);
+    }
+    for (let i = 0; i < 3; i++) {
+      dates.push(new Date(currentDate));
+      currentDate.setDate(currentDate.getDate() + 14);
+    }
+    return dates;
+  };
+  const webinarDates = getNextWebinarDates();
+
+  const openWebinarModal = () => {
+    setIsWebinarModalOpen(true);
+  }
+
   const pageContent = {
     en: {
       hero: {
@@ -100,6 +122,13 @@ export default function RapidWorksPage() {
       services: {
         title: "Our Services",
         subtitle: "Everything you need to build and scale your startup, all in one place.",
+        rapidAnswers: {
+          category: "Q&A",
+          title: "Rapid Answers",
+          description: "Got questions? Get answers! Join our free biweekly webinar where startup veterans tackle your challenges live.",
+          learnMore: "Learn more",
+          joinWebinar: "Join Free Webinar"
+        },
         branding: {
           category: "Visibility",
           title: "Rapid Branding",
@@ -167,6 +196,13 @@ export default function RapidWorksPage() {
       services: {
         title: "Unsere Dienstleistungen",
         subtitle: "Alles, was du brauchst, um dein Startup aufzubauen und zu skalieren, an einem Ort.",
+        rapidAnswers: {
+          category: "Q&A",
+          title: "Rapid Answers",
+          description: "Hast du Fragen? Erhalte Antworten! Nimm an unserem kostenlosen zweiwöchentlichen Webinar teil, bei dem erfahrene Gründer live auf deine Herausforderungen eingehen.",
+          learnMore: "Mehr erfahren",
+          joinWebinar: "Kostenlos teilnehmen"
+        },
         branding: {
           category: "Sichtbarkeit",
           title: "Rapid Branding",
@@ -289,6 +325,37 @@ export default function RapidWorksPage() {
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               {content.services.subtitle}
             </p>
+          </div>
+
+          <div className="mb-8">
+            <div className="relative overflow-hidden rounded-2xl h-auto min-h-[300px] md:h-80">
+              <div className="absolute inset-0 bg-gradient-to-r from-teal-600/90 via-cyan-600/80 to-sky-600/90 mix-blend-multiply z-10"></div>
+              <img
+                src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                alt="Webinar or Q&A session"
+                className="absolute inset-0 w-full h-full object-cover object-center"
+              />
+
+              <div className="absolute inset-0 z-20 p-6 md:p-12 flex flex-col md:flex-row items-center justify-between">
+                <div className="mb-8 md:mb-0 w-full md:w-3/5">
+                  <div className="bg-white/20 backdrop-blur-md w-14 h-14 rounded-2xl flex items-center justify-center mb-6">
+                    <CalendarCheck className="h-6 w-6 text-white" />
+                  </div>
+                  <h3 className="text-3xl font-bold text-white mb-3">{content.services.rapidAnswers.title}</h3>
+                  <p className="text-white/90 text-sm md:text-lg mb-4">
+                    {content.services.rapidAnswers.description}
+                  </p>
+                </div>
+
+                <button
+                  onClick={openWebinarModal}
+                  className="bg-white text-cyan-600 px-8 py-4 rounded-full font-medium hover:shadow-lg transition-all flex items-center gap-2"
+                >
+                  {content.services.rapidAnswers.joinWebinar} <ArrowRight className="h-5 w-5" />
+                </button>
+              </div>
+              <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-gradient-to-r from-teal-400/30 to-cyan-400/30 rounded-full -translate-y-1/2 blur-xl z-0"></div>
+            </div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 mb-8">
@@ -600,6 +667,12 @@ export default function RapidWorksPage() {
           </div>
         </div>
       </section>
+
+      <WebinarModal
+        isOpen={isWebinarModalOpen}
+        onClose={() => setIsWebinarModalOpen(false)}
+        webinarDates={webinarDates}
+      />
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-2">

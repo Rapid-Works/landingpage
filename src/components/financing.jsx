@@ -32,9 +32,7 @@ const FinancingPage = () => {
                 text: "Rapid Financing"
             },
             hero: {
-                title: "Don't know how to",
-                highlight: "Finance",
-                titleEnd: "your growth?",
+                title: "Need help getting Financing?",
                 subtitle: "We help startups navigate the complex world of financing, from grants and subsidies to venture capital and strategic partnerships.",
                 scrollIndicatorAria: "Scroll to content"
             },
@@ -53,9 +51,7 @@ const FinancingPage = () => {
                 text: "Rapid Finanzierung"
             },
             hero: {
-                title: "Wissen Sie nicht, wie Sie",
-                highlight: "Finanzierung",
-                titleEnd: "für Ihr Wachstum finden?",
+                title: "Hilfe bei der Finanzierung benötigt?",
                 subtitle: "Wir helfen Startups, sich in der komplexen Welt der Finanzierung zurechtzufinden - von Zuschüssen und Subventionen bis hin zu Risikokapital und strategischen Partnerschaften.",
                 scrollIndicatorAria: "Zum Inhalt scrollen"
             },
@@ -120,14 +116,7 @@ const FinancingPage = () => {
                         </div>
 
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-white">
-                            {content.hero.title}{" "}
-                            <span className="relative inline-block">
-                                <span className="relative z-10">
-                                    {content.hero.highlight}
-                                </span>
-                                <span className="absolute bottom-2 left-0 w-full h-4 bg-white/20 rounded-lg -z-10"></span>
-                            </span>{" "}
-                            {content.hero.titleEnd}
+                            {content.hero.title}
                         </h1>
 
                         <p className="text-xl text-white/90 leading-relaxed">
