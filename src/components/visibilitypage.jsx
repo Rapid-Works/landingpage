@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react"
+import React, { useState, useEffect, useContext, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ArrowRight, Plus, Minus, ChevronLeft, ChevronRight, CheckCircle, ChevronDown, Menu, X, CalendarCheck, Palette, Package, Megaphone, FileText, Users, BookOpen, Euro, Compass, Presentation, Loader2 } from "lucide-react"
 import HeroImage2 from "../images/heroimage3.jpg"
@@ -202,6 +202,7 @@ const VisibiltyBundle = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isFAQModalOpen, setIsFAQModalOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const contentSectionRef = useRef(null)
 
   useEffect(() => {
       if (context) {
@@ -231,8 +232,12 @@ const VisibiltyBundle = () => {
 
   const pageContent = {
     en: {
-      title: "RAPID BRANDING",
-      subtitle: "Transform Your Brand Visibility",
+      hero: {
+        badgeText: "Rapid Branding",
+        title: "Transform Your Brand Visibility",
+        subtitle: "Establish a strong market presence quickly with a complete, professional brand identity package delivered in just one week.",
+        scrollIndicatorAria: "Scroll to details"
+      },
       mainText: "Convince us of your startup idea and get your free Rapid Branding within one week free of charge, including:",
       keyPoints: [
         "Market Orientation Consulting",
@@ -408,8 +413,12 @@ const VisibiltyBundle = () => {
       }
     },
     de: {
-      title: "RAPID BRANDING",
-      subtitle: "Transformieren Sie Ihre Markensichtbarkeit",
+      hero: {
+        badgeText: "Rapid Branding",
+        title: "Transformieren Sie Ihre Markensichtbarkeit",
+        subtitle: "Bauen Sie schnell eine starke Marktpräsenz auf mit einem kompletten, professionellen Markenidentitätspaket – geliefert in nur einer Woche.",
+        scrollIndicatorAria: "Zu den Details scrollen"
+      },
       mainText: "Überzeugen Sie uns von Ihrer Startup-Idee und erhalten Sie Ihr kostenloses Rapid Branding innerhalb einer Woche,",
       keyPoints: [
         "Marktorientierungsberatung",
@@ -628,14 +637,8 @@ const VisibiltyBundle = () => {
 
   const faqItems = content.faq.items;
 
-  const scrollToFeatures = (e) => {
-    e.preventDefault()
-    const featuresSection = document.getElementById('features')
-    if (featuresSection) {
-        featuresSection.scrollIntoView({ behavior: 'smooth' })
-    } else {
-        console.warn("Features section not found for scrolling.");
-    }
+  const scrollToContent = () => {
+    contentSectionRef.current?.scrollIntoView({ behavior: "smooth" });
   }
 
   const containerClass = "max-w-[1280px] w-full mx-auto px-4 sm:px-6 lg:px-8 relative"
@@ -644,200 +647,84 @@ const VisibiltyBundle = () => {
     <>
       <RapidWorksHeader />
       <div className="min-h-screen bg-white">
-
         <main className="relative w-full overflow-x-hidden">
-          <div className={containerClass}>
-            <div className="relative min-h-screen flex flex-col md:items-center">
-              <div className="absolute top-0 left-0 bottom-0 right-0 md:right-4 lg:right-8 xl:right-16 translate-y-16 hidden md:block overflow-hidden">
-                <motion.img
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 1.5, ease: "easeOut" }}
-                  className="h-full w-full object-cover object-right transition-transform duration-700"
-                  src={VisibilityHero}
-                  alt="Hero background"
-                />
-              </div>
 
-              <div className="flex flex-col md:hidden">
-                <div className="w-full h-[70vh] pt-16">
-                  <motion.img
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 1.5, ease: "easeOut" }}
-                    className="h-full w-full object-contain scale-100 transform transition-transform duration-700 px-4 sm:px-8"
+          <section className="bg-gradient-to-br from-purple-600 to-purple-700 text-white relative overflow-hidden">
+            <div className="container mx-auto px-6 pt-28 pb-28">
+              <div className="text-center mb-16 max-w-3xl mx-auto">
+                <div className="inline-flex items-center mb-4 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-sm">
+                  <Megaphone className="h-4 w-4 inline mr-1.5" />
+                  {content.hero.badgeText}
+                </div>
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-white">
+                  {content.hero.title}
+                </h1>
+                <p className="text-xl text-white/90 leading-relaxed">
+                  {content.hero.subtitle}
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={scrollToContent}
+              className="absolute bottom-6 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none"
+              aria-label={content.hero.scrollIndicatorAria}
+            >
+              <svg className="w-8 h-8 text-white/70 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              </svg>
+            </button>
+          </section>
+
+          <section ref={contentSectionRef} className="py-20">
+            <div className={containerClass}>
+              <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
+                <div className="text-center md:text-left">
+                  <p className="text-lg md:text-xl text-gray-700 leading-relaxed mb-8">
+                    {content.mainText}
+                  </p>
+
+                  <div className="flex flex-wrap justify-center md:justify-start gap-3 mb-8">
+                    {content.keyPoints.map((point, index) => (
+                      <span
+                        key={index}
+                        className="inline-flex items-center px-4 py-2 rounded-full
+                            bg-violet-50 border border-violet-200 text-violet-800
+                            text-sm font-light whitespace-nowrap"
+                      >
+                        {point}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="text-violet-600 hover:text-violet-700 text-sm mb-8 font-medium">
+                    {content.seeMore}
+                  </p>
+
+                  <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="group relative inline-flex items-center justify-center px-6 py-3 text-sm font-light
+                          overflow-hidden rounded-full text-white bg-[#0F1115] transition-all duration-300
+                          shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 hover:scale-105"
+                  >
+                    <span className="relative z-10 flex items-center">
+                      {content.cta}
+                      <ArrowRight className="ml-2 -mr-1 h-4 w-4 transition-transform group-hover:translate-x-2" />
+                    </span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-purple-700
+                          opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  </button>
+                </div>
+
+                <div className="relative aspect-[4/3] md:aspect-square lg:aspect-[4/3] overflow-hidden rounded-2xl">
+                  <img
                     src={PlaceholderImage}
-                    alt="Hero background"
+                    alt="Rapid Branding Elements"
+                    className="w-full h-full object-contain"
                   />
                 </div>
-
-                <div className="w-full bg-white px-6 py-8">
-                  <div className="max-w-[480px] mx-auto space-y-4 text-center">
-                    <motion.div className="animate-float pt-16 md:pt-0">
-                      <span className="inline-block text-violet-600 text-xs md:text-sm uppercase tracking-wider font-light
-                          px-2 py-0.5 md:px-4 md:py-1 rounded-full bg-violet-50 border border-violet-100 backdrop-blur-sm shadow-sm"
-                      >
-                        {content.title}
-                      </span>
-                    </motion.div>
-
-                    <motion.h1
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: 0.1 }}
-                      className="text-2xl md:text-5xl lg:text-6xl font-bold text-gray-900 md:text-black leading-[1.1] tracking-tight"
-                    >
-                      {content.subtitle}
-                    </motion.h1>
-
-                    <motion.p
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: 0.2 }}
-                      className="text-sm md:text-lg font-light leading-relaxed"
-                    >
-                      {content.mainText}
-                    </motion.p>
-
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: 0.3 }}
-                      className="flex flex-wrap gap-2 py-2"
-                    >
-                      {content.keyPoints.map((point, index) => (
-                        <span
-                          key={index}
-                          className="inline-flex items-center px-3 py-1 rounded-full 
-                              bg-violet-50 border border-violet-100 text-violet-800
-                              text-sm font-light whitespace-nowrap"
-                        >
-                          {point}
-                        </span>
-                      ))}
-                    </motion.div>
-
-                    <motion.a
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: 0.4 }}
-                      href="#features"
-                      onClick={scrollToFeatures}
-                      className="inline-block text-violet-600 hover:text-violet-700 text-sm mt-2"
-                    >
-                      {content.seeMore}
-                    </motion.a>
-
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: 0.5 }}
-                      className="pt-4"
-                    >
-                      <button
-                        onClick={() => setIsModalOpen(true)}
-                        className="group relative inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 text-sm font-light 
-                            overflow-hidden rounded-full text-white bg-[#0F1115] transition-all duration-300
-                            shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 hover:scale-105"
-                      >
-                        <span className="relative z-10 flex items-center">
-                          {content.cta}
-                          <ArrowRight className="ml-2 -mr-1 h-4 w-4 transition-transform group-hover:translate-x-2" />
-                        </span>
-                        <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-violet-500 
-                            opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      </button>
-                    </motion.div>
-                  </div>
-                </div>
               </div>
-
-              <div className="hidden md:block relative w-full">
-                <div className="relative min-h-screen flex items-center">
-                  <div className="w-full pl-0 sm:pl-4 md:pl-8 lg:pl-16">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-32 items-center">
-                      <div className="w-full max-w-[480px] mx-auto md:mx-0">
-                        <div className="space-y-2 md:space-y-4 text-center md:text-left px-6 py-3 md:p-0">
-                          <motion.h1
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.1 }}
-                            className="text-2xl md:text-5xl lg:text-6xl font-bold text-gray-900 md:text-black leading-[1.1] tracking-tight"
-                          >
-                            {content.subtitle}
-                          </motion.h1>
-
-                          <motion.p
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.2 }}
-                            className="text-sm md:text-lg font-light leading-relaxed"
-                          >
-                            {content.mainText}
-                          </motion.p>
-
-                          <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.3 }}
-                            className="flex flex-wrap gap-2 py-2"
-                          >
-                            {content.keyPoints.map((point, index) => (
-                              <span
-                                key={index}
-                                className="inline-flex items-center px-3 py-1 rounded-full 
-                                  bg-violet-50 border border-violet-100 text-violet-800
-                                  text-sm font-light whitespace-nowrap"
-                              >
-                                {point}
-                              </span>
-                            ))}
-                          </motion.div>
-
-                          <motion.a
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.4 }}
-                            href="#features"
-                            onClick={scrollToFeatures}
-                            className="inline-block text-violet-600 hover:text-violet-700 text-sm mt-2"
-                          >
-                            {content.seeMore}
-                          </motion.a>
-
-                          <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.5 }}
-                            className="pt-4"
-                          >
-                            <button
-                              onClick={() => setIsModalOpen(true)}
-                              className="group relative inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 text-sm font-light 
-                            overflow-hidden rounded-full text-white bg-[#0F1115] transition-all duration-300
-                                shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 hover:scale-105"
-                            >
-                              <span className="relative z-10 flex items-center">
-                                {content.cta}
-                                <ArrowRight className="ml-2 -mr-1 h-4 w-4 transition-transform group-hover:translate-x-2" />
-                              </span>
-                              <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-violet-500 
-                            opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                            </button>
-                          </motion.div>
-                        </div>
-                      </div>
-
-                      <div className="hidden lg:block">
-                        {/* Empty for image placement */}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
             </div>
-          </div>
+          </section>
 
           <section id="features" className="py-20 md:py-40 overflow-hidden bg-gradient-to-b from-white via-gray-50/50 to-white relative">
             <div className="max-w-[1280px] w-full mx-auto px-4 sm:px-6 lg:px-8 md:px-12 relative">
@@ -973,7 +860,7 @@ const VisibiltyBundle = () => {
 
         <NewsletterPopup />
 
-        <FAQModal 
+        <FAQModal
           isOpen={isFAQModalOpen}
           onClose={() => setIsFAQModalOpen(false)}
           faqItems={faqItems}

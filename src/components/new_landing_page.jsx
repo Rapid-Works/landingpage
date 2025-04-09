@@ -167,6 +167,10 @@ export default function RapidWorksPage() {
           freeConsultation: "Free Consultation"
         }
       },
+      financingSection: {
+         title: "Need Financing?",
+         subtitle: "Don't worry about how to finance your growth, we will show you the possibilities and help you apply for subsidies."
+      },
       bundle: {
         title: "Rapid Bundle",
         description: "Reach the next level with all our Services combined in one bundle!",
@@ -241,6 +245,10 @@ export default function RapidWorksPage() {
           freeConsultation: "Kostenlose Beratung"
         }
       },
+      financingSection: {
+          title: "Finanzierung benötigt?",
+          subtitle: "Machen Sie sich keine Sorgen über die Finanzierung Ihres Wachstums. Wir zeigen Ihnen die Möglichkeiten und helfen bei der Beantragung von Fördermitteln."
+       },
       bundle: {
         title: "Rapid Bundle",
         description: "Erreiche das nächste Level mit all unseren Services kombiniert in einem Paket!",
@@ -279,10 +287,6 @@ export default function RapidWorksPage() {
         <div className="bg-gradient-to-br from-purple-600 to-indigo-600 text-white relative overflow-hidden">
           <div className="container mx-auto px-6 pt-28 pb-28">
             <div className="text-center mb-8">
-              <p className="inline-block mb-4 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-sm">
-                {content.hero.platform}
-              </p>
-              
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight tracking-tight">
                 {content.hero.title1}
                 <span className="relative block mt-2">
@@ -318,16 +322,9 @@ export default function RapidWorksPage() {
         </div>
       </section>
 
-      <section ref={servicesRef} className="py-20 relative">
+      <section className="py-20 relative">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h3 className="text-3xl md:text-4xl font-bold mb-4">{content.services.title}</h3>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              {content.services.subtitle}
-            </p>
-          </div>
-
-          <div className="mb-8">
+          <div >
             <div className="relative overflow-hidden rounded-2xl h-auto min-h-[300px] md:h-80">
               <div className="absolute inset-0 bg-gradient-to-r from-teal-600/90 via-cyan-600/80 to-sky-600/90 mix-blend-multiply z-10"></div>
               <img
@@ -335,7 +332,6 @@ export default function RapidWorksPage() {
                 alt="Webinar or Q&A session"
                 className="absolute inset-0 w-full h-full object-cover object-center"
               />
-
               <div className="absolute inset-0 z-20 p-6 md:p-12 flex flex-col md:flex-row items-center justify-between">
                 <div className="mb-8 md:mb-0 w-full md:w-3/5">
                   <div className="bg-white/20 backdrop-blur-md w-14 h-14 rounded-2xl flex items-center justify-center mb-6">
@@ -346,7 +342,6 @@ export default function RapidWorksPage() {
                     {content.services.rapidAnswers.description}
                   </p>
                 </div>
-
                 <button
                   onClick={openWebinarModal}
                   className="bg-white text-cyan-600 px-8 py-4 rounded-full font-medium hover:shadow-lg transition-all flex items-center gap-2"
@@ -356,6 +351,17 @@ export default function RapidWorksPage() {
               </div>
               <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-gradient-to-r from-teal-400/30 to-cyan-400/30 rounded-full -translate-y-1/2 blur-xl z-0"></div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section ref={servicesRef} className="py-20 relative">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h3 className="text-3xl md:text-4xl font-bold mb-4">{content.services.title}</h3>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              {content.services.subtitle}
+            </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 mb-8">
@@ -548,43 +554,50 @@ export default function RapidWorksPage() {
               </div>
             </div>
           </div>
-
-          <div className="mb-0">
-            <div className="relative overflow-hidden rounded-2xl h-auto min-h-[300px] md:h-80">
-              <div className="absolute inset-0 bg-gradient-to-r from-rose-600/90 via-rose-600/80 to-orange-600/90 mix-blend-multiply z-10"></div>
-              <img
-                src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1415&q=80"
-                alt="Person using MacBook Pro with financial data"
-                className="absolute inset-0 w-full h-full object-cover object-center"
-              />
-
-              <div className="absolute inset-0 z-20 p-6 md:p-12 flex flex-col md:flex-row items-center justify-between">
-                <div className="mb-8 md:mb-0 w-full md:w-3/5">
-                  <div className="bg-white/20 backdrop-blur-md w-14 h-14 rounded-2xl flex items-center justify-center mb-6">
-                    <Euro className="h-6 w-6 text-white" />
-                  </div>
-                  <h3 className="text-3xl font-bold text-white mb-3">{content.services.financing.title}</h3>
-                  <p className="text-white/90 text-sm md:text-lg mb-4">
-                    {content.services.financing.description}
-                  </p>
-                  <Link to="/financing" className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-4 py-2 rounded-lg hover:bg-white/30 transition-all">
-                    {content.services.financing.learnMore} <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </div>
-
-                <button 
-                  onClick={openCalendlyModal}
-                  className="bg-white text-rose-600 px-8 py-4 rounded-full font-medium hover:shadow-lg transition-all flex items-center gap-2"
-                >
-                  {content.services.financing.freeConsultation} <ArrowRight className="h-5 w-5" />
-                </button>
-              </div>
-
-              <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-gradient-to-r from-rose-400/30 to-orange-400/30 rounded-full -translate-y-1/2 blur-xl z-0"></div>
-            </div>
-          </div>
         </div>
       </section>
+
+      <section className="py-20 relative">
+         <div className="container mx-auto px-6">
+           <div className="text-center mb-16">
+             <h3 className="text-3xl md:text-4xl font-bold mb-4">{content.financingSection.title}</h3>
+             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+               {content.financingSection.subtitle}
+             </p>
+           </div>
+           <div >
+             <div className="relative overflow-hidden rounded-2xl h-auto min-h-[300px] md:h-80">
+                <div className="absolute inset-0 bg-gradient-to-r from-rose-600/90 via-rose-600/80 to-orange-600/90 mix-blend-multiply z-10"></div>
+                <img
+                  src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1415&q=80"
+                  alt="Person using MacBook Pro with financial data"
+                  className="absolute inset-0 w-full h-full object-cover object-center"
+                />
+                <div className="absolute inset-0 z-20 p-6 md:p-12 flex flex-col md:flex-row items-center justify-between">
+                  <div className="mb-8 md:mb-0 w-full md:w-3/5">
+                    <div className="bg-white/20 backdrop-blur-md w-14 h-14 rounded-2xl flex items-center justify-center mb-6">
+                      <Euro className="h-6 w-6 text-white" />
+                    </div>
+                    <h3 className="text-3xl font-bold text-white mb-3">{content.services.financing.title}</h3>
+                    <p className="text-white/90 text-sm md:text-lg mb-4">
+                      {content.services.financing.description}
+                    </p>
+                    <Link to="/financing" className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-4 py-2 rounded-lg hover:bg-white/30 transition-all">
+                      {content.services.financing.learnMore} <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </div>
+                  <button
+                    onClick={openCalendlyModal}
+                    className="bg-white text-rose-600 px-8 py-4 rounded-full font-medium hover:shadow-lg transition-all flex items-center gap-2"
+                  >
+                    {content.services.financing.freeConsultation} <ArrowRight className="h-5 w-5" />
+                  </button>
+                </div>
+                <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-gradient-to-r from-rose-400/30 to-orange-400/30 rounded-full -translate-y-1/2 blur-xl z-0"></div>
+             </div>
+           </div>
+         </div>
+       </section>
 
       <section className="py-20 bg-gray-50 relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCI+PGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZTJlOGYwIiBzdHJva2Utd2lkdGg9IjEuNSI+PHBhdGggZD0iTTIgMmg1NnY1NkgyeiIvPjwvZz48L3N2Zz4=')] opacity-50 pointer-events-none"></div>

@@ -21,7 +21,9 @@ import {
   Megaphone,
   Palette,
   Euro,
-  Loader2
+  Loader2,
+  Landmark,
+  Tag
 } from "lucide-react"
 import RapidWorksHeader from "./new_landing_page_header" 
 import { LanguageContext as AppLanguageContext } from "../App"
@@ -106,10 +108,16 @@ const benefits = [
   {
     id: 2,
     text: "Up to 70% cheaper with subsidies",
-    icon: <Check className="h-5 w-5" />,
+    icon: <Landmark className="h-5 w-5" />,
     description: "Save significantly with our Rapid Financing subsidy solutions",
     linkTo: "/financing",
     linkText: "Learn about subsidies"
+  },
+  {
+    id: 5,
+    text: "First hour for free",
+    icon: <Tag className="h-5 w-5" />,
+    description: "Try our services with no risk or obligation",
   },
   {
     id: 3,
@@ -122,12 +130,6 @@ const benefits = [
     text: "Always available",
     icon: <Calendar className="h-5 w-5" />,
     description: "Our experts are ready to start within a day",
-  },
-  {
-    id: 5,
-    text: "First hour for free",
-    icon: <Star className="h-5 w-5" />,
-    description: "Try our services with no risk or obligation",
   },
 ]
 
@@ -331,7 +333,7 @@ const TeamPage = () => {
                         "from-emerald-500 to-teal-600"
                       ];
                       const gradient = gradients[index % gradients.length];
-                      const originalBenefit = benefits.find(b => b.id === index + 1);
+                      const originalBenefit = benefits[index];
                       
                       return (
                         <div
@@ -346,7 +348,7 @@ const TeamPage = () => {
                             <p className="text-gray-600 text-sm mt-1">{benefit.description}</p>
                             {benefit.linkText && (
                               <a 
-                                href={benefits[index].linkTo}
+                                href={originalBenefit?.linkTo}
                                 className="text-purple-600 text-sm font-medium mt-1 flex items-center gap-1 hover:gap-2 transition-all"
                               >
                                 {benefit.linkText} <ChevronRight className="h-3 w-3" />
