@@ -30,46 +30,23 @@ const submitToAirtable = async (email) => {
   return response.json();
 };
 
-const NewsletterPopup = ({ isOpen: controlledIsOpen, onClose }) => {
-  const [isOpen, setIsOpen] = useState(false)
+// Make component fully controlled by props
+const NewsletterPopup = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState('')
-
-  // Use controlled state if provided
-  const showPopup = controlledIsOpen ?? isOpen
-  const handleClose = onClose ?? (() => setIsOpen(false))
-
-  useEffect(() => {
-    // First check if user has already subscribed
-    const isSubscribed = localStorage.getItem('newsletterSubscribed') === 'true'
-    if (isSubscribed) return // Don't show if already subscribed
-
-    // Check if we've shown the popup recently
-    const lastShown = localStorage.getItem('newsletterLastShown')
-    const oneDayInMs = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
-    
-    if (!lastShown || Date.now() - parseInt(lastShown) > oneDayInMs) {
-      const timer = setTimeout(() => {
-        setIsOpen(true)
-        // Store the current timestamp
-        localStorage.setItem('newsletterLastShown', Date.now().toString())
-      }, 10000)
-
-      return () => clearTimeout(timer)
-    }
-  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
       await submitToAirtable(email)
       setStatus('✓ Successfully subscribed!')
+      localStorage.setItem('newsletterSubscribed', 'true') // Mark as subscribed
       // Show success state for 2 seconds before closing
       setTimeout(() => {
-        setIsOpen(false)
-        setStatus('')
+        onClose() // Use the passed onClose handler
+        // Reset status after closing animation might finish
+        setTimeout(() => setStatus(''), 500); 
       }, 2000)
-      localStorage.setItem('newsletterSubscribed', 'true')
     } catch (error) {
       setStatus('× Something went wrong. Please try again.')
     }
@@ -77,7 +54,8 @@ const NewsletterPopup = ({ isOpen: controlledIsOpen, onClose }) => {
 
   return (
     <AnimatePresence>
-      {showPopup && (
+      {/* Use the passed isOpen prop directly */}
+      {isOpen && (
         <>
           {/* Backdrop */}
           <motion.div
@@ -85,10 +63,10 @@ const NewsletterPopup = ({ isOpen: controlledIsOpen, onClose }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[100]"
-            onClick={handleClose}
+            onClick={onClose} // Use the passed onClose handler
           />
 
-          {/* Popup Container - Added flex container for better centering */}
+          {/* Popup Container */}
           <div className="fixed inset-0 flex items-center justify-center z-[101]">
             {/* Popup */}
             <motion.div
@@ -99,7 +77,7 @@ const NewsletterPopup = ({ isOpen: controlledIsOpen, onClose }) => {
             >
               {/* Close button */}
               <button
-                onClick={handleClose}
+                onClick={onClose} // Use the passed onClose handler
                 className="absolute -top-3 -right-3 p-1.5 rounded-full bg-white shadow-lg hover:bg-gray-50 transition-colors z-10"
               >
                 <X className="w-4 h-4 text-gray-500" />

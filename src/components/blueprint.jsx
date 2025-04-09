@@ -104,11 +104,11 @@ const BlueprintPage = () => {
       {/* Import shared header component */}
       <RapidWorksHeader />
 
-      {/* Hero Section Wrapper */}
-      <section className="bg-gradient-to-br from-indigo-600 to-blue-600 text-white relative overflow-hidden">
-        <div className="container mx-auto px-6 pt-28 pb-28">
+      {/* Updated Hero Section */}
+      <section className="bg-gradient-to-br from-indigo-600 to-blue-600 text-white relative overflow-hidden min-h-[65vh] flex items-center">
+        <div className="container mx-auto px-6 py-20 md:py-28 flex flex-col justify-center"> {/* Adjusted padding, added flex */}
           {/* Page intro content moved here */}
-          <div className="text-center mb-16 max-w-3xl mx-auto">
+          <div className="text-center mb-8 max-w-3xl mx-auto"> {/* Reduced bottom margin */}
              {/* Updated badge style */}
              <div className="inline-flex items-center justify-center mb-5 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-xs shadow-sm">
               <span className="relative flex h-2 w-2 mr-2">
@@ -129,24 +129,13 @@ const BlueprintPage = () => {
             </p>
           </div>
         </div>
-
-        {/* Scroll Down Arrow */}
-        <button 
-          onClick={scrollToContent}
-          className="absolute bottom-6 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none"
-          aria-label={content.scrollIndicatorAria}
-        >
-          <svg className="w-8 h-8 text-white/70 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-          </svg>
-        </button>
       </section>
 
-      {/* Main Content - Adjust padding */}
-      <main className="py-20">
+      {/* Main Content */}
+      <main ref={contentSectionRef} className="py-20"> {/* Moved ref here */}
         <div className="container mx-auto px-6">
           {/* Add ref to the main content flex container */}
-          <div ref={contentSectionRef} className="flex flex-col lg:flex-row gap-16 items-center">
+          <div className="flex flex-col lg:flex-row gap-16 items-center">
             {/* Left Column - Content */}
             <div className="lg:w-1/2">
               <div className="space-y-4 mb-10">

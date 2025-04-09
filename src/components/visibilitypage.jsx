@@ -649,9 +649,9 @@ const VisibiltyBundle = () => {
       <div className="min-h-screen bg-white">
         <main className="relative w-full overflow-x-hidden">
 
-          <section className="bg-gradient-to-br from-purple-600 to-purple-700 text-white relative overflow-hidden">
-            <div className="container mx-auto px-6 pt-28 pb-28">
-              <div className="text-center mb-16 max-w-3xl mx-auto">
+          <section className="bg-gradient-to-br from-purple-600 to-purple-700 text-white relative overflow-hidden min-h-[65vh] flex items-center">
+            <div className="container mx-auto px-6 py-20 md:py-28 flex flex-col justify-center">
+              <div className="text-center mb-8 max-w-3xl mx-auto">
                 <div className="inline-flex items-center mb-4 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-sm">
                   <Megaphone className="h-4 w-4 inline mr-1.5" />
                   {content.hero.badgeText}
@@ -662,18 +662,8 @@ const VisibiltyBundle = () => {
                 <p className="text-xl text-white/90 leading-relaxed">
                   {content.hero.subtitle}
                 </p>
-              </div>
-            </div>
-
-            <button
-              onClick={scrollToContent}
-              className="absolute bottom-6 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none"
-              aria-label={content.hero.scrollIndicatorAria}
-            >
-              <svg className="w-8 h-8 text-white/70 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-              </svg>
-            </button>
+                  </div>
+                </div>
           </section>
 
           <section ref={contentSectionRef} className="py-20">
@@ -681,39 +671,39 @@ const VisibiltyBundle = () => {
               <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
                 <div className="text-center md:text-left">
                   <p className="text-lg md:text-xl text-gray-700 leading-relaxed mb-8">
-                    {content.mainText}
+                            {content.mainText}
                   </p>
 
                   <div className="flex flex-wrap justify-center md:justify-start gap-3 mb-8">
-                    {content.keyPoints.map((point, index) => (
-                      <span
-                        key={index}
+                            {content.keyPoints.map((point, index) => (
+                              <span
+                                key={index}
                         className="inline-flex items-center px-4 py-2 rounded-full
                             bg-violet-50 border border-violet-200 text-violet-800
-                            text-sm font-light whitespace-nowrap"
-                      >
-                        {point}
-                      </span>
-                    ))}
+                                  text-sm font-light whitespace-nowrap"
+                              >
+                                {point}
+                              </span>
+                            ))}
                   </div>
                   <p className="text-violet-600 hover:text-violet-700 text-sm mb-8 font-medium">
-                    {content.seeMore}
+                            {content.seeMore}
                   </p>
 
-                  <button
-                    onClick={() => setIsModalOpen(true)}
+                            <button
+                              onClick={() => setIsModalOpen(true)}
                     className="group relative inline-flex items-center justify-center px-6 py-3 text-sm font-light
-                          overflow-hidden rounded-full text-white bg-[#0F1115] transition-all duration-300
-                          shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 hover:scale-105"
-                  >
-                    <span className="relative z-10 flex items-center">
-                      {content.cta}
-                      <ArrowRight className="ml-2 -mr-1 h-4 w-4 transition-transform group-hover:translate-x-2" />
-                    </span>
+                            overflow-hidden rounded-full text-white bg-[#0F1115] transition-all duration-300
+                                shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 hover:scale-105"
+                            >
+                              <span className="relative z-10 flex items-center">
+                                {content.cta}
+                                <ArrowRight className="ml-2 -mr-1 h-4 w-4 transition-transform group-hover:translate-x-2" />
+                              </span>
                     <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-purple-700
-                          opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  </button>
-                </div>
+                            opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            </button>
+                      </div>
 
                 <div className="relative aspect-[4/3] md:aspect-square lg:aspect-[4/3] overflow-hidden rounded-2xl">
                   <img
@@ -721,9 +711,9 @@ const VisibiltyBundle = () => {
                     alt="Rapid Branding Elements"
                     className="w-full h-full object-contain"
                   />
-                </div>
-              </div>
-            </div>
+                      </div>
+                    </div>
+                  </div>
           </section>
 
           <section id="features" className="py-20 md:py-40 overflow-hidden bg-gradient-to-b from-white via-gray-50/50 to-white relative">
@@ -858,9 +848,7 @@ const VisibiltyBundle = () => {
           formUrl={getFormUrl()}
         />
 
-        <NewsletterPopup />
-
-        <FAQModal
+        <FAQModal 
           isOpen={isFAQModalOpen}
           onClose={() => setIsFAQModalOpen(false)}
           faqItems={faqItems}
