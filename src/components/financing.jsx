@@ -115,7 +115,7 @@ const FinancingPage = () => {
                             {content.badge.text}
                         </div>
 
-                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-white">
+                        <h1 className="text-4xl md:text-5xl lg:text-5xl font-extrabold mb-6 leading-tight tracking-tight text-white">
                             {content.hero.title}
                         </h1>
 

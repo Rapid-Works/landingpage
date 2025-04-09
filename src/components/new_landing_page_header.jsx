@@ -109,10 +109,10 @@ export default function RapidWorksHeader() {
   const navItems = [
     { name: "Branding", icon: <Megaphone className="h-4 w-4" />, path: "/branding", color: "purple" },
     { name: "Experts", icon: <Users className="h-4 w-4" />, path: "/experts", color: "blue" },
-    { name: "Blueprint", icon: <FileText className="h-4 w-4" />, path: "/blueprint", color: "indigo" },
     { name: "Coaching", icon: <Compass className="h-4 w-4" />, path: "/coaching", color: "orange" },
-    { name: "Workshops", icon: <Presentation className="h-4 w-4" />, path: "/workshop", color: "green" },
     { name: "Financing", icon: <Euro className="h-4 w-4" />, path: "/financing", color: "rose" },
+    { name: "Workshops", icon: <Presentation className="h-4 w-4" />, path: "/workshop", color: "green" },
+    { name: "Blueprint", icon: <FileText className="h-4 w-4" />, path: "/blueprint", color: "indigo" },
     { name: "Bundle", icon: <Package className="h-4 w-4" />, path: "/bundle", color: "violet" },
   ]
 
