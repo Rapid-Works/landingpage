@@ -284,8 +284,8 @@ export default function RapidWorksPage() {
         <div className="absolute top-20 right-0 w-96 h-96 bg-purple-200 rounded-full filter blur-3xl opacity-20 -z-10"></div>
         <div className="absolute bottom-0 left-10 w-72 h-72 bg-blue-200 rounded-full filter blur-3xl opacity-20 -z-10"></div>
 
-        <div className="bg-gradient-to-br from-purple-600 to-indigo-600 text-white relative overflow-hidden">
-          <div className="container mx-auto px-6 pt-28 pb-28">
+        <div className="bg-gradient-to-br from-purple-600 to-indigo-600 text-white relative overflow-hidden min-h-[65vh] flex items-center">
+          <div className="container mx-auto px-6 py-20 md:py-28 flex flex-col justify-center">
             <div className="text-center mb-8">
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight tracking-tight">
                 {content.hero.title1}
@@ -309,8 +309,8 @@ export default function RapidWorksPage() {
               </button>
             </div>
           </div>
-          
-          <button 
+
+          <button
             onClick={scrollToServices}
             className="absolute bottom-6 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none"
             aria-label={content.hero.scrollIndicatorAria}
@@ -332,7 +332,7 @@ export default function RapidWorksPage() {
                 alt="Webinar or Q&A session"
                 className="absolute inset-0 w-full h-full object-cover object-center"
               />
-              <div className="absolute inset-0 z-20 p-6 md:p-12 flex flex-col md:flex-row items-center justify-between">
+              <div className="absolute inset-0 z-20 p-6 md:p-12 flex flex-col md:flex-row items-center justify-center md:justify-between">
                 <div className="mb-8 md:mb-0 w-full md:w-3/5">
                   <div className="bg-white/20 backdrop-blur-md w-14 h-14 rounded-2xl flex items-center justify-center mb-6">
                     <CalendarCheck className="h-6 w-6 text-white" />

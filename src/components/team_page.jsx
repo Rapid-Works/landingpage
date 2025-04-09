@@ -267,11 +267,11 @@ const TeamPage = () => {
       {/* Import header from new_landing_page.jsx instead of using the built-in header */}
       <RapidWorksHeader />
 
-      {/* Hero Section Wrapper */}
-      <section className="bg-gradient-to-br from-purple-600 to-indigo-600 text-white relative overflow-hidden">
-        <div className="container mx-auto px-6 pt-28 pb-28">
+      {/* Updated Hero Section */}
+      <section className="bg-gradient-to-br from-purple-600 to-indigo-600 text-white relative overflow-hidden min-h-[65vh] flex items-center">
+        <div className="container mx-auto px-6 py-20 md:py-28 flex flex-col justify-center"> {/* Adjusted padding, added flex */}
           {/* Page intro */}
-          <div className="text-center mb-16 max-w-3xl mx-auto">
+          <div className="text-center mb-8 max-w-3xl mx-auto"> {/* Reduced bottom margin */}
             <div className="inline-flex items-center mb-4 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-sm">
               <Users className="h-4 w-4 inline mr-1.5" />
               {content.pageTitle}
@@ -295,21 +295,10 @@ const TeamPage = () => {
             </p>
           </div>
         </div>
-
-        {/* Scroll Down Arrow */}
-        <button 
-          onClick={scrollToBenefits}
-          className="absolute bottom-6 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none"
-          aria-label={content.hero.scrollIndicatorAria}
-        >
-          <svg className="w-8 h-8 text-white/70 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-          </svg>
-        </button>
       </section>
 
       {/* Main Content - Add ref to the benefits container */}
-      <main className="py-20">
+      <main ref={benefitsRef} className="py-20">
         <div className="container mx-auto px-6">
           {/* Add ref={benefitsRef} to the container holding the benefits section */}
           <div ref={benefitsRef} className="flex flex-col lg:flex-row gap-16 items-start">
@@ -427,15 +416,15 @@ const TeamPage = () => {
                             <img
                                 src={member.image}
                                 alt={memberName}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+                                className="w-full h-full object-cover [image-rendering:smooth]"
+                            />
+                          </div>
                         ) : (
                           <div className="w-24 h-24 rounded-2xl border-4 border-white shadow-lg bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                             <Users className="h-10 w-10 text-gray-400" />
-                  </div>
+                          </div>
                         )}
-                  </div>
+                      </div>
 
                       {/* Name and quote */}
                       <div className="mt-12">

@@ -999,10 +999,28 @@ function App() {
   const [language, setLanguage] = useState(() => {
     return localStorage.getItem('language') || 'de'
   })
+  const [showNewsletterPopup, setShowNewsletterPopup] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('language', language)
   }, [language])
+
+  useEffect(() => {
+    const isSubscribed = localStorage.getItem('newsletterSubscribed') === 'true';
+    if (isSubscribed) return; 
+
+    const lastShown = localStorage.getItem('newsletterLastShown');
+    const oneDayInMs = 24 * 60 * 60 * 1000; // 24 hours
+
+    if (!lastShown || Date.now() - parseInt(lastShown) > oneDayInMs) {
+      const timer = setTimeout(() => {
+        setShowNewsletterPopup(true);
+        localStorage.setItem('newsletterLastShown', Date.now().toString()); 
+      }, 30000); // 30 seconds timeout
+      
+      return () => clearTimeout(timer); // Cleanup timer on unmount
+    }
+  }, []);
 
   const contextValue = useMemo(() => ({
     language,
@@ -1122,6 +1140,10 @@ function App() {
             />
           </Routes>
           <WebinarFAB />
+          <NewsletterPopup 
+            isOpen={showNewsletterPopup} 
+            onClose={() => setShowNewsletterPopup(false)} 
+          />
           <Footer />
         </div>
       </>

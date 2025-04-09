@@ -105,11 +105,11 @@ const FinancingPage = () => {
             {/* Import shared header component */}
             <RapidWorksHeader />
 
-            {/* Hero Section Wrapper */}
-            <section className="bg-gradient-to-br from-rose-600 to-pink-600 text-white relative overflow-hidden">
-                <div className="container mx-auto px-6 pt-28 pb-28">
+            {/* Updated Hero Section */}
+            <section className="bg-gradient-to-br from-rose-600 to-pink-600 text-white relative overflow-hidden min-h-[65vh] flex items-center">
+                <div className="container mx-auto px-6 py-20 md:py-28 flex flex-col justify-center"> {/* Adjusted padding, added flex */}
                     {/* Page intro */}
-                    <div className="text-center mb-16 max-w-3xl mx-auto">
+                    <div className="text-center mb-8 max-w-3xl mx-auto"> {/* Reduced bottom margin */}
                         <div className="inline-flex items-center mb-4 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-sm">
                             <Euro className="h-4 w-4 inline mr-1" />
                             {content.badge.text}
@@ -124,25 +124,14 @@ const FinancingPage = () => {
                         </p>
                     </div>
                 </div>
-
-                {/* Scroll Down Arrow */}
-                <button 
-                  onClick={scrollToContent}
-                  className="absolute bottom-6 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none"
-                  aria-label={content.hero.scrollIndicatorAria}
-                >
-                  <svg className="w-8 h-8 text-white/70 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                  </svg>
-                </button>
             </section>
 
-            {/* Main Content - Adjust padding */}
-            <main className="py-20">
+            {/* Main Content */}
+            <main ref={contentSectionRef} className="py-20"> {/* Moved ref here */}
                 <div className="container mx-auto px-6">
                     
                     {/* Add ref to the content section */}
-                    <div ref={contentSectionRef} className="bg-gradient-to-br from-white to-rose-50 rounded-3xl overflow-hidden mb-20 relative p-8 md:p-12 text-center shadow-lg border border-rose-100">
+                    <div className="bg-gradient-to-br from-white to-rose-50 rounded-3xl overflow-hidden mb-20 relative p-8 md:p-12 text-center shadow-lg border border-rose-100">
                         <div className="relative z-10">
                             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
                                 {content.mainSection.title}
