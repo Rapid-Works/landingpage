@@ -11,7 +11,8 @@ import {
   Megaphone,
   Compass,
   Presentation,
-  Globe
+  Globe,
+  Handshake
 } from "lucide-react"
 import { LanguageContext as AppLanguageContext } from "../App"
 
@@ -95,6 +96,12 @@ export default function RapidWorksHeader() {
         logoText: "from-violet-600 to-violet-500",
         buttonHover: "hover:from-violet-600 hover:to-violet-500"
       }
+    } else if (path.startsWith("/partners")) {
+      return {
+        logoGradient: "from-blue-600 to-sky-600",
+        logoText: "from-blue-600 to-sky-600",
+        buttonHover: "hover:from-blue-600 hover:to-sky-600"
+      }
     } else {
       return {
         logoGradient: "from-purple-600 to-indigo-600",
@@ -111,8 +118,8 @@ export default function RapidWorksHeader() {
     { name: "Experts", icon: <Users className="h-4 w-4" />, path: "/experts", color: "blue" },
     { name: "Coaching", icon: <Compass className="h-4 w-4" />, path: "/coaching", color: "orange" },
     { name: "Financing", icon: <Euro className="h-4 w-4" />, path: "/financing", color: "rose" },
+    { name: "Partners", icon: <Handshake className="h-4 w-4" />, path: "/partners", color: "blue" },
     { name: "Workshops", icon: <Presentation className="h-4 w-4" />, path: "/workshop", color: "green" },
-    { name: "Blueprint", icon: <FileText className="h-4 w-4" />, path: "/blueprint", color: "indigo" },
     { name: "Bundle", icon: <Package className="h-4 w-4" />, path: "/bundle", color: "violet" },
   ]
 

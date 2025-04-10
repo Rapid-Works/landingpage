@@ -13,7 +13,8 @@ import {
   HandCoins, // Funding Consultant
   ShieldCheck, // Data Protection Officer
   Users, // General Partner icon
-  ArrowDown // For prompt
+  ArrowDown, // For prompt
+  CheckCircle // Used for badge
 } from "lucide-react"
 import RapidWorksHeader from "./new_landing_page_header"
 // Import the new Airtable service function
@@ -114,9 +115,12 @@ const PartnersPage = () => {
   // Page content object with translations
   const pageContent = {
     en: {
+      badge: { // Add badge content
+        text: "Coming Soon" // Or adjust as needed
+      },
       hero: {
-        title: "Find Your Expert Partners",
-        subtitle: "Connect with essential service providers. Let us know your timeline, and we'll build the network based on demand.",
+        title: "Find Your Advisors",
+        subtitle: "Connect with vetted advisors suited for startups. Indicate your required timeline and help shape our partner network.",
       },
       partners: {
         title: "Indicate Your Needs",
@@ -132,7 +136,7 @@ const PartnersPage = () => {
         ],
         demandInfo: {
           title: "Demand-Driven Network",
-          subtitle: "We connect with experts once sufficient startup demand is identified. Your input shapes our partner network!",
+          subtitle: "We connect with experts once sufficient demand is identified. Your input shapes our partner network!",
           cta: "Submit your interest below"
         }
       },
@@ -166,9 +170,12 @@ const PartnersPage = () => {
        }
     },
     de: {
+      badge: { // Add badge content (German)
+        text: "Demnächst verfügbar"
+      },
       hero: {
-        title: "Finden Sie Ihre Experten-Partner",
-        subtitle: "Vernetzen Sie sich mit essenziellen Dienstleistern. Teilen Sie uns Ihren Zeitrahmen mit, und wir bauen das Netzwerk nach Bedarf auf.",
+        title: "Finden Sie Ihre Berater",
+        subtitle: "Vernetzen Sie sich mit geprüften Beratern, die für Startups geeignet sind. Nennen Sie Ihren Zeitbedarf und gestalten Sie unser Partnernetzwerk mit.",
       },
       partners: {
         title: "Geben Sie Ihren Bedarf an",
@@ -184,7 +191,7 @@ const PartnersPage = () => {
         ],
         demandInfo: {
           title: "Nachfragebasiertes Netzwerk",
-          subtitle: "Wir knüpfen Kontakte zu Experten, sobald genügend Startup-Nachfrage besteht. Ihr Input formt unser Partnernetzwerk!",
+          subtitle: "Wir knüpfen Kontakte zu Experten, sobald genügend Nachfrage besteht. Ihr Input formt unser Partnernetzwerk!",
           cta: "Tragen Sie unten Ihr Interesse ein"
         }
       },
@@ -256,12 +263,12 @@ const PartnersPage = () => {
 
   const monthOptions = [
       { value: "0", label: language === 'de' ? "Nicht benötigt" : "Not Needed" },
+      { value: "ASAP", label: language === 'de' ? "Sofort" : "ASAP" },
       { value: "1", label: language === 'de' ? "In 1 Monat" : "In 1 Month" },
       { value: "2", label: language === 'de' ? "In 2 Monaten" : "In 2 Months" },
       { value: "3", label: language === 'de' ? "In 3 Monaten" : "In 3 Months" },
       { value: "4", label: language === 'de' ? "In 4 Monaten" : "In 4 Months" },
       { value: "5", label: language === 'de' ? "In 5 Monaten" : "In 5 Months" },
-      { value: "6", label: language === 'de' ? "In 6 Monaten" : "In 6 Months" },
       { value: "6+", label: language === 'de' ? "In 6+ Monaten" : "In 6+ Months" },
   ];
 
@@ -277,7 +284,15 @@ const PartnersPage = () => {
       <section className="bg-gradient-to-br from-blue-600 to-sky-600 text-white relative overflow-hidden">
         <div className="container mx-auto px-6 pt-32 pb-24">
            <div className="text-center max-w-3xl mx-auto">
-            {/* Optional: Add a badge if needed */}
+             {/* --- Add Badge --- */}
+             <div className="inline-flex items-center justify-center mb-5 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-xs shadow-sm">
+               <span className="relative flex h-2 w-2 mr-2">
+                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                 <span className="relative inline-flex rounded-full h-2 w-2 bg-sky-500"></span>
+               </span>
+               {content.badge.text}
+             </div>
+             {/* --- End Badge --- */}
             <h1 className="text-4xl md:text-5xl lg:text-5xl font-extrabold mb-6 leading-tight tracking-tight text-white">
               {content.hero.title}
             </h1>

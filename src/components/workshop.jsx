@@ -291,10 +291,9 @@ const WorkshopsPage = () => {
       <RapidWorksHeader />
 
       {/* === Updated Hero Section === */}
-      {/* Removed min-h, flex, items-center */}
       <section className="bg-gradient-to-br from-emerald-600 to-green-600 text-white relative overflow-hidden">
-        {/* Apply consistent padding, remove flex centering */}
-        <div className="container mx-auto px-6 pt-32 pb-24"> {/* Consistent Padding */}
+        {/* Apply consistent padding */}
+        <div className="container mx-auto px-6 pt-32 pb-24">
            <div className="text-center max-w-3xl mx-auto">
             <div className="inline-flex items-center justify-center mb-5 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-xs shadow-sm">
               <span className="relative flex h-2 w-2 mr-2">
@@ -303,7 +302,7 @@ const WorkshopsPage = () => {
               </span>
               {content.badge.text}
             </div>
-            {/* Standardized Font Size */}
+            {/* Ensure standardized font size */}
             <h1 className="text-4xl md:text-5xl lg:text-5xl font-extrabold mb-6 leading-tight tracking-tight text-white">
               {content.hero.title}
             </h1>

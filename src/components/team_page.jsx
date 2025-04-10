@@ -255,7 +255,7 @@ const TeamPage = () => {
   const benefitsContent = content.benefits.items;
 
   return (
-    <div className="min-h-screen bg-white font-sans selection:bg-purple-200 selection:text-purple-900">
+    <div className="min-h-screen bg-white font-sans selection:bg-blue-200 selection:text-blue-900">
       {/* Noise overlay */}
       <div className="fixed inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMzAwdjMwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDUiLz48L3N2Zz4=')] opacity-30 pointer-events-none z-0"></div>
 
@@ -268,16 +268,15 @@ const TeamPage = () => {
       <RapidWorksHeader />
 
       {/* === Updated Hero Section === */}
-      {/* Removed min-h, flex, items-center */}
-      <section className="bg-gradient-to-br from-purple-600 to-indigo-600 text-white relative overflow-hidden">
-        {/* Apply consistent padding, remove flex centering */}
-        <div className="container mx-auto px-6 pt-32 pb-24"> {/* Consistent Padding */}
+      <section className="bg-gradient-to-br from-blue-600 to-sky-600 text-white relative overflow-hidden">
+        {/* Apply consistent padding */}
+        <div className="container mx-auto px-6 pt-32 pb-24">
           <div className="text-center max-w-3xl mx-auto">
             <div className="inline-flex items-center mb-4 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-sm">
               <Users className="h-4 w-4 inline mr-1.5" />
               {content.pageTitle}
             </div>
-            {/* Standardized Font Size */}
+            {/* Ensure standardized font size */}
             <h1 className="text-4xl md:text-5xl lg:text-5xl font-extrabold mb-6 leading-tight tracking-tight text-white">
               {content.hero.title1}
               {content.hero.titleHighlight && (

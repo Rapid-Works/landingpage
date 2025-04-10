@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { Megaphone, Users, FileText, Compass, Presentation, Euro, ArrowRight } from 'lucide-react';
+import { Megaphone, Users, FileText, Compass, Presentation, Euro, ArrowRight, Handshake } from 'lucide-react';
 import { LanguageContext as AppLanguageContext } from "../App";
 
 const ExploreMoreSection = ({ excludeService }) => {
@@ -23,7 +23,7 @@ const ExploreMoreSection = ({ excludeService }) => {
       services: {
         Branding: "Branding",
         Experts: "Experts",
-        Blueprint: "Blueprint",
+        Partners: "Partners",
         Coaching: "Coaching",
         Workshops: "Workshops",
         Financing: "Financing"
@@ -37,7 +37,7 @@ const ExploreMoreSection = ({ excludeService }) => {
       services: {
         Branding: "Branding",
         Experts: "Experten",
-        Blueprint: "Blueprint",
+        Partners: "Partner",
         Coaching: "Coaching",
         Workshops: "Workshops",
         Financing: "Finanzierung"
@@ -51,7 +51,7 @@ const ExploreMoreSection = ({ excludeService }) => {
   const allServices = [
     { icon: <Megaphone className="h-6 w-6" />, labelKey: "Branding", path: "/branding" },
     { icon: <Users className="h-6 w-6" />, labelKey: "Experts", path: "/experts" },
-    { icon: <FileText className="h-6 w-6" />, labelKey: "Blueprint", path: "/blueprint" },
+    { icon: <Handshake className="h-6 w-6" />, labelKey: "Partners", path: "/partners" },
     { icon: <Compass className="h-6 w-6" />, labelKey: "Coaching", path: "/coaching" },
     { icon: <Presentation className="h-6 w-6" />, labelKey: "Workshops", path: "/workshop" },
     { icon: <Euro className="h-6 w-6" />, labelKey: "Financing", path: "/financing" }
@@ -62,8 +62,8 @@ const ExploreMoreSection = ({ excludeService }) => {
 
   // Dynamically adjust title if a specific service is excluded
   const dynamicTitle = excludeService
-    ? content.title.replace("just this", `just ${content.services[excludeService]}?`)
-    : content.title.replace("just this?", "just Branding?"); // Default if somehow used without prop
+    ? content.title.replace("just this", `just ${content.services[excludeService] || excludeService}?`)
+    : content.title.replace("just this?", "just Branding?");
 
 
   const containerClass = "max-w-[1280px] w-full mx-auto px-4 sm:px-6 lg:px-8 relative";
