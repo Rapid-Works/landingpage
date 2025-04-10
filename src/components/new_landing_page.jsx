@@ -19,7 +19,8 @@ import {
   Euro,
   Compass,
   Loader2,
-  CalendarCheck
+  CalendarCheck,
+  Handshake
 } from "lucide-react"
 import RapidWorksHeader from "./new_landing_page_header"
 import { LanguageContext as AppLanguageContext } from "../App"
@@ -183,10 +184,10 @@ export default function RapidWorksPage() {
           learnMore: "Learn more",
           freeHour: "Get 1 hour free"
         },
-        blueprint: {
-          category: "Process",
-          title: "Rapid Blueprint",
-          description: "Own your processes in 1 week. You don't need dozens of tools!",
+        partners: {
+          category: "Network",
+          title: "Rapid Partners",
+          description: "Get connected with vetted notaries, tax advisors, auditors, and more.",
           learnMore: "Learn more"
         },
         coaching: {
@@ -261,10 +262,10 @@ export default function RapidWorksPage() {
           learnMore: "Mehr erfahren",
           freeHour: "1 Stunde gratis erhalten"
         },
-        blueprint: {
-          category: "Prozess",
-          title: "Rapid Blueprint",
-          description: "Beherrsche deine Prozesse in 1 Woche. Du brauchst keine Dutzend Tools!",
+        partners: {
+          category: "Netzwerk",
+          title: "Rapid Partners",
+          description: "Vernetzen Sie sich mit geprüften Notaren, Steuerberatern, Wirtschaftsprüfern und mehr.",
           learnMore: "Mehr erfahren"
         },
         coaching: {
@@ -489,37 +490,37 @@ export default function RapidWorksPage() {
           <div className="grid md:grid-cols-3 gap-8 mb-8">
             <div className="group">
               <div className="relative overflow-hidden rounded-2xl aspect-[3/2] mb-0">
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/90 via-indigo-600/80 to-indigo-800/90 mix-blend-multiply z-10"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/90 via-blue-600/80 to-sky-600/90 mix-blend-multiply z-10"></div>
                 <img
-                  src="https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-                  alt="Blueprint illustration"
+                  src="https://images.unsplash.com/photo-1542744095-291d1f67b221?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+                  alt="Partners network illustration"
                   className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
                 />
 
                 <div className="absolute inset-0 z-20 p-6 flex flex-col justify-between">
                   <div className="flex justify-between items-start w-full">
                     <div className="bg-white/20 backdrop-blur-md w-12 h-12 rounded-xl flex items-center justify-center">
-                      <FileText className="h-5 w-5 text-white" />
+                      <Handshake className="h-5 w-5 text-white" />
                 </div>
                   <span className="text-xs font-medium text-white bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
-                    {content.services.blueprint.category}
+                    {content.services.partners.category}
                   </span>
                 </div>
                   <div>
-                    <h3 className="text-2xl font-bold text-white mb-2">{content.services.blueprint.title}</h3>
+                    <h3 className="text-2xl font-bold text-white mb-2">{content.services.partners.title}</h3>
                     <p className="text-white/90 max-w-md text-sm mb-3">
-                  {content.services.blueprint.description}
-                </p>
+                      {content.services.partners.description}
+                    </p>
                     <Link
-                      to="/blueprint"
+                      to="/partners"
                       className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-lg text-sm hover:bg-white/30 transition-all"
                     >
-                      {content.services.blueprint.learnMore} <ArrowRight className="h-4 w-4" />
+                      {content.services.partners.learnMore} <ArrowRight className="h-4 w-4" />
                     </Link>
                   </div>
                 </div>
 
-                <div className="absolute top-1/2 right-0 w-40 h-40 bg-gradient-to-r from-indigo-400/30 to-indigo-600/30 rounded-full -translate-x-1/4 -translate-y-1/2 blur-xl z-0"></div>
+                <div className="absolute top-1/2 right-0 w-40 h-40 bg-gradient-to-r from-blue-400/30 to-sky-600/30 rounded-full -translate-x-1/4 -translate-y-1/2 blur-xl z-0"></div>
               </div>
             </div>
 
@@ -684,7 +685,7 @@ export default function RapidWorksPage() {
                     {[
                       { icon: <Megaphone className="h-8 w-8" />, color: "bg-purple-500/20", path: "/branding" },
                       { icon: <Users className="h-8 w-8" />, color: "bg-blue-500/20", path: "/experts" },
-                      { icon: <FileText className="h-8 w-8" />, color: "bg-indigo-500/20", path: "/blueprint" },
+                      { icon: <Handshake className="h-8 w-8" />, color: "bg-blue-500/20", path: "/partners" },
                       { icon: <Compass className="h-8 w-8" />, color: "bg-amber-500/20", path: "/coaching" },
                       { icon: <Presentation className="h-8 w-8" />, color: "bg-emerald-500/20", path: "/workshop" },
                       { icon: <Euro className="h-8 w-8" />, color: "bg-rose-500/20", path: "/financing" },

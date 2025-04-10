@@ -175,15 +175,15 @@ const CoachingPage = () => {
 
       {/* Hero Section Wrapper */}
       <section className="bg-gradient-to-br from-orange-600 to-amber-600 text-white relative overflow-hidden">
-        <div className="container mx-auto px-6 pt-28 pb-28">
+        <div className="container mx-auto px-6 pt-32 pb-24">
           {/* Page intro */}
-          <div className="text-center mb-16 max-w-3xl mx-auto">
+          <div className="text-center max-w-3xl mx-auto">
             <div className="inline-flex items-center mb-4 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-sm">
               <Compass className="h-4 w-4 inline mr-1" />
               {content.pageBadge}
             </div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-white">
+            <h1 className="text-4xl md:text-5xl lg:text-5xl font-extrabold mb-6 leading-tight tracking-tight text-white">
               {content.heroTitle}{" "}
               <span className="relative inline-block">
                 <span className="relative z-10">
@@ -198,17 +198,6 @@ const CoachingPage = () => {
             </p>
           </div>
         </div>
-
-        {/* Scroll Down Arrow */}
-        <button 
-          onClick={scrollToWhySection}
-          className="absolute bottom-6 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none"
-          aria-label={content.scrollIndicatorAria}
-        >
-          <svg className="w-8 h-8 text-white/70 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-          </svg>
-        </button>
       </section>
 
       {/* Main Content */}

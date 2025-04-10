@@ -240,7 +240,7 @@ const BundlePage = () => {
   const content = pageContent[language];
 
   return (
-    <div className="min-h-screen bg-white font-sans selection:bg-gray-200 selection:text-gray-900">
+    <div className="min-h-screen bg-white font-sans selection:bg-violet-200 selection:text-violet-900">
       {/* Noise overlay */}
       <div className="fixed inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMzAwdjMwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDUiLz48L3N2Zz4=')] opacity-30 pointer-events-none z-0"></div>
 
@@ -252,7 +252,7 @@ const BundlePage = () => {
       <RapidWorksHeader />
 
       {/* === Updated Hero Section === */}
-      <section className="bg-gradient-to-br from-gray-800 to-black text-white relative overflow-hidden">
+      <section className="bg-gradient-to-br from-violet-600 to-purple-600 text-white relative overflow-hidden">
         {/* Apply consistent top padding, increased bottom padding */}
         <div className="container mx-auto px-6 pt-32 pb-32"> {/* Increased pb-32 */}
           <div className="text-center max-w-3xl mx-auto">
