@@ -105,29 +105,30 @@ const FinancingPage = () => {
             {/* Import shared header component */}
             <RapidWorksHeader />
 
-            {/* Updated Hero Section */}
-            <section className="bg-gradient-to-br from-rose-600 to-pink-600 text-white relative overflow-hidden min-h-[65vh] flex items-center">
-                <div className="container mx-auto px-6 py-20 md:py-28 flex flex-col justify-center"> {/* Adjusted padding, added flex */}
-                    {/* Page intro */}
-                    <div className="text-center mb-8 max-w-3xl mx-auto"> {/* Reduced bottom margin */}
+            {/* === Updated Hero Section === */}
+            {/* Removed min-h, flex, items-center */}
+            <section className="bg-gradient-to-br from-rose-600 to-pink-600 text-white relative overflow-hidden">
+                {/* Apply consistent padding, remove flex centering */}
+                <div className="container mx-auto px-6 pt-32 pb-24"> {/* Consistent Padding */}
+                    <div className="text-center max-w-3xl mx-auto">
                         <div className="inline-flex items-center mb-4 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-sm">
                             <Euro className="h-4 w-4 inline mr-1" />
                             {content.badge.text}
                         </div>
-
+                        {/* Font Size already lg:text-5xl, ensure it stays */}
                         <h1 className="text-4xl md:text-5xl lg:text-5xl font-extrabold mb-6 leading-tight tracking-tight text-white">
                             {content.hero.title}
                         </h1>
-
                         <p className="text-xl text-white/90 leading-relaxed">
                             {content.hero.subtitle}
                         </p>
                     </div>
                 </div>
             </section>
+            {/* === End Updated Hero Section === */}
 
             {/* Main Content */}
-            <main ref={contentSectionRef} className="py-20"> {/* Moved ref here */}
+            <main ref={contentSectionRef} className="py-20">
                 <div className="container mx-auto px-6">
                     
                     {/* Add ref to the content section */}

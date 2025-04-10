@@ -34,6 +34,7 @@ export default function RapidWorksPage() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const servicesRef = useRef(null)
+  const rapidAnswersRef = useRef(null)
   const ctaRef = useRef(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isCalendlyLoading, setIsCalendlyLoading] = useState(true)
@@ -76,6 +77,10 @@ export default function RapidWorksPage() {
     servicesRef.current?.scrollIntoView({ behavior: "smooth" })
   }
 
+  const scrollToRapidAnswers = () => {
+    rapidAnswersRef.current?.scrollIntoView({ behavior: "smooth" });
+  }
+
   const scrollToCTA = () => {
     ctaRef.current?.scrollIntoView({ behavior: "smooth" })
   }
@@ -89,18 +94,54 @@ export default function RapidWorksPage() {
     setIsModalOpen(true)
   }
 
-  const getNextWebinarDates = () => {
+  const getNextWebinarDates = (count = 5) => {
     const dates = [];
-    let currentDate = new Date('2025-04-25T10:00:00');
-    const now = new Date();
-    while (currentDate < now) {
-      currentDate.setDate(currentDate.getDate() + 14);
+    const now = new Date(); // Current time
+
+    // --- Define Base Dates in UTC ---
+    // Exception: Wednesday, April 30th, 2025, 17:00 CEST (15:00 UTC)
+    const exceptionDate = new Date(Date.UTC(2025, 3, 30, 15, 0, 0)); // Month 3 is April
+
+    // Reference Thursday: May 15th, 2025, 17:00 CEST (15:00 UTC)
+    let nextThursday = new Date(Date.UTC(2025, 4, 15, 15, 0, 0)); // Month 4 is May
+
+    // Reference Saturday: May 17th, 2025, 10:00 CEST (08:00 UTC)
+    let nextSaturday = new Date(Date.UTC(2025, 4, 17, 8, 0, 0)); // Month 4 is May
+
+    // --- Add Exception if in Future ---
+    if (exceptionDate > now) {
+      dates.push(exceptionDate);
     }
-    for (let i = 0; i < 3; i++) {
-      dates.push(new Date(currentDate));
-      currentDate.setDate(currentDate.getDate() + 14);
+
+    // --- Find First Relevant Thursday & Saturday After Now ---
+    // Adjust starting Thursdays/Saturdays until they are after 'now'
+    while (nextThursday <= now) {
+      nextThursday.setDate(nextThursday.getDate() + 14);
     }
-    return dates;
+    while (nextSaturday <= now) {
+      nextSaturday.setDate(nextSaturday.getDate() + 14);
+    }
+
+    // --- Generate Future Dates ---
+    // Keep adding Thursdays and Saturdays until we have enough dates
+    while (dates.length < count) {
+      // Add the next valid Thursday and Saturday
+      // We check again if they are truly after 'now' in case the first ones were calculated
+      // before the exception date but are still after 'now'.
+      if (nextThursday > now) dates.push(new Date(nextThursday));
+      if (nextSaturday > now) dates.push(new Date(nextSaturday));
+
+      // Calculate the next ones in the sequence
+      nextThursday.setDate(nextThursday.getDate() + 14);
+      nextSaturday.setDate(nextSaturday.getDate() + 14);
+
+      // Safety break if something goes wrong (shouldn't be needed)
+      if (dates.length > count + 5) break;
+    }
+
+    // --- Sort and Trim ---
+    dates.sort((a, b) => a - b); // Sort chronologically
+    return dates.slice(0, count); // Return the desired number of dates
   };
   const webinarDates = getNextWebinarDates();
 
@@ -125,7 +166,7 @@ export default function RapidWorksPage() {
         rapidAnswers: {
           category: "Q&A",
           title: "Rapid Answers",
-          description: "Got questions? Get answers! Join our free biweekly webinar where startup veterans tackle your challenges live.",
+          description: "Ask your early-stage startup questions live! Join our free biweekly Q&A webinar with experienced founders.",
           learnMore: "Learn more",
           joinWebinar: "Join Free Webinar"
         },
@@ -203,7 +244,7 @@ export default function RapidWorksPage() {
         rapidAnswers: {
           category: "Q&A",
           title: "Rapid Answers",
-          description: "Hast du Fragen? Erhalte Antworten! Nimm an unserem kostenlosen zweiwöchentlichen Webinar teil, bei dem erfahrene Gründer live auf deine Herausforderungen eingehen.",
+          description: "Stelle deine Fragen zur frühen Startup-Phase live! Nimm an unserem kostenlosen zweiwöchentlichen Q&A-Webinar mit erfahrenen Gründern teil.",
           learnMore: "Mehr erfahren",
           joinWebinar: "Kostenlos teilnehmen"
         },
@@ -311,7 +352,7 @@ export default function RapidWorksPage() {
           </div>
 
           <button
-            onClick={scrollToServices}
+            onClick={scrollToRapidAnswers}
             className="absolute bottom-6 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none"
             aria-label={content.hero.scrollIndicatorAria}
           >
@@ -322,7 +363,7 @@ export default function RapidWorksPage() {
         </div>
       </section>
 
-      <section className="py-20 relative">
+      <section ref={rapidAnswersRef} className="py-20 relative">
         <div className="container mx-auto px-6">
           <div >
             <div className="relative overflow-hidden rounded-2xl h-auto min-h-[300px] md:h-80">

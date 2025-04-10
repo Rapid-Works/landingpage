@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, CheckCircle } from 'lucide-react';
+import { submitWebinarRegistrationToAirtable } from '../utils/airtableService';
 
 const WebinarForm = ({ webinarDates, onClose }) => {
   const [formData, setFormData] = useState({
@@ -9,8 +10,8 @@ const WebinarForm = ({ webinarDates, onClose }) => {
     questions: '',
     selectedDate: webinarDates.length > 0 ? webinarDates[0].toISOString() : '',
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitMessage, setSubmitMessage] = useState('');
+  const [submissionState, setSubmissionState] = useState('idle');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -19,40 +20,54 @@ const WebinarForm = ({ webinarDates, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitMessage('');
+    setSubmissionState('submitting');
+    setErrorMessage('');
 
-    // --- Placeholder for actual submission logic ---
-    console.log('Submitting webinar registration:', formData);
-    // Replace with your API call (e.g., fetch to your backend, Airtable, etc.)
-    await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network delay
-    // --- End Placeholder ---
+    try {
+      console.log('Submitting webinar registration to Airtable:', formData);
+      const result = await submitWebinarRegistrationToAirtable(formData);
+      console.log('Airtable submission successful:', result);
 
-    setIsSubmitting(false);
-    // Example success handling:
-    setSubmitMessage('Thank you for registering! We look forward to seeing you.');
-    // Optionally reset form or close modal after a delay
-    setTimeout(() => {
-       onClose();
-       setSubmitMessage(''); // Reset message for next time
-       setFormData({ // Reset form fields
-         name: '',
-         email: '',
-         phone: '',
-         questions: '',
-         selectedDate: webinarDates.length > 0 ? webinarDates[0].toISOString() : '',
-       });
-    }, 3000);
+      setSubmissionState('success');
 
-    // Example error handling:
-    // setSubmitMessage('An error occurred. Please try again.');
+    } catch (error) {
+      console.error("Failed to submit webinar registration:", error);
+      setErrorMessage('An error occurred during registration. Please check your details or try again later.');
+      setSubmissionState('error');
+    }
   };
 
-  const formatDate = (date) => {
-    return new Date(date).toLocaleDateString(undefined, {
-      year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'
-    });
+  const formatDate = (date, options = {}) => {
+    const defaultOptions = {
+      year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short'
+    };
+    const mergedOptions = { ...defaultOptions, ...options };
+    const utcDate = new Date(date);
+    return utcDate.toLocaleDateString(undefined, mergedOptions);
   };
+
+  const SuccessView = () => (
+    <div className="text-center py-8 px-4 flex flex-col items-center">
+      <CheckCircle className="h-16 w-16 text-green-500 mb-4" />
+      <h3 className="text-xl font-semibold text-gray-800 mb-2">Registration Successful!</h3>
+      <p className="text-gray-600 mb-4">
+        Thank you for registering. We've reserved your spot for the webinar on:
+      </p>
+      <p className="font-medium text-gray-800 bg-gray-100 px-3 py-1 rounded">
+        {formatDate(formData.selectedDate)}
+      </p>
+       <button
+         onClick={onClose}
+         className="mt-6 px-6 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500"
+       >
+         Close
+       </button>
+    </div>
+  );
+
+  if (submissionState === 'success') {
+    return <SuccessView />;
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
@@ -66,7 +81,8 @@ const WebinarForm = ({ webinarDates, onClose }) => {
           value={formData.selectedDate}
           onChange={handleInputChange}
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm"
+          disabled={submissionState === 'submitting'}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm disabled:bg-gray-50"
         >
           {webinarDates.map((date) => (
             <option key={date.toISOString()} value={date.toISOString()}>
@@ -87,7 +103,8 @@ const WebinarForm = ({ webinarDates, onClose }) => {
           value={formData.name}
           onChange={handleInputChange}
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm"
+          disabled={submissionState === 'submitting'}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm disabled:bg-gray-50"
         />
       </div>
 
@@ -102,7 +119,8 @@ const WebinarForm = ({ webinarDates, onClose }) => {
           value={formData.email}
           onChange={handleInputChange}
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm"
+          disabled={submissionState === 'submitting'}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm disabled:bg-gray-50"
         />
       </div>
 
@@ -116,7 +134,8 @@ const WebinarForm = ({ webinarDates, onClose }) => {
           name="phone"
           value={formData.phone}
           onChange={handleInputChange}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm"
+          disabled={submissionState === 'submitting'}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm disabled:bg-gray-50"
         />
       </div>
 
@@ -130,24 +149,25 @@ const WebinarForm = ({ webinarDates, onClose }) => {
           rows="3"
           value={formData.questions}
           onChange={handleInputChange}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm"
+          disabled={submissionState === 'submitting'}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm disabled:bg-gray-50"
           placeholder="What topics or specific questions would you like us to cover?"
         ></textarea>
       </div>
 
-       {submitMessage && (
-         <p className={`text-sm text-center ${submitMessage.includes('error') ? 'text-red-600' : 'text-green-600'}`}>
-           {submitMessage}
+       {submissionState === 'error' && errorMessage && (
+         <p className="text-sm text-center text-red-600">
+           {errorMessage}
          </p>
        )}
 
       <button
         type="submit"
-        disabled={isSubmitting}
+        disabled={submissionState === 'submitting'}
         className="w-full flex justify-center items-center gap-2 px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed transition duration-150 ease-in-out"
       >
-        {isSubmitting ? 'Submitting...' : 'Register Now'}
-        {!isSubmitting && <ArrowRight className="h-5 w-5" />}
+        {submissionState === 'submitting' ? 'Submitting...' : 'Register Now'}
+        {submissionState !== 'submitting' && <ArrowRight className="h-5 w-5" />}
       </button>
     </form>
   );

@@ -31,7 +31,7 @@ import ExploreMoreSection from "./ExploreMoreSection" // Import the new componen
 
 // Import team profile images
 import SamuelProfile from "../images/SamuelProfile.jpg"
-import PrinceArdiabah from "../images/princeardiabah.jpg"
+import PrinceArdiabah from "../images/princeardiabah.png"
 
 // Sample team member data
 const teamMembers = [
@@ -267,18 +267,19 @@ const TeamPage = () => {
       {/* Import header from new_landing_page.jsx instead of using the built-in header */}
       <RapidWorksHeader />
 
-      {/* Updated Hero Section */}
-      <section className="bg-gradient-to-br from-purple-600 to-indigo-600 text-white relative overflow-hidden min-h-[65vh] flex items-center">
-        <div className="container mx-auto px-6 py-20 md:py-28 flex flex-col justify-center"> {/* Adjusted padding, added flex */}
-          {/* Page intro */}
-          <div className="text-center mb-8 max-w-3xl mx-auto"> {/* Reduced bottom margin */}
+      {/* === Updated Hero Section === */}
+      {/* Removed min-h, flex, items-center */}
+      <section className="bg-gradient-to-br from-purple-600 to-indigo-600 text-white relative overflow-hidden">
+        {/* Apply consistent padding, remove flex centering */}
+        <div className="container mx-auto px-6 pt-32 pb-24"> {/* Consistent Padding */}
+          <div className="text-center max-w-3xl mx-auto">
             <div className="inline-flex items-center mb-4 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-sm">
               <Users className="h-4 w-4 inline mr-1.5" />
               {content.pageTitle}
             </div>
-
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-white">
-              {content.hero.title1} 
+            {/* Standardized Font Size */}
+            <h1 className="text-4xl md:text-5xl lg:text-5xl font-extrabold mb-6 leading-tight tracking-tight text-white">
+              {content.hero.title1}
               {content.hero.titleHighlight && (
                 <span className="relative inline-block">
                   <span className="relative z-10">
@@ -289,13 +290,13 @@ const TeamPage = () => {
               )}
               {content.hero.title2}
             </h1>
-
             <p className="text-xl text-white/90 leading-relaxed">
               {content.hero.subtitle}
             </p>
           </div>
         </div>
       </section>
+      {/* === End Updated Hero Section === */}
 
       {/* Main Content - Add ref to the benefits container */}
       <main ref={benefitsRef} className="py-20">

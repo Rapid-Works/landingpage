@@ -238,9 +238,8 @@ const VisibiltyBundle = () => {
         subtitle: "Establish a strong market presence quickly with a complete, professional brand identity package delivered in just one week.",
         scrollIndicatorAria: "Scroll to details"
       },
-      mainText: "Convince us of your startup idea and get your free Rapid Branding within one week free of charge, including:",
+      mainText: "Establish your market presence quickly with our comprehensive Rapid Branding package, delivered in just one week and including:",
       keyPoints: [
-        "Market Orientation Consulting",
         "Logo & Brand Design",
         "Startup Website",
         "Startup Apparel",
@@ -248,7 +247,7 @@ const VisibiltyBundle = () => {
         "Rollup"
       ],
       subtext: "No hidden costs, no bullshit.",
-      cta: "Apply for your branding",
+      cta: "Get Rapid Branding",
       seeMore: "and more...",
       bundleLabel: "Rapid Branding",
       nav: {
@@ -305,14 +304,6 @@ const VisibiltyBundle = () => {
           {
             question: "In what form do I receive the Rapid Branding contents?",
             answer: "Upon completion, you'll receive an email with access to cloud storage containing all components of your Rapid Branding in digital form. Each file is saved in an appropriate format and clearly named. You'll also receive each file in an editable format. Our goal is to make you self-sufficient rather than creating dependency on us or other service providers. We don't provide physical materials, but you can use our files to have them produced at any print shop."
-          },
-          {
-            question: "Why is RapidWorks giving away 3 Rapid Brandings?",
-            answer: "As a startup ourselves, we value speed and happy customers over profit. Through free distribution, we're turning the tables and carefully selecting our first customers. We validate our own assumptions about workload, coordination effort, customer value, and more through initial test customers."
-          },
-          {
-            question: "What happens if my startup isn't among the top 3?",
-            answer: "Everyone wins with us. Even if you don't win during our application phase, you'll receive an unbeatable offer within a few days."
           },
           {
             question: "Does RapidWorks offer other services?",
@@ -419,9 +410,8 @@ const VisibiltyBundle = () => {
         subtitle: "Bauen Sie schnell eine starke Marktpräsenz auf mit einem kompletten, professionellen Markenidentitätspaket – geliefert in nur einer Woche.",
         scrollIndicatorAria: "Zu den Details scrollen"
       },
-      mainText: "Überzeugen Sie uns von Ihrer Startup-Idee und erhalten Sie Ihr kostenloses Rapid Branding innerhalb einer Woche,",
+      mainText: "Etablieren Sie schnell Ihre Marktpräsenz mit unserem umfassenden Rapid Branding-Paket, geliefert in nur einer Woche und inklusive:",
       keyPoints: [
-        "Marktorientierungsberatung",
         "Logo & Brand Design",
         "Startup Website",
         "Startup Bekleidung",
@@ -429,7 +419,7 @@ const VisibiltyBundle = () => {
         "Rollup"
       ],
       subtext: "Keine versteckten Kosten, kein Bullshit.",
-      cta: "Bewerben Sie sich für Ihr Branding",
+      cta: "Rapid Branding erhalten",
       seeMore: "und mehr...",
       bundleLabel: "Rapid Branding",
       nav: {
@@ -486,14 +476,6 @@ const VisibiltyBundle = () => {
           {
             question: "In welcher Form erhalte ich die Inhalte des Rapid Brandings?",
             answer: "Nach Fertigstellung erhältst du von uns eine E-Mail mit Zugriffslink zu einem Cloud-Storage, welcher sämtliche Bestandteile deines Rapid Brandings in digitaler Form enthält. Jede Datei ist in geeignetem Dateiformat für die jeweilige Rolle abgespeichert und sprechend benannt. Du erhältst zudem jede Datei in einem bearbeitungsoffenen Format. Unser Ziel ist es, dich für die Zukunft handlungsfähig zu machen, anstatt dich in ein Abhängigkeitsverhältnis von uns oder anderen Dienstleistern herein zu zwingen. Du erhältst von uns explizit keine physischen Materialien, du kannst dir diese aber mit unseren Dateien bei jeder Druckerei direkt in beliebiger Stückzahl fertigen lassen."
-          },
-          {
-            question: "Warum verschenkt Rapid Works 3 Rapid Brandings?",
-            answer: "Weil wir selbst ein Startup sind und Geschwindigkeit und glückliche Kunden über Profit wertschätzen. Durch die kostenfreie Vergabe drehen wir den Spieß um und suchen uns gezielt unsere ersten Kunden aus. Anhand der ersten Testkunde validieren wir unsere eigenen Annahmen zu Arbeitsaufwand, Abstimmungsaufwand, geschaffenem Wert für den Kunden und vieles mehr. Im Anschluss werden wir Umfang und Preis unserer Leistung entsprechend den Erfahrungen der kostenfreien Phase anpassen und mit einem unschlagbaren Angebot an jeden herantreten, der sich bis dahin beworben hat. Du brauchst also keine Angst zu haben, auch wenn du nicht in unserer Bewerbungsphase gewinnen solltest, erwartet dich in wenigen Tagen ein unschlagbares Angebot."
-          },
-          {
-            question: "Was geschieht, wenn mein Startup nicht unter den Top 3 landet?",
-            answer: "Bei uns gewinnt jeder. Auch wenn du nicht in unserer Bewerbungsphase gewinnen solltest, erwartet dich in wenigen Tagen ein unschlagbares Angebot."
           },
           {
             question: "Bietet Rapid Works noch weitere Services an?",
@@ -649,71 +631,71 @@ const VisibiltyBundle = () => {
       <div className="min-h-screen bg-white">
         <main className="relative w-full overflow-x-hidden">
 
-          <section className="bg-gradient-to-br from-purple-600 to-purple-700 text-white relative overflow-hidden min-h-[65vh] flex items-center">
-            <div className="container mx-auto px-6 py-20 md:py-28 flex flex-col justify-center">
-              <div className="text-center mb-8 max-w-3xl mx-auto">
+          <section className="bg-gradient-to-br from-purple-600 to-purple-700 text-white relative overflow-hidden">
+            <div className="container mx-auto px-6 pt-32 pb-24">
+              <div className="text-center max-w-3xl mx-auto">
                 <div className="inline-flex items-center mb-4 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-sm">
                   <Megaphone className="h-4 w-4 inline mr-1.5" />
                   {content.hero.badgeText}
                 </div>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-white">
+                <h1 className="text-4xl md:text-5xl lg:text-5xl font-extrabold mb-6 leading-tight tracking-tight text-white">
                   {content.hero.title}
                 </h1>
                 <p className="text-xl text-white/90 leading-relaxed">
                   {content.hero.subtitle}
                 </p>
-                  </div>
-                </div>
+              </div>
+            </div>
           </section>
 
           <section ref={contentSectionRef} className="py-20">
             <div className={containerClass}>
-              <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
-                <div className="text-center md:text-left">
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-12 md:gap-16 items-center">
+                <div className="md:col-span-2 text-center md:text-left">
                   <p className="text-lg md:text-xl text-gray-700 leading-relaxed mb-8">
-                            {content.mainText}
+                    {content.mainText}
                   </p>
 
                   <div className="flex flex-wrap justify-center md:justify-start gap-3 mb-8">
-                            {content.keyPoints.map((point, index) => (
-                              <span
-                                key={index}
+                    {content.keyPoints.map((point, index) => (
+                      <span
+                        key={index}
                         className="inline-flex items-center px-4 py-2 rounded-full
                             bg-violet-50 border border-violet-200 text-violet-800
                                   text-sm font-light whitespace-nowrap"
-                              >
-                                {point}
-                              </span>
-                            ))}
+                      >
+                        {point}
+                      </span>
+                    ))}
                   </div>
                   <p className="text-violet-600 hover:text-violet-700 text-sm mb-8 font-medium">
-                            {content.seeMore}
+                    {content.seeMore}
                   </p>
 
-                            <button
-                              onClick={() => setIsModalOpen(true)}
+                  <button
+                    onClick={() => setIsModalOpen(true)}
                     className="group relative inline-flex items-center justify-center px-6 py-3 text-sm font-light
                             overflow-hidden rounded-full text-white bg-[#0F1115] transition-all duration-300
                                 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 hover:scale-105"
-                            >
-                              <span className="relative z-10 flex items-center">
-                                {content.cta}
-                                <ArrowRight className="ml-2 -mr-1 h-4 w-4 transition-transform group-hover:translate-x-2" />
-                              </span>
+                  >
+                    <span className="relative z-10 flex items-center">
+                      {content.cta}
+                      <ArrowRight className="ml-2 -mr-1 h-4 w-4 transition-transform group-hover:translate-x-2" />
+                    </span>
                     <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-purple-700
                             opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                            </button>
-                      </div>
+                  </button>
+                </div>
 
-                <div className="relative aspect-[4/3] md:aspect-square lg:aspect-[4/3] overflow-hidden rounded-2xl">
+                <div className="md:col-span-3 relative aspect-[4/3] overflow-hidden rounded-2xl">
                   <img
                     src={PlaceholderImage}
                     alt="Rapid Branding Elements"
                     className="w-full h-full object-contain"
                   />
-                      </div>
-                    </div>
-                  </div>
+                </div>
+              </div>
+            </div>
           </section>
 
           <section id="features" className="py-20 md:py-40 overflow-hidden bg-gradient-to-b from-white via-gray-50/50 to-white relative">
