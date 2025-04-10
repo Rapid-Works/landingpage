@@ -42,6 +42,7 @@ import MVPpage from "./components/mvppage"
 import BundlePage from "./components/bundle"
 import RapidWorksHeader from "./components/new_landing_page_header"
 import WebinarFAB from "./components/WebinarFAB"
+import PartnersPage from "./components/partners_page"
 
 // Create and export Language Context with initial values
 export const LanguageContext = createContext({
@@ -1135,6 +1136,14 @@ function App() {
               element={
                 <main className="flex-1">
                   <BundlePage />
+                </main>
+              }
+            />
+            <Route
+              path="/partners"
+              element={
+                <main className="flex-1">
+                  <PartnersPage />
                 </main>
               }
             />
