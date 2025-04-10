@@ -291,7 +291,7 @@ const WorkshopsPage = () => {
       <RapidWorksHeader />
 
       {/* === Updated Hero Section === */}
-      <section className="bg-gradient-to-br from-emerald-600 to-green-600 text-white relative overflow-hidden">
+      <section className="bg-gradient-to-br from-emerald-600 to-green-600 text-white relative overflow-hidden min-h-[400px]">
         {/* Apply consistent padding */}
         <div className="container mx-auto px-6 pt-32 pb-24">
            <div className="text-center max-w-3xl mx-auto">

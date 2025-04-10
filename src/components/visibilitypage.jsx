@@ -631,7 +631,7 @@ const VisibiltyBundle = () => {
       <div className="min-h-screen bg-white">
         <main className="relative w-full overflow-x-hidden">
 
-          <section className="bg-gradient-to-br from-purple-600 to-purple-700 text-white relative overflow-hidden">
+          <section className="bg-gradient-to-br from-purple-600 to-purple-700 text-white relative overflow-hidden min-h-[400px]">
             <div className="container mx-auto px-6 pt-32 pb-24">
               <div className="text-center max-w-3xl mx-auto">
                 <div className="inline-flex items-center mb-4 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-sm">
