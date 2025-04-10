@@ -120,7 +120,7 @@ const PartnersPage = () => {
       },
       hero: {
         title: "Find Your Advisors",
-        subtitle: "Connect with vetted advisors suited for startups. Indicate your required timeline and help shape our partner network.",
+        subtitle: "Not every advisor is suited for a startup's needs. We know that, so we help you find the right one. Let us know which advisors you need in the next months and we'll find them.",
       },
       partners: {
         title: "Indicate Your Needs",
@@ -137,7 +137,7 @@ const PartnersPage = () => {
         demandInfo: {
           title: "Demand-Driven Network",
           subtitle: "We connect with experts once sufficient demand is identified. Your input shapes our partner network!",
-          cta: "Submit your interest below"
+          cta: "Indicate your needs above"
         }
       },
       form: {
@@ -175,7 +175,7 @@ const PartnersPage = () => {
       },
       hero: {
         title: "Finden Sie Ihre Berater",
-        subtitle: "Vernetzen Sie sich mit geprüften Beratern, die für Startups geeignet sind. Nennen Sie Ihren Zeitbedarf und gestalten Sie unser Partnernetzwerk mit.",
+        subtitle: "Nicht jeder Berater ist für die Bedürfnisse eines Startups geeignet. Das wissen wir, deshalb helfen wir Ihnen, den Richtigen zu finden. Teilen Sie uns mit, welche Berater Sie in den nächsten Monaten benötigen, und wir finden sie.",
       },
       partners: {
         title: "Geben Sie Ihren Bedarf an",
@@ -192,7 +192,7 @@ const PartnersPage = () => {
         demandInfo: {
           title: "Nachfragebasiertes Netzwerk",
           subtitle: "Wir knüpfen Kontakte zu Experten, sobald genügend Nachfrage besteht. Ihr Input formt unser Partnernetzwerk!",
-          cta: "Tragen Sie unten Ihr Interesse ein"
+          cta: "Geben Sie oben Ihren Bedarf an"
         }
       },
       form: {
@@ -281,7 +281,7 @@ const PartnersPage = () => {
       <RapidWorksHeader />
 
       {/* Hero Section - Adapted */}
-      <section className="bg-gradient-to-br from-blue-600 to-sky-600 text-white relative overflow-hidden">
+      <section className="bg-gradient-to-br from-blue-600 to-sky-600 text-white relative overflow-hidden min-h-[400px]">
         <div className="container mx-auto px-6 pt-32 pb-24">
            <div className="text-center max-w-3xl mx-auto">
              {/* --- Add Badge --- */}
@@ -336,16 +336,16 @@ const PartnersPage = () => {
                         }`}
                       >
                         <div className="flex items-start gap-3">
-                          <div className={`p-2 rounded-lg ${partnerNeeds[partner.id] ? "bg-blue-100" : "bg-gray-100"}`}>
+                          <div className={`p-2 rounded-lg flex-shrink-0 ${partnerNeeds[partner.id] ? "bg-blue-100" : "bg-gray-100"}`}>
                             {getPartnerIcon(partner.id)}
                           </div>
                           <div className="flex-grow">
                             <h4 className="font-bold text-gray-900">{partner.title}</h4>
                             <p className="text-gray-600 text-sm">{partner.description}</p>
                           </div>
-                          <div className="ml-auto w-36"> {/* Container for dropdown */}
+                          <div className="ml-auto w-36 flex-shrink-0">
                             <select
-                              value={partnerNeeds[partner.id] || "0"} // Default to "Not Needed"
+                              value={partnerNeeds[partner.id] || "0"}
                               onChange={(e) => handleNeedChange(partner.id, e.target.value)}
                               className="block w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                             >

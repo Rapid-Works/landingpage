@@ -174,7 +174,7 @@ const CoachingPage = () => {
       <RapidWorksHeader />
 
       {/* Hero Section Wrapper */}
-      <section className="bg-gradient-to-br from-orange-600 to-amber-600 text-white relative overflow-hidden">
+      <section className="bg-gradient-to-br from-orange-600 to-amber-600 text-white relative overflow-hidden min-h-[400px]">
         <div className="container mx-auto px-6 pt-32 pb-24">
           {/* Page intro */}
           <div className="text-center max-w-3xl mx-auto">
