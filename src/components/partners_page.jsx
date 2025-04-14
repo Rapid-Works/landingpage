@@ -335,7 +335,7 @@ const PartnersPage = () => {
                           partnerNeeds[partner.id] ? "border-blue-300 bg-blue-50" : "border-gray-200"
                         }`}
                       >
-                        <div className="flex items-start gap-3">
+                        <div className="flex flex-wrap items-start gap-3">
                           <div className={`p-2 rounded-lg flex-shrink-0 ${partnerNeeds[partner.id] ? "bg-blue-100" : "bg-gray-100"}`}>
                             {getPartnerIcon(partner.id)}
                           </div>
@@ -343,7 +343,7 @@ const PartnersPage = () => {
                             <h4 className="font-bold text-gray-900">{partner.title}</h4>
                             <p className="text-gray-600 text-sm">{partner.description}</p>
                           </div>
-                          <div className="ml-auto w-36 flex-shrink-0">
+                          <div className="w-full sm:w-36 mt-2 sm:mt-0 sm:ml-auto flex-shrink-0">
                             <select
                               value={partnerNeeds[partner.id] || "0"}
                               onChange={(e) => handleNeedChange(partner.id, e.target.value)}

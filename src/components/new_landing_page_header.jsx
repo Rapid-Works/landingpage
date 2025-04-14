@@ -92,9 +92,9 @@ export default function RapidWorksHeader() {
       }
     } else if (path.startsWith("/bundle")) {
       return {
-        logoGradient: "from-violet-600 to-violet-500",
-        logoText: "from-violet-600 to-violet-500",
-        buttonHover: "hover:from-violet-600 hover:to-violet-500"
+        logoGradient: "from-gray-900 to-black",
+        logoText: "from-gray-900 to-black",
+        buttonHover: "hover:from-gray-800 hover:to-black"
       }
     } else if (path.startsWith("/partners")) {
       return {
@@ -120,7 +120,7 @@ export default function RapidWorksHeader() {
     { name: "Financing", icon: <Euro className="h-4 w-4" />, path: "/financing", color: "rose" },
     { name: "Partners", icon: <Handshake className="h-4 w-4" />, path: "/partners", color: "blue" },
     { name: "Workshops", icon: <Presentation className="h-4 w-4" />, path: "/workshop", color: "green" },
-    { name: "Bundle", icon: <Package className="h-4 w-4" />, path: "/bundle", color: "violet" },
+    { name: "Bundle", icon: <Package className="h-4 w-4" />, path: "/bundle", color: "gray" },
   ]
 
   return (
@@ -211,7 +211,7 @@ export default function RapidWorksHeader() {
                  onClick={() => handleLanguageButtonClick('en')}
                  className={`px-2 py-1 rounded-full text-xs font-medium transition-colors duration-200 ${
                    language === 'en'
-                     ? 'bg-purple-600 text-white shadow-sm'
+                     ? `bg-gradient-to-r ${colors.logoGradient} text-white shadow-sm`
                      : 'text-gray-500'
                  }`}
                >
@@ -221,7 +221,7 @@ export default function RapidWorksHeader() {
                  onClick={() => handleLanguageButtonClick('de')}
                  className={`px-2 py-1 rounded-full text-xs font-medium transition-colors duration-200 ${
                    language === 'de'
-                     ? 'bg-purple-600 text-white shadow-sm'
+                     ? `bg-gradient-to-r ${colors.logoGradient} text-white shadow-sm`
                      : 'text-gray-500'
                  }`}
                >
