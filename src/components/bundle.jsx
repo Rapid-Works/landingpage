@@ -252,7 +252,7 @@ const BundlePage = () => {
       <RapidWorksHeader />
 
       {/* === Updated Hero Section === */}
-      <section className="bg-gradient-to-br from-violet-600 to-purple-600 text-white relative overflow-hidden min-h-[400px]">
+      <section className="bg-gradient-to-br from-gray-900 to-black text-white relative overflow-hidden min-h-[400px]">
         {/* Apply consistent top padding, increased bottom padding */}
         <div className="container mx-auto px-6 pt-32 pb-32"> {/* Increased pb-32 */}
           <div className="text-center max-w-3xl mx-auto">
