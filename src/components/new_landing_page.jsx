@@ -167,7 +167,7 @@ export default function RapidWorksPage() {
         rapidAnswers: {
           category: "Q&A",
           title: "Rapid Answers",
-          description: "Ask your early-stage startup questions live! Join our free biweekly Q&A webinar with experienced founders.",
+          description: "Ask your early-stage startup questions live! Join our free Q&A webinar with experienced founders.",
           learnMore: "Learn more",
           joinWebinar: "Join Free Webinar"
         },
@@ -245,7 +245,7 @@ export default function RapidWorksPage() {
         rapidAnswers: {
           category: "Q&A",
           title: "Rapid Answers",
-          description: "Stelle deine Fragen zur frühen Startup-Phase live! Nimm an unserem kostenlosen zweiwöchentlichen Q&A-Webinar mit erfahrenen Gründern teil.",
+          description: "Stelle deine Fragen zur frühen Startup-Phase live! Nimm an unserem kostenlosen Q&A-Webinar mit erfahrenen Gründern teil.",
           learnMore: "Mehr erfahren",
           joinWebinar: "Kostenlos teilnehmen"
         },
