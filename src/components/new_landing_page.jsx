@@ -20,7 +20,12 @@ import {
   Compass,
   Loader2,
   CalendarCheck,
-  Handshake
+  Handshake,
+  Target,
+  Zap,
+  Gift,
+  Layers,
+  ShieldCheck
 } from "lucide-react"
 import RapidWorksHeader from "./new_landing_page_header"
 import { LanguageContext as AppLanguageContext } from "../App"
@@ -161,6 +166,40 @@ export default function RapidWorksPage() {
         learnMore: "Learn More",
         scrollIndicatorAria: "Scroll to services"
       },
+      whoWeAre: {
+        title: "Who We Are",
+        description: "We are Startup enthusiasts. We have experience in Software Development, Marketing, Finance, Fundraising, Validating market needs and especially founding startups ourselves and working with startups. We know the pains and the gains, the ups and downs and have been in your shoes before. We know the most painful parts of being a founder and provide affordable solutions so founders can focus on their business again instead of getting hung up."
+      },
+      commonGround: {
+        title: "What All Our Offers Have in Common",
+        points: [
+          {
+            title: "They all cater to startups needs",
+            description: "We love startups and understand their needs from own previous startup journeys and working in the industry for years. Therefore all our services are built to cater the most common startup needs in the most time- and cost effective ways.",
+            icon: "Target"
+          },
+          {
+            title: "They deliver measurable results with unparalleled speed",
+            description: "Startups cant afford to loose time. We know that, so we built all our services so that you can get the first measurable results in just 1 week time. Doesn't matter if you need to enter a market, develop an mvp, get expert coaching, have a meeting with a tax advisor ... we will get you in action.",
+            icon: "Zap"
+          },
+          {
+            title: "They are either free or can be subsidized",
+            description: "Free: Rapid Answers, Rapid Financing. Fit for Future: Rapid Coaching. GTMG: Rapid Experts, Rapid Partners, Rapid Coaching, Rapid Workshops.",
+            icon: "Gift"
+          },
+          {
+            title: "They build upon each other",
+            description: "All of our services build on one another, though they don't require each other. You can step in and out at every stage. If you need guidance finding out which of our services might help you the best feel free to book a free call with us to discuss your individual needs together. By the way we will stop you from booking services we don't see fit your current biggest needs. We hope for your understanding.",
+            icon: "Layers"
+          },
+          {
+            title: "They all provide cost transparency and always deliver value before we charge you",
+            description: "You will always know upfront what we will charge and when we will do so. We will always only charge when you are satisfied with our work.",
+            icon: "ShieldCheck"
+          }
+        ]
+      },
       services: {
         title: "Our Services",
         subtitle: "Everything you need to build and scale your startup, all in one place.",
@@ -239,6 +278,40 @@ export default function RapidWorksPage() {
         learnMore: "Mehr erfahren",
         scrollIndicatorAria: "Zu den Services scrollen"
       },
+      whoWeAre: {
+        title: "Wer wir sind",
+        description: "Wir sind Startup-Enthusiasten. Wir haben Erfahrung in Softwareentwicklung, Marketing, Finanzen, Fundraising, der Validierung von Marktbedürfnissen und insbesondere darin, selbst Startups zu gründen und mit Startups zusammenzuarbeiten. Wir kennen die Schmerzen und die Erfolge, die Höhen und Tiefen und waren schon einmal in deiner Situation. Wir kennen die schmerzhaftesten Aspekte des Gründerdaseins und bieten erschwingliche Lösungen, damit sich Gründer wieder auf ihr Geschäft konzentrieren können, anstatt sich aufzuhalten."
+      },
+      commonGround: {
+        title: "Was alle unsere Angebote gemeinsam haben",
+        points: [
+          {
+            title: "Sie sind alle auf die Bedürfnisse von Startups zugeschnitten",
+            description: "Wir lieben Startups und verstehen ihre Bedürfnisse aus eigenen früheren Startup-Reisen und jahrelanger Arbeit in der Branche. Daher sind alle unsere Dienstleistungen darauf ausgelegt, die häufigsten Startup-Bedürfnisse auf die zeit- und kosteneffektivste Weise zu erfüllen.",
+            icon: "Target"
+          },
+          {
+            title: "Sie liefern messbare Ergebnisse mit beispielloser Geschwindigkeit",
+            description: "Startups können es sich nicht leisten, Zeit zu verlieren. Wir wissen das, deshalb haben wir alle unsere Dienstleistungen so aufgebaut, dass du bereits nach einer Woche erste messbare Ergebnisse erzielen kannst. Egal, ob du einen Markt erschließen, ein MVP entwickeln, Experten-Coaching erhalten oder ein Treffen mit einem Steuerberater benötigst ... wir bringen dich in Aktion.",
+            icon: "Zap"
+          },
+          {
+            title: "Sie sind entweder kostenlos oder können gefördert werden",
+            description: "Kostenlos: Rapid Answers, Rapid Financing. Fit for Future: Rapid Coaching. GTMG: Rapid Experts, Rapid Partners, Rapid Coaching, Rapid Workshops.",
+            icon: "Gift"
+          },
+          {
+            title: "Sie bauen aufeinander auf",
+            description: "Alle unsere Dienstleistungen bauen aufeinander auf, erfordern sich jedoch nicht gegenseitig. Du kannst in jeder Phase ein- und aussteigen. Wenn du Hilfe benötigst, um herauszufinden, welche unserer Dienstleistungen dir am besten helfen könnten, buche gerne ein kostenloses Gespräch mit uns, um deine individuellen Bedürfnisse gemeinsam zu besprechen. Übrigens werden wir dich davon abhalten, Dienstleistungen zu buchen, die unserer Meinung nach nicht zu deinen aktuell größten Bedürfnissen passen. Wir bitten um dein Verständnis.",
+            icon: "Layers"
+          },
+          {
+            title: "Sie bieten alle Kostentransparenz und liefern immer Wert, bevor wir etwas berechnen",
+            description: "Du wirst immer im Voraus wissen, was wir berechnen und wann wir dies tun. Wir berechnen immer erst dann etwas, wenn du mit unserer Arbeit zufrieden bist.",
+            icon: "ShieldCheck"
+          }
+        ]
+      },
       services: {
         title: "Unsere Dienstleistungen",
         subtitle: "Alles, was du brauchst, um dein Startup aufzubauen und zu skalieren, an einem Ort.",
@@ -308,6 +381,17 @@ export default function RapidWorksPage() {
       }
     }
   }
+
+  // Helper to get icon component by name
+  const iconComponents = {
+    Target, Zap, Gift, Layers, ShieldCheck,
+    // Add other icons used elsewhere if needed for consistency, or keep separate
+  };
+
+  const GetIcon = ({ name, className }) => {
+    const IconComponent = iconComponents[name];
+    return IconComponent ? <IconComponent className={className} /> : null;
+  };
 
   if (isLoading || !context) {
     return <div className="flex justify-center items-center h-screen"><Loader2 className="h-12 w-12 animate-spin text-purple-600" /></div>;
@@ -706,7 +790,46 @@ export default function RapidWorksPage() {
         </div>
       </section>
 
-      <section ref={ctaRef} className="py-20">
+      <section className="py-20 relative bg-gradient-to-br from-gray-800 to-gray-900 text-white">
+         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDUwIDUwIj48cGF0aCBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDUiIGQ9Ik0xMCAxMEg1djQwaDM1di01SDEwdjAySDUwek00NSA1SDQwVjBoNXY1ek0yNSAyNWgtNXAzMFYwSDIwdjI1ek00NSA0NWgtNXY1aDV2NXoAg0MCIvPjwvc3ZnPg==')] opacity-30 pointer-events-none z-0"></div>
+
+         <div className="container mx-auto px-6 relative z-10">
+           <div className="max-w-3xl mx-auto text-center">
+             <h2 className="text-3xl md:text-4xl font-bold mb-6">{content.whoWeAre.title}</h2>
+             <p className="text-lg text-gray-300 leading-relaxed">
+               {content.whoWeAre.description}
+             </p>
+           </div>
+         </div>
+       </section>
+
+       <section className="py-20 relative bg-white">
+         <div className="container mx-auto px-6">
+           <div className="text-center mb-16">
+             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">{content.commonGround.title}</h2>
+           </div>
+           <div className="flex flex-wrap justify-center gap-8">
+             {content.commonGround.points.map((point, index) => (
+               <div key={index} className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)] bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300 flex flex-col text-left border border-gray-100 hover:border-purple-200">
+                 <div className="flex items-center space-x-4 mb-4">
+                   <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center">
+                     <GetIcon name={point.icon} className="h-6 w-6 text-purple-600" />
+                   </div>
+                   <h3 className="text-lg font-semibold text-gray-800">{point.title}</h3>
+                 </div>
+                 <p className="text-gray-600 text-sm leading-relaxed flex-grow">{point.description}</p>
+               </div>
+             ))}
+           </div>
+            <div className="mt-16 bg-purple-50 border-l-4 border-purple-500 p-6 rounded-r-lg max-w-4xl mx-auto">
+               <p className="text-purple-800 italic text-sm md:text-base leading-relaxed">
+                 {content.commonGround.points.find(p => p.icon === 'Layers')?.description || (language === 'de' ? "Alle unsere Dienstleistungen bauen aufeinander auf..." : "All of our services build on one another...")}
+               </p>
+             </div>
+         </div>
+       </section>
+
+      <section ref={ctaRef} className="py-20 bg-gray-50">
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto">
             <h3 className="text-3xl md:text-4xl font-bold mb-6">{content.cta.title}</h3>
