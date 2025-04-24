@@ -1,31 +1,13 @@
 import { useState } from 'react';
 import { Calendar } from 'lucide-react';
-import WebinarModal from './WebinarModal'; // We'll create this next
+import WebinarModal from './WebinarModal';
+import { getNextWebinarDates } from '../utils/dateUtils';
 
 const WebinarFAB = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Calculate the next few webinar dates (biweekly starting April 25, 2025)
-  // This is a simplified calculation; a robust solution would use a date library
-  const getNextWebinarDates = () => {
-    const dates = [];
-    let currentDate = new Date('2025-04-25T10:00:00'); // Assuming 10:00 AM local time
-    const now = new Date();
-
-    // Find the first upcoming webinar date
-    while (currentDate < now) {
-      currentDate.setDate(currentDate.getDate() + 14);
-    }
-
-    // Add the next 3 upcoming dates
-    for (let i = 0; i < 3; i++) {
-      dates.push(new Date(currentDate));
-      currentDate.setDate(currentDate.getDate() + 14);
-    }
-    return dates;
-  };
-
-  const webinarDates = getNextWebinarDates();
+  // Call the imported function, requesting only 1 date now
+  const webinarDates = getNextWebinarDates(1);
 
   return (
     <>

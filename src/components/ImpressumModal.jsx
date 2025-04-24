@@ -23,32 +23,34 @@ const ImpressumModal = ({ onClose }) => {
             <X className="h-6 w-6" />
           </button>
           <section className="w-full">
-            <h2 className="text-3xl font-bold mb-8">{translate("impressum.title")}</h2>
+            <h2 className="text-3xl font-bold mb-6">{translate("impressum.title")}</h2>
 
-            <div className="space-y-8">
+            <div className="space-y-6">
               <div>
-                <h3 className="text-xl font-semibold mb-4">{translate("impressum.companyInfo.title")}</h3>
-                <p>RapidWorks GmbH</p>
-                <p>Tulpenweg 24a</p>
-                <p>52222 Stolberg</p>
-                <p>Germany</p>
-                <p>Email: contact@rapidworks.de</p>
-                <p>Tel: +49 (0) 157 823 244 53</p>
-                <p>{translate("impressum.companyInfo.managing")}: Yannick Heeren</p>
+                <p className="font-semibold mb-2">{translate("impressum.accordingTo")}</p>
+                <p>{translate("impressum.companyInfo.name")}</p>
+                <p>{translate("impressum.companyInfo.careOf")}</p>
+                <p>{translate("impressum.companyInfo.street")}</p>
+                <p>{translate("impressum.companyInfo.city")}</p>
+                <p>{translate("impressum.companyInfo.country")}</p>
               </div>
 
               <div>
-                <h3 className="text-xl font-semibold mb-4">{translate("impressum.registration.title")}</h3>
-                <p>{translate("impressum.registration.court")}</p>
-                <p>{translate("impressum.registration.number")}</p>
-                <p>{translate("impressum.registration.vatId")}</p>
+                <h3 className="text-xl font-semibold mb-2">{translate("impressum.contact.title")}</h3>
+                <p>{translate("impressum.contact.email")}</p>
+                <p>{translate("impressum.contact.phone")}</p>
               </div>
 
               <div>
-                <h3 className="text-xl font-semibold mb-4">{translate("impressum.responsibility.title")}</h3>
-                <p>Yannick Heeren</p>
-                <p>Tulpenweg 24a</p>
-                <p>52222 Stolberg</p>
+                <h3 className="text-xl font-semibold mb-2">{translate("impressum.responsibility.title")}</h3>
+                <p>{translate("impressum.responsibility.responsiblePerson")}</p>
+                <p>{translate("impressum.responsibility.name")}</p>
+                <p>{translate("impressum.responsibility.address")}</p>
+              </div>
+
+              <div>
+                <h3 className="text-xl font-semibold mb-2">{translate("impressum.note.title")}</h3>
+                <p className="text-sm text-gray-600">{translate("impressum.note.text")}</p>
               </div>
             </div>
           </section>
