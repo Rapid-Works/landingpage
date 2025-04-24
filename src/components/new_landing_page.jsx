@@ -233,7 +233,7 @@ export default function RapidWorksPage() {
       },
       whoWeAre: {
         title: "Wer wir sind",
-        description: "Wir sind Startup-Enthusiasten. Wir haben Erfahrung in Softwareentwicklung, Marketing, Finanzen, Fundraising, der Validierung von Marktbedürfnissen und insbesondere darin, selbst Startups zu gründen und mit Startups zusammenzuarbeiten. Wir kennen die Schmerzen und die Erfolge, die Höhen und Tiefen und waren schon einmal in deiner Situation. Wir kennen die schmerzhaftesten Aspekte des Gründerdaseins und bieten erschwingliche Lösungen, damit sich Gründer wieder auf ihr Geschäft konzentrieren können, anstatt sich aufzuhalten."
+        description: "Wir sind Startup-Enthusiasten. Wir haben Erfahrung in Softwareentwicklung, Marketing, Finanzen, Fundraising, der Validierung von Marktbedürfnissen und insbesondere darin, selbst Startups zu gründen und mit Startups zusammenzuarbeiten. Wir kennen die Schmerzen und die Erfolge, die Höhen und Tiefen und waren schon mehrfach in deiner Situation. Wir kennen die schmerzhaftesten Aspekte des Gründerdaseins und bieten erschwingliche Lösungen, damit sich Gründer wieder auf ihr Geschäft konzentrieren können, anstatt stecken zu bleiben."
       },
       commonGround: {
         title: "Was alle unsere Angebote gemeinsam haben",
@@ -250,12 +250,12 @@ export default function RapidWorksPage() {
           },
           {
             title: "Sie sind entweder kostenlos oder können gefördert werden",
-            description: "Wir wissen, dass in Startups jeder investierte Euro 10 Euro an Wert schaffen muss. Daher haben wir all unsere Services so ausgerichtet, dass sie durch Förderprogramme subventioniert werden können, oder gänzlich kostenfrei für dich sind. Wir zeigen dir gerne kostenfrei auf, welche Förderungen deinem Startup zustehen und unterstützen gerne bei der Beantragung.",
+            description: "„Wir wissen, dass in Startups jeder investierte Euro 10 Euro an Wert schaffen muss. Daher haben wir all unsere Services so ausgerichtet, dass sie durch Förderprogramme subventioniert werden können, oder gänzlich kostenfrei für dich sind. Wir zeigen dir gerne kostenfrei auf, welche Förderungen deinem Startup zustehen und unterstützen gerne bei der Beantragung.“",
             icon: "Gift"
           },
           {
             title: "Sie bauen aufeinander auf",
-            description: "Alle unsere Dienstleistungen bauen aufeinander auf, erfordern sich jedoch nicht gegenseitig. Du kannst in jeder Phase ein- und aussteigen. Wenn du Hilfe benötigst, um herauszufinden, welche unserer Dienstleistungen dir am besten helfen könnten, buche gerne ein kostenloses Gespräch mit uns, um deine individuellen Bedürfnisse gemeinsam zu besprechen. Übrigens werden wir dich davon abhalten, Dienstleistungen zu buchen, die unserer Meinung nach nicht zu deinen aktuell größten Bedürfnissen passen. Wir bitten um dein Verständnis.",
+            description: "All of our services build on one another, though they don't require each other. You can step in and out at every stage. If you need guidance finding out which of our services might help you the best feel free to book a free call with us to discuss your individual needs together. By the way we will stop you from booking services we don't see fit your current biggest needs. We hope for your understanding.",
             icon: "Layers"
           },
           {
