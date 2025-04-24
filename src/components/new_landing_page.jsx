@@ -25,7 +25,8 @@ import {
   Zap,
   Gift,
   Layers,
-  ShieldCheck
+  ShieldCheck,
+  Calendar
 } from "lucide-react"
 import RapidWorksHeader from "./new_landing_page_header"
 import { LanguageContext as AppLanguageContext } from "../App"
@@ -103,10 +104,24 @@ export default function RapidWorksPage() {
 
   // Call the imported function, requesting only 1 date
   const webinarDates = getNextWebinarDates(1);
+  const nextWebinarDate = webinarDates.length > 0 ? webinarDates[0] : null;
 
   const openWebinarModal = () => {
     setIsWebinarModalOpen(true);
   }
+
+  const formatDateForCard = (date, lang) => {
+    if (!date) return '';
+    const options = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+    };
+    const locale = lang === 'de' ? 'de-DE' : 'en-GB';
+    return new Date(date).toLocaleString(locale, options);
+  };
 
   const pageContent = {
     en: {
@@ -161,7 +176,8 @@ export default function RapidWorksPage() {
           title: "Rapid Answers",
           description: "Ask your early-stage startup questions live! Join our free Q&A webinar with experienced founders.",
           learnMore: "Learn more",
-          joinWebinar: "Join Free Webinar"
+          joinWebinar: "Join Free Webinar",
+          nextWebinarPrefix: "Next:"
         },
         branding: {
           category: "Visibility",
@@ -255,7 +271,7 @@ export default function RapidWorksPage() {
           },
           {
             title: "Sie bauen aufeinander auf",
-            description: "All of our services build on one another, though they don't require each other. You can step in and out at every stage. If you need guidance finding out which of our services might help you the best feel free to book a free call with us to discuss your individual needs together. By the way we will stop you from booking services we don't see fit your current biggest needs. We hope for your understanding.",
+            description: "Alle unsere Dienstleistungen bauen aufeinander auf, erfordern sich jedoch nicht gegenseitig. Du kannst in jeder Phase ein- und aussteigen. Wenn du Hilfe benötigst, um herauszufinden, welche unserer Dienstleistungen dir am besten helfen könnten, buche gerne ein kostenloses Gespräch mit uns, um deine individuellen Bedürfnisse gemeinsam zu besprechen. Übrigens werden wir dich davon abhalten, Dienstleistungen zu buchen, die unserer Meinung nach nicht zu deinen aktuell größten Bedürfnissen passen. Wir bitten um dein Verständnis.",
             icon: "Layers"
           },
           {
@@ -273,7 +289,8 @@ export default function RapidWorksPage() {
           title: "Rapid Answers",
           description: "Stelle deine Fragen zur frühen Startup-Phase live! Nimm an unserem kostenlosen Q&A-Webinar mit erfahrenen Gründern teil.",
           learnMore: "Mehr erfahren",
-          joinWebinar: "Kostenlos teilnehmen"
+          joinWebinar: "Kostenlos teilnehmen",
+          nextWebinarPrefix: "Nächste:"
         },
         branding: {
           category: "Sichtbarkeit",
@@ -337,7 +354,7 @@ export default function RapidWorksPage() {
 
   // Helper to get icon component by name
   const iconComponents = {
-    Target, Zap, Gift, Layers, ShieldCheck,
+    Target, Zap, Gift, Layers, ShieldCheck, Calendar,
     // Add other icons used elsewhere if needed for consistency, or keep separate
   };
 
@@ -352,6 +369,8 @@ export default function RapidWorksPage() {
 
   const { language } = context;
   const content = pageContent[language];
+
+  const formattedNextDate = formatDateForCard(nextWebinarDate, language);
 
   return (
     <div className="min-h-screen bg-white font-sans selection:bg-purple-200 selection:text-purple-900">
@@ -417,9 +436,17 @@ export default function RapidWorksPage() {
                     <CalendarCheck className="h-6 w-6 text-white" />
                   </div>
                   <h3 className="text-3xl font-bold text-white mb-3">{content.services.rapidAnswers.title}</h3>
-                  <p className="text-white/90 text-sm md:text-lg mb-4">
+                  <p className="text-white/90 text-sm md:text-lg mb-3">
                     {content.services.rapidAnswers.description}
                   </p>
+                  {formattedNextDate && (
+                    <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md text-white font-semibold px-4 py-1.5 rounded-lg mb-4 shadow">
+                       <Calendar className="h-4 w-4 opacity-80" />
+                       <span className="text-sm">
+                         {content.services.rapidAnswers.nextWebinarPrefix} {formattedNextDate}
+                       </span>
+                    </div>
+                  )}
                 </div>
                 <button
                   onClick={openWebinarModal}

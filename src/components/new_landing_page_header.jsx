@@ -35,7 +35,7 @@ export default function RapidWorksHeader() {
     return null;
   }
 
-  const { language, setLanguage } = context
+  const { language, setLanguage, translate } = context
 
   const handleLanguageButtonClick = (newLang) => {
     if (newLang !== language) {
@@ -164,13 +164,13 @@ export default function RapidWorksHeader() {
               </div>
             ))}
 
-            <a 
-              href="https://calendly.com/yannick-familie-heeren/30min" 
-              target="_blank" 
+            <a
+              href="https://calendly.com/yannick-familie-heeren/30min"
+              target="_blank"
               rel="noopener noreferrer"
               className={`ml-2 px-6 py-2 bg-black hover:bg-gradient-to-r ${colors.buttonHover} text-white rounded-full hover:shadow-lg hover:translate-y-[-2px] active:translate-y-[0px] transition-all duration-300 font-medium text-xs`}
             >
-              Book a Call
+              {translate('nav.bookCall')}
             </a>
 
             <div className="flex items-center gap-1 ml-4 p-1 bg-gray-100 rounded-full">
@@ -198,13 +198,13 @@ export default function RapidWorksHeader() {
           </div>
 
           <div className="md:hidden flex items-center gap-2">
-            <a 
-              href="https://calendly.com/yannick-familie-heeren/30min" 
-              target="_blank" 
+            <a
+              href="https://calendly.com/yannick-familie-heeren/30min"
+              target="_blank"
               rel="noopener noreferrer"
               className={`px-4 py-2 bg-black hover:bg-gradient-to-r ${colors.buttonHover} text-white rounded-full hover:shadow-lg transition-all duration-300 font-medium text-xs whitespace-nowrap`}
             >
-              Book a Call
+              {translate('nav.bookCall')}
             </a>
             <div className="flex items-center gap-0.5 p-0.5 bg-gray-100 rounded-full">
                <button
