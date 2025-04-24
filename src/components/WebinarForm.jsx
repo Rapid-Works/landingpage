@@ -24,8 +24,21 @@ const WebinarForm = ({ webinarDates, onClose }) => {
     setErrorMessage('');
 
     try {
-      console.log('Submitting webinar registration to Airtable:', formData);
-      const result = await submitWebinarRegistrationToAirtable(formData);
+      const selectedDateObject = webinarDates.find(
+        date => date.toISOString() === formData.selectedDate
+      );
+      const displayDateString = selectedDateObject ? formatDate(selectedDateObject) : 'N/A';
+
+      console.log('Submitting webinar registration to Airtable:', {
+         ...formData,
+         selectedDateString: displayDateString
+       });
+
+      const result = await submitWebinarRegistrationToAirtable({
+        ...formData,
+        selectedDate: formData.selectedDate,
+        selectedDateString: displayDateString
+      });
       console.log('Airtable submission successful:', result);
 
       setSubmissionState('success');
@@ -42,8 +55,8 @@ const WebinarForm = ({ webinarDates, onClose }) => {
       year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short'
     };
     const mergedOptions = { ...defaultOptions, ...options };
-    const utcDate = new Date(date);
-    return utcDate.toLocaleDateString(undefined, mergedOptions);
+    const dateObject = typeof date === 'string' ? new Date(date) : date;
+    return dateObject.toLocaleDateString(undefined, mergedOptions);
   };
 
   const SuccessView = () => (

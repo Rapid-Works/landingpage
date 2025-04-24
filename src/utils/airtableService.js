@@ -34,7 +34,7 @@ export const submitToAirtable = async ({ email, service, notes = '' }) => {
 };
 
 // Function to submit webinar registration data to Airtable
-export const submitWebinarRegistrationToAirtable = async ({ name, email, phone, questions, selectedDate }) => {
+export const submitWebinarRegistrationToAirtable = async ({ name, email, phone, questions, selectedDate, selectedDateString }) => {
   const apiKey = 'patFi7iCFm2Fc7OXN.d485d6f0d50ee40db49ba528838de34dd53b98f7771c855daca2c281467adea6'; // Use the same API key
   const baseId = 'appYmDZQRkTIJBLH4'; // Use the same Base ID
   const tableName = 'Webinar'; // Specific table for webinar registrations
@@ -56,7 +56,8 @@ export const submitWebinarRegistrationToAirtable = async ({ name, email, phone, 
           'Email': email,
           'Phone': phone || '', // Send empty string if phone is optional and not provided
           'Questions': questions || '', // Send empty string if questions are optional
-          'Selected Date': selectedDate, // Assuming the Airtable field is named 'Selected Date'
+          'Selected Date': selectedDate, // Send the original date/timestamp to the Date field
+          'Selected Display Time': selectedDateString, // +++ Send the formatted string to the new text field +++
         },
       }),
     });
