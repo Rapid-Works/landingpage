@@ -61,6 +61,7 @@ const translations = {
       getStarted: "Get Started",
       impressum: "Legal Notice",
       visibility: "Visibility Bundle",
+      bookCall: "Book a Call"
     },
     hero: {
       title: "Your Idea, Live in 2 Weeks",
@@ -214,6 +215,7 @@ const translations = {
       getStarted: "Jetzt Starten",
       impressum: "Impressum",
       visibility: "Sichtbarkeits-Bundle",
+      bookCall: "Call buchen"
     },
     hero: {
       title: "Ihre Idea, live in 2 Wochen",
