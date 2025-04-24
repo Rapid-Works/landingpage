@@ -138,7 +138,7 @@ export default function RapidWorksHeader() {
                 RapidWorks
               </h1>
               <p className="text-[8px] text-gray-500 font-medium tracking-wider uppercase leading-tight">
-                EMPOWERING ENTREPRENEURS
+                IDEAS INTO ACTION
               </p>
             </div>
           </Link>

@@ -180,28 +180,30 @@ const translations = {
     },
     impressum: {
       title: "Legal Notice",
+      accordingTo: "Information pursuant to § 5 TMG:",
       companyInfo: {
-        title: "Company Information",
-        name: "RapidWorks Agency GmbH",
-        street: "Innovationsstraße 42",
-        city: "50667 Köln",
+        title: "Contact Information",
+        name: "Yannick Heeren",
+        careOf: "(c/o RapidWorks – in foundation)",
+        street: "Tulpenweg 24a",
+        city: "52222 Stolberg",
         country: "Germany",
-        email: "contact@rapidworks.de",
-        phone: "+49 (0) 221 123456",
-        managing: "Managing Director",
-        managingName: "Max Mustermann",
       },
-      registration: {
-        title: "Registration",
-        court: "District Court Köln",
-        number: "HRB 123456",
-        vatId: "VAT ID: DE123456789",
+      contact: {
+        title: "Contact",
+        email: "Email: yannick@familie-heeren.de",
+        phone: "Phone: +49 157 823 244 53",
       },
       responsibility: {
         title: "Responsible for Content",
-        name: "Max Mustermann",
-        address: "Address same as above",
+        responsiblePerson: "Responsible for the content according to § 55 Abs. 2 RStV:",
+        name: "Yannick Heeren",
+        address: "(address as above)",
       },
+      note: {
+        title: "Note",
+        text: "The company has not yet been founded. A final legal form and entry in the commercial register will follow shortly."
+      }
     },
   },
   de: {
@@ -339,28 +341,30 @@ const translations = {
     },
     impressum: {
       title: "Impressum",
+      accordingTo: "Angaben gemäß § 5 TMG:",
       companyInfo: {
-        title: "Unternehmensangaben",
-        name: "RapidWorks Agency GmbH",
-        street: "Innovationsstraße 42",
-        city: "50667 Köln",
+        title: "Kontaktinformationen",
+        name: "Yannick Heeren",
+        careOf: "(c/o RapidWorks – in Gründung)",
+        street: "Tulpenweg 24a",
+        city: "52222 Stolberg",
         country: "Deutschland",
-        email: "contact@rapidworks.de",
-        phone: "+49 (0) 221 123456",
-        managing: "Geschäftsführer",
-        managingName: "Max Mustermann",
       },
-      registration: {
-        title: "Registereintrag",
-        court: "Amtsgericht Köln",
-        number: "HRB 123456",
-        vatId: "USt-IdNr.: DE123456789",
+      contact: {
+        title: "Kontakt",
+        email: "E-Mail: yannick@familie-heeren.de",
+        phone: "Telefon: +49 157 823 244 53",
       },
       responsibility: {
         title: "Verantwortlich für den Inhalt",
-        name: "Max Mustermann",
-        address: "Adresse wie oben",
+        responsiblePerson: "Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV:",
+        name: "Yannick Heeren",
+        address: "(Adresse wie oben)",
       },
+      note: {
+        title: "Hinweis",
+        text: "Das Unternehmen ist noch nicht gegründet. Eine finale Rechtsform und Eintragung im Handelsregister erfolgen zeitnah."
+      }
     },
   },
 }

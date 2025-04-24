@@ -30,6 +30,7 @@ import {
 import RapidWorksHeader from "./new_landing_page_header"
 import { LanguageContext as AppLanguageContext } from "../App"
 import WebinarModal from './WebinarModal'
+import { getNextWebinarDates } from '../utils/dateUtils'
 
 // Import custom images
 import YannickProfile from "../images/yannickprofile.png"
@@ -100,56 +101,8 @@ export default function RapidWorksPage() {
     setIsModalOpen(true)
   }
 
-  const getNextWebinarDates = (count = 5) => {
-    const dates = [];
-    const now = new Date(); // Current time
-
-    // --- Define Base Dates in UTC ---
-    // Exception: Wednesday, April 30th, 2025, 17:00 CEST (15:00 UTC)
-    const exceptionDate = new Date(Date.UTC(2025, 3, 30, 15, 0, 0)); // Month 3 is April
-
-    // Reference Thursday: May 15th, 2025, 17:00 CEST (15:00 UTC)
-    let nextThursday = new Date(Date.UTC(2025, 4, 15, 15, 0, 0)); // Month 4 is May
-
-    // Reference Saturday: May 17th, 2025, 10:00 CEST (08:00 UTC)
-    let nextSaturday = new Date(Date.UTC(2025, 4, 17, 8, 0, 0)); // Month 4 is May
-
-    // --- Add Exception if in Future ---
-    if (exceptionDate > now) {
-      dates.push(exceptionDate);
-    }
-
-    // --- Find First Relevant Thursday & Saturday After Now ---
-    // Adjust starting Thursdays/Saturdays until they are after 'now'
-    while (nextThursday <= now) {
-      nextThursday.setDate(nextThursday.getDate() + 14);
-    }
-    while (nextSaturday <= now) {
-      nextSaturday.setDate(nextSaturday.getDate() + 14);
-    }
-
-    // --- Generate Future Dates ---
-    // Keep adding Thursdays and Saturdays until we have enough dates
-    while (dates.length < count) {
-      // Add the next valid Thursday and Saturday
-      // We check again if they are truly after 'now' in case the first ones were calculated
-      // before the exception date but are still after 'now'.
-      if (nextThursday > now) dates.push(new Date(nextThursday));
-      if (nextSaturday > now) dates.push(new Date(nextSaturday));
-
-      // Calculate the next ones in the sequence
-      nextThursday.setDate(nextThursday.getDate() + 14);
-      nextSaturday.setDate(nextSaturday.getDate() + 14);
-
-      // Safety break if something goes wrong (shouldn't be needed)
-      if (dates.length > count + 5) break;
-    }
-
-    // --- Sort and Trim ---
-    dates.sort((a, b) => a - b); // Sort chronologically
-    return dates.slice(0, count); // Return the desired number of dates
-  };
-  const webinarDates = getNextWebinarDates();
+  // Call the imported function, requesting only 1 date
+  const webinarDates = getNextWebinarDates(1);
 
   const openWebinarModal = () => {
     setIsWebinarModalOpen(true);
@@ -185,7 +138,7 @@ export default function RapidWorksPage() {
           },
           {
             title: "They are either free or can be subsidized",
-            description: "Free: Rapid Answers, Rapid Financing. Fit for Future: Rapid Coaching. GTMG: Rapid Experts, Rapid Partners, Rapid Coaching, Rapid Workshops.",
+            description: "We know that in startups, every Euro invested must create 10 Euros in value. Therefore, we have designed all our services so that they can be subsidized through funding programs, or are completely free for you. We are happy to show you free of charge which subsidies are available to your startup and gladly support you with the application process.",
             icon: "Gift"
           },
           {
@@ -297,7 +250,7 @@ export default function RapidWorksPage() {
           },
           {
             title: "Sie sind entweder kostenlos oder können gefördert werden",
-            description: "Kostenlos: Rapid Answers, Rapid Financing. Fit for Future: Rapid Coaching. GTMG: Rapid Experts, Rapid Partners, Rapid Coaching, Rapid Workshops.",
+            description: "Wir wissen, dass in Startups jeder investierte Euro 10 Euro an Wert schaffen muss. Daher haben wir all unsere Services so ausgerichtet, dass sie durch Förderprogramme subventioniert werden können, oder gänzlich kostenfrei für dich sind. Wir zeigen dir gerne kostenfrei auf, welche Förderungen deinem Startup zustehen und unterstützen gerne bei der Beantragung.",
             icon: "Gift"
           },
           {
