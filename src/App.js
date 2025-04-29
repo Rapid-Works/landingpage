@@ -43,6 +43,10 @@ import BundlePage from "./components/bundle"
 import RapidWorksHeader from "./components/new_landing_page_header"
 import WebinarFAB from "./components/WebinarFAB"
 import PartnersPage from "./components/partners_page"
+import WebinarModal from './components/WebinarModal'
+import { getNextWebinarDates } from './utils/dateUtils'
+import BlogListPage from './components/BlogListPage'
+import BlogPostPage from './components/BlogPostPage'
 
 // Create and export Language Context with initial values
 export const LanguageContext = createContext({
@@ -1006,28 +1010,28 @@ function App() {
   const [language, setLanguage] = useState(() => {
     return localStorage.getItem('language') || 'de'
   })
-  const [showNewsletterPopup, setShowNewsletterPopup] = useState(false);
+  const [showTimedWebinarModal, setShowTimedWebinarModal] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('language', language)
   }, [language])
 
   useEffect(() => {
-    const isSubscribed = localStorage.getItem('newsletterSubscribed') === 'true';
-    if (isSubscribed) return; 
-
-    const lastShown = localStorage.getItem('newsletterLastShown');
+    const lastShown = localStorage.getItem('webinarModalLastShown');
     const oneDayInMs = 24 * 60 * 60 * 1000; // 24 hours
 
     if (!lastShown || Date.now() - parseInt(lastShown) > oneDayInMs) {
       const timer = setTimeout(() => {
-        setShowNewsletterPopup(true);
-        localStorage.setItem('newsletterLastShown', Date.now().toString()); 
+        console.log("Showing timed webinar modal");
+        setShowTimedWebinarModal(true);
+        localStorage.setItem('webinarModalLastShown', Date.now().toString());
       }, 30000); // 30 seconds timeout
-      
+
       return () => clearTimeout(timer); // Cleanup timer on unmount
     }
   }, []);
+
+  const nextWebinarDateForPopup = useMemo(() => getNextWebinarDates(1), []);
 
   const contextValue = useMemo(() => ({
     language,
@@ -1153,11 +1157,28 @@ function App() {
                 </main>
               }
             />
+            <Route
+              path="/blogs"
+              element={
+                <main className="flex-1">
+                  <BlogListPage />
+                </main>
+              }
+            />
+            <Route
+              path="/blogs/:slug"
+              element={
+                <main className="flex-1">
+                  <BlogPostPage />
+                </main>
+              }
+            />
           </Routes>
           <WebinarFAB />
-          <NewsletterPopup 
-            isOpen={showNewsletterPopup} 
-            onClose={() => setShowNewsletterPopup(false)} 
+          <WebinarModal
+            isOpen={showTimedWebinarModal}
+            onClose={() => setShowTimedWebinarModal(false)}
+            webinarDates={nextWebinarDateForPopup}
           />
           <Footer />
         </div>
