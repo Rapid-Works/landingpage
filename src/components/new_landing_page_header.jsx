@@ -12,7 +12,8 @@ import {
   Compass,
   Presentation,
   Globe,
-  Handshake
+  Handshake,
+  Newspaper
 } from "lucide-react"
 import { LanguageContext as AppLanguageContext } from "../App"
 
@@ -121,6 +122,7 @@ export default function RapidWorksHeader() {
     { name: "Partners", icon: <Handshake className="h-4 w-4" />, path: "/partners", color: "blue" },
     { name: "Workshops", icon: <Presentation className="h-4 w-4" />, path: "/workshop", color: "green" },
     { name: "Bundle", icon: <Package className="h-4 w-4" />, path: "/bundle", color: "gray" },
+    // { name: "Blog", icon: <Newspaper className="h-4 w-4" />, path: "/blogs", color: "teal" },
   ]
 
   return (
@@ -157,7 +159,7 @@ export default function RapidWorksHeader() {
                   {item.icon}
                   <span>{item.name}</span>
                 </Link>
-                <div className={`absolute -bottom-1 left-0 right-0 h-0.5 bg-${item.color}-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left`}></div>
+                <div className={`absolute -bottom-1 left-0 right-0 h-0.5 bg-${item.color}-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left ${isActive(item.path) ? 'scale-x-100' : ''}`}></div>
                 {!isActive(item.path) && (
                   <div className={`absolute inset-0 bg-${item.color}-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10`}></div>
                 )}
