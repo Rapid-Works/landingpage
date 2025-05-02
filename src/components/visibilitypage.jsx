@@ -27,6 +27,9 @@ import Footer from './Footer'
 import AirtableForm from "./AirtableForm"
 import RapidWorksHeader from "./new_landing_page_header"
 import ExploreMoreSection from "./ExploreMoreSection"
+import { testimonials } from "../testimonialsData"
+import TestimonialCard from "./TestimonialCard"
+import { MessageSquareText } from 'lucide-react'
 
 const BundleItem = ({ title, description, index, imageSrc }) => (
   <motion.div
@@ -194,6 +197,47 @@ const NewsletterForm = () => {
     </>
   )
 }
+
+const BrandingTestimonialsSection = ({ content }) => {
+  const brandingTestimonials = testimonials.filter(
+    t => t.services.includes("branding") && !t.isFeatured
+  );
+
+  if (brandingTestimonials.length === 0) {
+    return null;
+  }
+
+  return (
+    <section className="py-24 bg-white">
+      <div className="max-w-[1280px] w-full mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+           <span className="inline-flex items-center gap-2 text-purple-600 text-sm uppercase tracking-wider font-light mb-4 px-4 py-1.5 rounded-full bg-purple-50 border border-purple-100 shadow-sm">
+              <MessageSquareText className="h-4 w-4" />
+              Client Feedback
+           </span>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            {content.testimonials?.title || "Success with Rapid Branding"}
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            {content.testimonials?.subtitle || "See what founders say about our branding package."}
+          </p>
+        </div>
+        <div className={`grid grid-cols-1 ${brandingTestimonials.length >= 2 ? 'md:grid-cols-2' : ''} ${brandingTestimonials.length >= 3 ? 'lg:grid-cols-3' : ''} gap-8 max-w-7xl mx-auto`}>
+          {brandingTestimonials.map((testimonial) => (
+            <TestimonialCard
+              key={testimonial.id}
+              quote={testimonial.quote}
+              authorName={testimonial.authorName}
+              authorTitle={testimonial.authorTitle}
+              imageUrl={testimonial.imageUrl}
+              companyLogoUrl={testimonial.companyLogoUrl}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
 
 const VisibiltyBundle = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -401,6 +445,10 @@ const VisibiltyBundle = () => {
         title: "Did you know we do more than just Branding?",
         description: "Check out our other services to help you grow your startup - from expert assistance to MVP development, coaching, and financing solutions.",
         cta: "Explore all services"
+      },
+      testimonials: {
+        title: "Success with Rapid Branding",
+        subtitle: "Hear from founders who quickly established their market presence with our package."
       }
     },
     de: {
@@ -573,6 +621,10 @@ const VisibiltyBundle = () => {
         title: "Wussten Sie, dass wir mehr als nur Branding anbieten?",
         description: "Entdecken Sie unsere weiteren Dienstleistungen, die Ihnen beim Wachstum Ihres Startups helfen - von Expertenunterstützung über MVP-Entwicklung bis hin zu Coaching und Finanzierungslösungen.",
         cta: "Alle Services entdecken"
+      },
+      testimonials: {
+        title: "Erfolge mit Rapid Branding",
+        subtitle: "Hören Sie von Gründern, die mit unserem Paket schnell ihre Marktpräsenz aufgebaut haben."
       }
     }
   }
@@ -767,6 +819,8 @@ const VisibiltyBundle = () => {
               </div>
             </div>
           </section>
+
+          <BrandingTestimonialsSection content={content} />
 
           <section className="py-24 bg-gray-50">
             <div className={containerClass}>

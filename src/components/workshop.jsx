@@ -16,12 +16,63 @@ import {
   Loader2,
   DollarSign,
   Target,
-  TrendingUp
+  TrendingUp,
+  MessageSquareText
 } from "lucide-react"
 import RapidWorksHeader from "./new_landing_page_header"
 import { submitToAirtable } from '../utils/airtableService'
 import { LanguageContext as AppLanguageContext } from "../App"
 import ExploreMoreSection from "./ExploreMoreSection"
+import { testimonials } from "../testimonialsData"
+import TestimonialCard from "./TestimonialCard"
+
+const WorkshopTestimonialsSection = ({ content }) => {
+  const workshopTestimonials = testimonials.filter(
+    t => t.services.includes("workshop")
+  )
+
+  if (workshopTestimonials.length === 0) {
+    return null
+  }
+
+  const gridColsClass = `grid-cols-1 ${
+    workshopTestimonials.length >= 2 ? 'md:grid-cols-2' : ''
+  } ${
+    workshopTestimonials.length >= 3 ? 'lg:grid-cols-3' : ''
+  }`
+
+  return (
+    <section className="py-24 bg-emerald-50">
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-16">
+          <span className="inline-flex items-center gap-2 text-emerald-600 text-sm uppercase tracking-wider font-light mb-4 px-4 py-1.5 rounded-full bg-white border border-emerald-100 shadow-sm">
+            <MessageSquareText className="h-4 w-4" />
+            Participant Feedback
+          </span>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            {content.testimonials?.title || "Learning Experiences"}
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            {content.testimonials?.subtitle || "Hear from founders who gained valuable skills in our workshops."}
+          </p>
+        </div>
+        <div className={`grid ${gridColsClass} gap-8 max-w-7xl mx-auto`}>
+          {workshopTestimonials.map((testimonial) => (
+            <TestimonialCard
+              key={testimonial.id}
+              quote={testimonial.quote}
+              authorName={testimonial.authorName}
+              authorTitle={testimonial.authorTitle}
+              imageUrl={testimonial.imageUrl}
+              companyLogoUrl={testimonial.companyLogoUrl}
+              borderColor="border-emerald-300"
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
 
 const WorkshopsPage = () => {
   const context = useContext(AppLanguageContext);
@@ -145,6 +196,10 @@ const WorkshopsPage = () => {
           subtitle: "Each workshop is limited to 20 participants to ensure personalized attention and maximum value.",
           launchDate: "Launching Q3 2025",
           waitlist: "Join the waitlist to secure your spot"
+        },
+        testimonials: {
+          title: "Valuable Learning Experiences",
+          subtitle: "See how participants benefited from our practical, expert-led workshops."
         }
       },
       form: {
@@ -215,6 +270,10 @@ const WorkshopsPage = () => {
           subtitle: "Jeder Workshop ist auf 20 Teilnehmer begrenzt, um persönliche Betreuung und maximalen Nutzen zu gewährleisten.",
           launchDate: "Start in Q3 2025",
           waitlist: "Trage dich in die Warteliste ein, um deinen Platz zu sichern"
+        },
+        testimonials: {
+          title: "Wertvolle Lernerfahrungen",
+          subtitle: "Sehen Sie, wie Teilnehmer von unseren praxisnahen, von Experten geleiteten Workshops profitiert haben."
         }
       },
       form: {
@@ -561,6 +620,7 @@ const WorkshopsPage = () => {
       </main>
       
       {/* Add the new component */}
+      <WorkshopTestimonialsSection content={content} />
       <ExploreMoreSection excludeService="Workshops" />
 
     </div>

@@ -14,12 +14,63 @@ import {
   FileText,
   Compass,
   Presentation,
-  Loader2
+  Loader2,
+  MessageSquareText
 } from "lucide-react"
 import { LanguageContext as AppLanguageContext } from "../App"
 import RapidWorksHeader from "./new_landing_page_header"
 import EmailWaitlistForm from "./EmailWaitlistForm"
 import { submitToAirtable } from '../utils/airtableService'
+import { testimonials } from "../testimonialsData"
+import TestimonialCard from "./TestimonialCard"
+
+const BundleTestimonialsSection = ({ content }) => {
+  const bundleTestimonials = testimonials.filter(
+    t => t.services.includes("bundle")
+  );
+
+  if (bundleTestimonials.length === 0) {
+    return null;
+  }
+
+  const gridColsClass = `grid-cols-1 ${
+    bundleTestimonials.length >= 2 ? 'md:grid-cols-2' : ''
+  } ${
+    bundleTestimonials.length >= 3 ? 'lg:grid-cols-3' : ''
+  }`;
+
+  return (
+    <section className="py-24 bg-gray-50">
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-16">
+           <span className="inline-flex items-center gap-2 text-gray-600 text-sm uppercase tracking-wider font-light mb-4 px-4 py-1.5 rounded-full bg-white border border-gray-200 shadow-sm">
+              <MessageSquareText className="h-4 w-4" />
+              Client Feedback
+           </span>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            {content.testimonials?.title || "Success with the Rapid Bundle"}
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            {content.testimonials?.subtitle || "See how the complete package accelerated startup journeys."}
+          </p>
+        </div>
+        <div className={`grid ${gridColsClass} gap-8 max-w-7xl mx-auto`}>
+          {bundleTestimonials.map((testimonial) => (
+            <TestimonialCard
+              key={testimonial.id}
+              quote={testimonial.quote}
+              authorName={testimonial.authorName}
+              authorTitle={testimonial.authorTitle}
+              imageUrl={testimonial.imageUrl}
+              companyLogoUrl={testimonial.companyLogoUrl}
+              borderColor="border-gray-300"
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
 
 const BundlePage = () => {
   const context = useContext(AppLanguageContext);
@@ -96,7 +147,11 @@ const BundlePage = () => {
       },
       consultation: {
         buttonText: "Schedule a Free Consultation"
-      }
+      },
+      testimonials: {
+        title: "Success with the Rapid Bundle",
+        subtitle: "Learn how startups benefited from our comprehensive package."
+      },
     },
     de: {
       badge: {
@@ -165,7 +220,11 @@ const BundlePage = () => {
       },
       consultation: {
         buttonText: "Kostenlose Beratung vereinbaren"
-      }
+      },
+      testimonials: {
+        title: "Erfolge mit dem Rapid Bundle",
+        subtitle: "Erfahren Sie, wie Startups von unserem umfassenden Paket profitiert haben."
+      },
     }
   };
 
@@ -412,6 +471,9 @@ const BundlePage = () => {
           </div>
         </div>
       </main>
+
+      <BundleTestimonialsSection content={content} />
+
     </div>
   )
 }

@@ -5,6 +5,57 @@ import RapidWorksHeader from "./new_landing_page_header"
 import { useState, useEffect, useRef, useContext } from "react"
 import { LanguageContext as AppLanguageContext } from "../App"
 import ExploreMoreSection from "./ExploreMoreSection"
+import { testimonials } from "../testimonialsData"
+import TestimonialCard from "./TestimonialCard"
+import { MessageSquareText } from 'lucide-react'
+
+const FinancingTestimonialsSection = ({ content }) => {
+  const financingTestimonials = testimonials.filter(
+    t => t.services.includes("financing")
+  )
+
+  if (financingTestimonials.length === 0) {
+    return null
+  }
+
+  const gridColsClass = `grid-cols-1 ${
+    financingTestimonials.length >= 2 ? 'md:grid-cols-2' : ''
+  } ${
+    financingTestimonials.length >= 3 ? 'lg:grid-cols-3' : ''
+  }`
+
+  return (
+    <section className="py-24 bg-rose-50">
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-16">
+           <span className="inline-flex items-center gap-2 text-rose-600 text-sm uppercase tracking-wider font-light mb-4 px-4 py-1.5 rounded-full bg-white border border-rose-100 shadow-sm">
+              <MessageSquareText className="h-4 w-4" />
+              Funding Success
+           </span>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            {content.testimonials?.title || "Financing Journeys"}
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            {content.testimonials?.subtitle || "How we helped startups secure the funding they needed."}
+          </p>
+        </div>
+        <div className={`grid ${gridColsClass} gap-8 max-w-7xl mx-auto`}>
+          {financingTestimonials.map((testimonial) => (
+            <TestimonialCard
+              key={testimonial.id}
+              quote={testimonial.quote}
+              authorName={testimonial.authorName}
+              authorTitle={testimonial.authorTitle}
+              imageUrl={testimonial.imageUrl}
+              companyLogoUrl={testimonial.companyLogoUrl}
+              borderColor="border-rose-300"
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
 
 const FinancingPage = () => {
     const context = useContext(AppLanguageContext);
@@ -44,6 +95,10 @@ const FinancingPage = () => {
             modal: {
                 title: "Schedule a Free Consultation",
                 loading: "Loading scheduling calendar..."
+            },
+            testimonials: {
+                title: "Funding Success Stories",
+                subtitle: "Read how startups navigated the financing landscape with our support."
             }
         },
         de: {
@@ -63,6 +118,10 @@ const FinancingPage = () => {
             modal: {
                 title: "Kostenlose Beratung planen",
                 loading: "Terminkalender wird geladen..."
+            },
+            testimonials: {
+                title: "Erfolgsgeschichten Finanzierung",
+                subtitle: "Lesen Sie, wie Startups mit unserer Unterstützung die Finanzierungslandschaft gemeistert haben."
             }
         }
     };
@@ -154,6 +213,8 @@ const FinancingPage = () => {
             </main>
 
             {/* Add the new component */}
+            <FinancingTestimonialsSection content={content} />
+
             <ExploreMoreSection excludeService="Financing" />
 
             {/* Calendly Modal - Making it even larger */}
