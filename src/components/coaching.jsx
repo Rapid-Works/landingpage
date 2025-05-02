@@ -1,11 +1,13 @@
 "use client"
 
 import { useState, useEffect, useContext, useRef } from "react"
-import { ArrowRight, Compass, Calendar, Check, Target, TrendingUp, MessageSquare, MapPin, Loader2 } from "lucide-react"
+import { ArrowRight, Compass, Calendar, Check, Target, TrendingUp, MessageSquare, MapPin, Loader2, MessageSquareText } from "lucide-react"
 import YannickProfile from "../images/yannickprofile.png"
 import RapidWorksHeader from "./new_landing_page_header"
 import { LanguageContext as AppLanguageContext } from "../App"
 import ExploreMoreSection from "./ExploreMoreSection"
+import { testimonials } from "../testimonialsData"
+import TestimonialCard from "./TestimonialCard"
 
 // Single coach data
 const coach = {
@@ -30,6 +32,57 @@ const coach = {
     "Coached 50 Startups in the DigitalHUB Aachen"
   ]
 }
+
+// +++ Add Coaching Testimonials Section +++
+const CoachingTestimonialsSection = ({ content }) => {
+  const coachingTestimonials = testimonials.filter(
+    t => t.services.includes("coaching") // Find coaching testimonials
+  );
+
+  if (coachingTestimonials.length === 0) {
+    return null;
+  }
+
+  // Determine grid columns based on the number of testimonials
+  const gridColsClass = `grid-cols-1 ${
+    coachingTestimonials.length >= 2 ? 'md:grid-cols-2' : ''
+  } ${
+    coachingTestimonials.length >= 3 ? 'lg:grid-cols-3' : ''
+  }`;
+
+  return (
+    <section className="py-24 bg-orange-50"> {/* Use orange theme background */}
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-16">
+           <span className="inline-flex items-center gap-2 text-orange-600 text-sm uppercase tracking-wider font-light mb-4 px-4 py-1.5 rounded-full bg-white border border-orange-100 shadow-sm">
+              <MessageSquareText className="h-4 w-4" />
+              Founder Feedback
+           </span>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            {content.testimonials?.title || "Transformed by Coaching"}
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            {content.testimonials?.subtitle || "See how founders benefited from expert guidance."}
+          </p>
+        </div>
+        <div className={`grid ${gridColsClass} gap-8 max-w-7xl mx-auto`}>
+          {coachingTestimonials.map((testimonial) => (
+            <TestimonialCard
+              key={testimonial.id}
+              quote={testimonial.quote}
+              authorName={testimonial.authorName}
+              authorTitle={testimonial.authorTitle}
+              imageUrl={testimonial.imageUrl}
+              companyLogoUrl={testimonial.companyLogoUrl}
+              borderColor="border-orange-300" // Use orange border
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+// +++ End of Coaching Testimonials Section +++
 
 const CoachingPage = () => {
   const context = useContext(AppLanguageContext);
@@ -98,6 +151,10 @@ const CoachingPage = () => {
         servedCustomers: "Served 6,500 customers making 7 figure revenue",
         scaledStartups: "Scaled both Startups to 8 figure valuations",
         coachedStartups: "Coached 50 Startups in the DigitalHUB Aachen"
+      },
+      testimonials: {
+        title: "Transformed by Coaching",
+        subtitle: "Hear how personalized guidance helped founders overcome challenges and accelerate growth."
       }
     },
     de: {
@@ -150,6 +207,10 @@ const CoachingPage = () => {
         servedCustomers: "6.500 Kunden bedient und 7-stelligen Umsatz erzielt",
         scaledStartups: "Beide Startups auf 8-stellige Bewertungen skaliert",
         coachedStartups: "50 Startups im DigitalHUB Aachen gecoacht"
+      },
+      testimonials: {
+        title: "Durch Coaching transformiert",
+        subtitle: "Erfahren Sie, wie personalisierte Anleitung Gründern half, Herausforderungen zu meistern und Wachstum zu beschleunigen."
       }
     }
   };
@@ -327,6 +388,10 @@ const CoachingPage = () => {
               })}
             </div>
           </div>
+
+          {/* +++ Render the Coaching Testimonials Section +++ */}
+          <CoachingTestimonialsSection content={content} />
+
         </div>
       </main>
 

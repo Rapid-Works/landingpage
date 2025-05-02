@@ -23,11 +23,14 @@ import {
   Euro,
   Loader2,
   Landmark,
-  Tag
+  Tag,
+  MessageSquareText
 } from "lucide-react"
 import RapidWorksHeader from "./new_landing_page_header" 
 import { LanguageContext as AppLanguageContext } from "../App"
 import ExploreMoreSection from "./ExploreMoreSection" // Import the new component
+import { testimonials } from "../testimonialsData"
+import TestimonialCard from "./TestimonialCard"
 
 // Import team profile images
 import SamuelProfile from "../images/SamuelProfile.jpg"
@@ -133,6 +136,56 @@ const benefits = [
   },
 ]
 
+// +++ Add Experts Testimonials Section +++
+const ExpertsTestimonialsSection = ({ content }) => {
+  const expertsTestimonials = testimonials.filter(
+    t => t.services.includes("experts") // Find experts testimonials
+  );
+
+  if (expertsTestimonials.length === 0) {
+    return null;
+  }
+
+  const gridColsClass = `grid-cols-1 ${
+    expertsTestimonials.length >= 2 ? 'md:grid-cols-2' : ''
+  } ${
+    expertsTestimonials.length >= 3 ? 'lg:grid-cols-3' : ''
+  }`;
+
+  return (
+    <section className="py-24 bg-blue-50"> {/* Use blue theme background */}
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-16">
+           <span className="inline-flex items-center gap-2 text-blue-600 text-sm uppercase tracking-wider font-light mb-4 px-4 py-1.5 rounded-full bg-white border border-blue-100 shadow-sm">
+              <MessageSquareText className="h-4 w-4" />
+              Client Experiences
+           </span>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            {content.testimonials?.title || "Success with Rapid Experts"}
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            {content.testimonials?.subtitle || "See how on-demand expertise made a difference."}
+          </p>
+        </div>
+        <div className={`grid ${gridColsClass} gap-8 max-w-7xl mx-auto`}>
+          {expertsTestimonials.map((testimonial) => (
+            <TestimonialCard
+              key={testimonial.id}
+              quote={testimonial.quote}
+              authorName={testimonial.authorName}
+              authorTitle={testimonial.authorTitle}
+              imageUrl={testimonial.imageUrl}
+              companyLogoUrl={testimonial.companyLogoUrl}
+              borderColor="border-blue-300" // Use blue border
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+// +++ End of Experts Testimonials Section +++
+
 const TeamPage = () => {
   const context = useContext(AppLanguageContext)
   const [isLoading, setIsLoading] = useState(true)
@@ -194,7 +247,11 @@ const TeamPage = () => {
         "design": "Creating beautiful, functional designs that delight users",
         "finance": "Optimizing financial strategies for sustainable growth",
       },
-      memberExperienceSuffix: "years"
+      memberExperienceSuffix: "years",
+      testimonials: {
+        title: "Accelerated Development with Rapid Experts",
+        subtitle: "Discover how founders leveraged our on-demand talent to build and scale faster."
+      }
     },
     de: {
       pageTitle: "Rapid Experts",
@@ -241,7 +298,11 @@ const TeamPage = () => {
         "design": "Schöne, funktionale Designs schaffen, die Benutzer begeistern",
         "finance": "Finanzstrategien für nachhaltiges Wachstum optimieren",
       },
-      memberExperienceSuffix: "Jahre"
+      memberExperienceSuffix: "Jahre",
+      testimonials: {
+        title: "Beschleunigte Entwicklung mit Rapid Experts",
+        subtitle: "Entdecken Sie, wie Gründer unser On-Demand-Talent nutzten, um schneller zu bauen und zu skalieren."
+      }
     }
   }
 
@@ -479,6 +540,8 @@ const TeamPage = () => {
       </main>
       
       {/* Add the new component */}
+      <ExpertsTestimonialsSection content={content} />
+
       <ExploreMoreSection excludeService="Experts" />
 
     </div>

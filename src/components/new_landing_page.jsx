@@ -26,12 +26,15 @@ import {
   Gift,
   Layers,
   ShieldCheck,
-  Calendar
+  Calendar,
+  MessageSquareText
 } from "lucide-react"
 import RapidWorksHeader from "./new_landing_page_header"
 import { LanguageContext as AppLanguageContext } from "../App"
 import WebinarModal from './WebinarModal'
 import { getNextWebinarDates } from '../utils/dateUtils'
+import { testimonials } from "../testimonialsData"
+import TestimonialCard from "./TestimonialCard"
 
 // Import custom images
 import YannickProfile from "../images/yannickprofile.png"
@@ -235,7 +238,11 @@ export default function RapidWorksPage() {
       modal: {
         title: "Schedule a Free Consultation",
         loadingText: "Loading scheduling calendar..."
-      }
+      },
+      testimonialSection: {
+        title: "Real Results, Rapid Growth",
+        subtitle: "Hear directly from founders who leveraged RapidWorks services to accelerate their startup journey."
+      },
     },
     de: {
       hero: {
@@ -348,7 +355,11 @@ export default function RapidWorksPage() {
       modal: {
         title: "Kostenlose Beratung vereinbaren",
         loadingText: "Terminkalender wird geladen..."
-      }
+      },
+      testimonialSection: {
+        title: "Echte Ergebnisse, schnelles Wachstum",
+        subtitle: "Hören Sie direkt von Gründern, die RapidWorks-Dienste genutzt haben, um ihre Startup-Reise zu beschleunigen."
+      },
     }
   }
 
@@ -371,6 +382,61 @@ export default function RapidWorksPage() {
   const content = pageContent[language];
 
   const formattedNextDate = formatDateForCard(nextWebinarDate, language);
+
+  const FeaturedTestimonialSection = ({ content }) => {
+    // Filter for all featured testimonials
+    const featuredTestimonials = testimonials.filter(t => t.isFeatured);
+
+    // If no featured testimonials, don't render
+    if (featuredTestimonials.length === 0) {
+      return null;
+    }
+
+    // Determine grid columns based on the number of testimonials (up to 3)
+    const gridColsClass = `grid-cols-1 ${
+      featuredTestimonials.length >= 2 ? 'md:grid-cols-2' : ''
+    } ${
+      featuredTestimonials.length >= 3 ? 'lg:grid-cols-3' : ''
+    }`;
+
+    return (
+      // Add background styling and relative positioning for potential decorative elements
+      <section className="py-24 bg-gradient-to-b from-purple-50 via-white to-white relative overflow-hidden">
+         {/* Decorative gradient blobs */}
+         <div className="absolute top-0 left-0 w-72 h-72 bg-purple-200 rounded-full filter blur-3xl opacity-30 -translate-x-1/2 -translate-y-1/2 -z-10"></div>
+         <div className="absolute bottom-0 right-0 w-72 h-72 bg-indigo-200 rounded-full filter blur-3xl opacity-30 translate-x-1/2 translate-y-1/2 -z-10"></div>
+
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="text-center mb-16">
+            <span className="inline-flex items-center gap-2 text-purple-600 text-sm uppercase tracking-wider font-light mb-4 px-4 py-1.5 rounded-full bg-white border border-purple-100 shadow-sm">
+              <MessageSquareText className="h-4 w-4" /> {/* Use an icon */}
+              Success Stories
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              {content.testimonialSection?.title || "What Our Clients Say"}
+            </h2>
+             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              {content.testimonialSection?.subtitle || "See how RapidWorks helps founders achieve their goals faster."}
+            </p>
+          </div>
+          {/* Use a grid layout for testimonials */}
+          <div className={`grid ${gridColsClass} gap-8 max-w-7xl mx-auto`}>
+             {/* Map over the first 3 featured testimonials */}
+            {featuredTestimonials.slice(0, 3).map((testimonial) => (
+               <TestimonialCard
+                 key={testimonial.id} // Add key for list rendering
+                 quote={testimonial.quote}
+                 authorName={testimonial.authorName}
+                 authorTitle={testimonial.authorTitle}
+                 imageUrl={testimonial.imageUrl}
+                 companyLogoUrl={testimonial.companyLogoUrl}
+               />
+             ))}
+          </div>
+        </div>
+      </section>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-white font-sans selection:bg-purple-200 selection:text-purple-900">
@@ -865,6 +931,8 @@ export default function RapidWorksPage() {
           </div>
         </div>
       )}
+
+      <FeaturedTestimonialSection content={content} />
     </div>
   )
 }
