@@ -424,12 +424,14 @@ export default function RapidWorksPage() {
              {/* Map over the first 3 featured testimonials */}
             {featuredTestimonials.slice(0, 3).map((testimonial) => (
                <TestimonialCard
-                 key={testimonial.id} // Add key for list rendering
+                 key={testimonial.id}
                  quote={testimonial.quote}
                  authorName={testimonial.authorName}
                  authorTitle={testimonial.authorTitle}
                  imageUrl={testimonial.imageUrl}
                  companyLogoUrl={testimonial.companyLogoUrl}
+                 projectShowcaseImage={testimonial.projectShowcaseImage}
+                 accentColor="purple"
                />
              ))}
           </div>

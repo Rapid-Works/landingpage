@@ -1,3 +1,5 @@
+import ViteraVBImage from './images/vitera_vb.png'; // Assuming it's in src/images/
+
 export const testimonials = [
   // --- Sample Combined/Featured Testimonial ---
   {
@@ -56,17 +58,18 @@ export const testimonials = [
     services: ["experts"],
     isFeatured: false,
   },
-  // +++ New Branding Testimonial +++
+  // Updated Branding Testimonial for Vitera
   {
     id: 6,
     quote:
-      "The branding process was incredibly efficient. We went from concept to a full set of assets, including a website and social media banners, in just a week. It saved us so much time.",
-    authorName: "Julia Klein",
-    authorTitle: "Marketing Lead, FinTech Solutions",
-    imageUrl: "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80", // Sample image
-    companyLogoUrl: null,
+      "The branding process was incredibly efficient. RapidWorks delivered a complete set of assets, including our new website design, social media banners, and even billboard mockups, all within a week. This quick turnaround was crucial for our market launch.",
+    authorName: "The Vitera Team", // Updated
+    authorTitle: "Project Staffing Reinvented", // Updated
+    imageUrl: null, // You can add a generic Vitera logo or author image if you have one
+    companyLogoUrl: null, // Or Vitera logo here if distinct from imageUrl
     services: ["branding"],
-    isFeatured: false, // Not featured on the main page
+    isFeatured: false,
+    projectShowcaseImage: ViteraVBImage // <<< Use the imported variable
   },
   // Add more testimonials as needed...
 ]; 

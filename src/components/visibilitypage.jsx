@@ -231,6 +231,8 @@ const BrandingTestimonialsSection = ({ content }) => {
               authorTitle={testimonial.authorTitle}
               imageUrl={testimonial.imageUrl}
               companyLogoUrl={testimonial.companyLogoUrl}
+              projectShowcaseImage={testimonial.projectShowcaseImage}
+              accentColor="purple"
             />
           ))}
         </div>
