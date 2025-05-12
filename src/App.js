@@ -47,6 +47,7 @@ import WebinarModal from './components/WebinarModal'
 import { getNextWebinarDates } from './utils/dateUtils'
 import BlogListPage from './components/BlogListPage'
 import BlogPostPage from './components/BlogPostPage'
+import QRCodeRedirect from './components/QRCodeRedirect'
 
 // Create and export Language Context with initial values
 export const LanguageContext = createContext({
@@ -1077,6 +1078,15 @@ function App() {
           <ScrollToTop />
           <Analytics />
           <Routes>
+            <Route path="/qrcodebranding" element={<QRCodeRedirect />} />
+            <Route path="/qrcodevisibility" element={<QRCodeRedirect />} />
+            <Route path="/qrcodemvp" element={<QRCodeRedirect />} />
+            <Route path="/qrcodecoaching" element={<QRCodeRedirect />} />
+            <Route path="/qrcodefinancing" element={<QRCodeRedirect />} />
+            <Route path="/qrcodeworkshop" element={<QRCodeRedirect />} />
+            <Route path="/qrcodeblueprint" element={<QRCodeRedirect />} />
+            <Route path="/qrcodebundle" element={<QRCodeRedirect />} />
+            <Route path="/qrcodepartners" element={<QRCodeRedirect />} />
             <Route
               path="/"
               element={
