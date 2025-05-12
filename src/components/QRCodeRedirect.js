@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Analytics } from '@vercel/analytics/react';
+import { track } from '@vercel/analytics';
 
 const QRCodeRedirect = () => {
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ const QRCodeRedirect = () => {
 
     if (targetPath) {
       // Track the QR code scan with Vercel Analytics
-      Analytics.track('qr_code_scan', {
+      track('qr_code_scan', {
         source: currentPath,
         destination: targetPath,
         timestamp: new Date().toISOString()
