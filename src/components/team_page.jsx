@@ -31,6 +31,8 @@ import { LanguageContext as AppLanguageContext } from "../App"
 import ExploreMoreSection from "./ExploreMoreSection" // Import the new component
 import { testimonials } from "../testimonialsData"
 import TestimonialCard from "./TestimonialCard"
+import ExpertRequestModal from "./ExpertRequestModal" // <-- Import the new modal
+import { submitExpertRequestToAirtable } from '../utils/airtableService' // <-- Import the Airtable function
 
 // Import team profile images
 import SamuelProfile from "../images/SamuelProfile.jpg"
@@ -42,9 +44,9 @@ const teamMembers = [
     id: 1,
     name: "Prince Ardiabah",
     role: "Marketing Expert",
-    image: PrinceArdiabah, // Using Prince's profile image
+    image: PrinceArdiabah,
     icon: <Megaphone className="h-5 w-5" />,
-    calendlyLink: "https://calendly.com/example-link",
+    calendlyLink: "https://calendly.com/princeardiabah/15min",
     skills: ["Digital Marketing", "SEO", "Content Strategy"],
     color: "from-purple-600 to-indigo-600",
     lightColor: "bg-purple-100",
@@ -57,9 +59,9 @@ const teamMembers = [
     id: 2,
     name: "Samuel Donkor",
     role: "Software Expert",
-    image: SamuelProfile, // Using Samuel's profile image
+    image: SamuelProfile,
     icon: <Code className="h-5 w-5" />,
-    calendlyLink: "https://calendly.com/example-link",
+    calendlyLink: "https://calendly.com/calvinsamueldonkor/15min",
     skills: ["Backend Development", "Frontend Development", "API Integration"],
     color: "from-purple-600 to-indigo-600",
     lightColor: "bg-purple-100",
@@ -74,7 +76,7 @@ const teamMembers = [
     role: "Design Expert",
     image: null,
     icon: <Palette className="h-5 w-5" />,
-    calendlyLink: "https://calendly.com/example-link",
+    calendlyLink: null,
     skills: ["UI/UX Design", "Branding", "Visual Design"],
     color: "from-purple-600 to-indigo-600",
     lightColor: "bg-purple-100",
@@ -89,7 +91,7 @@ const teamMembers = [
     role: "Finance Expert",
     image: null,
     icon: <Euro className="h-5 w-5" />,
-    calendlyLink: "https://calendly.com/example-link",
+    calendlyLink: null,
     skills: ["Financial Planning", "Investment Strategy", "Budget Management"],
     color: "from-purple-600 to-indigo-600",
     lightColor: "bg-purple-100",
@@ -190,6 +192,8 @@ const TeamPage = () => {
   const context = useContext(AppLanguageContext)
   const [isLoading, setIsLoading] = useState(true)
   const benefitsRef = useRef(null)
+  const [isModalOpen, setIsModalOpen] = useState(false); // <-- State for modal visibility
+  const [selectedExpertType, setSelectedExpertType] = useState(''); // <-- State for expert type
 
   useEffect(() => {
     if (context) {
@@ -233,7 +237,8 @@ const TeamPage = () => {
         growingTitle: "Our team is growing!",
         growingDescription: "We're constantly expanding our team of experts to better serve your needs. Check back soon to meet our new Design and Finance specialists.",
         getNotified: "Get notified when new experts join",
-        comingSoon: "Coming Soon"
+        comingSoon: "Coming Soon",
+        requestExpertButton: "Request this Expert"
       },
       memberRoles: {
         "Marketing Expert": "Marketing Expert",
@@ -284,7 +289,8 @@ const TeamPage = () => {
         growingTitle: "Unser Team wächst!",
         growingDescription: "Wir erweitern ständig unser Expertenteam, um deine Bedürfnisse besser zu erfüllen. Schau bald wieder vorbei, um unsere neuen Design- und Finanzspezialisten kennenzulernen.",
         getNotified: "Benachrichtigt werden, wenn neue Experten beitreten",
-        comingSoon: "Demnächst verfügbar"
+        comingSoon: "Demnächst verfügbar",
+        requestExpertButton: "Diesen Experten anfragen"
       },
       memberRoles: {
         "Marketing Expert": "Marketing Experte",
@@ -314,6 +320,19 @@ const TeamPage = () => {
   const content = pageContent[language];
 
   const benefitsContent = content.benefits.items;
+
+  // Function to open the modal
+  const handleRequestExpert = (expertRole) => {
+    const translatedRole = content.memberRoles[expertRole] || expertRole; // Get translated role
+    setSelectedExpertType(translatedRole);
+    setIsModalOpen(true);
+  };
+
+  // Function to close the modal
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedExpertType(''); // Clear selected type on close
+  };
 
   return (
     <div className="min-h-screen bg-white font-sans selection:bg-blue-200 selection:text-blue-900">
@@ -427,12 +446,25 @@ const TeamPage = () => {
                     {content.cta.description}
                   </p>
 
-                  <button className="group w-full py-4 bg-white text-purple-700 rounded-xl hover:shadow-xl hover:shadow-purple-700/20 transition-all duration-300 font-medium flex items-center justify-center gap-3 relative z-10">
-                    {content.cta.buttonText}
-                    <span className="bg-purple-100 p-1 rounded-full group-hover:translate-x-1 transition-transform">
-                      <ArrowRight className="h-5 w-5" />
-                    </span>
-                  </button>
+                  {/* Dropdown for available experts */}
+                  <select
+                    className="w-full py-4 px-4 bg-white text-purple-700 rounded-xl font-medium mb-2"
+                    defaultValue=""
+                    onChange={e => {
+                      if (e.target.value) window.open(e.target.value, '_blank');
+                    }}
+                  >
+                    <option value="" disabled>
+                      {content.cta.buttonText}
+                    </option>
+                    {teamMembers
+                      .filter(m => m.calendlyLink)
+                      .map(m => (
+                        <option key={m.id} value={m.calendlyLink}>
+                          {m.name} – {m.role}
+                        </option>
+                      ))}
+                  </select>
                 </div>
               </div>
             </div>
@@ -496,7 +528,7 @@ const TeamPage = () => {
 
                     {/* Skills section */}
                     <div className="px-8 pb-8">
-                        <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">{content.team.expertiseTitle}</h4>
+                      <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">{content.team.expertiseTitle}</h4>
                       <div className="space-y-2">
                         {member.skills.map((skill, index) => (
                           <div
@@ -504,18 +536,38 @@ const TeamPage = () => {
                             className={`${member.lightColor} ${member.textColor} px-4 py-2 rounded-lg text-sm font-medium`}
                           >
                             {skill}
-              </div>
+                          </div>
                         ))}
-            </div>
-
-                      <div className="mt-4">
-                        <button
-                          className={`${member.textColor} font-medium text-sm`}
-                        >
-                            {content.team.moreSkills}
-                        </button>
-                  </div>
-                  </div>
+                      </div>
+                      {/* Flex row for "...and more" and Book Now */}
+                      <div className="mt-2 flex items-center justify-between gap-2">
+                        {/* ...and more badge */}
+                        <span className="inline-block px-3 py-1 text-xs text-gray-600 bg-gray-100 rounded-full shadow-sm">
+                          {content.team.moreSkills}
+                        </span>
+                        {/* Button */}
+                        {member.calendlyLink ? (
+                          <a
+                            href={member.calendlyLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-purple-600 to-indigo-600 rounded-full shadow hover:from-purple-700 hover:to-indigo-700 transition"
+                          >
+                            <ArrowRight className="w-4 h-4 mr-1" />
+                            Book Now
+                          </a>
+                        ) : (
+                          <button
+                            className="inline-flex items-center gap-1 px-4 py-2 text-sm font-semibold text-purple-700 border-2 border-purple-300 bg-white rounded-full shadow hover:bg-purple-50 hover:border-purple-500 transition"
+                            onClick={() => handleRequestExpert(member.role)} // <-- Call handler to open modal
+                          >
+                            <ArrowRight className="w-4 h-4 mr-1" />
+                            {/* Use translated text for button if available */}
+                            {content.team?.requestExpertButton || "Request this Expert"}
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   </div>
                   )
                 })}
@@ -543,6 +595,13 @@ const TeamPage = () => {
       <ExpertsTestimonialsSection content={content} />
 
       <ExploreMoreSection excludeService="Experts" />
+
+      {/* Add the modal component here */}
+      <ExpertRequestModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        expertType={selectedExpertType}
+      />
 
     </div>
   )
