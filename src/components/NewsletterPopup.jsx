@@ -4,8 +4,8 @@ import { useState, useEffect } from "react"
 
 // Function to submit data to Airtable
 const submitToAirtable = async (email) => {
-  const apiKey = 'pat4tdlgpeqbxb7JD.7c74864915d51c84a4eca34040c5f9889e997a92f8e2c052816e74bc925952a7';
-  const baseId = 'appujG83wn2tptPbB';
+  const apiKey = process.env.REACT_APP_NEWSLETTER_AIRTABLE_API_KEY;
+  const baseId = process.env.REACT_APP_NEWSLETTER_AIRTABLE_BASE_ID;
   const tableName = 'Newsletter';
 
   const url = `https://api.airtable.com/v0/${baseId}/${tableName}`;

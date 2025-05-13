@@ -3,7 +3,7 @@ import { X, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { Input } from './ui/input'; // Assuming you have shadcn/ui input
 import { submitExpertRequestToAirtable } from '../utils/airtableService';
 
-const ExpertRequestModal = ({ isOpen, onClose, expertType }) => {
+const ExpertRequestModal = ({ isOpen, onClose, expertType, content, language }) => {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('idle'); // idle, loading, success, error
   const [errorMessage, setErrorMessage] = useState('');
@@ -23,7 +23,7 @@ const ExpertRequestModal = ({ isOpen, onClose, expertType }) => {
       }, 2000);
     } catch (error) {
       setStatus('error');
-      setErrorMessage(error.message || 'Failed to submit request. Please try again.');
+      setErrorMessage(error.message || content?.defaultError || 'Failed to submit request. Please try again.');
       console.error("Submission failed:", error);
     }
   };
@@ -36,34 +36,34 @@ const ExpertRequestModal = ({ isOpen, onClose, expertType }) => {
         <button
           onClick={() => { onClose(); setStatus('idle'); setEmail(''); }}
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
-          aria-label="Close modal"
+          aria-label={content?.closeAriaLabel || "Close modal"}
         >
           <X size={24} />
         </button>
 
-        <h2 className="text-2xl font-bold mb-2 text-gray-900">Request Expert Access</h2>
+        <h2 className="text-2xl font-bold mb-2 text-gray-900">{content?.title || "Request Expert Access"}</h2>
         <p className="text-gray-600 mb-6">
-          Enter your email to be notified when our <strong className="text-purple-700">{expertType}</strong> becomes available.
+          {content?.subtitle1 || "Enter your email to be notified when our"} <strong className="text-purple-700">{expertType}</strong> {content?.subtitle2 || "becomes available."}
         </p>
 
         {status === 'success' ? (
           <div className="text-center py-6">
             <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-            <p className="text-lg font-medium text-gray-800">Thank You!</p>
-            <p className="text-gray-600">We've received your request and will notify you.</p>
+            <p className="text-lg font-medium text-gray-800">{content?.successTitle || "Thank You!"}</p>
+            <p className="text-gray-600">{content?.successMessage || "We've received your request and will notify you."}</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Your Email
+                {content?.emailLabel || "Your Email"}
               </label>
               <Input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                placeholder={content?.emailPlaceholder || "you@example.com"}
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 disabled={status === 'loading'}
@@ -72,7 +72,7 @@ const ExpertRequestModal = ({ isOpen, onClose, expertType }) => {
 
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Expert Needed
+                {content?.expertNeededLabel || "Expert Needed"}
               </label>
               <Input
                 type="text"
@@ -101,10 +101,10 @@ const ExpertRequestModal = ({ isOpen, onClose, expertType }) => {
               {status === 'loading' ? (
                 <>
                   <Loader2 className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" />
-                  Submitting...
+                  {content?.submittingButton || "Submitting..."}
                 </>
               ) : (
-                'Notify Me'
+                content?.submitButton || 'Notify Me'
               )}
             </button>
           </form>

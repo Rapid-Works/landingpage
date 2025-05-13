@@ -235,10 +235,24 @@ const TeamPage = () => {
         expertiseTitle: "Expertise",
         moreSkills: "...and more",
         growingTitle: "Our team is growing!",
-        growingDescription: "We're constantly expanding our team of experts to better serve your needs. Check back soon to meet our new Design and Finance specialists.",
+        growingDescription: "We're constantly expanding our team of experts to better serve your needs. If you are interested in an expert we don't have yet, let us know by requesting the expert, you will then be the first to be informed as soon as the expert becomes available.",
         getNotified: "Get notified when new experts join",
         comingSoon: "Coming Soon",
         requestExpertButton: "Request this Expert"
+      },
+      modalContent: {
+        title: "Request Expert Access",
+        subtitle1: "Enter your email to be notified when our",
+        subtitle2: "becomes available.",
+        emailLabel: "Your Email",
+        emailPlaceholder: "you@example.com",
+        expertNeededLabel: "Expert Needed",
+        successTitle: "Thank You!",
+        successMessage: "We've received your request and will notify you.",
+        submitButton: "Notify Me",
+        submittingButton: "Submitting...",
+        defaultError: "Failed to submit request. Please try again.",
+        closeAriaLabel: "Close modal",
       },
       memberRoles: {
         "Marketing Expert": "Marketing Expert",
@@ -287,10 +301,24 @@ const TeamPage = () => {
         expertiseTitle: "Expertise",
         moreSkills: "...und mehr",
         growingTitle: "Unser Team wächst!",
-        growingDescription: "Wir erweitern ständig unser Expertenteam, um deine Bedürfnisse besser zu erfüllen. Schau bald wieder vorbei, um unsere neuen Design- und Finanzspezialisten kennenzulernen.",
+        growingDescription: "Wir erweitern ständig unser Expertenteam, um deine Bedürfnisse besser zu erfüllen. Wenn du an einem Experten interessiert bist, den wir noch nicht haben, lass es uns wissen, indem du den Experten anfragst. Du wirst dann als Erster informiert, sobald der Experte verfügbar ist.",
         getNotified: "Benachrichtigt werden, wenn neue Experten beitreten",
         comingSoon: "Demnächst verfügbar",
         requestExpertButton: "Diesen Experten anfragen"
+      },
+      modalContent: {
+        title: "Expertenzugang anfordern",
+        subtitle1: "Gib deine E-Mail-Adresse ein, um benachrichtigt zu werden, wenn unser",
+        subtitle2: "verfügbar wird.",
+        emailLabel: "Deine E-Mail",
+        emailPlaceholder: "du@beispiel.com",
+        expertNeededLabel: "Benötigter Experte",
+        successTitle: "Vielen Dank!",
+        successMessage: "Wir haben deine Anfrage erhalten und werden dich benachrichtigen.",
+        submitButton: "Benachrichtige mich",
+        submittingButton: "Wird gesendet...",
+        defaultError: "Anfrage konnte nicht gesendet werden. Bitte versuche es erneut.",
+        closeAriaLabel: "Modal schließen",
       },
       memberRoles: {
         "Marketing Expert": "Marketing Experte",
@@ -581,9 +609,6 @@ const TeamPage = () => {
                   <p className="text-gray-700 mb-4">
                     {content.team.growingDescription}
                   </p>
-                  <button className="text-purple-600 font-medium flex items-center gap-1 hover:gap-2 transition-all">
-                    {content.team.getNotified} <ChevronRight className="h-4 w-4" />
-                  </button>
                 </div>
               </div>
             </div>
@@ -601,6 +626,8 @@ const TeamPage = () => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         expertType={selectedExpertType}
+        content={content.modalContent}
+        language={language}
       />
 
     </div>
