@@ -2,7 +2,7 @@ export const blogPosts = [
   {
     slug: "welcome-to-rapidworks-blog",
     title: "Welcome to the RapidWorks Blog!",
-    date: "2024-07-28",
+    date: "2025-05-12",
     author: "Yannick Heeren",
     excerpt: "Learn more about what we'll be sharing on the RapidWorks blog. Insights for founders, startup strategies, and more...",
     tags: ["introduction", "startups"],
@@ -27,7 +27,7 @@ Stay tuned for regular updates! We believe in turning **Ideas into Action**, and
   {
     slug: "why-mvp-is-crucial",
     title: "Why an MVP is Crucial for Your Startup in Germany and Beyond",
-    date: "2024-07-25",
+    date: "2025-05-12",
     author: "RapidWorks Team",
     excerpt: "Launching in Germany? Don't build the whole ship before testing the waters. Learn why a Minimum Viable Product (MVP) is your smartest first move.",
     tags: ["mvp", "validation", "startups", "germany"],
@@ -94,7 +94,7 @@ So, instead of aiming for perfect right away, aim for viable. Get your core idea
   {
     slug: "navigating-startup-funding-nrw",
     title: "Identifying Startup Funding in North Rhine-Westphalia",
-    date: "2024-07-20",
+    date: "2025-05-12",
     author: "Finance Team",
     excerpt: "Navigating the funding maze in NRW? Discover key public grants like Gründerstipendium.NRW, NRW.BANK programs, and tips for approaching private investors.",
     tags: ["funding", "nrw", "startups", "financing", "grants"],
@@ -153,7 +153,7 @@ Need help?? Contact Us today!
   {
     slug: "importance-of-branding",
     title: "Smart Marketing on A Budget!",
-    date: "2024-07-15",
+    date: "2025-05-12",
     author: "Marketing Team",
     excerpt: "Marketing doesn't have to break the bank! Discover practical, low-cost strategies for startups: focus on your audience, tell your story, leverage community, SEO basics, and partnerships.",
     tags: ["marketing", "startups", "budget", "growth", "content-marketing", "seo"],
@@ -246,7 +246,7 @@ Your passion and resourcefulness are your greatest marketing assets!
   {
     slug: "leveraging-expert-networks",
     title: "Building a Dream Team That Sticks Together!",
-    date: "2024-07-10",
+    date: "2025-05-12",
     author: "Operations Team",
     excerpt: "Your startup's success hinges on its team. Learn how to identify core needs, hire for culture fit, foster trust, and keep motivation high.",
     tags: ["team", "hiring", "culture", "startups", "founder"],
@@ -287,7 +287,7 @@ Building a great startup team is an ongoing process. It requires intentional eff
   {
     slug: "continuous-learning-coaching",
     title: "How to Build a Loyal Tribe Around Your Startup",
-    date: "2024-07-05",
+    date: "2025-05-12",
     author: "Yannick Heeren",
     excerpt: "Go beyond users to build a community! Learn how listening, creating gathering spots, being human, and valuing feedback can turn users into loyal fans.",
     tags: ["community", "users", "loyalty", "startups", "growth"],
