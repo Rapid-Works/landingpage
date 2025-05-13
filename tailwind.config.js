@@ -20,6 +20,7 @@ module.exports = {
   },
   plugins: [
     require('@tailwindcss/forms'),
+    require('@tailwindcss/typography'),
   ],
   safelist: [
     'bg-purple-500',
