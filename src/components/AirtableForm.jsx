@@ -424,15 +424,15 @@ const VisibilityFormulaForm = () => {
 
   // Airtable configuration
   const airtableConfig = {
-    apiKey: "patlbJ9TSLaQeNtLg.34480860e41a72dbebde4ecf469db674908ccef38c1839d81bb3eb46dfdb6d7c",
-    baseId: "appXypHaZZQdeY0cW",
-    tableName: "Table 1",
+    apiKey: process.env.REACT_APP_FORM_AIRTABLE_API_KEY,
+    baseId: process.env.REACT_APP_FORM_AIRTABLE_BASE_ID,
+    tableName: "Table 1", // This could also be an env var if it changes per environment
   }
 
   // Cloudinary configuration
   const cloudinaryConfig = {
-    cloudName: "disaly54t",
-    uploadPreset: "unsigned_uploads",
+    cloudName: process.env.REACT_APP_CLOUDINARY_CLOUD_NAME,
+    uploadPreset: process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET,
   }
 
   // Field name mapping (JavaScript variable name to Airtable field name)

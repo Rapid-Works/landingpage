@@ -1,7 +1,7 @@
 // Function to submit data to Airtable
 export const submitToAirtable = async ({ email, service, notes = '' }) => {
-  const apiKey = 'patFi7iCFm2Fc7OXN.d485d6f0d50ee40db49ba528838de34dd53b98f7771c855daca2c281467adea6';
-  const baseId = 'appYmDZQRkTIJBLH4';
+  const apiKey = process.env.REACT_APP_AIRTABLE_API_KEY;
+  const baseId = process.env.REACT_APP_AIRTABLE_BASE_ID;
   const tableName = 'Table 1';
 
   const url = `https://api.airtable.com/v0/${baseId}/${tableName}`;
@@ -35,8 +35,8 @@ export const submitToAirtable = async ({ email, service, notes = '' }) => {
 
 // Function to submit webinar registration data to Airtable
 export const submitWebinarRegistrationToAirtable = async ({ name, email, phone, questions, selectedDate, selectedDateString }) => {
-  const apiKey = 'patFi7iCFm2Fc7OXN.d485d6f0d50ee40db49ba528838de34dd53b98f7771c855daca2c281467adea6'; // Use the same API key
-  const baseId = 'appYmDZQRkTIJBLH4'; // Use the same Base ID
+  const apiKey = process.env.REACT_APP_AIRTABLE_API_KEY;
+  const baseId = process.env.REACT_APP_AIRTABLE_BASE_ID;
   const tableName = 'Webinar'; // Specific table for webinar registrations
 
   const url = `https://api.airtable.com/v0/${baseId}/${tableName}`;
@@ -77,8 +77,8 @@ export const submitWebinarRegistrationToAirtable = async ({ name, email, phone, 
 
 // Function to submit partner interest data to Airtable
 export const submitPartnerInterestToAirtable = async ({ email, partnerNeedsString }) => {
-  const apiKey = 'patFi7iCFm2Fc7OXN.d485d6f0d50ee40db49ba528838de34dd53b98f7771c855daca2c281467adea6'; // Use the same API key
-  const baseId = 'appYmDZQRkTIJBLH4'; // Use the same Base ID
+  const apiKey = process.env.REACT_APP_AIRTABLE_API_KEY;
+  const baseId = process.env.REACT_APP_AIRTABLE_BASE_ID;
   const tableName = 'Partners'; // Specific table for partner interest
 
   const url = `https://api.airtable.com/v0/${baseId}/${tableName}`;
@@ -116,8 +116,8 @@ export const submitPartnerInterestToAirtable = async ({ email, partnerNeedsStrin
 
 // Function to submit expert request data to Airtable
 export const submitExpertRequestToAirtable = async ({ email, expertType }) => {
-  const apiKey = 'patFi7iCFm2Fc7OXN.d485d6f0d50ee40db49ba528838de34dd53b98f7771c855daca2c281467adea6'; // Use the same API key
-  const baseId = 'appYmDZQRkTIJBLH4'; // Use the same Base ID
+  const apiKey = process.env.REACT_APP_AIRTABLE_API_KEY;
+  const baseId = process.env.REACT_APP_AIRTABLE_BASE_ID;
   const tableName = 'Expert Request'; // **NEW TABLE NAME**
 
   const url = `https://api.airtable.com/v0/${baseId}/${tableName}`;
