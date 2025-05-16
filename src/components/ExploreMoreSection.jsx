@@ -60,10 +60,32 @@ const ExploreMoreSection = ({ excludeService }) => {
   // Filter out the service specified by the prop
   const servicesToShow = allServices.filter(service => service.labelKey !== excludeService);
 
-  // Dynamically adjust title if a specific service is excluded
-  const dynamicTitle = excludeService
-    ? content.title.replace("just this", `just ${content.services[excludeService] || excludeService}?`)
-    : content.title.replace("just this?", "just Branding?");
+  // Dynamically adjust title
+  let dynamicTitle;
+  const serviceToBeMentioned = excludeService 
+    ? (content.services[excludeService] || excludeService) 
+    : (content.services["Branding"] || "Branding");
+
+  if (language === 'en') {
+    // English title: "Did you know we do more than just this?"
+    // We replace "just this" with "just [Service Name]"
+    // The original question mark at the end of content.title is preserved.
+    dynamicTitle = content.title.replace(
+      "just this", 
+      `just ${serviceToBeMentioned}`
+    );
+  } else if (language === 'de') {
+    // German title: "Wussten Sie, dass wir mehr als nur das anbieten?"
+    // We replace "nur das" with "nur [Service Name]"
+    // The original question mark at the end of content.title is preserved.
+    dynamicTitle = content.title.replace(
+      "nur das", 
+      `nur ${serviceToBeMentioned}`
+    );
+  } else {
+    // Fallback for any other languages or if content.title is structured differently
+    dynamicTitle = content.title;
+  }
 
 
   const containerClass = "max-w-[1280px] w-full mx-auto px-4 sm:px-6 lg:px-8 relative";
