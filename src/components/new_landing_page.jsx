@@ -450,8 +450,8 @@ export default function RapidWorksPage() {
         <div className="absolute top-20 right-0 w-96 h-96 bg-purple-200 rounded-full filter blur-3xl opacity-20 -z-10"></div>
         <div className="absolute bottom-0 left-10 w-72 h-72 bg-blue-200 rounded-full filter blur-3xl opacity-20 -z-10"></div>
 
-        <div className="bg-gradient-to-br from-purple-600 to-indigo-600 text-white relative overflow-hidden min-h-[65vh] flex items-center">
-          <div className="container mx-auto px-6 py-20 md:py-28 flex flex-col justify-center">
+        <div className="bg-gradient-to-br from-purple-600 to-indigo-600 text-white relative overflow-hidden flex items-center">
+          <div className="container mx-auto px-6 py-12 md:py-16 lg:py-20 flex flex-col justify-center">
             <div className="text-center mb-8">
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight tracking-tight">
                 {content.hero.title1}
@@ -466,14 +466,6 @@ export default function RapidWorksPage() {
               </p>
             </div>
             
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
-              <button className="px-8 py-4 bg-white text-purple-700 hover:bg-white/90 rounded-full font-medium text-lg shadow-lg hover:shadow-xl transition-all">
-                {content.hero.getStarted}
-              </button>
-              <button className="px-8 py-4 bg-transparent border border-white/30 hover:bg-white/10 text-white rounded-full font-medium text-lg transition-all">
-                {content.hero.learnMore}
-              </button>
-            </div>
           </div>
 
           <button

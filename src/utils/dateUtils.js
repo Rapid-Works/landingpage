@@ -4,7 +4,7 @@ export const getNextWebinarDates = (count = 5) => {
 
   // --- Define Base Dates in UTC ---
   // Exception: Wednesday, April 30th, 2025, 17:00 CEST (15:00 UTC)
-  const exceptionDate = new Date(Date.UTC(2025, 3, 30, 15, 0, 0)); // Month 3 is April
+  const exceptionDate = new Date(Date.UTC(2025, 5, 3, 15, 0, 0)); // Month 3 is April
 
   // Reference Thursday: May 15th, 2025, 17:00 CEST (15:00 UTC)
   let nextThursday = new Date(Date.UTC(2025, 4, 15, 15, 0, 0)); // Month 4 is May
