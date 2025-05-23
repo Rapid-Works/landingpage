@@ -35,11 +35,9 @@ const WorkshopTestimonialsSection = ({ content }) => {
     return null
   }
 
-  const gridColsClass = `grid-cols-1 ${
-    workshopTestimonials.length >= 2 ? 'md:grid-cols-2' : ''
-  } ${
-    workshopTestimonials.length >= 3 ? 'lg:grid-cols-3' : ''
-  }`
+  const gridColsClass = `grid-cols-1 ${workshopTestimonials.length >= 2 ? 'md:grid-cols-2' : ''
+    } ${workshopTestimonials.length >= 3 ? 'lg:grid-cols-3' : ''
+    }`
 
   return (
     <section className="py-24 bg-emerald-50">
@@ -134,7 +132,7 @@ const WorkshopsPage = () => {
         service: "Workshops",
         notes: `Selected workshops: ${workshopNotes}`
       })
-      
+
       setSubmitted(true)
       setError("")
     } catch (error) {
@@ -170,24 +168,24 @@ const WorkshopsPage = () => {
         selectionTitle: "Select Workshop Topics",
         selectionSubtitle: "(Select multiple)",
         items: [
-    {
-      id: "startup-finance",
-      title: "Startup Finance Essentials",
+          {
+            id: "startup-finance",
+            title: "Startup Finance Essentials",
             description: "Master the fundamentals of startup financial planning and fundraising"
-    },
-    {
-      id: "product-market-fit",
-      title: "Finding Product-Market Fit",
+          },
+          {
+            id: "product-market-fit",
+            title: "Finding Product-Market Fit",
             description: "Strategies to validate your product and find your ideal market"
-    },
-    {
-      id: "team-building",
-      title: "Building High-Performance Teams",
+          },
+          {
+            id: "team-building",
+            title: "Building High-Performance Teams",
             description: "Learn how to recruit, manage, and retain top talent for your startup"
-    },
-    {
-      id: "growth-hacking",
-      title: "Growth Hacking Masterclass",
+          },
+          {
+            id: "growth-hacking",
+            title: "Growth Hacking Masterclass",
             description: "Proven tactics to accelerate your startup growth on a limited budget"
           }
         ],
@@ -353,7 +351,7 @@ const WorkshopsPage = () => {
       <section className="bg-gradient-to-br from-emerald-600 to-green-600 text-white relative overflow-hidden min-h-[400px]">
         {/* Apply consistent padding */}
         <div className="container mx-auto px-6 pt-32 pb-24">
-           <div className="text-center max-w-3xl mx-auto">
+          <div className="text-center max-w-3xl mx-auto">
             <div className="inline-flex items-center justify-center mb-5 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-xs shadow-sm">
               <span className="relative flex h-2 w-2 mr-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -407,40 +405,37 @@ const WorkshopsPage = () => {
                       {content.workshops.items.map((workshop) => {
                         const workshopContent = getWorkshopContent(workshop.id);
                         return (
-                        <div
-                          key={workshop.id}
-                          className={`p-4 rounded-xl border transition-all duration-300 cursor-pointer ${
-                            selectedWorkshops.includes(workshop.id)
-                              ? "border-emerald-300 bg-emerald-50"
-                              : "border-gray-200 hover:border-emerald-200 hover:bg-emerald-50/50"
-                          }`}
-                          onClick={() => toggleWorkshop(workshop.id)}
-                        >
-                          <div className="flex items-start gap-3">
-                            <div
-                              className={`p-2 rounded-lg ${
-                                selectedWorkshops.includes(workshop.id) ? "bg-emerald-100" : "bg-gray-100"
+                          <div
+                            key={workshop.id}
+                            className={`p-4 rounded-xl border transition-all duration-300 cursor-pointer ${selectedWorkshops.includes(workshop.id)
+                                ? "border-emerald-300 bg-emerald-50"
+                                : "border-gray-200 hover:border-emerald-200 hover:bg-emerald-50/50"
                               }`}
-                            >
-                                {getWorkshopIcon(workshop.id)}
-                            </div>
-                            <div>
-                              <h4 className="font-bold text-gray-900">{workshop.title}</h4>
-                              <p className="text-gray-600 text-sm">{workshop.description}</p>
-                            </div>
-                            <div className="ml-auto">
+                            onClick={() => toggleWorkshop(workshop.id)}
+                          >
+                            <div className="flex items-start gap-3">
                               <div
-                                className={`w-5 h-5 rounded-md border-2 flex items-center justify-center ${
-                                  selectedWorkshops.includes(workshop.id) 
-                                    ? "border-emerald-500 bg-emerald-500" 
-                                    : "border-gray-300"
-                                }`}
+                                className={`p-2 rounded-lg ${selectedWorkshops.includes(workshop.id) ? "bg-emerald-100" : "bg-gray-100"
+                                  }`}
                               >
-                                {selectedWorkshops.includes(workshop.id) && <Check className="h-3 w-3 text-white" />}
+                                {getWorkshopIcon(workshop.id)}
+                              </div>
+                              <div>
+                                <h4 className="font-bold text-gray-900">{workshop.title}</h4>
+                                <p className="text-gray-600 text-sm">{workshop.description}</p>
+                              </div>
+                              <div className="ml-auto">
+                                <div
+                                  className={`w-5 h-5 rounded-md border-2 flex items-center justify-center ${selectedWorkshops.includes(workshop.id)
+                                      ? "border-emerald-500 bg-emerald-500"
+                                      : "border-gray-300"
+                                    }`}
+                                >
+                                  {selectedWorkshops.includes(workshop.id) && <Check className="h-3 w-3 text-white" />}
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
                         );
                       })}
                     </div>
@@ -533,7 +528,7 @@ const WorkshopsPage = () => {
                                         {workshopContent.title}
                                       </h4>
                                     </div>
-                                    <button 
+                                    <button
                                       type="button"
                                       onClick={() => toggleWorkshop(workshopId)}
                                       className="ml-auto text-gray-400 hover:text-red-500"
@@ -567,9 +562,8 @@ const WorkshopsPage = () => {
 
                         <button
                           type="submit"
-                          className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 ${
-                            selectedWorkshops.length === 0 ? 'opacity-50 cursor-not-allowed' : ''
-                          }`}
+                          className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 ${selectedWorkshops.length === 0 ? 'opacity-50 cursor-not-allowed' : ''
+                            }`}
                           disabled={selectedWorkshops.length === 0}
                         >
                           {content.form.button}
@@ -618,7 +612,7 @@ const WorkshopsPage = () => {
           </div>
         </div>
       </main>
-      
+
       {/* Add the new component */}
       <WorkshopTestimonialsSection content={content} />
       <ExploreMoreSection excludeService="Workshops" />
@@ -628,4 +622,3 @@ const WorkshopsPage = () => {
 }
 
 export default WorkshopsPage
-
