@@ -338,7 +338,7 @@ const translations = {
         terms: "Mit dem Absenden des Formulars stimmst du unseren",
         termsLink: "AGBs",
         and: "und der",
-        privacyLink: "Datenschutzerklärung zu",
+        privacyLink: "Datenschutzerklärung",
       },
     },
     footer: {

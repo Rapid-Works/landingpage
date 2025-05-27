@@ -262,27 +262,27 @@ export default function RapidWorksPage() {
         title: "Was alle unsere Angebote gemeinsam haben",
         points: [
           {
-            title: "Sie sind alle auf die Bedürfnisse von Startups zugeschnitten",
+            title: "Du bekommst Services, die speziell auf Startup-Bedürfnisse zugeschnitten sind",
             description: "Wir lieben Startups und verstehen ihre Bedürfnisse aus eigenen früheren Startup-Reisen und jahrelanger Arbeit in der Branche. Daher sind alle unsere Dienstleistungen darauf ausgelegt, die häufigsten Startup-Bedürfnisse auf die zeit- und kosteneffektivste Weise zu erfüllen.",
             icon: "Target"
           },
           {
-            title: "Sie liefern messbare Ergebnisse mit beispielloser Geschwindigkeit",
+            title: "Du erhältst messbare Ergebnisse mit beispielloser Geschwindigkeit",
             description: "Startups können es sich nicht leisten, Zeit zu verlieren. Wir wissen das, deshalb haben wir alle unsere Dienstleistungen so aufgebaut, dass du bereits nach einer Woche erste messbare Ergebnisse erzielen kannst. Egal, ob du einen Markt erschließen, ein MVP entwickeln, Experten-Coaching erhalten oder ein Treffen mit einem Steuerberater benötigst ... wir bringen dich in Aktion.",
             icon: "Zap"
           },
           {
-            title: "Sie sind entweder kostenlos oder können gefördert werden",
-            description: "„Wir wissen, dass in Startups jeder investierte Euro 10 Euro an Wert schaffen muss. Daher haben wir all unsere Services so ausgerichtet, dass sie durch Förderprogramme subventioniert werden können, oder gänzlich kostenfrei für dich sind. Wir zeigen dir gerne kostenfrei auf, welche Förderungen deinem Startup zustehen und unterstützen gerne bei der Beantragung.“",
+            title: "Du zahlst entweder nichts oder kannst Förderung erhalten",
+            description: "Wir wissen, dass in Startups jeder investierte Euro 10 Euro an Wert schaffen muss. Daher haben wir all unsere Services so ausgerichtet, dass sie durch Förderprogramme subventioniert werden können, oder gänzlich kostenfrei für dich sind. Wir zeigen dir gerne kostenfrei auf, welche Förderungen deinem Startup zustehen und unterstützen gerne bei der Beantragung.",
             icon: "Gift"
           },
           {
-            title: "Sie bauen aufeinander auf",
+            title: "Du kannst flexibel zwischen allen Services wechseln",
             description: "Alle unsere Dienstleistungen bauen aufeinander auf, erfordern sich jedoch nicht gegenseitig. Du kannst in jeder Phase ein- und aussteigen. Wenn du Hilfe benötigst, um herauszufinden, welche unserer Dienstleistungen dir am besten helfen könnten, buche gerne ein kostenloses Gespräch mit uns, um deine individuellen Bedürfnisse gemeinsam zu besprechen. Übrigens werden wir dich davon abhalten, Dienstleistungen zu buchen, die unserer Meinung nach nicht zu deinen aktuell größten Bedürfnissen passen. Wir bitten um dein Verständnis.",
             icon: "Layers"
           },
           {
-            title: "Sie bieten alle Kostentransparenz und liefern immer Wert, bevor wir etwas berechnen",
+            title: "Du erhältst volle Kostentransparenz und zahlst erst nach Zufriedenheit",
             description: "Du wirst immer im Voraus wissen, was wir berechnen und wann wir dies tun. Wir berechnen immer erst dann etwas, wenn du mit unserer Arbeit zufrieden bist.",
             icon: "ShieldCheck"
           }
@@ -294,7 +294,7 @@ export default function RapidWorksPage() {
         rapidAnswers: {
           category: "Q&A",
           title: "Rapid Answers",
-          description: "Stell deine Fragen zur frühen Startup-Phase live! Nimm an unserem kostenlosen Q&A-Webinar mit erfahrenen Gründern teil.",
+          description: "Stelle deine Fragen zur frühen Startup-Phase live! Nimm an unserem kostenlosen Q&A-Webinar mit erfahrenen Gründern teil.",
           learnMore: "Mehr erfahren",
           joinWebinar: "Kostenlos teilnehmen",
           nextWebinarPrefix: "Nächste:"
@@ -315,7 +315,7 @@ export default function RapidWorksPage() {
         partners: {
           category: "Netzwerk",
           title: "Rapid Partners",
-          description: "Vernetze dich mit geprüften Notaren, Steuerberatern, Wirtschaftsprüfern und mehr.",
+          description: "Vernetz dich mit geprüften Notaren, Steuerberatern, Wirtschaftsprüfern und mehr.",
           learnMore: "Mehr erfahren"
         },
         coaching: {
@@ -339,12 +339,12 @@ export default function RapidWorksPage() {
       },
       financingSection: {
           title: "Finanzierung benötigt?",
-          subtitle: "Mach dir keine Sorgen über die Finanzierung deines Wachstums. Wir zeigen dir die Möglichkeiten und helfen bei der Beantragung von Fördermitteln."
+          subtitle: "Mach dir keine Sorgen über die Finanzierung deines Wachstums. Wir zeigen dir die Möglichkeiten und helfen dir bei der Beantragung von Fördermitteln."
        },
       bundle: {
         title: "Rapid Bundle",
         description: "Erreiche das nächste Level mit all unseren Services kombiniert in einem Paket!",
-        financingNote: "Denkst du, es ist teuer? Nein, gemeinsam mit dir bereiten wir die Finanzierung unserer Dienstleistungen vor und suchen nach Fördermitteln, um unsere Services für dich unglaublich günstig zu machen!",
+        financingNote: "Denkst du, es ist teuer? Nein, gemeinsam mit dir bereiten wir die Finanzierung unserer Dienstleistungen vor und suchen nach Fördermitteln, um unsere Services für dich lächerlich günstig zu machen!",
         getBundle: "Dein Bundle sichern"
       },
       cta: {
@@ -358,7 +358,7 @@ export default function RapidWorksPage() {
       },
       testimonialSection: {
         title: "Echte Ergebnisse, schnelles Wachstum",
-        subtitle: "Hör direkt von Gründern, die RapidWorks-Dienste genutzt haben, um ihre Startup-Reise zu beschleunigen."
+        subtitle: "Höre direkt von Gründern, die RapidWorks-Dienste genutzt haben, um ihre Startup-Reise zu beschleunigen."
       },
     }
   }
