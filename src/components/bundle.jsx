@@ -155,7 +155,7 @@ const BundlePage = () => {
     },
     de: {
       badge: {
-        text: "Bald verfügbar"
+        text: "Demnächst verfügbar"
       },
       hero: {
         title: "Alles in einem Paket",
@@ -202,21 +202,21 @@ const BundlePage = () => {
         ]
       },
       opportunity: {
-        title: "Zeitlich begrenzte Chance",
-        description: "Aktuelle Fördermittel machen dies zu einer beispiellosen Gelegenheit, dein Startup mit erheblichen Kosteneinsparungen zu starten oder zu skalieren. Verpasse sie nicht!",
+        title: "Zeitlich begrenzte Gelegenheit",
+        description: "Aktuelle Fördermittel machen dies zu einer einmaligen Gelegenheit, dein Startup mit erheblichen Kosteneinsparungen zu starten oder zu skalieren. Verpass das nicht!",
         benefits: [
-          "Bis zu 70% der Kosten durch Förderungen gedeckt",
+          "Bis zu 70% der Kosten durch Fördermittel gedeckt",
           "Kostenlose Beratung zu verfügbaren Finanzierungsoptionen",
-          "Unterstützung beim Antragsverfahren für Förderungen"
+          "Unterstützung beim Antragsverfahren für Fördermittel"
         ]
       },
       waitlist: {
-        title: "Trage dich auf die Warteliste ein",
-        description: "Erfahre als Erster, wann unser umfassendes Rapid Bundle verfügbar ist. Wir benachrichtigen dich mit exklusiven Early-Access-Möglichkeiten.",
-        buttonText: "Frühzugang sichern",
+        title: "Trag dich in die Warteliste ein",
+        description: "Erfahre als Erster, wann unser umfassendes Rapid Bundle verfügbar wird. Wir benachrichtigen dich mit exklusiven Early-Access-Möglichkeiten.",
+        buttonText: "Frühzugang erhalten",
         successText: "Du bist auf der Liste!",
         successDescription: "Vielen Dank für dein Interesse an unserem Rapid Bundle. Wir benachrichtigen dich, sobald es verfügbar ist.",
-        checkboxText: "Ich stimme zu, Updates über das Rapid Bundle und Finanzierungsoptionen zu erhalten"
+        checkboxText: "Ich stimme zu, Updates zum Rapid Bundle und zu Finanzierungsoptionen zu erhalten"
       },
       consultation: {
         buttonText: "Kostenlose Beratung vereinbaren"

@@ -275,20 +275,20 @@ const TeamPage = () => {
     de: {
       pageTitle: "Rapid Experts",
       hero: {
-        title1: "Finde deinen Experten am selben Tag",
+        title1: "",
         titleHighlight: "Alle Expertise",
         title2: ", die du brauchst",
-        subtitle: "Überspringe den Aufwand der Mitarbeitersuche. Unsere geprüften Experten sind bereit, dein Startup sofort zu unterstützen – flexibel, bedarfsgerecht und kostengünstiger als festangestellte Mitarbeiter.",
+        subtitle: "Warum ein teures Team in Deutschland aufbauen mit 3+ Monaten Einstellungszeit, wenn unser Team in nur 1 Tag mit der Arbeit an deinem Projekt beginnen kann?",
         scrollIndicatorAria: "Zu den Vorteilen scrollen"
       },
       benefits: {
-        title: "Warum Rapid Experts wählen?",
+        title: "Warum die Rapid Experts wählen?",
         items: [
-          { text: "Keine Vorkosten", description: "Beginne die Zusammenarbeit mit unseren Experten ohne anfängliche Investitionen." },
-          { text: "Bis zu 70% günstiger mit Förderungen", description: "Spare erheblich mit unseren Rapid Financing Förderlösungen.", linkTo: "/financing", linkText: "Mehr über Förderungen" },        
-          { text: "Erste Stunde kostenlos", description: "Teste unsere Dienstleistungen ohne Risiko oder Verpflichtung." },
-          { text: "Stundenweise Bezahlung", description: "Flexibles Zahlungsmodell – zahle nur für die Zeit, die du benötigst." },
-          { text: "Immer verfügbar", description: "Unsere Experten sind innerhalb eines Tages einsatzbereit." }
+          { text: "Keine Vorauskosten", description: "Beginne die Zusammenarbeit mit unseren Experten ohne anfängliche Investition" },
+          { text: "Bis zu 70% günstiger mit Förderungen", description: "Spare erheblich mit unseren Rapid Financing Förderlösungen", linkText: "Erfahre mehr über Förderungen" },
+          { text: "Erste Stunde kostenlos", description: "Teste unsere Dienstleistungen ohne Risiko oder Verpflichtung" },
+          { text: "Stundenweise bezahlen", description: "Flexibles Zahlungsmodell - bezahle nur für die Zeit, die du benötigst" },
+          { text: "Immer verfügbar", description: "Unsere Experten sind bereit, innerhalb eines Tages zu starten" },
         ],
         discoverMore: "Entdecke weitere Vorteile",
       },

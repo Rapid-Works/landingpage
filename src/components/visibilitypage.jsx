@@ -454,91 +454,84 @@ const VisibiltyBundle = () => {
       }
     },
     de: {
-      pageTitle: "Rapid Branding Bundle | Sofortige Markensichtbarkeit | RapidWorks",
-      metaDescription: "Steigere deine Markensichtbarkeit mit dem Rapid Branding Bundle. Professionelle Webseite, Logo, Brand Guide & mehr in Rekordzeit. Ideal für Startups.",
+      pageBadge: "Rapid Branding",
       hero: {
-        mainHeading1: "Transformiere deine",
-        mainHeading2: "Markensichtbarkeit",
-        subHeading: "Baue schnell eine starke Marktpräsenz mit einem kompletten, professionellen Markenidentitätspaket – geliefert in nur einer Woche.",
-        ctaButton: "Dein Branding Paket anfragen",
-        subText: "Begrenzte Plätze verfügbar. Handle schnell!",
+        title: "Transformiere deine Markensichtbarkeit",
+        subtitle: "Baue schnell eine starke Marktpräsenz auf mit einem kompletten, professionellen Markenidentitätspaket – geliefert in nur einer Woche.",
+        cta: "Dein Branding-Paket starten",
+        scrollIndicatorAria: "Zum Inhalt scrollen"
       },
       whatYouGet: {
-        title: "Was du in deinem Branding-Paket bekommst",
-        description: "Alles, was du brauchst, um deine Marke zu starten und professionell zu präsentieren.",
+        title: "Was du bekommst",
+        subtitle: "Etabliere schnell deine Marktpräsenz mit unserem umfassenden Rapid Branding-Paket, geliefert in nur einer Woche und inklusive:",
         items: [
-          { title: "Professionelle Startup-Webseite", description: "Eine moderne, responsive Webseite, um deine Marke online zu präsentieren." },
-          { title: "Einzigartiges Logo-Design & Markenrichtlinien", description: "Einprägsames Logo und umfassender Guide für Markenkonsistenz." },
-          { title: "Social Media Komplettpaket", description: "Banner und Profilbilder für alle wichtigen Plattformen." },
-          { title: "Visitenkarten & E-Mail-Signatur", description: "Professionelle Designs für Networking und Kommunikation." },
-          { title: "Pitch Deck Vorlage", description: "Eine Vorlage, um Investoren und Partner zu beeindrucken." },
-          { title: "Marketingmaterialien (Flyer, Roll-Up)", description: "Druckfertige Designs für Offline-Marketing." },
-        ],
+          { title: "Professionelles Logo-Design", description: "Ein einzigartiges Logo, das deine Marke repräsentiert.", imageSrc: RapidWorksLogo },
+          { title: "Moderne Website", description: "Eine schnelle, SEO-optimierte Website, um deine Botschaft zu vermitteln.", imageSrc: RapidWorksWebsite },
+          { title: "Markenrichtlinien", description: "Ein umfassender Leitfaden für konsistente Markenkommunikation.", imageSrc: GuidelineBrand },
+          { title: "Social Media Banner", description: "Auffällige Banner für deine Social-Media-Profile.", imageSrc: RapidWorksBanner },
+          { title: "E-Mail-Signaturen", description: "Professionelle Signaturen für deine E-Mail-Korrespondenz.", imageSrc: RapidWorksEmailSignature },
+          { title: "Visitenkarten", description: "Hochwertige Visitenkarten für Networking-Events.", imageSrc: BusinessCard },
+          { title: "QR-Code für deine Website", description: "Ein QR-Code für einfachen Zugriff auf deine Website.", imageSrc: QRCodeLogo },
+          { title: "Smartphone & Desktop Hintergründe", description: "Markenkonforme Hintergründe für deine Geräte.", imageSrc: PhoneMockLogo },
+          { title: "Roll-Up Banner", description: "Ein professionelles Roll-Up für Veranstaltungen und Präsentationen.", imageSrc: RollupBanner },
+          { title: "Pitch Deck Vorlage", description: "Eine überzeugende Pitch-Deck-Vorlage, um Investoren zu gewinnen.", imageSrc: PitchDeck },
+          { title: "Briefkopfvorlage", description: "Eine professionelle Briefkopfvorlage für deine Geschäftskorrespondenz.", imageSrc: PlaceholderImage }, // Assuming PlaceholderImage is appropriate
+          { title: "Newsletter-Vorlage", description: "Eine ansprechende Vorlage für deine E-Mail-Marketingkampagnen.", imageSrc: PlaceholderImage }, // Assuming PlaceholderImage is appropriate
+          { title: "Buchungstool-Integration", description: "Integriere ein Buchungstool wie Calendly direkt auf deiner Website.", imageSrc: Calendar }
+        ]
       },
-      whyChoose: {
-        title: "Warum RapidWorks für dein Branding?",
-        points: [
-          { title: "Unglaubliche Geschwindigkeit", description: "Komplettes Branding in Tagen, nicht Monaten." },
-          { title: "Startup-fokussiert", description: "Speziell für die Bedürfnisse und Budgets von Gründern entwickelt." },
-          { title: "Agenturqualität, Bruchteil der Kosten", description: "Hochwertiges Design ohne den hohen Preis." },
-          { title: "Alles aus einer Hand", description: "Von der Webseite bis zu Marketingmaterialien, alles inklusive." },
-        ],
-      },
-      process: {
-        title: "Unser unkomplizierter Branding-Prozess",
+      howItWorks: {
+        title: "So funktioniert es",
+        subtitle: "Unser optimierter Prozess stellt sicher, dass du dein komplettes Branding-Paket in Rekordzeit erhältst.",
         steps: [
-          { title: "Kontaktiere Uns", description: "Fülle unser kurzes Formular aus, um deine Bedürfnisse zu teilen.", icon: MessageSquareText },
-          { title: "Strategie-Call", description: "Wir besprechen deine Vision und Ziele für deine Marke.", icon: Users },
-          { title: "Design & Entwicklung", description: "Unser Team erstellt deine Markenidentität und Webseite.", icon: Palette },
-          { title: "Review & Launch", description: "Du gibst Feedback, wir finalisieren und deine Marke geht live!", icon: Rocket },
+          { title: "Bedarfsanalyse", description: "Wir beginnen mit einem kurzen Fragebogen, um deine Bedürfnisse und Ziele zu verstehen." },
+          { title: "Entwurf & Abstimmung", description: "Unser Team erstellt erste Entwürfe und arbeitet eng mit dir zusammen, um das perfekte Design zu finden." },
+          { title: "Finale Übergabe", description: "Du erhältst alle finalen Dateien und Assets, bereit für den Einsatz." }
+        ]
+      },
+      pricing: {
+        title: "Transparent und fair",
+        subtitle: "Ein Preis für alles. Keine versteckten Kosten, keine Überraschungen.",
+        price: "ab 2.499€",
+        priceDetails: "Netto, zzgl. MwSt.",
+        features: [
+          "Alle oben genannten Branding-Elemente",
+          "Lieferung innerhalb von 7 Werktagen",
+          "Persönliche Betreuung und Abstimmung",
+          "Nutzungsrechte für alle erstellten Designs"
         ],
-      },
-      idealFor: {
-        title: "Ideal für dich, wenn...",
-        points: [
-          "Du ein Startup oder ein neues Unternehmen gründest.",
-          "Du schnell eine professionelle Online-Präsenz benötigst.",
-          "Dein Budget begrenzt ist, du aber nicht auf Qualität verzichten willst.",
-          "Du einen umfassenden Branding-Service ohne Aufwand suchst.",
-        ],
-      },
-      ctaSection: {
-        title: "Bereit, deine Marke auf das nächste Level zu heben?",
-        description: "Sichere dir jetzt dein Rapid Branding Bundle und starte durch!",
-        buttonText: "Angebot sichern",
-      },
-      modal: {
-        title: "Sichere dir dein Rapid Branding Bundle",
-        description: "Fülle das Formular aus und wir melden uns bei dir, um die Details zu besprechen.",
-      },
-      testimonialSection: {
-        title: "Was Gründer über unser Branding sagen",
-        subtitle: "Echte Ergebnisse von Startups wie deinem."
+        cta: "Kostenloses Beratungsgespräch",
+        financingOption: "Finanzierungsoptionen verfügbar. Sprich uns an!"
       },
       faq: {
         title: "Häufig gestellte Fragen",
         items: [
           {
-            question: "Wie schnell kann ich mein Branding-Paket wirklich bekommen?",
-            answer: "Unser Ziel ist es, dein komplettes Paket innerhalb von 7 Werktagen nach dem Strategie-Call zu liefern, vorausgesetzt, wir erhalten zeitnah dein Feedback."
+            question: "Was ist, wenn mir die Designs nicht gefallen?",
+            answer: "Deine Zufriedenheit ist unser oberstes Ziel. Wir bieten Überarbeitungsrunden an, um sicherzustellen, dass das Endergebnis deinen Vorstellungen entspricht. Wir arbeiten so lange, bis du begeistert bist."
           },
           {
-            question: "Was ist, wenn ich schon ein Logo habe?",
-            answer: "Großartig! Wir können das Paket anpassen und uns auf die anderen Elemente wie Webdesign und Marketingmaterialien konzentrieren. Sprich uns einfach darauf an."
+            question: "Kann ich einzelne Elemente aus dem Paket auswählen?",
+            answer: "Das Rapid Branding-Paket ist als Komplettlösung konzipiert, um dir den besten Wert zu bieten. Sprich uns gerne an, wenn du spezifische Bedürfnisse hast, und wir finden eine Lösung."
           },
           {
-            question: "Sind Revisionen im Preis inbegriffen?",
-            answer: "Ja, eine bestimmte Anzahl von Revisionsrunden ist inbegriffen, um sicherzustellen, dass du mit dem Ergebnis zufrieden bist. Details besprechen wir im Vorgespräch."
+            question: "Wie lange dauert der gesamte Prozess?",
+            answer: "Wir garantieren die Lieferung deines kompletten Branding-Pakets innerhalb von 7 Werktagen nach der ersten Bedarfsanalyse und deiner Zuarbeit."
           },
           {
-            question: "Welche Informationen braucht ihr von mir, um zu starten?",
-            answer: "Nachdem du das Formular ausgefüllt hast, werden wir in unserem Strategie-Call alles Notwendige besprechen: deine Zielgruppe, deine Markenwerte, deine Präferenzen und alle vorhandenen Materialien oder Ideen, die du hast."
-          },
-          {
-            question: "Bietet ihr auch individuelle Branding-Services an?",
-            answer: "Ja, obwohl das Rapid Branding Bundle unser Flaggschiff für schnelle Ergebnisse ist, bieten wir auch maßgeschneiderte Lösungen an. Kontaktiere uns, um deine spezifischen Anforderungen zu besprechen."
+            question: "Welche Informationen benötigt ihr von mir?",
+            answer: "Wir haben einen kurzen Fragebogen, der uns hilft, dein Unternehmen, deine Zielgruppe und deine Vision zu verstehen. Je mehr Informationen du uns gibst, desto besser können wir ein Branding entwickeln, das perfekt zu dir passt."
           }
         ]
+      },
+      ctaSection: {
+        title: "Bereit, deine Marke auf das nächste Level zu heben?",
+        subtitle: "Starte noch heute mit deinem professionellen Branding-Paket und hinterlasse einen bleibenden Eindruck.",
+        cta: "Jetzt dein Branding starten"
+      },
+      testimonials: {
+        title: "Marken, die wir verwandelt haben",
+        subtitle: "Höre von Gründern, die mit unserem Rapid Branding Paket ihre Sichtbarkeit erfolgreich aufgebaut haben."
       }
     }
   }
