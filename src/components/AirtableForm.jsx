@@ -212,52 +212,52 @@ const de = {
   answer3: "Antwort 3",
 
   // Visibility Bundle
-  visibilityBundle: "Sichtbarkeits-Bundle Elemente Ranking",
+  visibilityBundle: "Sichtbarkeitspaket-Elemente Ranking",
   logoRank: "Logo Rang",
-  websiteRank: "Webseite Rang",
-  callBackgroundRank: "Anruf-Hintergrund Rang",
+  websiteRank: "Website Rang",
+  callBackgroundRank: "Anrufhintergrund Rang",
   qrCodeRank: "QR-Code Rang",
-  socialMediaBannerRank: "Social Media Banner Rang",
-  newsletterTemplateRank: "Newsletter Vorlage Rang",
-  emailSignaturesRank: "E-Mail Signaturen Rang",
+  socialMediaBannerRank: "Social-Media-Banner Rang",
+  newsletterTemplateRank: "Newsletter-Vorlage Rang",
+  emailSignaturesRank: "E-Mail-Signaturen Rang",
   letterTemplateRank: "Briefvorlage Rang",
-  smartphoneScreenBackgroundRank: "Smartphone Bildschirmhintergrund Rang",
-  desktopScreenBackgroundRank: "Desktop Bildschirmhintergrund Rang",
+  smartphoneScreenBackgroundRank: "Smartphone-Bildschirmhintergrund Rang",
+  desktopScreenBackgroundRank: "Desktop-Bildschirmhintergrund Rang",
   rollUpRank: "Roll-Up Rang",
   flyerRank: "Flyer Rang",
   businessCardsRank: "Visitenkarten Rang",
   shirtsHoodiesRank: "Shirts & Hoodies Rang",
-  pitchDeckRank: "Pitch Deck Rang",
-  bookingToolIntegrationRank: "Buchungstool Integration Rang",
+  pitchDeckRank: "Pitch-Deck Rang",
+  bookingToolIntegrationRank: "Buchungstool-Integration Rang",
 
   // Additional Info
   additionalInfo: "Zusätzliche Informationen",
   companyStage: "Unternehmensphase",
-  knowsGoToMarketVoucher: "Kennt GoToMarket Gutschein",
-  appliedForGoToMarketVoucher: "Hat GoToMarket Gutschein beantragt",
+  knowsGoToMarketVoucher: "Kennt GoToMarket-Gutschein",
+  appliedForGoToMarketVoucher: "Hat GoToMarket-Gutschein beantragt",
   moodGraphic: "Stimmungsgrafik",
   additionalDocuments: "Zusätzliche Dokumente",
   addInfo: "Zusätzliche Informationen",
 
   // Metadata
   metadata: "Metadaten",
-  submissionID: "Einsendungs-ID",
-  submissionDate: "Einsendungsdatum",
+  submissionID: "Einreichungs-ID",
+  submissionDate: "Einreichungsdatum",
   language: "Sprache",
   formVersion: "Formularversion",
 
   // Form actions
   submit: "Formular absenden",
   submitting: "Wird gesendet...",
-  success: "Formular erfolgreich gesendet!",
+  success: "Formular erfolgreich übermittelt!",
   next: "Weiter",
   previous: "Zurück",
 
   // Dropdown options
-  selectOption: "Wähle eine Option",
+  selectOption: "Option auswählen",
   b2b: "B2B",
-  b2c: "B2C",
-  both: "Beides",
+  b2c: "B2B",
+  both: "Beide",
   other: "Andere",
   searchEngines: "Suchmaschinen",
   link: "Link",
@@ -285,13 +285,13 @@ const de = {
 
   // Progress
   progressOf: "von",
-  completeYourProfile: "Vervollständige dein Profil",
+  completeYourProfile: "Vervollständigen Sie Ihr Profil",
   step: "Schritt",
 
   // New
   founders: "Gründer",
   founder: "Gründer",
-  review: "Überprüfen & Senden",
+  review: "Überprüfen & Absenden",
 }
 
 const VisibilityFormulaForm = () => {

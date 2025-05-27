@@ -229,63 +229,76 @@ const WorkshopsPage = () => {
     },
     de: {
       badge: {
-        text: "Bald verfügbar"
+        text: "Demnächst verfügbar"
       },
       hero: {
         title: "Alles, was du wissen musst",
-        subtitle: "Schließe deine Wissenslücken im Business. Werde nicht von Beratern abhängig! Unsere von Experten geleiteten Workshops vermitteln dir praktische Fähigkeiten und Wissen.",
+        subtitle: "Schließe deine Wissenslücken im Business-Bereich. Mache dich nicht von Beratern abhängig! Unsere von Experten geleiteten Workshops vermitteln dir praktische Fähigkeiten und Wissen.",
         scrollIndicatorAria: "Zu den Workshops scrollen"
       },
       workshops: {
         title: "Interaktive Lernerfahrung",
-        subtitle: "Unsere Workshops kombinieren Theorie mit praktischen Übungen, damit du das Gelernte sofort anwenden kannst.",
-        selectionTitle: "Wähle Workshop-Themen aus",
+        subtitle: "Unsere Workshops verbinden Theorie mit praktischen Übungen, damit du das Gelernte sofort anwenden kannst.",
+        selectionTitle: "Wähle Workshop-Themen",
         selectionSubtitle: "(Mehrfachauswahl möglich)",
         items: [
           {
             id: "startup-finance",
-            title: "Grundlagen der Startup-Finanzierung",
-            description: "Meistere die Grundlagen der Finanzplanung und Mittelbeschaffung für Startups"
+            title: "Startup-Finanzen Grundlagen",
+            description: "Beherrsche die Grundlagen der Startup-Finanzplanung und Kapitalbeschaffung"
           },
           {
             id: "product-market-fit",
             title: "Product-Market Fit finden",
-            description: "Strategien zur Validierung deines Produkts und zur Findung deines idealen Marktes"
+            description: "Strategien zur Validierung deines Produkts und Findung deines idealen Marktes"
           },
           {
             id: "team-building",
-            title: "Aufbau von Hochleistungsteams",
+            title: "Hochleistungsteams aufbauen",
             description: "Lerne, wie du Top-Talente für dein Startup rekrutierst, managst und hältst"
           },
           {
             id: "growth-hacking",
-            title: "Growth Hacking Meisterkurs",
-            description: "Bewährte Taktiken, um das Wachstum deines Startups mit begrenztem Budget zu beschleunigen"
+            title: "Growth Hacking Masterclass",
+            description: "Bewährte Taktiken zur Beschleunigung deines Startup-Wachstums mit begrenztem Budget"
           }
         ],
         limitedSeats: {
           title: "Begrenzte Plätze verfügbar",
           subtitle: "Jeder Workshop ist auf 20 Teilnehmer begrenzt, um persönliche Betreuung und maximalen Nutzen zu gewährleisten.",
-          launchDate: "Startet Q3 2025",
-          waitlist: "Trage dich auf die Warteliste ein, um deinen Platz zu sichern"
+          launchDate: "Start in Q3 2025",
+          waitlist: "Trage dich in die Warteliste ein, um deinen Platz zu sichern"
         },
         testimonials: {
           title: "Wertvolle Lernerfahrungen",
-          subtitle: "Sieh, wie Teilnehmer von unseren praxisnahen, von Experten geleiteten Workshops profitiert haben."
+          subtitle: "Sehen Sie, wie Teilnehmer von unseren praxisnahen, von Experten geleiteten Workshops profitiert haben."
         }
       },
       form: {
-        title: "Sichere dir deinen Platz!",
-        description: "Wähle deine gewünschten Workshops und hinterlasse deine E-Mail-Adresse. Wir benachrichtigen dich, sobald die Termine feststehen und die Anmeldung geöffnet ist.",
-        emailPlaceholder: "Deine E-Mail-Adresse",
-        buttonText: "Auf die Warteliste setzen",
-        successMessage: "Danke! Du stehst auf der Warteliste. Wir melden uns bald.",
-        errorMessage: "Fehler beim Senden. Bitte versuche es erneut.",
-        noSelectionError: "Bitte wähle mindestens einen Workshop aus."
+        title: "Warteliste beitreten",
+        emailLabel: "E-Mail-Adresse",
+        emailPlaceholder: "du@beispiel.com",
+        selectedTopics: "Ausgewählte Workshop-Themen",
+        consent: {
+          checkbox: "Ich stimme zu, Updates über Rapid Workshops zu erhalten",
+          subtitle: "Wir werden deine E-Mail niemals mit Dritten teilen."
+        },
+        button: "Warteliste beitreten",
+        success: {
+          title: "Du bist auf der Liste!",
+          message: "Danke für dein Interesse an unseren Workshops. Wir benachrichtigen dich, wenn die Anmeldung öffnet.",
+          anotherEmail: "Mit einer anderen E-Mail anmelden"
+        }
       },
-      exploreMore: {
-        title: "Entdecke mehr RapidWorks Services",
-        description: "Neben Workshops bieten wir eine Reihe von Lösungen, um dein Startup auf jeder Stufe zu unterstützen – vom MVP bis zur Skalierung."
+      promise: {
+        title: "Unser Versprechen",
+        text: "Jeder Workshop kommt mit einer Zufriedenheitsgarantie. Wenn du nicht vollständig zufrieden bist, erstatten wir dir die Anmeldegebühr."
+      },
+      selectionPrompt: {
+        title: "Wähle zuerst Workshops aus",
+        message: "Bitte wähle mindestens ein Workshop-Thema aus, das dich interessiert.",
+        mobileText: "Nach oben scrollen zum Auswählen",
+        desktopText: "Links auswählen"
       }
     }
   };

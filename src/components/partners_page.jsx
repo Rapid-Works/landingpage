@@ -174,12 +174,12 @@ const PartnersPage = () => {
         text: "Demnächst verfügbar"
       },
       hero: {
-        title: "Finden Sie Ihre Berater",
-        subtitle: "Nicht jeder Berater ist für die Bedürfnisse eines Startups geeignet. Das wissen wir, deshalb helfen wir Ihnen, den Richtigen zu finden. Teilen Sie uns mit, welche Berater Sie in den nächsten Monaten benötigen, und wir finden sie.",
+        title: "Finde deine Berater",
+        subtitle: "Nicht jeder Berater ist für die Bedürfnisse eines Startups geeignet. Das wissen wir, deshalb helfen wir dir, den Richtigen zu finden. Teile uns mit, welche Berater du in den nächsten Monaten benötigst, und wir finden sie.",
       },
       partners: {
-        title: "Geben Sie Ihren Bedarf an",
-        subtitle: "Wählen Sie den Zeitrahmen (in Monaten), wann Sie voraussichtlich jeden Expertentyp benötigen.",
+        title: "Gib deinen Bedarf an",
+        subtitle: "Wähle den Zeitrahmen (in Monaten), wann du voraussichtlich jeden Expertentyp benötigst.",
         selectionTitle: "Benötigte Partner & Zeitplan",
         items: [
           { id: "notary", title: "Notar", description: "Für Firmengründung, Verträge, Beglaubigungen." },
@@ -191,38 +191,38 @@ const PartnersPage = () => {
         ],
         demandInfo: {
           title: "Nachfragebasiertes Netzwerk",
-          subtitle: "Wir knüpfen Kontakte zu Experten, sobald genügend Nachfrage besteht. Ihr Input formt unser Partnernetzwerk!",
-          cta: "Geben Sie oben Ihren Bedarf an"
+          subtitle: "Wir knüpfen Kontakte zu Experten, sobald genügend Nachfrage besteht. Dein Input formt unser Partnernetzwerk!",
+          cta: "Gib oben deinen Bedarf an"
         }
       },
       form: {
         title: "Interesse bekunden",
-        emailLabel: "Ihre E-Mail-Adresse",
-        emailPlaceholder: "du@beispiel.com",
+        emailLabel: "Deine E-Mail-Adresse",
+        emailPlaceholder: "du@example.com",
         selectedNeedsTitle: "Ausgewählter Partnerbedarf", // Title for the summary
         consent: {
           checkbox: "Ich stimme zu, bezüglich potenzieller Partner kontaktiert zu werden",
-          subtitle: "Wir respektieren Ihre Privatsphäre und teilen nur relevante Möglichkeiten."
+          subtitle: "Wir respektieren deine Privatsphäre und teilen nur relevante Möglichkeiten."
         },
         button: "Interesse bekunden",
         success: {
           title: "Vielen Dank!",
-          message: "Ihr Interesse wurde registriert. Wir melden uns, sobald wir basierend auf der Gesamtnachfrage relevante Partner-Matches haben.",
-          anotherEmail: "Für eine andere E-Mail eintragen"
+          message: "Dein Interesse wurde gespeichert. Wir melden uns, wenn wir basierend auf der kollektiven Nachfrage passende Partner haben.",
+          anotherEmail: "Für eine andere E-Mail senden"
         }
       },
       errorPrompt: {
-          noSelection: "Bitte geben Sie an, wann Sie mindestens einen Partner benötigen könnten.",
-          invalidEmail: "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
-          noEmail: "Bitte geben Sie Ihre E-Mail-Adresse ein.",
-          submitFailed: "Interesse konnte nicht übermittelt werden. Bitte versuchen Sie es erneut."
-        },
-      selectionPrompt: { // Add prompt text
-          title: "Bedarf zuerst angeben",
-          message: "Bitte wählen Sie einen Zeitrahmen für mindestens einen Partner aus dem linken Bereich aus.",
-          mobileText: "Nach oben scrollen zum Auswählen",
-          desktopText: "Links auswählen"
-        }
+        noSelection: "Bitte gib an, wann du mindestens einen Partner benötigst.",
+        invalidEmail: "Bitte gib eine gültige E-Mail-Adresse ein.",
+        noEmail: "Bitte gib deine E-Mail-Adresse ein.",
+        submitFailed: "Interesse konnte nicht bekundet werden. Bitte versuche es erneut."
+      },
+      selectionPrompt: { // Add prompt text (German)
+        title: "Zuerst Bedarf angeben",
+        message: "Bitte wähle einen Zeitrahmen für mindestens einen Partner im linken Bereich aus.",
+        mobileText: "Hochscrollen zum Auswählen",
+        desktopText: "Links auswählen"
+      }
     }
   };
 

@@ -180,21 +180,21 @@ const translations = {
             services: "Leistungen",
             approach: "Unser Ansatz",
             contact: "Kontakt",
-            getStarted: "Jetzt Starten",
+            getStarted: "Jetzt starten",
             impressum: "Impressum",
         },
         hero: {
-            title: "Ihre Idea, live in 2 Wochen",
-            subtitle: "Wir entwickeln Ihren MVP in nur 14 Tagen - kostenfrei bis Sie von den Ergebnissen begeistert sind.",
+            title: "Deine Idee, live in 2 Wochen",
+            subtitle: "Wir entwickeln deinen MVP in nur 14 Tagen - kostenfrei bis du von den Ergebnissen begeistert bist.",
             cta: "Kostenloses Beratungsgespräch",
         },
         services: {
             title: "Unsere Rapid MVP Services",
-            subtitle: "Maßgeschneiderte Lösungen, um Ihre Idee schneller als je zuvor zu verwirklichen",
+            subtitle: "Maßgeschneiderte Lösungen, um deine Idee schneller als je zuvor zu verwirklichen",
             strategic: {
                 title: "Strategische Beratung",
                 description:
-                    "Individuelle Expertenberatung durch einen erfahrenen Gründer, um Ihre Idee zu validieren und zu verfeinern. Gemeinsam definieren wir Ihren MVP und erstellen einen Fahrplan zum Erfolg.",
+                    "Individuelle Expertenberatung durch einen erfahrenen Gründer, um deine Idee zu validieren und zu verfeinern. Gemeinsam definieren wir deinen MVP und erstellen einen Fahrplan zum Erfolg.",
                 features: [
                     "Ideenvalidierung und -verfeinerung",
                     "Marktanalyse und Positionierung",
@@ -204,103 +204,101 @@ const translations = {
             development: {
                 title: "Schnelle MVP-Entwicklung",
                 description:
-                    "Wir erwecken Ihren MVP in nur 2 Wochen zum Leben. Konzentrieren Sie sich auf Ihr Kerngeschäft, während wir die technische Umsetzung übernehmen und ein voll funktionsfähiges Produkt für Benutzertests liefern.",
+                    "Wir erwecken deinen MVP in nur 2 Wochen zum Leben. Konzentriere dich auf dein Kerngeschäft, während wir die technische Umsetzung übernehmen und ein voll funktionsfähiges Produkt für Benutzertests liefern.",
                 features: ["Full-Stack-Entwicklung", "Benutzerorientiertes Design", "Kernfunktionen-Implementierung"],
             },
             funding: {
                 title: "Fördermittelberatung",
-                description:
-                    "Wir unterstützen Startups bei der Beschaffung von staatlichen Fördermitteln zur Förderung ihres Wachstums und ihrer Entwicklung.",
+                description: "Wir unterstützen Startups bei der Beschaffung von staatlichen Fördermitteln zur Förderung ihres Wachstums und ihrer Entwicklung.",
                 features: [
-                    "Bis zu 35.000 € staatliche Förderung",
+                    "Bis zu 35.000€ staatliche Förderung",
                     "Betreuung während des Antragsverfahrens",
                     "Unterstützung für Startups in Nordrhein-Westfalen",
                 ],
-                specialNote:
-                    "* Diese Förderung gilt speziell für NRW, wir können aber auch Startups in anderen Regionen unterstützen.",
+                specialNote: "* Diese Förderung gilt speziell für NRW, wir können aber auch Startups in anderen Regionen unterstützen.",
             },
         },
         approach: {
             title: "Unser 3D-Ansatz zum MVP-Erfolg",
-            subtitle: "Eine bewährte Methodik, um Ihre Idee in ein marktreifes Produkt zu verwandeln",
+            subtitle: "Eine bewährte Methodik, um deine Idee in ein marktreifes Produkt zu verwandeln",
             steps: {
                 discovery: {
                     title: "Entdeckung",
                     description:
-                        "Gemeinsam tauchen wir tief in Ihre Idee, den Markt und Ihre Ziele ein, um eine solide Grundlage für Ihren MVP zu schaffen. Unsere Beratung hilft, Ihr Konzept für maximale Kundenvalidierung zu verfeinern.",
+                        "Gemeinsam tauchen wir tief in deine Idee, den Markt und deine Ziele ein, um eine solide Grundlage für deinen MVP zu schaffen. Unsere Beratung hilft, dein Konzept für maximale Kundenvalidierung zu verfeinern.",
                 },
                 development: {
                     title: "Entwicklung",
                     description:
-                        "Wir bringen Ihren MVP in nur 2 Wochen zum Leben und nutzen modernste Technologien. Wir konzentrieren uns auf Kernfunktionen, die den Wert Ihres Produkts für echte Kunden demonstrieren.",
+                        "Wir bringen deinen MVP in nur 2 Wochen zum Leben und nutzen modernste Technologien. Wir konzentrieren uns auf Kernfunktionen, die den Wert deines Produkts für echte Kunden demonstrieren.",
                 },
                 delivery: {
                     title: "Übergabe",
                     description:
-                        "Wir präsentieren Ihren voll funktionsfähigen MVP, bereit für Benutzertests. Bis hierhin ist alles komplett kostenfrei. Wenn Sie von Ihrem MVP nicht begeistert sind, müssen Sie ihn nicht kaufen. Das Einzige, was Sie investieren müssen, sind 2 Wochen unserer Zeit.",
+                        "Wir präsentieren deinen voll funktionsfähigen MVP, bereit für Benutzertests. Bis hierhin ist alles komplett kostenfrei. Wenn du von deinem MVP nicht begeistert bist, musst du ihn nicht kaufen. Das Einzige, was du investieren musst, sind 2 Wochen unserer Zeit.",
                 },
             },
         },
         why: {
             title: "Warum Gründer RapidWorks wählen",
-            subtitle: "Unübertroffene Geschwindigkeit, Expertise und Unterstützung für Ihre Reise",
+            subtitle: "Unübertroffene Geschwindigkeit, Expertise und Unterstützung für deine Reise",
             features: {
                 founders: {
                     title: "Von Gründern für Gründer",
                     description:
-                        "Wir verstehen Ihre einzigartigen Herausforderungen und zeitlichen Einschränkungen, weil wir selbst dort waren.",
+                        "Wir verstehen deine einzigartigen Herausforderungen und zeitlichen Einschränkungen, weil wir selbst dort waren.",
                 },
                 speed: {
                     title: "Blitzschnelle Entwicklung",
                     description:
-                        "Erhalten Sie Ihren MVP in nur 2 Wochen und beschleunigen Sie Ihren Markteintritt und Investorenpräsentationen.",
+                        "Erhalte deinen MVP in nur 2 Wochen und beschleunige deinen Markteintritt und Investorenpräsentationen.",
                 },
                 risk: {
                     title: "Risikofreies Engagement",
                     description:
-                        "Kostenlose Beratung und 2-wöchige Entwicklungsphase. Zahlen Sie nur, wenn Sie mit Ihrem MVP zufrieden sind.",
+                        "Kostenlose Beratung und 2-wöchige Entwicklungsphase. Du zahlst nur, wenn du mit deinem MVP zufrieden bist.",
                 },
                 funding: {
                     title: "Förderung durch die öffentliche Hand",
                     description:
-                        "Für Startups in Nordrhein-Westfalen unterstützen wir Sie bei der Beantragung von öffentlichen Fördermitteln, die 70% unserer Leistungen abdecken.",
+                        "Für Startups in Nordrhein-Westfalen unterstützen wir dich bei der Beantragung von öffentlichen Fördermitteln, die 70% unserer Leistungen abdecken.",
                 },
             },
         },
         postMVP: {
-            title: "Unser Angebot nach Ihrem MVP",
-            subtitle: "Setzen Sie Ihre Reise mit flexibler, hochwertiger Entwicklungsunterstützung fort",
+            title: "Unser Angebot nach deinem MVP",
+            subtitle: "Setze deine Reise mit flexibler, hochwertiger Entwicklungsunterstützung fort",
             features: {
                 hours: {
                     title: "1.000 Stunden Entwicklung",
                     description:
-                        "Zugriff auf einen Pool von 1.000 Entwicklungsstunden nach Bedarf. Starten und stoppen Sie ganz bequem.",
+                        "Zugriff auf einen Pool von 1.000 Entwicklungsstunden nach Bedarf. Starte und stoppe ganz bequem.",
                 },
                 developer: {
                     title: "Dedizierter Entwickler",
                     description:
-                        "Arbeiten Sie das ganze Jahr über mit demselben Entwickler zusammen, um Konsistenz und ein tiefes Verständnis Ihres Projekts zu gewährleisten.",
+                        "Arbeite das ganze Jahr über mit demselben Entwickler zusammen, um Konsistenz und ein tiefes Verständnis deines Projekts zu gewährleisten.",
                 },
                 payment: {
                     title: "Flexible Zahlung",
                     description:
-                        "Bezahlen Sie nur die geleisteten Stunden, die am Ende jedes Monats abgerechnet werden. Jederzeit kündbar ohne langfristige Bindung.",
+                        "Bezahle nur die geleisteten Stunden, die am Ende jedes Monats abgerechnet werden. Jederzeit kündbar ohne langfristige Bindung.",
                 },
             },
         },
         contact: {
-            title: "Bereit, Ihre Idee zu starten?",
+            title: "Bereit, deine Idee zu starten?",
             subtitle:
-                "Machen Sie den ersten Schritt, um Ihre Idee zum Leben zu erwecken. Vereinbaren Sie noch heute Ihr kostenloses Beratungsgespräch und lassen Sie uns gemeinsam etwas Erstaunliches aufbauen.",
+                "Mache den ersten Schritt, um deine Idee zum Leben zu erwecken. Vereinbare noch heute dein kostenloses Beratungsgespräch und lass uns gemeinsam etwas Erstaunliches aufbauen.",
             form: {
-                name: "Ihr Name",
-                email: "Ihre E-Mail",
-                idea: "Erzählen Sie uns von Ihrer Projektidee",
+                name: "Dein Name",
+                email: "Deine E-Mail",
+                idea: "Erzähl uns von deiner Projektidee",
                 submit: "Kostenloses Beratungsgespräch anfragen",
-                terms: "Mit dem Absenden des Formulars stimmen Sie unseren",
+                terms: "Mit dem Absenden des Formulars stimmst du unseren",
                 termsLink: "AGBs",
                 and: "und der",
-                privacyLink: "Datenschutzerklärung",
+                privacyLink: "Datenschutzerklärung zu",
             },
         },
         footer: {
@@ -311,18 +309,18 @@ const translations = {
         impressum: {
             title: "Impressum",
             companyInfo: {
-                title: "Unternehmensangaben",
-                name: "RapidWorks Agency GmbH",
+                title: "Firmeninformationen",
+                name: "RapidWorks Agentur GmbH",
                 street: "Innovationsstraße 42",
                 city: "50667 Köln",
                 country: "Deutschland",
-                email: "contact@rapidworks.de",
+                email: "kontakt@rapidworks.de",
                 phone: "+49 (0) 221 123456",
                 managing: "Geschäftsführer",
                 managingName: "Max Mustermann",
             },
             registration: {
-                title: "Registereintrag",
+                title: "Registrierung",
                 court: "Amtsgericht Köln",
                 number: "HRB 123456",
                 vatId: "USt-IdNr.: DE123456789",
