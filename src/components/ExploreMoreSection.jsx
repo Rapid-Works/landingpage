@@ -31,8 +31,8 @@ const ExploreMoreSection = ({ excludeService }) => {
     },
     de: {
       badge: "Mehr Entdecken",
-      title: "Wussten Sie, dass wir mehr als nur das anbieten?",
-      description: "Entdecken Sie unsere weiteren Dienstleistungen, die Ihnen beim Wachstum Ihres Startups helfen - von Expertenunterstützung über MVP-Entwicklung bis hin zu Coaching und Finanzierungslösungen.",
+      title: "Wusstest du, dass wir mehr als nur das anbieten?",
+      description: "Entdecke unsere weiteren Dienstleistungen, die dir beim Wachstum deines Startups helfen - von Expertenunterstützung über MVP-Entwicklung bis hin zu Coaching und Finanzierungslösungen.",
       cta: "Alle Services entdecken",
       services: {
         Branding: "Branding",
@@ -75,7 +75,7 @@ const ExploreMoreSection = ({ excludeService }) => {
       `just ${serviceToBeMentioned}`
     );
   } else if (language === 'de') {
-    // German title: "Wussten Sie, dass wir mehr als nur das anbieten?"
+    // German title: "Wusstest du, dass wir mehr als nur das anbieten?"
     // We replace "nur das" with "nur [Service Name]"
     // The original question mark at the end of content.title is preserved.
     dynamicTitle = content.title.replace(

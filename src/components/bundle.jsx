@@ -155,75 +155,75 @@ const BundlePage = () => {
     },
     de: {
       badge: {
-        text: "Demnächst verfügbar"
+        text: "Bald verfügbar"
       },
       hero: {
         title: "Alles in einem Paket",
-        subtitle: "Konzentrieren Sie sich auf das Wesentliche. Wir kümmern uns um den Rest.",
+        subtitle: "Konzentriere dich auf das Wesentliche. Wir kümmern uns um den Rest.",
         scrollIndicatorAria: "Zum Inhalt scrollen"
       },
       mainCard: {
         title: "Der perfekte Zeitpunkt zum Start",
-        description: "Es gab nie einen besseren Zeitpunkt, ein Startup in Nordrhein-Westfalen zu gründen. Aktuelle Fördermittel können bis zu 70% Ihrer Startup-Kosten finanzieren!",
-        bundleDescription: "Unser Bundle bietet alles, was Ihr Startup braucht - von der Markenentwicklung bis zur Produkterstellung, vom Coaching bis zum Marketing. Sie konzentrieren sich auf Ihre Vision, während wir uns um den Rest kümmern.",
+        description: "Es gab nie einen besseren Zeitpunkt, ein Startup in Nordrhein-Westfalen zu gründen. Aktuelle Fördermittel können bis zu 70% deiner Startup-Kosten finanzieren!",
+        bundleDescription: "Unser Bundle bietet alles, was dein Startup braucht - von der Markenentwicklung bis zur Produkterstellung, vom Coaching bis zum Marketing. Du konzentrierst dich auf deine Vision, während wir uns um den Rest kümmern.",
         financing: {
           title: "Geförderte Exzellenz",
-          description: "Wir helfen Ihnen bei der Navigation durch verfügbare Fördermittel und unterstützen Sie bei Ihrer Bewerbung - völlig kostenfrei. Vereinbaren Sie ein Gespräch, um Ihre Finanzierungsmöglichkeiten zu besprechen.",
+          description: "Wir helfen dir bei der Navigation durch verfügbare Fördermittel und unterstützen dich bei deiner Bewerbung - völlig kostenfrei. Vereinbare ein Gespräch, um deine Finanzierungsmöglichkeiten zu besprechen.",
           buttonText: "Finanzierungsoptionen besprechen"
         }
       },
       services: {
-        title: "Alles, was Ihr Startup braucht",
+        title: "Alles, was dein Startup braucht",
         items: [
           {
             title: "Rapid Branding",
-            description: "Etablieren Sie Ihre Marktpräsenz mit einem kompletten Branding-Paket"
+            description: "Etabliere deine Marktpräsenz mit einem kompletten Branding-Paket"
           },
           {
             title: "Rapid Coaching",
-            description: "Erhalten Sie strategische Beratung von erfahrenen Startup-Gründern"
+            description: "Erhalte strategische Beratung von erfahrenen Startup-Gründern"
           },
           {
             title: "Rapid Team",
-            description: "Greifen Sie bei Bedarf auf Experten zu, ohne die Kosten für Vollzeitmitarbeiter"
+            description: "Greife bei Bedarf auf Experten zu, ohne die Kosten für Vollzeitmitarbeiter"
           },
           {
             title: "Rapid Blueprint",
-            description: "Optimieren Sie Ihre Betriebsprozesse und Tool-Infrastruktur"
+            description: "Optimiere deine Betriebsprozesse und Tool-Infrastruktur"
           },
           {
             title: "Rapid Workshops",
-            description: "Erweitern Sie das Wissen Ihres Teams durch gezielte Schulungen"
+            description: "Erweitere das Wissen deines Teams durch gezielte Schulungen"
           },
           {
             title: "Rapid Financing",
-            description: "Navigieren Sie durch Fördermittel und Finanzierungsoptionen für maximalen Mehrwert"
+            description: "Navigiere durch Fördermittel und Finanzierungsoptionen für maximalen Mehrwert"
           }
         ]
       },
       opportunity: {
-        title: "Zeitlich begrenzte Gelegenheit",
-        description: "Die aktuellen Fördermittel bieten eine einmalige Gelegenheit, Ihr Startup mit erheblichen Kosteneinsparungen zu starten oder zu skalieren. Verpassen Sie diese Chance nicht!",
+        title: "Zeitlich begrenzte Chance",
+        description: "Aktuelle Fördermittel machen dies zu einer beispiellosen Gelegenheit, dein Startup mit erheblichen Kosteneinsparungen zu starten oder zu skalieren. Verpasse sie nicht!",
         benefits: [
-          "Bis zu 70% der Kosten durch Fördermittel gedeckt",
+          "Bis zu 70% der Kosten durch Förderungen gedeckt",
           "Kostenlose Beratung zu verfügbaren Finanzierungsoptionen",
-          "Unterstützung beim Förderantragsprozess"
+          "Unterstützung beim Antragsverfahren für Förderungen"
         ]
       },
       waitlist: {
-        title: "Warteliste beitreten",
-        description: "Seien Sie der Erste, der erfährt, wenn unser umfassendes Rapid Bundle verfügbar wird. Wir informieren Sie über exklusive Frühzugangs-Möglichkeiten.",
+        title: "Trage dich auf die Warteliste ein",
+        description: "Erfahre als Erster, wann unser umfassendes Rapid Bundle verfügbar ist. Wir benachrichtigen dich mit exklusiven Early-Access-Möglichkeiten.",
         buttonText: "Frühzugang sichern",
-        successText: "Sie sind auf der Liste!",
-        successDescription: "Vielen Dank für Ihr Interesse an unserem Rapid Bundle. Wir benachrichtigen Sie, sobald es verfügbar ist.",
-        checkboxText: "Ich stimme zu, Updates über Rapid Bundle und Finanzierungsoptionen zu erhalten"
+        successText: "Du bist auf der Liste!",
+        successDescription: "Vielen Dank für dein Interesse an unserem Rapid Bundle. Wir benachrichtigen dich, sobald es verfügbar ist.",
+        checkboxText: "Ich stimme zu, Updates über das Rapid Bundle und Finanzierungsoptionen zu erhalten"
       },
       consultation: {
         buttonText: "Kostenlose Beratung vereinbaren"
       },
       testimonials: {
-        title: "Erfolge mit dem Rapid Bundle",
-        subtitle: "Erfahren Sie, wie Startups von unserem umfassenden Paket profitiert haben."
+        title: "Erfolg mit dem Rapid Bundle",
+        subtitle: "Erfahre, wie Startups von unserem umfassenden Paket profitiert haben."
       },
     }
   };

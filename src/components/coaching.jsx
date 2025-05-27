@@ -199,7 +199,7 @@ const CoachingPage = () => {
         processOptimization: "Prozessoptimierung",
         marketValidation: "Marktvalidierung",
         growthHacking: "Growth Hacking",
-        teamBuilding: "Teambildung",
+        teamBuilding: "Teambuilding",
         fundraising: "Fundraising"
       },
       achievements: {
@@ -210,7 +210,7 @@ const CoachingPage = () => {
       },
       testimonials: {
         title: "Durch Coaching transformiert",
-        subtitle: "Erfahren Sie, wie personalisierte Anleitung Gründern half, Herausforderungen zu meistern und Wachstum zu beschleunigen."
+        subtitle: "Höre, wie personalisierte Führung Gründern half, Herausforderungen zu meistern und Wachstum zu beschleunigen."
       }
     }
   };
