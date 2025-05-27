@@ -454,84 +454,179 @@ const VisibiltyBundle = () => {
       }
     },
     de: {
-      pageBadge: "Rapid Branding",
       hero: {
+        badgeText: "Rapid Branding",
         title: "Transformiere deine Markensichtbarkeit",
         subtitle: "Baue schnell eine starke Marktpräsenz auf mit einem kompletten, professionellen Markenidentitätspaket – geliefert in nur einer Woche.",
-        cta: "Dein Branding-Paket starten",
-        scrollIndicatorAria: "Zum Inhalt scrollen"
+        scrollIndicatorAria: "Zu den Details scrollen"
       },
-      whatYouGet: {
-        title: "Was du bekommst",
-        subtitle: "Etabliere schnell deine Marktpräsenz mit unserem umfassenden Rapid Branding-Paket, geliefert in nur einer Woche und inklusive:",
-        items: [
-          { title: "Professionelles Logo-Design", description: "Ein einzigartiges Logo, das deine Marke repräsentiert.", imageSrc: RapidWorksLogo },
-          { title: "Moderne Website", description: "Eine schnelle, SEO-optimierte Website, um deine Botschaft zu vermitteln.", imageSrc: RapidWorksWebsite },
-          { title: "Markenrichtlinien", description: "Ein umfassender Leitfaden für konsistente Markenkommunikation.", imageSrc: GuidelineBrand },
-          { title: "Social Media Banner", description: "Auffällige Banner für deine Social-Media-Profile.", imageSrc: RapidWorksBanner },
-          { title: "E-Mail-Signaturen", description: "Professionelle Signaturen für deine E-Mail-Korrespondenz.", imageSrc: RapidWorksEmailSignature },
-          { title: "Visitenkarten", description: "Hochwertige Visitenkarten für Networking-Events.", imageSrc: BusinessCard },
-          { title: "QR-Code für deine Website", description: "Ein QR-Code für einfachen Zugriff auf deine Website.", imageSrc: QRCodeLogo },
-          { title: "Smartphone & Desktop Hintergründe", description: "Markenkonforme Hintergründe für deine Geräte.", imageSrc: PhoneMockLogo },
-          { title: "Roll-Up Banner", description: "Ein professionelles Roll-Up für Veranstaltungen und Präsentationen.", imageSrc: RollupBanner },
-          { title: "Pitch Deck Vorlage", description: "Eine überzeugende Pitch-Deck-Vorlage, um Investoren zu gewinnen.", imageSrc: PitchDeck },
-          { title: "Briefkopfvorlage", description: "Eine professionelle Briefkopfvorlage für deine Geschäftskorrespondenz.", imageSrc: PlaceholderImage }, // Assuming PlaceholderImage is appropriate
-          { title: "Newsletter-Vorlage", description: "Eine ansprechende Vorlage für deine E-Mail-Marketingkampagnen.", imageSrc: PlaceholderImage }, // Assuming PlaceholderImage is appropriate
-          { title: "Buchungstool-Integration", description: "Integriere ein Buchungstool wie Calendly direkt auf deiner Website.", imageSrc: Calendar }
-        ]
+      mainText: "Etabliere schnell deine Marktpräsenz mit unserem umfassenden Rapid Branding-Paket, geliefert in nur einer Woche und inklusive:",
+      keyPoints: [
+        "Logo & Brand Design",
+        "Startup Website",
+        "Startup Bekleidung",
+        "Visitenkarten",
+        "Rollup"
+      ],
+      subtext: "Keine versteckten Kosten, kein Bullshit.",
+      cta: "Rapid Branding erhalten",
+      seeMore: "und mehr...",
+      bundleLabel: "Rapid Branding",
+      nav: {
+        mvpDev: "MVP-Entwicklung",
+        visibilityBundle: "Sichtbarkeitspaket",
+        bookCall: "Gespräch Buchen"
       },
-      howItWorks: {
-        title: "So funktioniert es",
-        subtitle: "Unser optimierter Prozess stellt sicher, dass du dein komplettes Branding-Paket in Rekordzeit erhältst.",
-        steps: [
-          { title: "Bedarfsanalyse", description: "Wir beginnen mit einem kurzen Fragebogen, um deine Bedürfnisse und Ziele zu verstehen." },
-          { title: "Entwurf & Abstimmung", description: "Unser Team erstellt erste Entwürfe und arbeitet eng mit dir zusammen, um das perfekte Design zu finden." },
-          { title: "Finale Übergabe", description: "Du erhältst alle finalen Dateien und Assets, bereit für den Einsatz." }
-        ]
-      },
-      pricing: {
-        title: "Transparent und fair",
-        subtitle: "Ein Preis für alles. Keine versteckten Kosten, keine Überraschungen.",
-        price: "ab 2.499€",
-        priceDetails: "Netto, zzgl. MwSt.",
-        features: [
-          "Alle oben genannten Branding-Elemente",
-          "Lieferung innerhalb von 7 Werktagen",
-          "Persönliche Betreuung und Abstimmung",
-          "Nutzungsrechte für alle erstellten Designs"
-        ],
-        cta: "Kostenloses Beratungsgespräch",
-        financingOption: "Finanzierungsoptionen verfügbar. Sprich uns an!"
+      bundleItems: {
+        website: {
+          title: "Deine Startup-Website",
+          description: "Eine elegante, responsive Website mit klarem Call-to-Action für deine Zielgruppe. Wir beraten dich, welche Komponenten eine Startup-Website benötigt, um Leads zu generieren und Kunden zu gewinnen, und erstellen diese für dich."
+        },
+        qrCode: {
+          title: "QR-Code und Kalender-Link Integration",
+          description: "Wir verbinden die Online- und Offline-Welt für dich. In unserem intuitiven Formular kannst du einen Kalender-Link für jeden Gründer angeben und wo dieser erscheinen soll (E-Mail-Signatur, Visitenkarte, Website). Du kannst auch festlegen, wo wir den QR-Code zu deiner Website einfügen sollen (Visitenkarte, Rollup)."
+        },
+        socialMedia: {
+          title: "Social-Media Banner",
+          description: "Ein aussagekräftiges Social-Media-Banner, durch das Gründer und Mitarbeiter ihre Zugehörigkeit zum Startup zeigen können. Der Zweck des Banners ist es, deine Mission auf einen Blick zu kommunizieren."
+        },
+        stationery: {
+          title: "Visitenkarten-Druckdatei & E-Mail-Signatur",
+          description: "Deine Visitenkarte muss keinen Design-Wettbewerb gewinnen, sondern einen erkennbaren Wert für dich und dein Startup schaffen. Deshalb fügen wir standardmäßig dein Profilbild, den QR-Code deiner Landing Page und einen zu deiner Startup-Aktivität passenden grafischen Hintergrund hinzu."
+        },
+        wallpapers: {
+          title: "Digitale Wallpaper",
+          description: "Ein dezentes Wallpaper im Brand Design deines Startups für Smartphones und Laptops. In unserem intuitiven Formular kann jeder Gründer angeben, welches Smartphone er verwendet."
+        },
+        rollup: {
+          title: "Rollup-Template Druckdatei",
+          description: "Ein Roll-up in deinem Brand Design. Roll-ups müssen nicht jedem gefallen und dein Startup nicht größer erscheinen lassen als es ist. Aber deine Zielgruppe muss auf einen Blick verstehen, welches Problem du für sie löst. Wir helfen dir, die wichtigste Botschaft für dein Roll-up zu finden und integrieren den QR-Code deiner Website."
+        },
+        apparel: {
+          title: "Hoodie-Druckdatei",
+          description: "Ohne Hoodie wärst du kein Startup. Du wärst einfach nur selbstständig. Zum Glück haben wir dich und deine Mitgründer mit einer Hoodie-Druckdatei abgedeckt."
+        }
       },
       faq: {
         title: "Häufig gestellte Fragen",
+        showAll: "Alle Fragen und Antworten anzeigen",
         items: [
           {
-            question: "Was ist, wenn mir die Designs nicht gefallen?",
-            answer: "Deine Zufriedenheit ist unser oberstes Ziel. Wir bieten Überarbeitungsrunden an, um sicherzustellen, dass das Endergebnis deinen Vorstellungen entspricht. Wir arbeiten so lange, bis du begeistert bist."
+            question: "Was ist ein Rapid Branding wert?",
+            answer: "Was es wert ist, kannst nur du selbst bestimmen. Was alle Inhalte des Rapid Brandings zusammengerechnet bei Agenturen kosten würde, liegt etwa zwischen 10.000€ und 15.000€ und wäre mit mehreren Wochen an Wartezeit und unzähligen zusätzlichen Stunden an Koordinationsaufwand von deiner Seite verbunden. Wir reduzieren die Kosten drastisch, indem wir auf eine Kombination aus Automation und smarten Prozessen setzen."
           },
           {
-            question: "Kann ich einzelne Elemente aus dem Paket auswählen?",
-            answer: "Das Rapid Branding-Paket ist als Komplettlösung konzipiert, um dir den besten Wert zu bieten. Sprich uns gerne an, wenn du spezifische Bedürfnisse hast, und wir finden eine Lösung."
+            question: "Warum ist ein Rapid Branding so wichtig für Startups?",
+            answer: "Unsere ehrliche Meinung? Ist es nicht. Startup Gründer haben wichtigeres zu tun, als sich mit Design zu beschäftigen. Wir sind davon überzeugt, dass es die wichtigste Aufgabe des Gründerteams ist, sich mit ihrem Markt und ihrem Produkt zu beschäftigen. Wir haben jedoch sowohl aus eigener Gründungserfahrung als auch aus der Beratung von über 50 Startups erkannt, dass die Entwicklung der Markenvisibilität eine überdimensionierte Menge der Ressourcen eines jungen Startups in Form von Zeit und Geld verschlingt und zu viele Fallstricke für unerfahrene Gründer beinhaltet. Die Verbindung und Abstimmung der einzelnen Elemente des Rapid Brandings eines Startups ist im Vergleich zu den Problemen, die ein Startup löst, nicht komplex. Aber sie ist kleinteilig und penibel. Genau diese kleinteiligen Schritte nehmen wir euch ab. Unser Ziel ist es, dass ihr in nur wenigen Tagen euer vollständiges Rapid Branding in den Händen haltet und somit lauffähig für das nächste Jahr seid. Wir halten unser Rapid Branding nicht für das finale Brand Design, dass ihr in 5 Jahren mit einer Million Kunden noch haben werdet, aber für den effizientesten Einstieg, der euch die Schaffensruhe gibt, um diese Skalierung erreichen zu können."
           },
           {
-            question: "Wie lange dauert der gesamte Prozess?",
-            answer: "Wir garantieren die Lieferung deines kompletten Branding-Pakets innerhalb von 7 Werktagen nach der ersten Bedarfsanalyse und deiner Zuarbeit."
+            question: "Warum sollte ich mein Rapid Branding von RapidWorks erstellen lassen?",
+            answer: "Wir vereinen in unserem Team Startup-Gründungserfahrung, Design- und Development-Erfahrung. Wir wissen exakt, was ein Startup benötigt, um Kunden erreichen und überzeugen zu können. Zudem sind wir kosten- und zeiteffektiv in der Erstellung von Rapid Brandings, da wir bereits die Erstellung einiger Inhalte des Bundles semi-automatisiert haben."
           },
           {
-            question: "Welche Informationen benötigt ihr von mir?",
-            answer: "Wir haben einen kurzen Fragebogen, der uns hilft, dein Unternehmen, deine Zielgruppe und deine Vision zu verstehen. Je mehr Informationen du uns gibst, desto besser können wir ein Branding entwickeln, das perfekt zu dir passt."
+            question: "In welcher Form erhalte ich die Inhalte des Rapid Brandings?",
+            answer: "Nach Fertigstellung erhältst du von uns eine E-Mail mit Zugriffslink zu einem Cloud-Storage, welcher sämtliche Bestandteile deines Rapid Brandings in digitaler Form enthält. Jede Datei ist in geeignetem Dateiformat für die jeweilige Rolle abgespeichert und sprechend benannt. Du erhältst zudem jede Datei in einem bearbeitungsoffenen Format. Unser Ziel ist es, dich für die Zukunft handlungsfähig zu machen, anstatt dich in ein Abhängigkeitsverhältnis von uns oder anderen Dienstleistern hinein zu zwingen. Du erhältst von uns explizit keine physischen Materialien, du kannst dir diese aber mit unseren Dateien bei jeder Druckerei direkt in beliebiger Stückzahl fertigen lassen."
+          },
+          {
+            question: "Bietet RapidWorks noch weitere Services an?",
+            answer: "Ja, das Rapid Branding ist unser Markteintritt, unsere Mission geht aber noch viel weiter. Unabhängig vom Rapid Branding bieten wir Startups persönliches Coaching mit Yannick, MVP-Development und Software-Developmentleistungen zu unschlagbaren Preisen und kostenfreie Finanzierungsberatung an. Für weitere Infos siehe <a href='https://rapidworks.vercel.app/' target='_blank' rel='noopener noreferrer' class='text-violet-600 hover:text-violet-700 underline'>RapidWorks</a>."
+          },
+          {
+            question: "Wie hoch ist die Qualität des Rapid Brandings?",
+            answer: "Vergleichbar mit der Qualität des RapidWorks Rapid Brandings, welches du als Showcase auf dieser Webseite hier siehst. Dein Rapid Branding wird in Zusammenarbeit von Yannick und Samuel erstellt, exakt so wie das RapidWorks Rapid Branding. Wir gehen transparent damit um, dass du bei uns kein Design auf dem Level von Apple erwarten kannst. Wir sind allerdings davon überzeugt, dass auch nur kaum ein Startup dieses Level an Design-Qualität bereits in der Early-Stage braucht. Der Dreh- und Angelpunkt des Services deines Startups dreht sich um Brand Design auf Weltklasse? Dann sind wir nicht der richtige Partner für dich. In jedem anderen Fall vermutlich schon."
+          },
+          {
+            question: "Was ist, wenn ich Extrawünsche zu meinem Rapid Branding habe?",
+            answer: "In unserem Formular kannst du Extrawünsche gerne notieren, wir werden diese sichten und dich darüber informieren, ob wir diese im Rahmen des Angebots mit umsetzen, oder uns anderweitig arrangieren können."
+          },
+          {
+            question: "Trete ich Rechte an meinem Rapid Branding oder meiner Startup Idee ab?",
+            answer: "Dein Startup richtet sich ebenfalls an andere Startups als Zielgruppe und bietet Design-, Coaching-, oder Development-Leistungen an? In diesen Fällen könnte ein Interessenskonflikt zwischen uns vorliegen. Tu uns beiden einen Gefallen und schreib uns nicht deine Billion Dollar Startup Idee für explizit diese Zielgruppe und Leistungen in unser Formular. Wir haben selbst eine Menge weitere innovative Lösungen in diesem Bereich geplant und werden uns mit niemandem die Lorbeeren dafür teilen, weil jemand meint, dass wir seine Idee geklaut hätten. Insofern deine Idee nicht explizit in diesem Bereich liegt, kannst du sie uns bedenkenlos mitteilen. Du behältst ausdrücklich sämtliche Rechte an deiner Idee und deinem Rapid Branding. Wir geben keinerlei Daten an Dritte weiter. Unabhängig davon fragen wir dich nicht ab, wie deine Idee unter der Haube funktioniert. Alle Daten, die du uns gibst, sind Daten, die du scheinbar sowieso öffentlich sichtbar machen möchtest."
+          },
+          {
+            question: "An wen richtet sich das Startup Rapid Branding Angebot?",
+            answer: "Kurzum - An Startups. Siehe <a href='https://de.wikipedia.org/wiki/Start-up-Unternehmen' target='_blank' rel='noopener noreferrer' class='text-violet-600 hover:text-violet-700 underline'>Start-up-Unternehmen – Wikipedia</a>. Du bist kein Startup, oder bist dir nicht sicher, ob du eins bist, aber das Rapid Branding ist genau das was du brauchst? Dann füll gerne unser Formular aus, wir melden uns bei dir."
+          },
+          {
+            question: "Muss ich mein Startup bereits gegründet haben, um ein Rapid Branding erhalten zu können?",
+            answer: "Nein, du kannst unser Bewerbungsformular auch ausfüllen, wenn du noch nicht gegründet hast."
+          },
+          {
+            question: "Was ist, wenn ich bereits einige Inhalte des Rapid Brandings habe?",
+            answer: "Das ist kein Problem, in unserem Formular kannst du uns beliebige Dateien hochladen, die du bereits hast und uns dazu schreiben, welche davon wir in welcher Form beim Erstellen des Rapid Brandings aufgreifen sollen."
+          },
+          {
+            question: "Wann bekomme ich mein Rapid Branding?",
+            answer: "Da wir die Erstellung mehrerer Inhalte des Rapid Brandings bereits zu einem gewissen Grad semi-automatisiert haben, ein eingespieltes Team in der Erstellung von Rapid Brandings sind und eine Menge Erfahrung in der Betreuung von Startups haben, erstellen wir mindestens ein Rapid Branding pro Woche. Wir arbeiten die Aufträge nach <a href='https://de.wikipedia.org/wiki/First_In_%E2%80%93_First_Out' target='_blank' rel='noopener noreferrer' class='text-violet-600 hover:text-violet-700 underline'>First In – First Out – Wikipedia</a> ab und halten die Anzahl von Aufträgen in unserer Pipeline beabsichtigt sehr klein. Dein Rapid Branding wird also in jedem Fall sehr zeitnah und schnell abgearbeitet. Deutlich schneller, als du es vermutlich selbst anfertigen oder outsourcen könntest."
+          },
+          {
+            question: "Wie viel kostet es, alle Printmedien drucken zu lassen?",
+            answer: "Je nach Anbieter um die 100€ pro Rollup, 30€ pro Hoodie, 20€ für 500 Visitenkarten. Wir werden in Kürze auch Anbieter empfehlen mit denen wir gute Erfahrungen gemacht haben."
           }
         ]
       },
-      ctaSection: {
-        title: "Bereit, deine Marke auf das nächste Level zu heben?",
-        subtitle: "Starte noch heute mit deinem professionellen Branding-Paket und hinterlasse einen bleibenden Eindruck.",
-        cta: "Jetzt dein Branding starten"
+      mvp: {
+        title: "Benötigst du einen MVP in 2 Wochen?",
+        description: "Verwandle deine Idee in ein funktionierendes Produkt mit unserem schnellen MVP-Entwicklungsservice. Keine Vorabkosten, Zahlung nur bei Zufriedenheit.",
+        cta: "Mehr erfahren",
+        weeks: "Wochen"
+      },
+      finalCta: {
+        title: "Bereit, deine Marke zu transformieren?",
+        subtitle: "Hole dir heute dein komplettes Markenidentitätspaket.",
+        cta: "Jetzt Bundle sichern"
+      },
+      howItWorks: {
+        title: "So funktioniert's",
+        steps: [
+          {
+            title: "Teile deine Markeninfo",
+            description: "Teile uns deine Markenvision, Farbpräferenzen und eventuell vorhandene Grafiken über unser einfaches Formular mit."
+          },
+          {
+            title: "Wir erstellen deine Assets",
+            description: "Wir erstellen dein komplettes Rapid Branding und präsentieren es dir nach Fertigstellung. Wenn du mit dem Bundle nicht zufrieden bist, musst du nicht zahlen."
+          },
+          {
+            title: "Prüfen & Verfeinern",
+            description: "Wir helfen dir auch gerne, wenn du nachträglich kleine Anpassungswünsche bemerkst. Eine kleine Feedback-Iteration nach einigen Tagen ist bereits im Angebot enthalten."
+          }
+        ]
+      },
+      features: {
+        title: "Inhalt",
+        subtitle: "Das Rapid Branding enthält alles, was du brauchst, um die Aufmerksamkeit von Kunden, Partnern, Investoren und Mitarbeitern auf dein Startup zu lenken. Du wirst sofort sichtbar und ein einheitliches Markendesign macht deine Marke erkennbar."
+      },
+      process: {
+        title: "Unser Prozess",
+        steps: [
+          {
+            title: "Entdeckung",
+            description: "Wir lernen deine Markenvision und Ziele kennen"
+          },
+          {
+            title: "Erstellung",
+            description: "Unser Team entwickelt deine komplette Markenidentität"
+          },
+          {
+            title: "Verfeinerung",
+            description: "Wir verfeinern deine Assets, bis sie perfekt sind"
+          },
+          {
+            title: "Lieferung",
+            description: "Erhalte dein komplettes Markenpaket"
+          }
+        ]
+      },
+      exploreMore: {
+        badge: "Mehr Entdecken",
+        title: "Wusstest du, dass wir mehr als nur Branding anbieten?",
+        description: "Entdecke unsere weiteren Dienstleistungen, die dir beim Wachstum deines Startups helfen - von Expertenunterstützung über MVP-Entwicklung bis hin zu Coaching und Finanzierungslösungen.",
+        cta: "Alle Services entdecken"
       },
       testimonials: {
-        title: "Marken, die wir verwandelt haben",
-        subtitle: "Höre von Gründern, die mit unserem Rapid Branding Paket ihre Sichtbarkeit erfolgreich aufgebaut haben."
+        title: "Erfolge mit Rapid Branding",
+        subtitle: "Höre von Gründern, die mit unserem Paket schnell ihre Marktpräsenz aufgebaut haben."
       }
     }
   }
