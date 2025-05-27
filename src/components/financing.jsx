@@ -112,7 +112,7 @@ const FinancingPage = () => {
             },
             mainSection: {
                 title: "Die richtige Finanzierung zum richtigen Zeitpunkt",
-                description: "Jede Phase Ihrer Startup-Reise erfordert unterschiedliche Finanzierungsstrategien. Wir arbeiten mit Ihnen zusammen, um den optimalen Finanzierungsmix für Ihre aktuellen Bedürfnisse und zukünftigen Wachstumspläne zu identifizieren.",
+                description: "Jede Phase deiner Startup-Reise erfordert unterschiedliche Finanzierungsstrategien. Wir arbeiten mit dir zusammen, um den optimalen Finanzierungsmix für deine aktuellen Bedürfnisse und zukünftigen Wachstumspläne zu identifizieren.",
                 buttonText: "Kostenlose Beratung"
             },
             modal: {
@@ -121,7 +121,7 @@ const FinancingPage = () => {
             },
             testimonials: {
                 title: "Erfolgsgeschichten Finanzierung",
-                subtitle: "Lesen Sie, wie Startups mit unserer Unterstützung die Finanzierungslandschaft gemeistert haben."
+                subtitle: "Lies, wie Startups mit unserer Unterstützung die Finanzierungslandschaft gemeistert haben."
             }
         }
     };
