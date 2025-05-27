@@ -191,8 +191,8 @@ const PartnersPage = () => {
         ],
         demandInfo: {
           title: "Nachfragebasiertes Netzwerk",
-          subtitle: "Wir knüpfen Kontakte zu Experten, sobald genügend Nachfrage besteht. Dein Input formt unser Partnernetzwerk!",
-          cta: "Gib oben deinen Bedarf an"
+          subtitle: "Wir knüpfen Kontakte zu Experten, sobald genügend Nachfrage besteht. Ihr Input formt unser Partnernetzwerk!",
+          cta: "Geben Sie oben Ihren Bedarf an"
         }
       },
       form: {
@@ -207,22 +207,22 @@ const PartnersPage = () => {
         button: "Interesse bekunden",
         success: {
           title: "Vielen Dank!",
-          message: "Dein Interesse wurde gespeichert. Wir melden uns, wenn wir basierend auf der kollektiven Nachfrage passende Partner haben.",
-          anotherEmail: "Für eine andere E-Mail senden"
+          message: "Ihr Interesse wurde registriert. Wir melden uns, sobald wir basierend auf der Gesamtnachfrage relevante Partner-Matches haben.",
+          anotherEmail: "Für eine andere E-Mail eintragen"
         }
       },
       errorPrompt: {
-        noSelection: "Bitte gib an, wann du mindestens einen Partner benötigst.",
-        invalidEmail: "Bitte gib eine gültige E-Mail-Adresse ein.",
-        noEmail: "Bitte gib deine E-Mail-Adresse ein.",
-        submitFailed: "Interesse konnte nicht bekundet werden. Bitte versuche es erneut."
-      },
+          noSelection: "Bitte geben Sie an, wann Sie mindestens einen Partner benötigen könnten.",
+          invalidEmail: "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+          noEmail: "Bitte geben Sie Ihre E-Mail-Adresse ein.",
+          submitFailed: "Interesse konnte nicht übermittelt werden. Bitte versuchen Sie es erneut."
+        },
       selectionPrompt: { // Add prompt text (German)
         title: "Zuerst Bedarf angeben",
         message: "Bitte wähle einen Zeitrahmen für mindestens einen Partner im linken Bereich aus.",
         mobileText: "Hochscrollen zum Auswählen",
-        desktopText: "Links auswählen"
-      }
+          desktopText: "Links auswählen"
+        }
     }
   };
 
