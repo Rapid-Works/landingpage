@@ -198,8 +198,8 @@ export default function RapidWorksPage() {
         partners: {
           category: "Network",
           title: "Rapid Partners",
-          description: "Get connected with vetted notaries, tax advisors, auditors, and more.",
-          learnMore: "Learn more"
+          description: "Vernetze dich mit geprüften Notaren, Steuerberatern, Wirtschaftsprüfern und mehr.",
+          learnMore: "Mehr erfahren"
         },
         coaching: {
           category: "Growth",
@@ -315,7 +315,7 @@ export default function RapidWorksPage() {
         partners: {
           category: "Netzwerk",
           title: "Rapid Partners",
-          description: "Vernetzen Sie sich mit geprüften Notaren, Steuerberatern, Wirtschaftsprüfern und mehr.",
+          description: "Vernetze dich mit geprüften Notaren, Steuerberatern, Wirtschaftsprüfern und mehr.",
           learnMore: "Mehr erfahren"
         },
         coaching: {
@@ -339,7 +339,7 @@ export default function RapidWorksPage() {
       },
       financingSection: {
           title: "Finanzierung benötigt?",
-          subtitle: "Machen Sie sich keine Sorgen über die Finanzierung Ihres Wachstums. Wir zeigen Ihnen die Möglichkeiten und helfen bei der Beantragung von Fördermitteln."
+          subtitle: "Mach dir keine Sorgen über die Finanzierung deines Wachstums. Wir zeigen dir die Möglichkeiten und helfen dir bei der Beantragung von Fördermitteln."
        },
       bundle: {
         title: "Rapid Bundle",
@@ -358,7 +358,7 @@ export default function RapidWorksPage() {
       },
       testimonialSection: {
         title: "Echte Ergebnisse, schnelles Wachstum",
-        subtitle: "Hören Sie direkt von Gründern, die RapidWorks-Dienste genutzt haben, um ihre Startup-Reise zu beschleunigen."
+        subtitle: "Hör direkt von Gründern, die RapidWorks-Dienste genutzt haben, um ihre Startup-Reise zu beschleunigen."
       },
     }
   }

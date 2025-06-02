@@ -301,7 +301,7 @@ const TeamPage = () => {
         expertiseTitle: "Expertise",
         moreSkills: "...und mehr",
         growingTitle: "Unser Team wächst!",
-        growingDescription: "Wir erweitern ständig unser Expertenteam, um deine Bedürfnisse besser zu erfüllen. Wenn du an einem Experten interessiert bist, den wir noch nicht haben, lass es uns wissen, indem du den Experten anfragst. Du wirst dann als Erster informiert, sobald der Experte verfügbar ist.",
+        growingDescription: "Wir erweitern ständig unser Expertenteam, um deine Bedürfnisse besser zu erfüllen. Wenn du an einem Experten interessiert bist, den wir noch nicht haben, sag uns Bescheid, indem du den Experten anfragst. Du wirst dann als Erstes informiert, sobald der Experte verfügbar ist.",
         getNotified: "Benachrichtigt werden, wenn neue Experten beitreten",
         comingSoon: "Demnächst verfügbar",
         requestExpertButton: "Diesen Experten anfragen"
