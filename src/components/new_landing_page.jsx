@@ -147,6 +147,7 @@ export default function RapidWorksPage() {
           {
             title: "They all cater to startups needs",
             description: "We love startups and understand their needs from own previous startup journeys and working in the industry for years. Therefore all our services are built to cater the most common startup needs in the most time- and cost effective ways.",
+            
             icon: "Target"
           },
           {
