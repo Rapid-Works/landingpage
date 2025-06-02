@@ -271,7 +271,7 @@ const WorkshopsPage = () => {
         },
         testimonials: {
           title: "Wertvolle Lernerfahrungen",
-          subtitle: "Sehen Sie, wie Teilnehmer von unseren praxisnahen, von Experten geleiteten Workshops profitiert haben."
+          subtitle: "Sieh, wie Teilnehmer von unseren praxisnahen, von Experten geleiteten Workshops profitiert haben."
         }
       },
       form: {

@@ -175,11 +175,11 @@ const PartnersPage = () => {
       },
       hero: {
         title: "Finde deine Berater",
-        subtitle: "Nicht jeder Berater ist für die Bedürfnisse eines Startups geeignet. Das wissen wir, deshalb helfen wir dir, den Richtigen zu finden. Teile uns mit, welche Berater du in den nächsten Monaten benötigst, und wir finden sie.",
+        subtitle: "Nicht jeder Berater ist für die Bedürfnisse eines Startups geeignet. Das wissen wir, deshalb helfen wir dir, den Richtigen zu finden. Sag uns, welche Berater du in den nächsten Monaten brauchst, und wir finden sie für dich.",
       },
       partners: {
         title: "Gib deinen Bedarf an",
-        subtitle: "Wähle den Zeitrahmen (in Monaten), wann du voraussichtlich jeden Expertentyp benötigst.",
+        subtitle: "Wähle den Zeitraum (in Monaten), wann du voraussichtlich jeden Expertentyp brauchst.",
         selectionTitle: "Benötigte Partner & Zeitplan",
         items: [
           { id: "notary", title: "Notar", description: "Für Firmengründung, Verträge, Beglaubigungen." },
@@ -191,7 +191,7 @@ const PartnersPage = () => {
         ],
         demandInfo: {
           title: "Nachfragebasiertes Netzwerk",
-          subtitle: "Wir knüpfen Kontakte zu Experten, sobald genügend Nachfrage besteht. Ihr Input formt unser Partnernetzwerk!",
+          subtitle: "Wir knüpfen Kontakte zu Experten, sobald genügend Nachfrage besteht. Dein Input formt unser Partnernetzwerk!",
           cta: "Gib oben deinen Bedarf an"
         }
       },
@@ -201,27 +201,27 @@ const PartnersPage = () => {
         emailPlaceholder: "du@example.com",
         selectedNeedsTitle: "Ausgewählter Partnerbedarf", // Title for the summary
         consent: {
-          checkbox: "Ich stimme zu, bezüglich potenzieller Partner kontaktiert zu werden",
+          checkbox: "Ich stimme zu, dass du mich bezüglich potenzieller Partner kontaktierst",
           subtitle: "Wir respektieren deine Privatsphäre und teilen nur relevante Möglichkeiten."
         },
         button: "Interesse bekunden",
         success: {
           title: "Vielen Dank!",
-          message: "Ihr Interesse wurde registriert. Wir melden uns, sobald wir basierend auf der Gesamtnachfrage relevante Partner-Matches haben.",
+          message: "Dein Interesse wurde registriert. Wir melden uns, sobald wir basierend auf der Gesamtnachfrage relevante Partner-Matches haben.",
           anotherEmail: "Für eine andere E-Mail eintragen"
         }
       },
       errorPrompt: {
-          noSelection: "Bitte geben Sie an, wann Sie mindestens einen Partner benötigen könnten.",
-          invalidEmail: "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
-          noEmail: "Bitte geben Sie Ihre E-Mail-Adresse ein.",
-          submitFailed: "Interesse konnte nicht übermittelt werden. Bitte versuchen Sie es erneut."
+          noSelection: "Bitte gib an, wann du mindestens einen Partner brauchen könntest.",
+          invalidEmail: "Bitte gib eine gültige E-Mail-Adresse ein.",
+          noEmail: "Bitte gib deine E-Mail-Adresse ein.",
+          submitFailed: "Interesse konnte nicht übermittelt werden. Bitte versuche es erneut."
         },
       selectionPrompt: { // Add prompt text (German)
         title: "Zuerst Bedarf angeben",
-        message: "Bitte wähle einen Zeitrahmen für mindestens einen Partner im linken Bereich aus.",
+        message: "Bitte wähle einen Zeitraum für mindestens einen Partner im linken Bereich aus.",
         mobileText: "Hochscrollen zum Auswählen",
-          desktopText: "Links auswählen"
+        desktopText: "Links auswählen"
         }
     }
   };
