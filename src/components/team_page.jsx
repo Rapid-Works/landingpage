@@ -335,7 +335,7 @@ const TeamPage = () => {
       memberExperienceSuffix: "Jahre",
       testimonials: {
         title: "Beschleunigte Entwicklung mit Rapid Experts",
-        subtitle: "Entdecken Sie, wie Gründer unser On-Demand-Talent nutzten, um schneller zu bauen und zu skalieren."
+        subtitle: "Entdecke, wie Gründer unsere On-Demand-Experten nutzten, um ihre Unternehmen schneller zu skalieren."
       }
     }
   }

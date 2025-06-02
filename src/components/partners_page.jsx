@@ -192,7 +192,7 @@ const PartnersPage = () => {
         demandInfo: {
           title: "Nachfragebasiertes Netzwerk",
           subtitle: "Wir knüpfen Kontakte zu Experten, sobald genügend Nachfrage besteht. Ihr Input formt unser Partnernetzwerk!",
-          cta: "Geben Sie oben Ihren Bedarf an"
+          cta: "Gib oben deinen Bedarf an"
         }
       },
       form: {

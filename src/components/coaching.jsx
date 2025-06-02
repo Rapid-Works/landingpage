@@ -210,7 +210,7 @@ const CoachingPage = () => {
       },
       testimonials: {
         title: "Durch Coaching transformiert",
-        subtitle: "Erfahren Sie, wie personalisierte Anleitung Gründern half, Herausforderungen zu meistern und Wachstum zu beschleunigen."
+        subtitle: "Erfahre, wie unser persönliches Coaching Gründern half, Herausforderungen zu meistern und ihr Unternehmenswachstum zu beschleunigen."
       }
     }
   };
