@@ -215,9 +215,9 @@ export default function RapidWorksPage() {
         },
         financing: {
           title: "Rapid Financing",
-          description: "Don't know how to finance your growth now? Did you know you can get up to 70% of our services subsidized? There are multiple options, reach out to us to find out for free!",
-          learnMore: "Learn more",
-          freeConsultation: "Free Consultation"
+          description: "Du weißt nicht, wie du dein Wachstum jetzt finanzieren sollst? Wusstest du, dass du bis zu 80% unserer Dienstleistungen fördern lassen kannst? Es gibt mehrere Optionen, kontaktiere uns kostenlos, um mehr zu erfahren!",
+          learnMore: "Mehr erfahren",
+          freeConsultation: "Kostenlose Beratung"
         }
       },
       financingSection: {
@@ -227,7 +227,7 @@ export default function RapidWorksPage() {
       bundle: {
         title: "Rapid Bundle",
         description: "Reach the next level with all our Services combined in one bundle!",
-        financingNote: "Think it's expensive? No, together with you we prepare the financing of our services and look out for subsidies to make our services ridiculously cheap for you!",
+        financingNote: "Du denkst das wäre unbezahlbar? Ganz im Gegenteil, gemeinsam mit dir bereiten wir die Finanzierung unserer Dienstleistungen vor und suchen nach Fördermitteln, um die Kosten für dich auf einen Bruchteil marktüblicher Preise zu reduzieren!",
         getBundle: "Get Your Bundle"
       },
       cta: {
@@ -262,27 +262,27 @@ export default function RapidWorksPage() {
         title: "Was alle unsere Angebote gemeinsam haben",
         points: [
           {
-            title: "Du bekommst Services, die speziell auf Startup-Bedürfnisse zugeschnitten sind",
-            description: "Wir lieben Startups und verstehen ihre Bedürfnisse aus eigenen früheren Startup-Reisen und jahrelanger Arbeit in der Branche. Daher sind alle unsere Dienstleistungen darauf ausgelegt, die häufigsten Startup-Bedürfnisse auf die zeit- und kosteneffektivste Weise zu erfüllen.",
+            title: "Sie sind alle auf die Bedürfnisse von Startups zugeschnitten",
+            description: "Wir lieben Startups und verstehen ihre Bedürfnisse aus eigenen früheren Startup-Reisen und jahrelanger Arbeit im Startup Ökosystem. Daher sind alle unsere Dienstleistungen darauf ausgelegt, die häufigsten Startup-Bedürfnisse auf die zeit- und kosteneffektivste Weise zu erfüllen.",
             icon: "Target"
           },
           {
-            title: "Du erhältst messbare Ergebnisse mit beispielloser Geschwindigkeit",
+            title: "Sie liefern messbare Ergebnisse mit beispielloser Geschwindigkeit",
             description: "Startups können es sich nicht leisten, Zeit zu verlieren. Wir wissen das, deshalb haben wir alle unsere Dienstleistungen so aufgebaut, dass du bereits nach einer Woche erste messbare Ergebnisse erzielen kannst. Egal, ob du einen Markt erschließen, ein MVP entwickeln, Experten-Coaching erhalten oder ein Treffen mit einem Steuerberater benötigst ... wir bringen dich in Aktion.",
             icon: "Zap"
           },
           {
-            title: "Du zahlst entweder nichts oder kannst Förderung erhalten",
-            description: "Wir wissen, dass in Startups jeder investierte Euro 10 Euro an Wert schaffen muss. Daher haben wir all unsere Services so ausgerichtet, dass sie durch Förderprogramme subventioniert werden können, oder gänzlich kostenfrei für dich sind. Wir zeigen dir gerne kostenfrei auf, welche Förderungen deinem Startup zustehen und unterstützen gerne bei der Beantragung.",
+            title: "Sie sind entweder kostenlos oder können gefördert werden",
+            description: "„Wir wissen, dass in Startups jeder investierte Euro 10 Euro an Wert schaffen muss. Daher haben wir all unsere Services so ausgerichtet, dass sie durch Förderprogramme subventioniert werden können, oder gänzlich kostenfrei für dich sind. Wir zeigen dir gerne kostenfrei auf, welche Förderungen deinem Startup zustehen und unterstützen gerne bei der Beantragung.“",
             icon: "Gift"
           },
           {
-            title: "Du kannst flexibel zwischen allen Services wechseln",
+            title: "Sie bauen aufeinander auf",
             description: "Alle unsere Dienstleistungen bauen aufeinander auf, erfordern sich jedoch nicht gegenseitig. Du kannst in jeder Phase ein- und aussteigen. Wenn du Hilfe benötigst, um herauszufinden, welche unserer Dienstleistungen dir am besten helfen könnten, buche gerne ein kostenloses Gespräch mit uns, um deine individuellen Bedürfnisse gemeinsam zu besprechen. Übrigens werden wir dich davon abhalten, Dienstleistungen zu buchen, die unserer Meinung nach nicht zu deinen aktuell größten Bedürfnissen passen. Wir bitten um dein Verständnis.",
             icon: "Layers"
           },
           {
-            title: "Du erhältst volle Kostentransparenz und zahlst erst nach Zufriedenheit",
+            title: "Sie bieten alle Kostentransparenz und liefern immer Wert, bevor wir etwas berechnen",
             description: "Du wirst immer im Voraus wissen, was wir berechnen und wann wir dies tun. Wir berechnen immer erst dann etwas, wenn du mit unserer Arbeit zufrieden bist.",
             icon: "ShieldCheck"
           }
@@ -315,7 +315,7 @@ export default function RapidWorksPage() {
         partners: {
           category: "Netzwerk",
           title: "Rapid Partners",
-          description: "Vernetz dich mit geprüften Notaren, Steuerberatern, Wirtschaftsprüfern und mehr.",
+          description: "Vernetzen Sie sich mit geprüften Notaren, Steuerberatern, Wirtschaftsprüfern und mehr.",
           learnMore: "Mehr erfahren"
         },
         coaching: {
@@ -332,19 +332,19 @@ export default function RapidWorksPage() {
         },
         financing: {
           title: "Rapid Financing",
-          description: "Weißt du nicht, wie du dein Wachstum jetzt finanzieren sollst? Wusstest du, dass du bis zu 70% unserer Dienstleistungen fördern lassen kannst? Es gibt mehrere Optionen, kontaktiere uns kostenlos, um mehr zu erfahren!",
+          description: "Du weißt nicht, wie du dein Wachstum jetzt finanzieren sollst? Wusstest du, dass du bis zu 80% unserer Dienstleistungen fördern lassen kannst? Es gibt mehrere Optionen, kontaktiere uns kostenlos, um mehr zu erfahren!",
           learnMore: "Mehr erfahren",
           freeConsultation: "Kostenlose Beratung"
         }
       },
       financingSection: {
           title: "Finanzierung benötigt?",
-          subtitle: "Mach dir keine Sorgen über die Finanzierung deines Wachstums. Wir zeigen dir die Möglichkeiten und helfen dir bei der Beantragung von Fördermitteln."
+          subtitle: "Machen Sie sich keine Sorgen über die Finanzierung Ihres Wachstums. Wir zeigen Ihnen die Möglichkeiten und helfen bei der Beantragung von Fördermitteln."
        },
       bundle: {
         title: "Rapid Bundle",
         description: "Erreiche das nächste Level mit all unseren Services kombiniert in einem Paket!",
-        financingNote: "Denkst du, es ist teuer? Nein, gemeinsam mit dir bereiten wir die Finanzierung unserer Dienstleistungen vor und suchen nach Fördermitteln, um unsere Services für dich lächerlich günstig zu machen!",
+        financingNote: "Du denkst das wäre unbezahlbar? Ganz im Gegenteil, gemeinsam mit dir bereiten wir die Finanzierung unserer Dienstleistungen vor und suchen nach Fördermitteln, um die Kosten für dich auf einen Bruchteil marktüblicher Preise zu reduzieren!",
         getBundle: "Dein Bundle sichern"
       },
       cta: {
@@ -358,7 +358,7 @@ export default function RapidWorksPage() {
       },
       testimonialSection: {
         title: "Echte Ergebnisse, schnelles Wachstum",
-        subtitle: "Höre direkt von Gründern, die RapidWorks-Dienste genutzt haben, um ihre Startup-Reise zu beschleunigen."
+        subtitle: "Hören Sie direkt von Gründern, die RapidWorks-Dienste genutzt haben, um ihre Startup-Reise zu beschleunigen."
       },
     }
   }
@@ -861,11 +861,6 @@ export default function RapidWorksPage() {
                </div>
              ))}
            </div>
-            <div className="mt-16 bg-purple-50 border-l-4 border-purple-500 p-6 rounded-r-lg max-w-4xl mx-auto">
-               <p className="text-purple-800 italic text-sm md:text-base leading-relaxed">
-                 {content.commonGround.points.find(p => p.icon === 'Layers')?.description || (language === 'de' ? "Alle unsere Dienstleistungen bauen aufeinander auf..." : "All of our services build on one another...")}
-               </p>
-             </div>
          </div>
        </section>
 
@@ -930,4 +925,3 @@ export default function RapidWorksPage() {
     </div>
   )
 }
-
