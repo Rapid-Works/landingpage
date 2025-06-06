@@ -1,4 +1,5 @@
 import ViteraVBImage from './images/vitera_vb.png'; // Assuming it's in src/images/
+import LeilaVBImage from './images/leila_vb.png'; // Add this import
 
 export const testimonials = [
   // --- Sample Combined/Featured Testimonial ---
@@ -70,6 +71,18 @@ export const testimonials = [
     services: ["branding"],
     isFeatured: false,
     projectShowcaseImage: ViteraVBImage // <<< Use the imported variable
+  },
+  {
+    id: 7,
+    quote:
+      "Rapid Works helped us align our business and brand with our values. The branding and website reflect our mission perfectly, and the process was smooth and inspiring. Highly recommended for any impact-driven business!",
+    authorName: "Dr. Leila Momen",
+    authorTitle: "Founder, tax&purpose",
+    imageUrl: null, // Add a profile image if available
+    companyLogoUrl: null, // Or logo if available
+    services: ["branding"],
+    isFeatured: false,
+    projectShowcaseImage: LeilaVBImage // Use the imported variable
   },
   // Add more testimonials as needed...
 ]; 

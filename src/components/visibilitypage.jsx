@@ -54,7 +54,7 @@ const BundleSlider = ({ items, currentIndex, setCurrentIndex }) => {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % items.length)
-    }, 5000)
+    }, 1000)
     return () => clearInterval(timer)
   }, [items.length, setCurrentIndex])
 
@@ -203,9 +203,29 @@ const BrandingTestimonialsSection = ({ content }) => {
     t => t.services.includes("branding") && !t.isFeatured
   );
 
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    if (brandingTestimonials.length <= 1) return;
+    if (paused) return;
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev === brandingTestimonials.length - 1 ? 0 : prev + 1));
+    }, 5000); // 5 seconds
+    return () => clearInterval(interval);
+  }, [brandingTestimonials.length, paused]);
+
   if (brandingTestimonials.length === 0) {
     return null;
   }
+
+  // Slider controls
+  const handlePrev = () => {
+    setCurrentIndex((prev) => (prev === 0 ? brandingTestimonials.length - 1 : prev - 1));
+  };
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev === brandingTestimonials.length - 1 ? 0 : prev + 1));
+  };
 
   return (
     <section className="py-24 bg-white">
@@ -222,20 +242,69 @@ const BrandingTestimonialsSection = ({ content }) => {
             {content.testimonials?.subtitle || "See what founders say about our branding package."}
           </p>
         </div>
-        <div className={`grid grid-cols-1 ${brandingTestimonials.length >= 2 ? 'md:grid-cols-2' : ''} ${brandingTestimonials.length >= 3 ? 'lg:grid-cols-3' : ''} gap-8 max-w-7xl mx-auto`}>
-          {brandingTestimonials.map((testimonial) => (
+        {brandingTestimonials.length === 1 ? (
+          <div className="max-w-4xl mx-auto">
             <TestimonialCard
-              key={testimonial.id}
-              quote={testimonial.quote}
-              authorName={testimonial.authorName}
-              authorTitle={testimonial.authorTitle}
-              imageUrl={testimonial.imageUrl}
-              companyLogoUrl={testimonial.companyLogoUrl}
-              projectShowcaseImage={testimonial.projectShowcaseImage}
+              key={brandingTestimonials[0].id}
+              quote={brandingTestimonials[0].quote}
+              authorName={brandingTestimonials[0].authorName}
+              authorTitle={brandingTestimonials[0].authorTitle}
+              imageUrl={brandingTestimonials[0].imageUrl}
+              companyLogoUrl={brandingTestimonials[0].companyLogoUrl}
+              projectShowcaseImage={brandingTestimonials[0].projectShowcaseImage}
               accentColor="purple"
             />
-          ))}
-        </div>
+          </div>
+        ) : (
+          <div
+            className="relative max-w-4xl mx-auto"
+            onMouseEnter={() => setPaused(true)}
+            onMouseLeave={() => setPaused(false)}
+          >
+            {/* Left Switcher */}
+            <button
+              onClick={handlePrev}
+              className="absolute -left-8 top-1/2 -translate-y-1/2 bg-white border border-gray-200 rounded-full shadow p-2 hover:bg-violet-50 transition"
+              aria-label="Previous testimonial"
+              style={{ zIndex: 2 }}
+            >
+              <ChevronLeft className="h-6 w-6 text-violet-600" />
+            </button>
+            {/* Testimonial Card */}
+            <TestimonialCard
+              key={brandingTestimonials[currentIndex].id}
+              quote={brandingTestimonials[currentIndex].quote}
+              authorName={brandingTestimonials[currentIndex].authorName}
+              authorTitle={brandingTestimonials[currentIndex].authorTitle}
+              imageUrl={brandingTestimonials[currentIndex].imageUrl}
+              companyLogoUrl={brandingTestimonials[currentIndex].companyLogoUrl}
+              projectShowcaseImage={brandingTestimonials[currentIndex].projectShowcaseImage}
+              accentColor="purple"
+            />
+            {/* Right Switcher */}
+            <button
+              onClick={handleNext}
+              className="absolute -right-8 top-1/2 -translate-y-1/2 bg-white border border-gray-200 rounded-full shadow p-2 hover:bg-violet-50 transition"
+              aria-label="Next testimonial"
+              style={{ zIndex: 2 }}
+            >
+              <ChevronRight className="h-6 w-6 text-violet-600" />
+            </button>
+          </div>
+        )}
+        {/* Dots below the card */}
+        {brandingTestimonials.length > 1 && (
+          <div className="flex justify-center mt-6 gap-2">
+            {brandingTestimonials.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentIndex(idx)}
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${currentIndex === idx ? "bg-violet-500 w-6" : "bg-gray-200"}`}
+                aria-label={`Go to testimonial ${idx + 1}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
