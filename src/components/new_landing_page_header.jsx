@@ -16,6 +16,7 @@ import {
   Newspaper
 } from "lucide-react"
 import { LanguageContext as AppLanguageContext } from "../App"
+import logo from "../images/logo.png"
 
 export default function RapidWorksHeader() {
   const [scrolled, setScrolled] = useState(false)
@@ -53,76 +54,22 @@ export default function RapidWorksHeader() {
     return false;
   }
 
-  const getColorScheme = () => {
-    const path = location.pathname;
-    if (path.startsWith("/branding")) {
-      return {
-        logoGradient: "from-purple-600 to-indigo-600",
-        logoText: "from-purple-600 to-indigo-600",
-        buttonHover: "hover:from-purple-600 hover:to-indigo-600"
-      }
-    } else if (path.startsWith("/experts")) {
-      return {
-        logoGradient: "from-blue-600 to-blue-700",
-        logoText: "from-blue-600 to-blue-700",
-        buttonHover: "hover:from-blue-600 hover:to-blue-700"
-      }
-    } else if (path.startsWith("/blueprint")) {
-      return {
-        logoGradient: "from-indigo-600 to-indigo-700",
-        logoText: "from-indigo-600 to-indigo-700",
-        buttonHover: "hover:from-indigo-600 hover:to-indigo-700"
-      }
-    } else if (path.startsWith("/coaching")) {
-      return {
-        logoGradient: "from-orange-600 to-amber-600",
-        logoText: "from-orange-600 to-amber-600",
-        buttonHover: "hover:from-orange-600 hover:to-amber-600"
-      }
-    } else if (path.startsWith("/workshop")) {
-      return {
-        logoGradient: "from-green-600 to-emerald-600",
-        logoText: "from-green-600 to-emerald-600",
-        buttonHover: "hover:from-green-600 hover:to-emerald-600"
-      }
-    } else if (path.startsWith("/financing")) {
-      return {
-        logoGradient: "from-rose-600 to-pink-600",
-        logoText: "from-rose-600 to-pink-600",
-        buttonHover: "hover:from-rose-600 hover:to-pink-600"
-      }
-    } else if (path.startsWith("/bundle")) {
-      return {
-        logoGradient: "from-gray-900 to-black",
-        logoText: "from-gray-900 to-black",
-        buttonHover: "hover:from-gray-800 hover:to-black"
-      }
-    } else if (path.startsWith("/partners")) {
-      return {
-        logoGradient: "from-blue-600 to-sky-600",
-        logoText: "from-blue-600 to-sky-600",
-        buttonHover: "hover:from-blue-600 hover:to-sky-600"
-      }
-    } else {
-      return {
-        logoGradient: "from-purple-600 to-indigo-600",
-        logoText: "from-purple-600 to-indigo-600",
-        buttonHover: "hover:from-purple-600 hover:to-indigo-600"
-      }
-    }
+  // Fixed color scheme using brand colors
+  const colors = {
+    logoGradient: "from-[#1D0D37] to-[#7C3BEC]",
+    logoText: "from-[#1D0D37] to-[#7C3BEC]",
+    buttonHover: "hover:from-[#1D0D37] hover:to-[#7C3BEC]"
   }
 
-  const colors = getColorScheme()
-
   const navItems = [
-    { name: "Branding", icon: <Megaphone className="h-4 w-4" />, path: "/branding", color: "purple" },
-    { name: "Experts", icon: <Users className="h-4 w-4" />, path: "/experts", color: "blue" },
-    { name: "Coaching", icon: <Compass className="h-4 w-4" />, path: "/coaching", color: "orange" },
-    { name: "Financing", icon: <Euro className="h-4 w-4" />, path: "/financing", color: "rose" },
-    { name: "Partners", icon: <Handshake className="h-4 w-4" />, path: "/partners", color: "blue" },
-    { name: "Workshops", icon: <Presentation className="h-4 w-4" />, path: "/workshop", color: "green" },
-    { name: "Bundle", icon: <Package className="h-4 w-4" />, path: "/bundle", color: "gray" },
-    // { name: "Blog", icon: <Newspaper className="h-4 w-4" />, path: "/blogs", color: "teal" },
+    { name: "Branding", icon: <Megaphone className="h-4 w-4" />, path: "/branding", color: "[#7C3BEC]" },
+    { name: "Experts", icon: <Users className="h-4 w-4" />, path: "/experts", color: "[#7C3BEC]" },
+    { name: "Coaching", icon: <Compass className="h-4 w-4" />, path: "/coaching", color: "[#7C3BEC]" },
+    { name: "Financing", icon: <Euro className="h-4 w-4" />, path: "/financing", color: "[#7C3BEC]" },
+    { name: "Partners", icon: <Handshake className="h-4 w-4" />, path: "/partners", color: "[#7C3BEC]" },
+    { name: "Workshops", icon: <Presentation className="h-4 w-4" />, path: "/workshop", color: "[#7C3BEC]" },
+    { name: "Bundle", icon: <Package className="h-4 w-4" />, path: "/bundle", color: "[#7C3BEC]" },
+    // { name: "Blog", icon: <Newspaper className="h-4 w-4" />, path: "/blogs", color: "[#7C3BEC]" },
   ]
 
   return (
@@ -132,17 +79,7 @@ export default function RapidWorksHeader() {
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center group">
-            <div className={`bg-gradient-to-br ${colors.logoGradient} group-hover:from-purple-600 group-hover:to-indigo-600 p-1 rounded-lg shadow-lg transform group-hover:rotate-12 transition-all duration-300`}>
-              <Rocket className="h-4 w-4 text-white" />
-            </div>
-            <div className="ml-2 hidden md:block">
-              <h1 className={`text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r ${colors.logoText} group-hover:from-purple-600 group-hover:to-indigo-600 transition-all duration-300`}>
-                RapidWorks
-              </h1>
-              <p className="text-[8px] text-gray-500 font-medium tracking-wider uppercase leading-tight">
-                IDEAS INTO ACTION
-              </p>
-            </div>
+            <img src={logo} alt="RapidWorks" className="h-8 w-auto" />
           </Link>
 
           <div className="hidden md:flex items-center gap-3">
@@ -152,16 +89,16 @@ export default function RapidWorksHeader() {
                   to={item.path}
                   className={`relative px-3 py-1.5 rounded-full flex items-center gap-1.5 transition-all duration-300 text-xs font-medium z-10 ${
                     isActive(item.path)
-                      ? `bg-${item.color}-100 text-${item.color}-700`
-                      : `text-gray-700 hover:text-${item.color}-700`
+                      ? `bg-[#7C3BEC]/10 text-[#7C3BEC]`
+                      : `text-gray-700 hover:text-[#7C3BEC]`
                   }`}
                 >
                   {item.icon}
                   <span>{item.name}</span>
                 </Link>
-                <div className={`absolute -bottom-1 left-0 right-0 h-0.5 bg-${item.color}-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left ${isActive(item.path) ? 'scale-x-100' : ''}`}></div>
+                <div className={`absolute -bottom-1 left-0 right-0 h-0.5 bg-[#7C3BEC] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left ${isActive(item.path) ? 'scale-x-100' : ''}`}></div>
                 {!isActive(item.path) && (
-                  <div className={`absolute inset-0 bg-${item.color}-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10`}></div>
+                  <div className={`absolute inset-0 bg-[#7C3BEC]/5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10`}></div>
                 )}
               </div>
             ))}
@@ -170,7 +107,7 @@ export default function RapidWorksHeader() {
               href="https://calendly.com/yannick-familie-heeren/30min"
               target="_blank"
               rel="noopener noreferrer"
-              className={`ml-2 px-6 py-2 bg-black hover:bg-gradient-to-r ${colors.buttonHover} text-white rounded-full hover:shadow-lg hover:translate-y-[-2px] active:translate-y-[0px] transition-all duration-300 font-medium text-xs`}
+              className={`ml-2 px-6 py-2 bg-[#7C3BEC] hover:bg-[#6B2BD1] text-white rounded-full hover:shadow-lg hover:translate-y-[-2px] active:translate-y-[0px] transition-all duration-300 font-medium text-xs`}
             >
               {translate('nav.bookCall')}
             </a>
@@ -180,7 +117,7 @@ export default function RapidWorksHeader() {
                  onClick={() => handleLanguageButtonClick('en')}
                  className={`px-3 py-1 rounded-full text-xs font-medium transition-colors duration-200 ${
                    language === 'en'
-                     ? `bg-gradient-to-r ${colors.logoGradient} text-white shadow-sm`
+                     ? `bg-[#7C3BEC] text-white shadow-sm`
                      : 'text-gray-500 hover:text-gray-700'
                  }`}
                >
@@ -190,7 +127,7 @@ export default function RapidWorksHeader() {
                  onClick={() => handleLanguageButtonClick('de')}
                  className={`px-3 py-1 rounded-full text-xs font-medium transition-colors duration-200 ${
                    language === 'de'
-                     ? `bg-gradient-to-r ${colors.logoGradient} text-white shadow-sm`
+                     ? `bg-[#7C3BEC] text-white shadow-sm`
                      : 'text-gray-500 hover:text-gray-700'
                  }`}
                >
@@ -204,7 +141,7 @@ export default function RapidWorksHeader() {
               href="https://calendly.com/yannick-familie-heeren/30min"
               target="_blank"
               rel="noopener noreferrer"
-              className={`px-4 py-2 bg-black hover:bg-gradient-to-r ${colors.buttonHover} text-white rounded-full hover:shadow-lg transition-all duration-300 font-medium text-xs whitespace-nowrap`}
+              className={`px-4 py-2 bg-[#7C3BEC] hover:bg-[#6B2BD1] text-white rounded-full hover:shadow-lg transition-all duration-300 font-medium text-xs whitespace-nowrap`}
             >
               {translate('nav.bookCall')}
             </a>
@@ -213,7 +150,7 @@ export default function RapidWorksHeader() {
                  onClick={() => handleLanguageButtonClick('en')}
                  className={`px-2 py-1 rounded-full text-xs font-medium transition-colors duration-200 ${
                    language === 'en'
-                     ? `bg-gradient-to-r ${colors.logoGradient} text-white shadow-sm`
+                     ? `bg-[#7C3BEC] text-white shadow-sm`
                      : 'text-gray-500'
                  }`}
                >
@@ -223,7 +160,7 @@ export default function RapidWorksHeader() {
                  onClick={() => handleLanguageButtonClick('de')}
                  className={`px-2 py-1 rounded-full text-xs font-medium transition-colors duration-200 ${
                    language === 'de'
-                     ? `bg-gradient-to-r ${colors.logoGradient} text-white shadow-sm`
+                     ? `bg-[#7C3BEC] text-white shadow-sm`
                      : 'text-gray-500'
                  }`}
                >
@@ -248,8 +185,8 @@ export default function RapidWorksHeader() {
               to={item.path}
               className={`px-4 py-3 rounded-lg flex items-center gap-2 transition-all duration-300 font-medium w-full text-left ${
                 isActive(item.path)
-                  ? `bg-${item.color}-50 text-${item.color}-700`
-                  : `hover:bg-${item.color}-50/50 text-gray-700 hover:text-${item.color}-700`
+                  ? `bg-[#7C3BEC]/10 text-[#7C3BEC]`
+                  : `hover:bg-[#7C3BEC]/5 text-gray-700 hover:text-[#7C3BEC]`
               }`}
               onClick={() => setMobileMenuOpen(false)}
             >
