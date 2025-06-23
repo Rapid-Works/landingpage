@@ -1,17 +1,15 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import { useContext } from 'react'
 import { LanguageContext } from '../App'
 import NewsletterForm from './NewsletterForm'
-import ImpressumModal from './ImpressumModal'
 
 const Footer = ({ showFAQ = false, onFAQClick }) => {
   const { translate } = useContext(LanguageContext)
-  const [showImpressum, setShowImpressum] = useState(false)
 
   return (
     <>
-      <footer className="bg-[#0F1115] text-white py-16">
+      <footer className="bg-[#1D0D37] text-white py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-12">
             {/* Newsletter Section */}
@@ -27,36 +25,34 @@ const Footer = ({ showFAQ = false, onFAQClick }) => {
                 Copyright © 2025 RapidWorks. All rights reserved.
               </div>
               <div className="flex gap-6">
-                <button 
-                  onClick={() => setShowImpressum(true)} 
-                  className="text-gray-400 hover:text-white transition-colors"
+                <Link 
+                  to="/agb" 
+                  className="text-gray-400 hover:text-[#7C3BEC] transition-colors"
                 >
-                  {translate("nav.impressum")}
-                </button>
+                  AGB
+                </Link>
+                <Link 
+                  to="/datenschutz" 
+                  className="text-gray-400 hover:text-[#7C3BEC] transition-colors"
+                >
+                  Datenschutz
+                </Link>
                 {showFAQ && (
                   <button 
                     onClick={onFAQClick}
-                    className="text-gray-400 hover:text-white transition-colors"
+                    className="text-gray-400 hover:text-[#7C3BEC] transition-colors"
                   >
                     FAQ
                   </button>
                 )}
-                <Link to="#" className="text-gray-400 hover:text-white transition-colors">
-                  {translate("footer.privacy")}
-                </Link>
-                <Link to="#contact" className="text-gray-400 hover:text-white transition-colors">
-                  {translate("nav.contact")}
+                <Link to="#contact" className="text-gray-400 hover:text-[#7C3BEC] transition-colors">
+                  Kontakt
                 </Link>
               </div>
             </div>
           </div>
         </div>
       </footer>
-
-      {/* Impressum Modal */}
-      {showImpressum && (
-        <ImpressumModal onClose={() => setShowImpressum(false)} />
-      )}
     </>
   )
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowRight, Plus, Minus, ChevronLeft, ChevronRight, CheckCircle, ChevronDown, Menu, X, CalendarCheck, Palette, Package, Megaphone, FileText, Users, BookOpen, Euro, Compass, Presentation, Loader2 } from "lucide-react"
+import { ArrowRight, Plus, Minus, ChevronLeft, ChevronRight, CheckCircle, ChevronDown, Menu, X, CalendarCheck, Palette, Package, Megaphone, FileText, Users, BookOpen, Euro, Compass, Presentation, Loader2, MessageSquareText, ExternalLink } from "lucide-react"
 import HeroImage2 from "../images/heroimage3.jpg"
 import RapidWorksWebsite from "../images/laptop.png"
 import RapidWorksLogo from "../images/logo512.png"
@@ -29,7 +29,7 @@ import RapidWorksHeader from "./new_landing_page_header"
 import ExploreMoreSection from "./ExploreMoreSection"
 import { testimonials } from "../testimonialsData"
 import TestimonialCard from "./TestimonialCard"
-import { MessageSquareText } from 'lucide-react'
+import BrandingBg from '../images/branding bg.png'
 
 const BundleItem = ({ title, description, index, imageSrc }) => (
   <motion.div
@@ -317,6 +317,8 @@ const VisibiltyBundle = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isFAQModalOpen, setIsFAQModalOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [showCookieConsent, setShowCookieConsent] = useState(true)
+  const [showCookieSettings, setShowCookieSettings] = useState(false)
   const contentSectionRef = useRef(null)
 
   useEffect(() => {
@@ -489,6 +491,35 @@ const VisibiltyBundle = () => {
       features: {
         title: "Contents",
         subtitle: "The Rapid Branding contains everything you need to draw the attention of customers, partners, investors and employees to your startup. You immediately become visible and a uniform brand design makes your brand recognizable."
+      },
+      cookies: {
+        banner: {
+          title: "We use cookies to optimize our website and our service.",
+          description: "You can decide for yourself which categories you want to allow.",
+          privacy: "You can find more information in our",
+          privacyLink: "privacy policy",
+          acceptAll: "Accept all",
+          adjustSettings: "Adjust settings",
+          decline: "Decline"
+        },
+        modal: {
+          title: "Manage Cookie Settings",
+          necessary: {
+            title: "Necessary",
+            status: "Always active",
+            description: "These cookies are required to enable basic website functions and save your language preferences or other preferred options."
+          },
+          analytics: {
+            title: "Performance and Analytics",
+            description: "These cookies provide statistical information about the use of our website. With their help, we can count visits and traffic sources to improve the performance of our website."
+          },
+          marketing: {
+            title: "Marketing & Advertising",
+            description: "These cookies are used by third parties to display personalized advertising that is relevant to your interests."
+          },
+          savePreferences: "Save preferences",
+          decline: "Decline"
+        }
       },
       process: {
         title: "Our Process",
@@ -666,6 +697,35 @@ const VisibiltyBundle = () => {
         title: "Inhalt",
         subtitle: "Das Rapid Branding enthält alles, was du brauchst, um die Aufmerksamkeit von Kunden, Partnern, Investoren und Mitarbeitern auf dein Startup zu lenken. Du wirst sofort sichtbar und ein einheitliches Markendesign macht deine Marke erkennbar."
       },
+      cookies: {
+        banner: {
+          title: "Wir verwenden Cookies, um unsere Website und unseren Service zu optimieren.",
+          description: "Du kannst selbst entscheiden, welche Kategorien du zulassen möchtest.",
+          privacy: "Weitere Informationen findest du in unserer",
+          privacyLink: "Datenschutzerklärung",
+          acceptAll: "Alle akzeptieren",
+          adjustSettings: "Einstellungen anpassen",
+          decline: "Ablehnen"
+        },
+        modal: {
+          title: "Cookie-Einstellungen verwalten",
+          necessary: {
+            title: "Notwendig",
+            status: "Immer aktiv",
+            description: "Diese Cookies sind erforderlich, um grundlegende Website-Funktionen zu ermöglichen und deine Sprachpräferenzen oder andere bevorzugte Optionen zu speichern."
+          },
+          analytics: {
+            title: "Leistung und Analyse",
+            description: "Diese Cookies liefern statistische Informationen über die Nutzung unserer Website. Mit ihrer Hilfe können wir Besuche und Traffic-Quellen zählen, um die Leistung unserer Website zu verbessern."
+          },
+          marketing: {
+            title: "Marketing & Werbung",
+            description: "Diese Cookies werden von Dritten verwendet, um personalisierte Werbung anzuzeigen, die für deine Interessen relevant ist."
+          },
+          savePreferences: "Präferenzen speichern",
+          decline: "Ablehnen"
+        }
+      },
       process: {
         title: "Unser Prozess",
         steps: [
@@ -743,10 +803,136 @@ const VisibiltyBundle = () => {
   const faqItems = content.faq.items;
 
   const scrollToContent = () => {
-    contentSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (contentSectionRef.current) {
+      contentSectionRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
   }
 
   const containerClass = "max-w-[1280px] w-full mx-auto px-4 sm:px-6 lg:px-8 relative"
+
+  // Cookie settings modal component
+  const CookieSettingsModal = () => {
+    if (!showCookieSettings) return null
+
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+        <div className="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="p-10">
+            <h2 className="text-2xl font-bold text-[#7C3BEC] mb-10">{content.cookies.modal.title}</h2>
+            
+            <div className="space-y-8">
+              {/* Notwendig */}
+              <div>
+                <div className="flex items-start justify-between mb-4">
+                  <h3 className="font-semibold text-gray-900 text-lg">{content.cookies.modal.necessary.title}</h3>
+                  <span className="text-base text-gray-500 bg-gray-100 px-4 py-2 rounded-full">{content.cookies.modal.necessary.status}</span>
+                </div>
+                <p className="text-base text-gray-600 leading-relaxed">
+                  {content.cookies.modal.necessary.description}
+                </p>
+              </div>
+
+              {/* Leistung und Analyse */}
+              <div>
+                <div className="flex items-start justify-between mb-4">
+                  <h3 className="font-semibold text-gray-900 text-lg">{content.cookies.modal.analytics.title}</h3>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" className="sr-only peer" />
+                    <div className="w-14 h-7 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-7 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#7C3BEC]"></div>
+                  </label>
+                </div>
+                <p className="text-base text-gray-600 leading-relaxed">
+                  {content.cookies.modal.analytics.description}
+                </p>
+              </div>
+
+              {/* Marketing & Werbung */}
+              <div>
+                <div className="flex items-start justify-between mb-4">
+                  <h3 className="font-semibold text-gray-900 text-lg">{content.cookies.modal.marketing.title}</h3>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" className="sr-only peer" />
+                    <div className="w-14 h-7 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-7 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#7C3BEC]"></div>
+                  </label>
+                </div>
+                <p className="text-base text-gray-600 leading-relaxed">
+                  {content.cookies.modal.marketing.description}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-4 mt-10">
+              <button 
+                onClick={() => setShowCookieSettings(false)}
+                className="flex-1 px-8 py-4 bg-[#7C3BEC] hover:bg-[#6B2BD1] text-white rounded-lg font-medium text-base transition-colors"
+              >
+                {content.cookies.modal.savePreferences}
+              </button>
+              <button 
+                onClick={() => setShowCookieSettings(false)}
+                className="px-8 py-4 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 rounded-lg font-medium text-base transition-colors"
+              >
+                {content.cookies.modal.decline}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Cookie consent component
+  const CookieConsent = () => {
+    if (!showCookieConsent) return null
+
+    const privacyUrl = language === 'en' ? '/privacy' : '/datenschutz'
+
+    return (
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white shadow-lg" style={{ borderTop: '1px solid #e5e7eb' }}>
+        <div className="max-w-none mx-auto px-8 py-8">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+            <div className="flex-1 text-base text-gray-700 space-y-3">
+              <p>
+                <strong>{content.cookies.banner.title}</strong>
+              </p>
+              <p>
+                {content.cookies.banner.description}
+              </p>
+              <p>
+                {content.cookies.banner.privacy}{' '}
+                <Link to={privacyUrl} className="text-[#7C3BEC] hover:text-[#6B2BD1] underline">
+                  {content.cookies.banner.privacyLink}
+                </Link>.
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto lg:flex-shrink-0">
+              <button 
+                onClick={() => setShowCookieConsent(false)}
+                className="px-8 py-4 bg-[#7C3BEC] hover:bg-[#6B2BD1] text-white rounded-lg font-medium text-base transition-colors whitespace-nowrap"
+              >
+                {content.cookies.banner.acceptAll}
+              </button>
+              <button 
+                onClick={() => {
+                  setShowCookieConsent(false)
+                  setShowCookieSettings(true)
+                }}
+                className="px-8 py-4 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 rounded-lg font-medium text-base transition-colors whitespace-nowrap"
+              >
+                {content.cookies.banner.adjustSettings}
+              </button>
+              <button 
+                onClick={() => setShowCookieConsent(false)}
+                className="px-8 py-4 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 rounded-lg font-medium text-base transition-colors whitespace-nowrap"
+              >
+                {content.cookies.banner.decline}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <>
@@ -754,17 +940,24 @@ const VisibiltyBundle = () => {
       <div className="min-h-screen bg-white">
         <main className="relative w-full overflow-x-hidden">
 
-          <section className="bg-gradient-to-br from-purple-600 to-purple-700 text-white relative overflow-hidden min-h-[400px]">
-            <div className="container mx-auto px-6 pt-32 pb-24">
-              <div className="text-center max-w-3xl mx-auto">
-                <div className="inline-flex items-center mb-4 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-sm">
-                  <Megaphone className="h-4 w-4 inline mr-1.5" />
-                  {content.hero.badgeText}
-                </div>
-                <h1 className="text-4xl md:text-5xl lg:text-5xl font-extrabold mb-6 leading-tight tracking-tight text-white">
+          <section className="text-white relative overflow-hidden min-h-screen">
+            {/* Background image */}
+            <div className="absolute inset-0 z-0">
+              <img 
+                src={BrandingBg} 
+                alt="Branding Background" 
+                className="w-full h-full object-cover object-[center_20%]"
+              />
+            </div>
+            {/* Color overlay */}
+            <div className="absolute inset-0 bg-[#270A5C]/90 z-10"></div>
+            
+            <div className="container mx-auto px-6 pt-40 pb-40 relative z-20 flex items-center min-h-screen">
+              <div className="text-center max-w-4xl mx-auto">
+                <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-8 leading-tight tracking-tight text-white">
                   {content.hero.title}
                 </h1>
-                <p className="text-xl text-white/90 leading-relaxed">
+                <p className="text-2xl md:text-3xl text-white/95 leading-relaxed font-light">
                   {content.hero.subtitle}
                 </p>
               </div>
@@ -960,6 +1153,12 @@ const VisibiltyBundle = () => {
           onClose={() => setIsFAQModalOpen(false)}
           faqItems={faqItems}
         />
+
+        {/* Cookie Consent Popup */}
+        <CookieConsent />
+
+        {/* Cookie Settings Modal */}
+        <CookieSettingsModal />
 
       </div>
     </>

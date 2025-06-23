@@ -12,13 +12,13 @@ const NewsletterForm = () => {
           <input
             type="email"
             placeholder="Enter your email"
-            className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-violet-500"
+            className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-[#7C3BEC]"
             onFocus={() => setIsPopupOpen(true)}
             readOnly
           />
           <button
             onClick={() => setIsPopupOpen(true)}
-            className="px-4 py-2 bg-violet-600 text-white rounded-md text-sm hover:bg-violet-700 transition-colors"
+            className="px-4 py-2 bg-[#7C3BEC] text-white rounded-md text-sm hover:bg-[#6929d4] transition-colors"
           >
             Subscribe
           </button>
