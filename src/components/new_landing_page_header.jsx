@@ -70,26 +70,26 @@ export default function RapidWorksHeader() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white py-2 shadow-sm`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white py-4 shadow-sm`}
     >
-      <div className="container mx-auto px-6">
-        <div className="flex items-center justify-between">
+      <div className="container mx-auto px-8">
+        <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center group">
-            <img src={logo} alt="RapidWorks" className="h-8 w-auto" />
+            <img src={logo} alt="RapidWorks" className="h-10 w-auto" />
           </Link>
 
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-6">
             {navItems.map((item) => (
               <div key={item.name} className="relative group">
                 <Link
                   to={item.path}
-                  className={`relative px-3 py-1.5 rounded-full flex items-center gap-1.5 transition-all duration-300 text-xs font-medium z-10 ${
+                  className={`relative px-4 py-2 rounded-full flex items-center gap-2 transition-all duration-300 text-sm font-medium z-10 ${
                     isActive(item.path)
                       ? `bg-[#7C3BEC]/10 text-[#7C3BEC]`
                       : `text-gray-700 hover:text-[#7C3BEC]`
                   }`}
                 >
-                  {item.icon}
+                  <span className="w-4 h-4">{item.icon}</span>
                   <span>{item.name}</span>
                 </Link>
                 <div className={`absolute -bottom-1 left-0 right-0 h-0.5 bg-[#7C3BEC] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left ${isActive(item.path) ? 'scale-x-100' : ''}`}></div>
@@ -103,15 +103,15 @@ export default function RapidWorksHeader() {
               href="https://calendly.com/yannick-familie-heeren/30min"
               target="_blank"
               rel="noopener noreferrer"
-              className={`ml-2 px-6 py-2 bg-[#7C3BEC] hover:bg-[#6B2BD1] text-white rounded-full hover:shadow-lg hover:translate-y-[-2px] active:translate-y-[0px] transition-all duration-300 font-medium text-xs`}
+              className={`ml-4 px-8 py-2.5 bg-[#7C3BEC] hover:bg-[#6B2BD1] text-white rounded-full hover:shadow-lg hover:translate-y-[-2px] active:translate-y-[0px] transition-all duration-300 font-medium text-sm`}
             >
               {translate('nav.bookCall')}
             </a>
 
-            <div className="flex items-center gap-1 ml-4 p-1 bg-gray-100 rounded-full">
+            <div className="flex items-center gap-1 ml-6 p-1.5 bg-gray-100 rounded-full">
                <button
                  onClick={() => handleLanguageButtonClick('en')}
-                 className={`px-3 py-1 rounded-full text-xs font-medium transition-colors duration-200 ${
+                 className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors duration-200 ${
                    language === 'en'
                      ? `bg-[#7C3BEC] text-white shadow-sm`
                      : 'text-gray-500 hover:text-gray-700'
@@ -121,7 +121,7 @@ export default function RapidWorksHeader() {
                </button>
                <button
                  onClick={() => handleLanguageButtonClick('de')}
-                 className={`px-3 py-1 rounded-full text-xs font-medium transition-colors duration-200 ${
+                 className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors duration-200 ${
                    language === 'de'
                      ? `bg-[#7C3BEC] text-white shadow-sm`
                      : 'text-gray-500 hover:text-gray-700'
@@ -132,12 +132,12 @@ export default function RapidWorksHeader() {
              </div>
           </div>
 
-          <div className="md:hidden flex items-center gap-2">
+          <div className="md:hidden flex items-center gap-3">
             <a
               href="https://calendly.com/yannick-familie-heeren/30min"
               target="_blank"
               rel="noopener noreferrer"
-              className={`px-4 py-2 bg-[#7C3BEC] hover:bg-[#6B2BD1] text-white rounded-full hover:shadow-lg transition-all duration-300 font-medium text-xs whitespace-nowrap`}
+              className={`px-5 py-2.5 bg-[#7C3BEC] hover:bg-[#6B2BD1] text-white rounded-full hover:shadow-lg transition-all duration-300 font-medium text-sm whitespace-nowrap`}
             >
               {translate('nav.bookCall')}
             </a>
