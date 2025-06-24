@@ -493,6 +493,11 @@ const VisibiltyBundle = () => {
         title: "Contents",
         subtitle: "The Rapid Branding contains everything you need to draw the attention of customers, partners, investors and employees to your startup. You immediately become visible and a uniform brand design makes your brand recognizable."
       },
+      inhalt: {
+        badge: "MAXIMUM IMPACT",
+        title: "Contents",
+        description: "The Rapid Branding contains everything you need to draw the attention of customers, partners, investors and employees to your startup. You immediately become visible and a uniform brand design makes your brand recognizable."
+      },
       cookies: {
         banner: {
           title: "We use cookies to optimize our website and our service.",
@@ -542,6 +547,54 @@ const VisibiltyBundle = () => {
             description: "Receive your complete brand package"
           }
         ]
+      },
+      pricing: {
+        title: "The Rapid Branding Package",
+        subtitle: "Your complete brand identity – in just 7 days",
+        price: "999 €",
+        whatYouGet: "What you get:",
+        items: [
+          "Logo Design",
+          "Business Cards",
+          "Roll-up Banner",
+          "Branding Guide",
+          "Modern Landing Page",
+          "Protected Download Area"
+        ],
+        cta: "Start now for 999 €",
+        editableFiles: {
+          title: "Editable files included",
+          description: "All included elements are delivered in editable format (e.g. PDF, PNG, SVG). You receive all files digitally. You can print your elements as often as you like with the partners of your choice."
+        },
+        flexibleAdjustments: {
+          description: "Further adjustments are possible at any time – for only 40 €/hour. We always offer you an effort-based fixed price, so you always have full cost control."
+        }
+      },
+      benefits: {
+        badge: "OUR ADVANTAGES",
+        title: "Why Rapid Branding is the best choice",
+        items: [
+          {
+            title: "Speed",
+            description: "Get your complete branding package within just 7 days. Perfect for startups."
+          },
+          {
+            title: "All inclusive",
+            description: "You get everything you need from one source. This saves you unnecessary communication with multiple parties."
+          },
+          {
+            title: "Professional appearance",
+            description: "Cross-media visual and image language signals competence and creates trust."
+          },
+          {
+            title: "Flexibly adaptable",
+            description: "You can request adjustments at any time - For full cost control, we always give you a fixed price."
+          }
+        ]
+      },
+      faqSection: {
+        title: "Frequently Asked Questions",
+        showAll: "Show all questions and answers"
       },
       exploreMore: {
         badge: "Explore More",
@@ -748,6 +801,59 @@ const VisibiltyBundle = () => {
           }
         ]
       },
+      pricing: {
+        title: "Das Rapid Branding Paket",
+        subtitle: "Dein kompletter Markenauftritt – in nur 7 Tagen",
+        price: "999 €",
+        whatYouGet: "Was du bekommst:",
+        items: [
+          "Logo-Design",
+          "Visitenkarte",
+          "Roll-up Banner",
+          "Branding-Guide",
+          "Moderne Landingpage",
+          "Geschützter Download-Bereich"
+        ],
+        cta: "Jetzt starten für 999 €",
+        editableFiles: {
+          title: "Bearbeitbare Dateien inklusive",
+          description: "Alle enthaltenen Elemente werden in bearbeitbarem Format (z. B. PDF, PNG, SVG) geliefert. Du erhältst sämtliche Dateien digital. Du kannst deine Elemente beliebig oft mit den Partnern deiner Wahl ausdrucken."
+        },
+        flexibleAdjustments: {
+          description: "Weitere Anpassungen sind jederzeit möglich – für nur 40 €/Stunde. Wir bieten dir jedes mal einen aufwandsbasierten Fixpreis, so behältst du zu jederzeit volle Kostenkontrolle."
+        }
+      },
+      benefits: {
+        badge: "UNSERE VORTEILE",
+        title: "Warum Rapid Branding die beste Wahl ist",
+        items: [
+          {
+            title: "Geschwindigkeit",
+            description: "Erhalte dein komplettes Branding-Paket innerhalb von nur 7 Tagen. Perfekt für Startups."
+          },
+          {
+            title: "Alles inklusive",
+            description: "Von uns erhältst du alles was du brauchst aus einer Hand. Das spart dir unnötige Kommunikation mit mehreren Parteien."
+          },
+          {
+            title: "Professioneller Auftritt",
+            description: "Medienübergreifende Form- und Bildsprache signalisieren Kompetenz und schaffen Vertrauen."
+          },
+          {
+            title: "Flexibel anpassbar",
+            description: "Du kannst jederzeit Anpassungen anfragen - Zur vollen Kostenkontrolle machen wir dir immer einen Fixpreis."
+          }
+        ]
+      },
+      inhalt: {
+        badge: "MAXIMALE AUßENWIRKUNG",
+        title: "Inhalt",
+        description: "Das Rapid Branding enthält alles, was du brauchst, um die Aufmerksamkeit von Kunden, Partnern, Investoren und Mitarbeitern auf dein Startup zu lenken. Du wirst sofort sichtbar und ein einheitliches Markendesign macht deine Marke erkennbar."
+      },
+      faqSection: {
+        title: "Häufig gestellte Fragen",
+        showAll: "Alle Fragen und Antworten anzeigen"
+      },
       exploreMore: {
         badge: "Mehr Entdecken",
         title: "Wusstest du, dass wir mehr als nur Branding anbieten?",
@@ -911,20 +1017,18 @@ const VisibiltyBundle = () => {
                 <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/30 mb-8">
                   <div className="w-2 h-2 rounded-full bg-white"></div>
                   <span className="text-sm font-medium uppercase tracking-wider">
-                    MAXIMALE AUßENWIRKUNG
+                    {content.inhalt.badge}
                   </span>
                 </div>
                 
                 {/* Title */}
                 <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8">
-                  Inhalt
+                  {content.inhalt.title}
                 </h2>
                 
                 {/* Description */}
                 <p className="text-lg md:text-xl lg:text-2xl leading-relaxed font-light opacity-95">
-                  Das Rapid Branding enthält alles, was du brauchst, um die Aufmerksamkeit von Kunden, 
-                  Partnern, Investoren und Mitarbeitern auf dein Startup zu lenken. Du wirst sofort sichtbar und 
-                  ein einheitliches Markendesign macht deine Marke erkennbar.
+                  {content.inhalt.description}
                 </p>
               </div>
             </div>
@@ -1121,97 +1225,53 @@ const VisibiltyBundle = () => {
                 <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-purple-300 text-purple-600 mb-8 bg-white/50">
                   <div className="w-2 h-2 rounded-full bg-purple-500"></div>
                   <span className="text-sm font-medium uppercase tracking-wider">
-                    UNSERE VORTEILE
+                    {content.benefits.badge}
                   </span>
                 </div>
                 
                 {/* Title */}
                 <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-black mb-16">
-                  Warum Rapid Branding die beste Wahl ist
+                  {content.benefits.title}
                 </h2>
               </div>
 
               {/* Benefits Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {/* Speed */}
-                <div className="rounded-[32px] p-8 text-center text-white min-h-[400px] flex flex-col relative overflow-hidden" 
-                     style={{ 
-                       backgroundColor: '#BB86FF',
-                       boxShadow: '0 20px 40px rgba(146, 87, 221, 0.3)'
-                     }}>
-                  {/* Bottom gradient border */}
-                  <div className="absolute bottom-0 left-0 right-0 h-1" 
-                       style={{ background: 'linear-gradient(270deg, #9257DD 23.12%, rgba(255, 107, 107, 0.3) 49.61%, #9257DD 81.85%)' }}></div>
-                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-8" style={{ backgroundColor: '#540E92' }}>
+                {content.benefits.items.map((benefit, index) => {
+                  const icons = [
                     <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-2xl font-bold mb-6 text-[#2D1B69]">Geschwindigkeit</h3>
-                  <p className="text-[#2D1B69] leading-relaxed flex-grow">
-                    Erhalte dein komplettes Branding-Paket innerhalb von nur 7 Tagen. Perfekt für Startups.
-                  </p>
-                </div>
-
-                {/* All Inclusive */}
-                <div className="rounded-[32px] p-8 text-center text-white min-h-[400px] flex flex-col relative overflow-hidden"
-                     style={{ 
-                       backgroundColor: '#BB86FF',
-                       boxShadow: '0 20px 40px rgba(146, 87, 221, 0.3)'
-                     }}>
-                  {/* Bottom gradient border */}
-                  <div className="absolute bottom-0 left-0 right-0 h-1" 
-                       style={{ background: 'linear-gradient(270deg, #9257DD 23.12%, rgba(255, 107, 107, 0.3) 49.61%, #9257DD 81.85%)' }}></div>
-                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-8" style={{ backgroundColor: '#540E92' }}>
+                    </svg>,
                     <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-2xl font-bold mb-6 text-[#2D1B69]">Alles inklusive</h3>
-                  <p className="text-[#2D1B69] leading-relaxed flex-grow">
-                    Von uns erhältst du alles was du brauchst aus einer Hand. Das spart dir unnötige Kommunikation mit mehreren Parteien
-                  </p>
-                </div>
-
-                {/* Professional */}
-                <div className="rounded-[32px] p-8 text-center text-white min-h-[400px] flex flex-col relative overflow-hidden"
-                     style={{ 
-                       backgroundColor: '#BB86FF',
-                       boxShadow: '0 20px 40px rgba(146, 87, 221, 0.3)'
-                     }}>
-                  {/* Bottom gradient border */}
-                  <div className="absolute bottom-0 left-0 right-0 h-1" 
-                       style={{ background: 'linear-gradient(270deg, #9257DD 23.12%, rgba(255, 107, 107, 0.3) 49.61%, #9257DD 81.85%)' }}></div>
-                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-8" style={{ backgroundColor: '#540E92' }}>
+                    </svg>,
                     <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-2xl font-bold mb-6 text-[#2D1B69]">Professioneller Auftritt</h3>
-                  <p className="text-[#2D1B69] leading-relaxed flex-grow">
-                    Medienübergreifende Form- und Bildsprache signalisieren Kompetenz und schaffen Vertrauen
-                  </p>
-                </div>
-
-                {/* Flexible */}
-                <div className="rounded-[32px] p-8 text-center text-white min-h-[400px] flex flex-col relative overflow-hidden"
-                     style={{ 
-                       backgroundColor: '#BB86FF',
-                       boxShadow: '0 20px 40px rgba(146, 87, 221, 0.3)'
-                     }}>
-                  {/* Bottom gradient border */}
-                  <div className="absolute bottom-0 left-0 right-0 h-1" 
-                       style={{ background: 'linear-gradient(270deg, #9257DD 23.12%, rgba(255, 107, 107, 0.3) 49.61%, #9257DD 81.85%)' }}></div>
-                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-8" style={{ backgroundColor: '#540E92' }}>
+                    </svg>,
                     <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
-                  </div>
-                  <h3 className="text-2xl font-bold mb-6 text-[#2D1B69]">Flexibel anpassbar</h3>
-                  <p className="text-[#2D1B69] leading-relaxed flex-grow">
-                    Du kannst jederzeit Anpassungen anfragen - Zur vollen Kostenkontrolle machen wir dir immer einen Fixpreis
-                  </p>
-                </div>
+                  ];
+                  
+                  return (
+                    <div key={index} className="rounded-[32px] p-8 text-center text-white min-h-[400px] flex flex-col relative overflow-hidden" 
+                         style={{ 
+                           backgroundColor: '#BB86FF',
+                           boxShadow: '0 20px 40px rgba(146, 87, 221, 0.3)'
+                         }}>
+                      {/* Bottom gradient border */}
+                      <div className="absolute bottom-0 left-0 right-0 h-1" 
+                           style={{ background: 'linear-gradient(270deg, #9257DD 23.12%, rgba(255, 107, 107, 0.3) 49.61%, #9257DD 81.85%)' }}></div>
+                      <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-8" style={{ backgroundColor: '#540E92' }}>
+                        {icons[index]}
+                      </div>
+                      <h3 className="text-2xl font-bold mb-6 text-[#2D1B69]">{benefit.title}</h3>
+                      <p className="text-[#2D1B69] leading-relaxed flex-grow">
+                        {benefit.description}
+                      </p>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </section>
@@ -1231,10 +1291,10 @@ const VisibiltyBundle = () => {
             <div className="max-w-[1280px] w-full mx-auto px-4 sm:px-6 lg:px-8 md:px-12 relative z-10">
               <div className="text-center mb-12">
                 <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
-                  Das Rapid Branding Paket
+                  {content.pricing.title}
                 </h2>
                 <p className="text-xl md:text-2xl text-white/90 font-light">
-                  Dein kompletter Markenauftritt – in nur 7 Tagen
+                  {content.pricing.subtitle}
                 </p>
               </div>
 
@@ -1249,40 +1309,22 @@ const VisibiltyBundle = () => {
                     {/* Price */}
                     <div className="mb-6">
                       <div className="text-7xl md:text-8xl font-bold text-white mb-2">
-                        999 €
+                        {content.pricing.price}
                       </div>
                     </div>
 
                     {/* What you get */}
                     <div className="mb-6 flex-grow">
                       <h3 className="text-2xl font-bold text-white mb-6">
-                        Was du bekommst:
+                        {content.pricing.whatYouGet}
                       </h3>
                       <div className="space-y-5 text-left">
-                        <div className="flex items-center gap-4">
-                          <CheckCircle className="w-6 h-6 text-white flex-shrink-0" />
-                          <span className="text-white text-lg">Logo-Design</span>
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <CheckCircle className="w-6 h-6 text-white flex-shrink-0" />
-                          <span className="text-white text-lg">Visitenkarte</span>
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <CheckCircle className="w-6 h-6 text-white flex-shrink-0" />
-                          <span className="text-white text-lg">Roll-up Banner</span>
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <CheckCircle className="w-6 h-6 text-white flex-shrink-0" />
-                          <span className="text-white text-lg">Branding-Guide</span>
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <CheckCircle className="w-6 h-6 text-white flex-shrink-0" />
-                          <span className="text-white text-lg">Moderne Landingpage</span>
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <CheckCircle className="w-6 h-6 text-white flex-shrink-0" />
-                          <span className="text-white text-lg">Geschützter Download-<br/>Bereich</span>
-                        </div>
+                        {content.pricing.items.map((item, index) => (
+                          <div key={index} className="flex items-center gap-4">
+                            <CheckCircle className="w-6 h-6 text-white flex-shrink-0" />
+                            <span className="text-white text-lg">{item}</span>
+                          </div>
+                        ))}
                       </div>
                     </div>
 
@@ -1294,7 +1336,7 @@ const VisibiltyBundle = () => {
                       onMouseEnter={(e) => e.target.style.backgroundColor = '#FF5252'}
                       onMouseLeave={(e) => e.target.style.backgroundColor = '#FF6B6B'}
                     >
-                      Jetzt starten für 999 €
+                      {content.pricing.cta}
                     </button>
                   </div>
                 </div>
@@ -1304,20 +1346,17 @@ const VisibiltyBundle = () => {
                   {/* Editable Files Card */}
                   <div className="rounded-[32px] p-8 border-2 border-white/20 bg-transparent flex-1 flex flex-col">
                     <h3 className="text-2xl font-bold text-white mb-6">
-                      Bearbeitbare Dateien inklusive
+                      {content.pricing.editableFiles.title}
                     </h3>
                     <p className="text-white/90 text-lg leading-relaxed flex-grow">
-                      Alle enthaltenen Elemente werden in bearbeitbarem Format (z. B. PDF, PNG, SVG) geliefert.<br/>
-                      Du erhältst sämtliche Dateien digital.<br/>
-                      Du kannst deine Elemente beliebig oft mit den Partnern deiner Wahl ausdrucken.
+                      {content.pricing.editableFiles.description}
                     </p>
                   </div>
 
                   {/* Flexible Adjustments Card */}
                   <div className="rounded-[32px] p-8 border-2 border-white/20 bg-transparent flex-1 flex flex-col justify-center">
                     <p className="text-white/90 text-lg leading-relaxed">
-                      Weitere Anpassungen sind jederzeit möglich – für nur 40 €/Stunde. Wir bieten dir jedes mal einen 
-                      aufwandsbasierten Fixpreis, so behältst du zu jederzeit volle Kostenkontrolle.
+                      {content.pricing.flexibleAdjustments.description}
                     </p>
                   </div>
                 </div>
@@ -1332,7 +1371,7 @@ const VisibiltyBundle = () => {
             <div className={containerClass}>
               <div className="text-center mb-12">
                 <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
-                  Häufig gestellte Fragen
+                  {content.faqSection.title}
                 </h2>
               </div>
 
@@ -1357,7 +1396,7 @@ const VisibiltyBundle = () => {
                     onClick={() => setIsFAQModalOpen(true)}
                       className="inline-flex items-center text-white hover:text-white/80 font-medium text-lg transition-colors"
                   >
-                      Alle Fragen und Antworten anzeigen
+                      {content.faqSection.showAll}
                       <ChevronRight className="ml-2 w-5 h-5" />
                   </button>
                   </div>
