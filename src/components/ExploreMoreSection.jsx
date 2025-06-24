@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { Megaphone, Users, FileText, Compass, Presentation, Euro, ArrowRight, Handshake } from 'lucide-react';
+import { Megaphone, Users, FileText, Compass, Euro, ArrowRight, Handshake } from 'lucide-react';
 import { LanguageContext as AppLanguageContext } from "../App";
 
 const ExploreMoreSection = ({ excludeService }) => {
@@ -25,7 +25,6 @@ const ExploreMoreSection = ({ excludeService }) => {
         Experts: "Experts",
         Partners: "Partners",
         Coaching: "Coaching",
-        Workshops: "Workshops",
         Financing: "Financing"
       }
     },
@@ -39,7 +38,6 @@ const ExploreMoreSection = ({ excludeService }) => {
         Experts: "Experten",
         Partners: "Partner",
         Coaching: "Coaching",
-        Workshops: "Workshops",
         Financing: "Finanzierung"
       }
     }
@@ -53,7 +51,6 @@ const ExploreMoreSection = ({ excludeService }) => {
     { icon: <Users className="h-6 w-6" />, labelKey: "Experts", path: "/experts" },
     { icon: <Handshake className="h-6 w-6" />, labelKey: "Partners", path: "/partners" },
     { icon: <Compass className="h-6 w-6" />, labelKey: "Coaching", path: "/coaching" },
-    { icon: <Presentation className="h-6 w-6" />, labelKey: "Workshops", path: "/workshop" },
     { icon: <Euro className="h-6 w-6" />, labelKey: "Financing", path: "/financing" }
   ];
 

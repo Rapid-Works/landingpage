@@ -4,13 +4,11 @@ import {
   Rocket,
   Users,
   FileText,
-  Package,
   Menu,
   X,
   Euro,
   Megaphone,
   Compass,
-  Presentation,
   Globe,
   Handshake,
   Newspaper
@@ -59,7 +57,7 @@ export default function RapidWorksHeader() {
     logoGradient: "from-[#1D0D37] to-[#7C3BEC]",
     logoText: "from-[#1D0D37] to-[#7C3BEC]",
     buttonHover: "hover:from-[#1D0D37] hover:to-[#7C3BEC]"
-  }
+      }
 
   const navItems = [
     { name: "Branding", icon: <Megaphone className="h-4 w-4" />, path: "/branding", color: "[#7C3BEC]" },
@@ -67,8 +65,6 @@ export default function RapidWorksHeader() {
     { name: "Coaching", icon: <Compass className="h-4 w-4" />, path: "/coaching", color: "[#7C3BEC]" },
     { name: "Financing", icon: <Euro className="h-4 w-4" />, path: "/financing", color: "[#7C3BEC]" },
     { name: "Partners", icon: <Handshake className="h-4 w-4" />, path: "/partners", color: "[#7C3BEC]" },
-    { name: "Workshops", icon: <Presentation className="h-4 w-4" />, path: "/workshop", color: "[#7C3BEC]" },
-    { name: "Bundle", icon: <Package className="h-4 w-4" />, path: "/bundle", color: "[#7C3BEC]" },
     // { name: "Blog", icon: <Newspaper className="h-4 w-4" />, path: "/blogs", color: "[#7C3BEC]" },
   ]
 
