@@ -40,6 +40,14 @@ import TestimonialCard from "./TestimonialCard"
 import YannickProfile from "../images/yannickprofile.png"
 import BrandingImage from "../images/more.png"
 import RapidWorkLaptop from "../images/rapidworkdlaptop.png"
+// Add new background images
+import LandingPageHero from "../images/landingpage_hero.png"
+import RapidWorksHoodie from "../images/rapiworkshoddie.png" 
+import LandingRapidAnswers from "../images/landing_rapid_ansewes.png"
+import LandingExperts from "../images/landing_experts.png"
+import LandingPartners from "../images/landing_partners.png"
+import LandingCoaching from "../images/landing_coaching.png"
+import LandingFinancing from "../images/landing_financing.png"
 
 export default function RapidWorksPage() {
   const [scrolled, setScrolled] = useState(false)
@@ -169,6 +177,11 @@ export default function RapidWorksPage() {
             title: "They all provide cost transparency and always deliver value before we charge you",
             description: "You will always know upfront what we will charge and when we will do so. We will always only charge when you are satisfied with our work.",
             icon: "ShieldCheck"
+          },
+          {
+            title: "They are strategically designed",
+            description: "Our services are not random offerings but strategically designed elements that work together to move your startup forward. Each service is purposefully crafted to address specific startup challenges at the right time in your journey.",
+            icon: "Target"
           }
         ]
       },
@@ -216,9 +229,9 @@ export default function RapidWorksPage() {
         },
         financing: {
           title: "Rapid Financing",
-          description: "Du weißt nicht, wie du dein Wachstum jetzt finanzieren sollst? Wusstest du, dass du bis zu 80% unserer Dienstleistungen fördern lassen kannst? Es gibt mehrere Optionen, kontaktiere uns kostenlos, um mehr zu erfahren!",
-          learnMore: "Mehr erfahren",
-          freeConsultation: "Kostenlose Beratung"
+          description: "Don't know how to finance your growth now? Did you know you can get up to 80% of our services subsidized? There are several options, contact us for free to learn more!",
+          learnMore: "Learn more",
+          freeConsultation: "Free Consultation"
         }
       },
       financingSection: {
@@ -286,6 +299,11 @@ export default function RapidWorksPage() {
             title: "Sie bieten alle Kostentransparenz und liefern immer Wert, bevor wir etwas berechnen",
             description: "Du wirst immer im Voraus wissen, was wir berechnen und wann wir dies tun. Wir berechnen immer erst dann etwas, wenn du mit unserer Arbeit zufrieden bist.",
             icon: "ShieldCheck"
+          },
+          {
+            title: "Sie sind strategisch durchdacht",
+            description: "Unsere Dienstleistungen basieren nicht auf Zufall, sondern sind strategisch durchdachte Elemente, die zusammenarbeiten, um dein Startup voranzubringen. Jede Dienstleistung ist bewusst konzipiert, um spezifische Startup-Herausforderungen zur richtigen Zeit in deiner Reise anzugehen.",
+            icon: "Target"
           }
         ]
       },
@@ -451,14 +469,23 @@ export default function RapidWorksPage() {
         <div className="absolute top-20 right-0 w-96 h-96 bg-purple-200 rounded-full filter blur-3xl opacity-20 -z-10"></div>
         <div className="absolute bottom-0 left-10 w-72 h-72 bg-blue-200 rounded-full filter blur-3xl opacity-20 -z-10"></div>
 
-        <div className="bg-gradient-to-br from-purple-600 to-indigo-600 text-white relative overflow-hidden flex items-center">
-          <div className="container mx-auto px-6 py-12 md:py-16 lg:py-20 flex flex-col justify-center">
+        <div className="text-white relative overflow-hidden flex items-center">
+          {/* Background image */}
+          <div className="absolute inset-0 z-0">
+            <img 
+              src={LandingPageHero} 
+              alt="Landing Page Hero Background" 
+              className="w-full h-full object-cover object-center"
+            />
+          </div>
+          {/* Color overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-600/90 to-indigo-600/90 z-10"></div>
+          <div className="container mx-auto px-6 py-40 md:py-48 lg:py-56 flex flex-col justify-center relative z-20">
             <div className="text-center mb-8">
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight tracking-tight">
                 {content.hero.title1}
-                <span className="relative block mt-2">
+                <span className="block mt-2">
                   {content.hero.title2}
-                  <span className="absolute bottom-2 left-0 w-full h-4 bg-white/20 rounded-lg -z-10"></span>
                 </span>
               </h1>
               
@@ -471,7 +498,7 @@ export default function RapidWorksPage() {
 
           <button
             onClick={scrollToRapidAnswers}
-            className="absolute bottom-6 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none"
+            className="absolute bottom-6 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none z-30"
             aria-label={content.hero.scrollIndicatorAria}
           >
             <svg className="w-8 h-8 text-white/70 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -487,8 +514,8 @@ export default function RapidWorksPage() {
             <div className="relative overflow-hidden rounded-2xl h-auto min-h-[300px] md:h-80">
               <div className="absolute inset-0 bg-gradient-to-r from-teal-600/90 via-cyan-600/80 to-sky-600/90 mix-blend-multiply z-10"></div>
               <img
-                src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
-                alt="Webinar or Q&A session"
+                src={LandingRapidAnswers}
+                alt="Rapid Answers Background"
                 className="absolute inset-0 w-full h-full object-cover object-center"
               />
               <div className="absolute inset-0 z-20 p-6 md:p-12 flex flex-col md:flex-row items-center justify-center md:justify-between">
@@ -511,7 +538,10 @@ export default function RapidWorksPage() {
                 </div>
                 <button
                   onClick={openWebinarModal}
-                  className="bg-white text-cyan-600 px-8 py-4 rounded-full font-medium hover:shadow-lg transition-all flex items-center gap-2"
+                  className="px-8 py-4 rounded-full font-medium hover:shadow-lg transition-all flex items-center gap-2"
+                  style={{ backgroundColor: '#FF6B6B', color: 'white' }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#FF5252'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = '#FF6B6B'}
                 >
                   {content.services.rapidAnswers.joinWebinar} <ArrowRight className="h-5 w-5" />
                 </button>
@@ -536,8 +566,8 @@ export default function RapidWorksPage() {
               <div className="relative overflow-hidden rounded-2xl aspect-[4/3] mb-0">
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-600/90 via-purple-600/80 to-indigo-600/90 mix-blend-multiply z-10"></div>
                 <img
-                  src={RapidWorkLaptop}
-                  alt="Rapid Works Laptop Display"
+                  src={LandingPageHero}
+                  alt="Rapid Branding Background"
                   className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
                 />
 
@@ -572,8 +602,8 @@ export default function RapidWorksPage() {
               <div className="relative overflow-hidden rounded-2xl aspect-[4/3] mb-0">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-600/90 via-blue-600/80 to-sky-600/90 mix-blend-multiply z-10"></div>
                 <img
-                  src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-                  alt="Experts illustration"
+                  src={LandingExperts}
+                  alt="Rapid Experts Background"
                   className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
                 />
 
@@ -612,13 +642,13 @@ export default function RapidWorksPage() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 mb-8">
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
             <div className="group">
               <div className="relative overflow-hidden rounded-2xl aspect-[3/2] mb-0">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-600/90 via-blue-600/80 to-sky-600/90 mix-blend-multiply z-10"></div>
                 <img
-                  src="https://images.unsplash.com/photo-1542744095-291d1f67b221?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-                  alt="Partners network illustration"
+                  src={LandingPartners}
+                  alt="Rapid Partners Background"
                   className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
                 />
 
@@ -653,8 +683,8 @@ export default function RapidWorksPage() {
               <div className="relative overflow-hidden rounded-2xl aspect-[3/2] mb-0">
                 <div className="absolute inset-0 bg-gradient-to-br from-amber-600/90 via-amber-600/80 to-amber-800/90 mix-blend-multiply z-10"></div>
                 <img
-                  src={YannickProfile}
-                  alt="Coaching with Yannick"
+                  src={LandingCoaching}
+                  alt="Rapid Coaching Background"
                   className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
                 />
 
@@ -685,41 +715,7 @@ export default function RapidWorksPage() {
               </div>
             </div>
 
-            <div className="group">
-              <div className="relative overflow-hidden rounded-2xl aspect-[3/2] mb-0">
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-600/90 via-emerald-600/80 to-emerald-800/90 mix-blend-multiply z-10"></div>
-                <img
-                  src="https://images.unsplash.com/photo-1558403194-611308249627?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-                  alt="Workshops illustration"
-                  className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
-                />
 
-                <div className="absolute inset-0 z-20 p-6 flex flex-col justify-between">
-                  <div className="flex justify-between items-start w-full">
-                    <div className="bg-white/20 backdrop-blur-md w-12 h-12 rounded-xl flex items-center justify-center">
-                      <Presentation className="h-5 w-5 text-white" />
-                </div>
-                  <span className="text-xs font-medium text-white bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
-                    {content.services.workshops.category}
-                  </span>
-                </div>
-                  <div>
-                    <h3 className="text-2xl font-bold text-white mb-2">{content.services.workshops.title}</h3>
-                    <p className="text-white/90 max-w-md text-sm mb-3">
-                  {content.services.workshops.description}
-                </p>
-                    <Link
-                      to="/workshop"
-                      className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-lg text-sm hover:bg-white/30 transition-all"
-                    >
-                      {content.services.workshops.learnMore} <ArrowRight className="h-4 w-4" />
-                    </Link>
-                  </div>
-                </div>
-
-                <div className="absolute top-1/2 right-0 w-40 h-40 bg-gradient-to-r from-emerald-400/30 to-emerald-600/30 rounded-full -translate-x-1/4 -translate-y-1/2 blur-xl z-0"></div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -736,8 +732,8 @@ export default function RapidWorksPage() {
              <div className="relative overflow-hidden rounded-2xl h-auto min-h-[300px] md:h-80">
                 <div className="absolute inset-0 bg-gradient-to-r from-rose-600/90 via-rose-600/80 to-orange-600/90 mix-blend-multiply z-10"></div>
                 <img
-                  src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1415&q=80"
-                  alt="Person using MacBook Pro with financial data"
+                  src={LandingFinancing}
+                  alt="Rapid Financing Background"
                   className="absolute inset-0 w-full h-full object-cover object-center"
                 />
                 <div className="absolute inset-0 z-20 p-6 md:p-12 flex flex-col md:flex-row items-center justify-between">
@@ -755,7 +751,10 @@ export default function RapidWorksPage() {
                   </div>
                   <button
                     onClick={openCalendlyModal}
-                    className="bg-white text-rose-600 px-8 py-4 rounded-full font-medium hover:shadow-lg transition-all flex items-center gap-2"
+                    className="px-8 py-4 rounded-full font-medium hover:shadow-lg transition-all flex items-center gap-2"
+                    style={{ backgroundColor: '#FF6B6B', color: 'white' }}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = '#FF5252'}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = '#FF6B6B'}
                   >
                     {content.services.financing.freeConsultation} <ArrowRight className="h-5 w-5" />
                   </button>
@@ -766,6 +765,8 @@ export default function RapidWorksPage() {
          </div>
        </section>
 
+      {/* Bundle Section - Commented Out */}
+      {/* 
       <section className="py-20 bg-gray-50 relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCI+PGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZTJlOGYwIiBzdHJva2Utd2lkdGg9IjEuNSI+PHBhdGggZD0iTTIgMmg1NnY1NkgyeiIvPjwvZz48L3N2Zz4=')] opacity-50 pointer-events-none"></div>
 
@@ -830,6 +831,7 @@ export default function RapidWorksPage() {
           </div>
         </div>
       </section>
+      */}
 
       <section className="py-20 relative bg-gradient-to-br from-gray-800 to-gray-900 text-white">
          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDUwIDUwIj48cGF0aCBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDUiIGQ9Ik0xMCAxMEg1djQwaDM1di01SDEwdjAySDUwek00NSA1SDQwVjBoNXY1ek0yNSAyNWgtNXAzMFYwSDIwdjI1ek00NSA0NWgtNXY1aDV2NXoAg0MCIvPjwvc3ZnPg==')] opacity-30 pointer-events-none z-0"></div>
@@ -874,7 +876,10 @@ export default function RapidWorksPage() {
             </p>
             <button
               onClick={openCalendly}
-              className="px-8 py-4 bg-black hover:bg-gradient-to-r hover:from-purple-600 hover:to-indigo-600 text-white rounded-full hover:shadow-xl hover:translate-y-[-2px] active:translate-y-[0px] transition-all duration-300 font-medium text-lg"
+              className="px-8 py-4 rounded-full text-white hover:shadow-xl hover:translate-y-[-2px] active:translate-y-[0px] transition-all duration-300 font-medium text-lg"
+              style={{ backgroundColor: '#FF6B6B' }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = '#FF5252'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = '#FF6B6B'}
             >
               {content.cta.bookCall}
             </button>

@@ -3,22 +3,22 @@ import { X, Plus, Minus } from "lucide-react"
 import { useState } from "react"
 
 // Export FAQItem so it can be used in other components
-export const FAQItem = ({ question, answer }) => {
+export const FAQItem = ({ question, answer, isDark = false }) => {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <div className="py-6">
+    <div className={isDark ? "py-4" : "py-6"}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex justify-between items-center w-full text-left"
       >
-        <h3 className="text-lg font-light text-gray-900 pr-8">
+        <h3 className={`text-lg font-medium pr-8 ${isDark ? 'text-white' : 'text-gray-900'}`}>
           {question}
         </h3>
         {isOpen ? (
-          <Minus className="w-5 h-5 text-violet-500 flex-shrink-0" />
+          <Minus className={`w-6 h-6 flex-shrink-0 ${isDark ? 'text-white' : 'text-violet-500'}`} />
         ) : (
-          <Plus className="w-5 h-5 text-violet-500 flex-shrink-0" />
+          <Plus className={`w-6 h-6 flex-shrink-0 ${isDark ? 'text-white' : 'text-violet-500'}`} />
         )}
       </button>
       <AnimatePresence>
@@ -31,7 +31,7 @@ export const FAQItem = ({ question, answer }) => {
             className="overflow-hidden"
           >
             <p 
-              className="mt-4 text-gray-600 font-light"
+              className={`mt-3 font-light ${isDark ? 'text-white/90' : 'text-gray-600'}`}
               dangerouslySetInnerHTML={{ __html: answer }}
             />
           </motion.div>

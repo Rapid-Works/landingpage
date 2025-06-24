@@ -30,6 +30,8 @@ import ExploreMoreSection from "./ExploreMoreSection"
 import { testimonials } from "../testimonialsData"
 import TestimonialCard from "./TestimonialCard"
 import BrandingBg from '../images/branding bg.png'
+import HoodieBg from '../images/hoodiebg.png'
+import PricingBg from '../images/pricing_bg.png'
 
 const BundleItem = ({ title, description, index, imageSrc }) => (
   <motion.div
@@ -317,8 +319,7 @@ const VisibiltyBundle = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isFAQModalOpen, setIsFAQModalOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const [showCookieConsent, setShowCookieConsent] = useState(true)
-  const [showCookieSettings, setShowCookieSettings] = useState(false)
+
   const contentSectionRef = useRef(null)
 
   useEffect(() => {
@@ -694,8 +695,8 @@ const VisibiltyBundle = () => {
         ]
       },
       features: {
-        title: "Inhalt",
-        subtitle: "Das Rapid Branding enthält alles, was du brauchst, um die Aufmerksamkeit von Kunden, Partnern, Investoren und Mitarbeitern auf dein Startup zu lenken. Du wirst sofort sichtbar und ein einheitliches Markendesign macht deine Marke erkennbar."
+        title: "Was ist enthalten?",
+        subtitle: "Entdecke alle Komponenten deines Rapid Branding Pakets"
       },
       cookies: {
         banner: {
@@ -810,129 +811,7 @@ const VisibiltyBundle = () => {
 
   const containerClass = "max-w-[1280px] w-full mx-auto px-4 sm:px-6 lg:px-8 relative"
 
-  // Cookie settings modal component
-  const CookieSettingsModal = () => {
-    if (!showCookieSettings) return null
 
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-        <div className="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-          <div className="p-10">
-            <h2 className="text-2xl font-bold text-[#7C3BEC] mb-10">{content.cookies.modal.title}</h2>
-            
-            <div className="space-y-8">
-              {/* Notwendig */}
-              <div>
-                <div className="flex items-start justify-between mb-4">
-                  <h3 className="font-semibold text-gray-900 text-lg">{content.cookies.modal.necessary.title}</h3>
-                  <span className="text-base text-gray-500 bg-gray-100 px-4 py-2 rounded-full">{content.cookies.modal.necessary.status}</span>
-                </div>
-                <p className="text-base text-gray-600 leading-relaxed">
-                  {content.cookies.modal.necessary.description}
-                </p>
-              </div>
-
-              {/* Leistung und Analyse */}
-              <div>
-                <div className="flex items-start justify-between mb-4">
-                  <h3 className="font-semibold text-gray-900 text-lg">{content.cookies.modal.analytics.title}</h3>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" className="sr-only peer" />
-                    <div className="w-14 h-7 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-7 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#7C3BEC]"></div>
-                  </label>
-                </div>
-                <p className="text-base text-gray-600 leading-relaxed">
-                  {content.cookies.modal.analytics.description}
-                </p>
-              </div>
-
-              {/* Marketing & Werbung */}
-              <div>
-                <div className="flex items-start justify-between mb-4">
-                  <h3 className="font-semibold text-gray-900 text-lg">{content.cookies.modal.marketing.title}</h3>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" className="sr-only peer" />
-                    <div className="w-14 h-7 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-7 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#7C3BEC]"></div>
-                  </label>
-                </div>
-                <p className="text-base text-gray-600 leading-relaxed">
-                  {content.cookies.modal.marketing.description}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-4 mt-10">
-              <button 
-                onClick={() => setShowCookieSettings(false)}
-                className="flex-1 px-8 py-4 bg-[#7C3BEC] hover:bg-[#6B2BD1] text-white rounded-lg font-medium text-base transition-colors"
-              >
-                {content.cookies.modal.savePreferences}
-              </button>
-              <button 
-                onClick={() => setShowCookieSettings(false)}
-                className="px-8 py-4 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 rounded-lg font-medium text-base transition-colors"
-              >
-                {content.cookies.modal.decline}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  // Cookie consent component
-  const CookieConsent = () => {
-    if (!showCookieConsent) return null
-
-    const privacyUrl = language === 'en' ? '/privacy' : '/datenschutz'
-
-    return (
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white shadow-lg" style={{ borderTop: '1px solid #e5e7eb' }}>
-        <div className="max-w-none mx-auto px-8 py-8">
-          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
-            <div className="flex-1 text-base text-gray-700 space-y-3">
-              <p>
-                <strong>{content.cookies.banner.title}</strong>
-              </p>
-              <p>
-                {content.cookies.banner.description}
-              </p>
-              <p>
-                {content.cookies.banner.privacy}{' '}
-                <Link to={privacyUrl} className="text-[#7C3BEC] hover:text-[#6B2BD1] underline">
-                  {content.cookies.banner.privacyLink}
-                </Link>.
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto lg:flex-shrink-0">
-              <button 
-                onClick={() => setShowCookieConsent(false)}
-                className="px-8 py-4 bg-[#7C3BEC] hover:bg-[#6B2BD1] text-white rounded-lg font-medium text-base transition-colors whitespace-nowrap"
-              >
-                {content.cookies.banner.acceptAll}
-              </button>
-              <button 
-                onClick={() => {
-                  setShowCookieConsent(false)
-                  setShowCookieSettings(true)
-                }}
-                className="px-8 py-4 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 rounded-lg font-medium text-base transition-colors whitespace-nowrap"
-              >
-                {content.cookies.banner.adjustSettings}
-              </button>
-              <button 
-                onClick={() => setShowCookieConsent(false)}
-                className="px-8 py-4 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 rounded-lg font-medium text-base transition-colors whitespace-nowrap"
-              >
-                {content.cookies.banner.decline}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
 
   return (
     <>
@@ -948,7 +827,7 @@ const VisibiltyBundle = () => {
                 alt="Branding Background" 
                 className="w-full h-full object-cover object-[center_20%]"
               />
-            </div>
+                </div>
             {/* Color overlay */}
             <div className="absolute inset-0 bg-[#270A5C]/90 z-10"></div>
             
@@ -964,84 +843,176 @@ const VisibiltyBundle = () => {
             </div>
           </section>
 
-          <section ref={contentSectionRef} className="py-20">
+          <section ref={contentSectionRef} className="py-20 bg-white">
             <div className={containerClass}>
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-12 md:gap-16 items-center">
-                <div className="md:col-span-2 text-center md:text-left">
-                  <p className="text-lg md:text-xl text-gray-700 leading-relaxed mb-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                {/* Left Content */}
+                <div className="space-y-8">
+                  {/* Title */}
+                  <h2 className="text-5xl md:text-6xl font-bold text-[#7C3BEC] leading-tight">
+                    Rapid Branding
+                  </h2>
+                  
+                  {/* Description */}
+                  <p className="text-lg md:text-xl text-gray-700 leading-relaxed">
                     {content.mainText}
                   </p>
 
-                  <div className="flex flex-wrap justify-center md:justify-start gap-3 mb-8">
+                  {/* Service Tags */}
+                  <div className="flex flex-wrap gap-3">
                     {content.keyPoints.map((point, index) => (
-                      <span
+                      <div
                         key={index}
-                        className="inline-flex items-center px-4 py-2 rounded-full
-                            bg-violet-50 border border-violet-200 text-violet-800
-                                  text-sm font-light whitespace-nowrap"
+                        className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-full border border-[#7C3BEC] text-[#7C3BEC] hover:bg-[#7C3BEC]/5 transition-colors"
+                        style={{ backgroundColor: '#F8F6FF' }}
                       >
-                        {point}
-                      </span>
+                        <div className="w-3 h-3 rounded-full border border-[#7C3BEC] bg-transparent relative flex items-center justify-center">
+                          <div className="w-1 h-1 rounded-full bg-[#7C3BEC]"></div>
+                        </div>
+                        <span className="text-sm font-medium">{point}</span>
+                      </div>
                     ))}
                   </div>
-                  <p className="text-violet-600 hover:text-violet-700 text-sm mb-8 font-medium">
+                  
+                  {/* "und mehr..." text */}
+                  <p className="text-gray-600 text-lg font-medium">
                     {content.seeMore}
                   </p>
 
+                  {/* CTA Button */}
                   <button
                     onClick={() => setIsModalOpen(true)}
-                    className="group relative inline-flex items-center justify-center px-6 py-3 text-sm font-light
-                            overflow-hidden rounded-full text-white bg-[#0F1115] transition-all duration-300
-                                shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 hover:scale-105"
+                    className="inline-flex items-center justify-center px-8 py-4 text-white font-medium rounded-full transition-all duration-300 hover:shadow-lg hover:scale-105"
+                    style={{ backgroundColor: '#FF6B6B' }}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = '#FF5252'}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = '#FF6B6B'}
                   >
-                    <span className="relative z-10 flex items-center">
                       {content.cta}
-                      <ArrowRight className="ml-2 -mr-1 h-4 w-4 transition-transform group-hover:translate-x-2" />
-                    </span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-purple-700
-                            opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </button>
                 </div>
 
-                <div className="md:col-span-3 relative aspect-[4/3] overflow-hidden rounded-2xl">
+                {/* Right Visual */}
+                <div className="relative">
                   <img
                     src={PlaceholderImage}
-                    alt="Rapid Branding Elements"
-                    className="w-full h-full object-contain"
+                    alt="Rapid Branding Showcase"
+                    className="w-full h-auto object-contain"
                   />
                 </div>
               </div>
             </div>
           </section>
 
-          <section id="features" className="py-20 md:py-40 overflow-hidden bg-gradient-to-b from-white via-gray-50/50 to-white relative">
-            <div className="max-w-[1280px] w-full mx-auto px-4 sm:px-6 lg:px-8 md:px-12 relative">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="text-center mb-20 md:mb-40 relative"
-              >
-                <motion.span
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  className="inline-flex items-center gap-2 text-violet-600 text-sm uppercase tracking-wider font-light mb-6 px-6 py-2 rounded-full bg-violet-50/80 border border-violet-100 shadow-sm backdrop-blur-sm"
-                >
-                  <span className="w-2 h-2 rounded-full bg-violet-400 animate-pulse" />
-                  Designed for Impact
-                </motion.span>
-
-                <h2 className="text-4xl md:text-6xl font-light mb-8 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 bg-clip-text text-transparent">
-                  {content.features.title}
+          {/* Inhalt Section */}
+          <section className="py-20 md:py-32" style={{ backgroundColor: '#8B2CDF' }}>
+            <div className={containerClass}>
+              <div className="text-center text-white max-w-4xl mx-auto">
+                {/* Badge */}
+                <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/30 mb-8">
+                  <div className="w-2 h-2 rounded-full bg-white"></div>
+                  <span className="text-sm font-medium uppercase tracking-wider">
+                    MAXIMALE AUßENWIRKUNG
+                  </span>
+                </div>
+                
+                {/* Title */}
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8">
+                  Inhalt
                 </h2>
-                <p className="text-gray-600 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-                  {content.features.subtitle}
+                
+                {/* Description */}
+                <p className="text-lg md:text-xl lg:text-2xl leading-relaxed font-light opacity-95">
+                  Das Rapid Branding enthält alles, was du brauchst, um die Aufmerksamkeit von Kunden, 
+                  Partnern, Investoren und Mitarbeitern auf dein Startup zu lenken. Du wirst sofort sichtbar und 
+                  ein einheitliches Markendesign macht deine Marke erkennbar.
                 </p>
-              </motion.div>
+              </div>
+            </div>
+          </section>
 
+          <section id="features" className="py-20 md:py-40 overflow-hidden relative" style={{ backgroundColor: '#492c6f' }}>
+            <div className="max-w-[1280px] w-full mx-auto px-4 sm:px-6 lg:px-8 md:px-12 relative">
               <div className="space-y-24 relative">
-                {bundleItems.map((item, index) => (
+                {bundleItems.slice(0, 6).map((item, index) => {
+                  // Special styling for QR-Code (index 1) and Rollup (index 5)
+                  const isSpecialCard = index === 1 || index === 5;
+                  // Special styling with white border for Business Card (index 3)
+                  const isWhiteBorderCard = index === 3;
+                  
+                  if (isSpecialCard) {
+                    return (
+              <motion.div
+                        key={index}
+                        className="relative group"
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        viewport={{ once: true, margin: "-100px" }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
+                      >
+                        <div className="bg-[#301d49] rounded-3xl p-8 md:p-12 text-white">
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                            {/* Text Content */}
+                            <div className="space-y-6">
+                              <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight">
+                                {item.title}
+                              </h3>
+                              <p className="text-white/90 text-base md:text-lg leading-relaxed">
+                                {item.description}
+                              </p>
+                            </div>
+                            
+                            {/* Visual */}
+                            <div className="relative aspect-[4/3] flex items-center justify-center">
+                              <img
+                                src={item.imageSrc || PlaceholderImage}
+                                alt={item.title}
+                                className="max-w-full max-h-full object-contain"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  }
+                  
+                  if (isWhiteBorderCard) {
+                    return (
+                      <motion.div
+                        key={index}
+                        className="relative group"
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        viewport={{ once: true, margin: "-100px" }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
+                      >
+                        <div className="border border-white/60 rounded-3xl p-8 md:p-12 bg-transparent">
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                            {/* Text Content */}
+                            <div className="space-y-6">
+                              <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight">
+                                {item.title}
+                              </h3>
+                              <p className="text-white/90 text-base md:text-lg leading-relaxed">
+                                {item.description}
+                              </p>
+                            </div>
+                            
+                            {/* Visual */}
+                            <div className="relative aspect-[4/3] flex items-center justify-center">
+                              <img
+                                src={item.imageSrc || PlaceholderImage}
+                                alt={item.title}
+                                className="max-w-full max-h-full object-contain"
+                              />
+                            </div>
+                          </div>
+                        </div>
+              </motion.div>
+                    );
+                  }
+
+                  // Default styling for other items
+                  return (
                   <motion.div
                     key={index}
                     className="relative group"
@@ -1053,11 +1024,11 @@ const VisibiltyBundle = () => {
                     <div className={`flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-8 md:gap-16 lg:gap-24`}>
                       <div className="w-full md:w-1/2 px-2 md:px-4">
                         <div className="relative aspect-[4/3] overflow-hidden group rounded-3xl">
-                          <div className="h-full transform-gpu">
+                            <div className="h-full transform-gpu flex items-center justify-center">
                             <img
                               src={item.imageSrc || PlaceholderImage}
                               alt={item.title}
-                              className="w-full h-full object-contain mix-blend-multiply filter contrast-125"
+                                className="max-w-full max-h-full object-contain"
                             />
                           </div>
                         </div>
@@ -1067,10 +1038,10 @@ const VisibiltyBundle = () => {
                         <div className="relative md:pl-0">
                           <div className="space-y-6 md:space-y-8">
                             <div className="space-y-4 md:space-y-6">
-                              <h3 className="text-2xl md:text-4xl lg:text-5xl font-light tracking-tight bg-gradient-to-br from-gray-900 to-gray-700 bg-clip-text text-transparent leading-relaxed pb-1">
+                                <h3 className="text-2xl md:text-4xl lg:text-5xl font-light tracking-tight text-white leading-relaxed pb-1">
                                 {item.title}
                               </h3>
-                              <p className="text-gray-600 text-base md:text-lg lg:text-xl leading-relaxed">
+                                <p className="text-white/90 text-base md:text-lg lg:text-xl leading-relaxed">
                                 {item.description}
                               </p>
                             </div>
@@ -1079,38 +1050,317 @@ const VisibiltyBundle = () => {
                       </div>
                     </div>
                   </motion.div>
-                ))}
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+
+          {/* Hoodie Section with Background */}
+          <section className="py-20 md:py-40 overflow-hidden relative" style={{ backgroundColor: '#492c6f' }}>
+            {/* Background Image */}
+            <div className="absolute inset-0 z-0">
+              <img 
+                src={HoodieBg} 
+                alt="Background" 
+                className="w-full h-full object-cover opacity-10"
+              />
+              {/* Top fade overlay */}
+              <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#492c6f] to-transparent z-10"></div>
+            </div>
+            <div className="max-w-[1280px] w-full mx-auto px-4 sm:px-6 lg:px-8 md:px-12 relative z-10">
+              <div className="space-y-24 relative">
+                {bundleItems.slice(6).map((item, index) => {
+                  const actualIndex = index + 6;
+                  const isHoodie = actualIndex === 6;
+                  
+                  return (
+                    <motion.div
+                      key={actualIndex}
+                      className="relative group"
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true, margin: "-100px" }}
+                      transition={{ duration: 0.8, delay: 0.2 }}
+                    >
+                      <div className="border border-white/60 rounded-3xl p-8 md:p-12 bg-transparent">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center lg:grid-flow-col-dense">
+                          {/* Text Content */}
+                          <div className="space-y-6 lg:col-start-2">
+                            <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight">
+                              {item.title}
+                            </h3>
+                            <p className="text-white/90 text-base md:text-lg leading-relaxed">
+                              {item.description}
+                            </p>
+                          </div>
+                          
+                          {/* Visual */}
+                          <div className="relative aspect-[4/3] flex items-center justify-center lg:col-start-1">
+                            <img
+                              src={item.imageSrc || PlaceholderImage}
+                              alt={item.title}
+                              className="max-w-full max-h-full object-contain drop-shadow-2xl"
+                              style={{ filter: 'drop-shadow(0 0 40px rgba(124, 59, 236, 0.8))' }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+
+          {/* Why Rapid Branding Section */}
+          <section className="py-20 md:py-32" style={{ backgroundColor: '#F3F0FF' }}>
+            <div className="max-w-[1280px] w-full mx-auto px-4 sm:px-6 lg:px-8 md:px-12">
+              <div className="text-center mb-16">
+                {/* Badge */}
+                <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-purple-300 text-purple-600 mb-8 bg-white/50">
+                  <div className="w-2 h-2 rounded-full bg-purple-500"></div>
+                  <span className="text-sm font-medium uppercase tracking-wider">
+                    UNSERE VORTEILE
+                  </span>
+                </div>
+                
+                {/* Title */}
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-black mb-16">
+                  Warum Rapid Branding die beste Wahl ist
+                </h2>
+              </div>
+
+              {/* Benefits Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {/* Speed */}
+                <div className="rounded-[32px] p-8 text-center text-white min-h-[400px] flex flex-col relative overflow-hidden" 
+                     style={{ 
+                       backgroundColor: '#BB86FF',
+                       boxShadow: '0 20px 40px rgba(146, 87, 221, 0.3)'
+                     }}>
+                  {/* Bottom gradient border */}
+                  <div className="absolute bottom-0 left-0 right-0 h-1" 
+                       style={{ background: 'linear-gradient(270deg, #9257DD 23.12%, rgba(255, 107, 107, 0.3) 49.61%, #9257DD 81.85%)' }}></div>
+                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-8" style={{ backgroundColor: '#540E92' }}>
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-2xl font-bold mb-6 text-[#2D1B69]">Geschwindigkeit</h3>
+                  <p className="text-[#2D1B69] leading-relaxed flex-grow">
+                    Erhalte dein komplettes Branding-Paket innerhalb von nur 7 Tagen. Perfekt für Startups.
+                  </p>
+                </div>
+
+                {/* All Inclusive */}
+                <div className="rounded-[32px] p-8 text-center text-white min-h-[400px] flex flex-col relative overflow-hidden"
+                     style={{ 
+                       backgroundColor: '#BB86FF',
+                       boxShadow: '0 20px 40px rgba(146, 87, 221, 0.3)'
+                     }}>
+                  {/* Bottom gradient border */}
+                  <div className="absolute bottom-0 left-0 right-0 h-1" 
+                       style={{ background: 'linear-gradient(270deg, #9257DD 23.12%, rgba(255, 107, 107, 0.3) 49.61%, #9257DD 81.85%)' }}></div>
+                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-8" style={{ backgroundColor: '#540E92' }}>
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-2xl font-bold mb-6 text-[#2D1B69]">Alles inklusive</h3>
+                  <p className="text-[#2D1B69] leading-relaxed flex-grow">
+                    Von uns erhältst du alles was du brauchst aus einer Hand. Das spart dir unnötige Kommunikation mit mehreren Parteien
+                  </p>
+                </div>
+
+                {/* Professional */}
+                <div className="rounded-[32px] p-8 text-center text-white min-h-[400px] flex flex-col relative overflow-hidden"
+                     style={{ 
+                       backgroundColor: '#BB86FF',
+                       boxShadow: '0 20px 40px rgba(146, 87, 221, 0.3)'
+                     }}>
+                  {/* Bottom gradient border */}
+                  <div className="absolute bottom-0 left-0 right-0 h-1" 
+                       style={{ background: 'linear-gradient(270deg, #9257DD 23.12%, rgba(255, 107, 107, 0.3) 49.61%, #9257DD 81.85%)' }}></div>
+                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-8" style={{ backgroundColor: '#540E92' }}>
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-2xl font-bold mb-6 text-[#2D1B69]">Professioneller Auftritt</h3>
+                  <p className="text-[#2D1B69] leading-relaxed flex-grow">
+                    Medienübergreifende Form- und Bildsprache signalisieren Kompetenz und schaffen Vertrauen
+                  </p>
+                </div>
+
+                {/* Flexible */}
+                <div className="rounded-[32px] p-8 text-center text-white min-h-[400px] flex flex-col relative overflow-hidden"
+                     style={{ 
+                       backgroundColor: '#BB86FF',
+                       boxShadow: '0 20px 40px rgba(146, 87, 221, 0.3)'
+                     }}>
+                  {/* Bottom gradient border */}
+                  <div className="absolute bottom-0 left-0 right-0 h-1" 
+                       style={{ background: 'linear-gradient(270deg, #9257DD 23.12%, rgba(255, 107, 107, 0.3) 49.61%, #9257DD 81.85%)' }}></div>
+                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-8" style={{ backgroundColor: '#540E92' }}>
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                  </div>
+                  <h3 className="text-2xl font-bold mb-6 text-[#2D1B69]">Flexibel anpassbar</h3>
+                  <p className="text-[#2D1B69] leading-relaxed flex-grow">
+                    Du kannst jederzeit Anpassungen anfragen - Zur vollen Kostenkontrolle machen wir dir immer einen Fixpreis
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Pricing Section */}
+          <section className="py-16 md:py-24 relative overflow-hidden" style={{ backgroundColor: '#270A5C' }}>
+            {/* Background Image */}
+            <div className="absolute inset-0 z-0">
+              <img 
+                src={PricingBg} 
+                alt="Pricing Background" 
+                className="w-full h-full object-cover opacity-25"
+              />
+              {/* Color overlay */}
+              <div className="absolute inset-0 bg-[#270A5C]/70"></div>
+            </div>
+            <div className="max-w-[1280px] w-full mx-auto px-4 sm:px-6 lg:px-8 md:px-12 relative z-10">
+              <div className="text-center mb-12">
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
+                  Das Rapid Branding Paket
+                </h2>
+                <p className="text-xl md:text-2xl text-white/90 font-light">
+                  Dein kompletter Markenauftritt – in nur 7 Tagen
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                {/* Pricing Card */}
+                <div className="order-1 lg:order-1">
+                  <div className="rounded-[32px] p-8 md:p-10 text-center h-full flex flex-col relative overflow-hidden"
+                       style={{ 
+                         background: 'linear-gradient(140.21deg, #6A20AA 27.33%, #390866 56.88%)',
+                         border: '2px solid rgba(255, 255, 255, 0.1)'
+                       }}>
+                    {/* Price */}
+                    <div className="mb-6">
+                      <div className="text-7xl md:text-8xl font-bold text-white mb-2">
+                        999 €
+                      </div>
+                    </div>
+
+                    {/* What you get */}
+                    <div className="mb-6 flex-grow">
+                      <h3 className="text-2xl font-bold text-white mb-6">
+                        Was du bekommst:
+                      </h3>
+                      <div className="space-y-5 text-left">
+                        <div className="flex items-center gap-4">
+                          <CheckCircle className="w-6 h-6 text-white flex-shrink-0" />
+                          <span className="text-white text-lg">Logo-Design</span>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <CheckCircle className="w-6 h-6 text-white flex-shrink-0" />
+                          <span className="text-white text-lg">Visitenkarte</span>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <CheckCircle className="w-6 h-6 text-white flex-shrink-0" />
+                          <span className="text-white text-lg">Roll-up Banner</span>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <CheckCircle className="w-6 h-6 text-white flex-shrink-0" />
+                          <span className="text-white text-lg">Branding-Guide</span>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <CheckCircle className="w-6 h-6 text-white flex-shrink-0" />
+                          <span className="text-white text-lg">Moderne Landingpage</span>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <CheckCircle className="w-6 h-6 text-white flex-shrink-0" />
+                          <span className="text-white text-lg">Geschützter Download-<br/>Bereich</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* CTA Button */}
+                    <button
+                      onClick={() => setIsModalOpen(true)}
+                      className="w-full py-4 px-8 rounded-full font-semibold text-white transition-all duration-300 hover:scale-105 text-lg"
+                      style={{ backgroundColor: '#FF6B6B' }}
+                      onMouseEnter={(e) => e.target.style.backgroundColor = '#FF5252'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = '#FF6B6B'}
+                    >
+                      Jetzt starten für 999 €
+                    </button>
+                  </div>
+                </div>
+
+                {/* Information Cards */}
+                <div className="order-2 lg:order-2 h-full flex flex-col gap-6">
+                  {/* Editable Files Card */}
+                  <div className="rounded-[32px] p-8 border-2 border-white/20 bg-transparent flex-1 flex flex-col">
+                    <h3 className="text-2xl font-bold text-white mb-6">
+                      Bearbeitbare Dateien inklusive
+                    </h3>
+                    <p className="text-white/90 text-lg leading-relaxed flex-grow">
+                      Alle enthaltenen Elemente werden in bearbeitbarem Format (z. B. PDF, PNG, SVG) geliefert.<br/>
+                      Du erhältst sämtliche Dateien digital.<br/>
+                      Du kannst deine Elemente beliebig oft mit den Partnern deiner Wahl ausdrucken.
+                    </p>
+                  </div>
+
+                  {/* Flexible Adjustments Card */}
+                  <div className="rounded-[32px] p-8 border-2 border-white/20 bg-transparent flex-1 flex flex-col justify-center">
+                    <p className="text-white/90 text-lg leading-relaxed">
+                      Weitere Anpassungen sind jederzeit möglich – für nur 40 €/Stunde. Wir bieten dir jedes mal einen 
+                      aufwandsbasierten Fixpreis, so behältst du zu jederzeit volle Kostenkontrolle.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
 
           <BrandingTestimonialsSection content={content} />
 
-          <section className="py-24 bg-gray-50">
+          <section className="py-16 md:py-20 relative overflow-hidden" 
+                   style={{ background: 'linear-gradient(63.21deg, #19042C 36.84%, #3B2888 96.53%)' }}>
             <div className={containerClass}>
-              <div className="text-center mb-16">
-                <h2 className="text-3xl font-light mb-4">
-                  {content.faq.title}
+              <div className="text-center mb-12">
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
+                  Häufig gestellte Fragen
                 </h2>
               </div>
 
-              <div className="max-w-3xl mx-auto divide-y divide-gray-200">
+              <div className="max-w-4xl mx-auto">
+                <div className="rounded-[32px] p-6 md:p-8" 
+                     style={{ background: 'linear-gradient(63.21deg, #3B2888 36.84%, #19042C 96.53%)' }}>
+                  <div className="space-y-4">
                 {faqItems.slice(0, 5).map((item, index) => (
+                      <div key={index} className="border-b border-white/20 last:border-b-0 pb-4 last:pb-0">
                   <FAQItem
                     key={index}
                     question={item.question}
                     answer={item.answer}
+                          isDark={true}
                   />
+                      </div>
                 ))}
+                  </div>
 
-                <div className="pt-8 text-center">
+                  <div className="pt-6 text-center border-t border-white/20 mt-6">
                   <button
                     onClick={() => setIsFAQModalOpen(true)}
-                    className="inline-flex items-center text-violet-600 hover:text-violet-700 font-light"
+                      className="inline-flex items-center text-white hover:text-white/80 font-medium text-lg transition-colors"
                   >
-                    {content.faq.showAll}
-                    <ChevronRight className="ml-2 w-4 h-4" />
+                      Alle Fragen und Antworten anzeigen
+                      <ChevronRight className="ml-2 w-5 h-5" />
                   </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1127,7 +1377,10 @@ const VisibiltyBundle = () => {
                 </p>
                 <button
                   onClick={() => window.open('https://calendly.com/yannick-familie-heeren/30min', '_blank')}
-                  className="bg-[#0F1115] text-white px-8 py-3 rounded-none font-light hover:bg-gray-900 transition duration-300 inline-flex items-center text-lg"
+                  className="text-white px-8 py-3 rounded-none font-light transition duration-300 inline-flex items-center text-lg"
+                  style={{ backgroundColor: '#7C3BEC' }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#6B2DD4'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = '#7C3BEC'}
                 >
                   {content.finalCta.cta}
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -1153,12 +1406,6 @@ const VisibiltyBundle = () => {
           onClose={() => setIsFAQModalOpen(false)}
           faqItems={faqItems}
         />
-
-        {/* Cookie Consent Popup */}
-        <CookieConsent />
-
-        {/* Cookie Settings Modal */}
-        <CookieSettingsModal />
 
       </div>
     </>

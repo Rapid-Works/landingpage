@@ -50,6 +50,7 @@ import BlogPostPage from './components/BlogPostPage'
 import QRCodeRedirect from './components/QRCodeRedirect'
 import AGBPage from './components/AGBPage'
 import PrivacyPage from './components/PrivacyPage'
+import CookieConsent from './components/CookieConsent'
 
 // Create and export Language Context with initial values
 export const LanguageContext = createContext({
@@ -1405,6 +1406,7 @@ function App() {
             webinarDates={nextWebinarDateForPopup}
           />
           <Footer />
+          <CookieConsent />
         </div>
       </>
     </LanguageContext.Provider>
