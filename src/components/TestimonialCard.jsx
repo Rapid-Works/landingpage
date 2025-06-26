@@ -5,12 +5,12 @@ const TestimonialCard = ({ quote, authorName, authorTitle, imageUrl, companyLogo
   const initial = authorName ? authorName[0].toUpperCase() : '';
 
   return (
-    <div className={`bg-white rounded-2xl shadow-lg p-8 h-full relative border-t-4 ${borderColor || 'border-gray-200'}`}>
+    <div className={`bg-white rounded-2xl shadow-lg p-8 h-full relative border-t-4 ${borderColor || 'border-gray-200'} flex flex-col`}>
       <div className="absolute top-6 left-6 text-gray-100 z-0">
         <Quote className="w-20 h-20" strokeWidth={1.5} />
       </div>
-      <div className="relative z-10">
-        <p className="text-gray-700 text-lg leading-relaxed mb-6">
+      <div className="relative z-10 flex flex-col flex-grow">
+        <p className="text-gray-700 text-lg leading-relaxed mb-6 flex-grow">
           "{quote}"
         </p>
         <hr className="my-6 border-gray-200" />

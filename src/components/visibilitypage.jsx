@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowRight, Plus, Minus, ChevronLeft, ChevronRight, CheckCircle, ChevronDown, Menu, X, CalendarCheck, Palette, Package, Megaphone, FileText, Users, BookOpen, Euro, Compass, Presentation, Loader2, MessageSquareText, ExternalLink } from "lucide-react"
+import { ArrowRight, Plus, Minus, ChevronLeft, ChevronRight, CheckCircle, ChevronDown, Menu, X, CalendarCheck, Palette, Package, Megaphone, FileText, Users, BookOpen, Euro, Compass, Presentation, Loader2, MessageSquareText, ExternalLink, Quote } from "lucide-react"
 import HeroImage2 from "../images/heroimage3.jpg"
 import RapidWorksWebsite from "../images/laptop.png"
 import RapidWorksLogo from "../images/logo512.png"
@@ -206,105 +206,104 @@ const BrandingTestimonialsSection = ({ content }) => {
   );
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
     if (brandingTestimonials.length <= 1) return;
-    if (paused) return;
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev === brandingTestimonials.length - 1 ? 0 : prev + 1));
     }, 5000); // 5 seconds
     return () => clearInterval(interval);
-  }, [brandingTestimonials.length, paused]);
+  }, [brandingTestimonials.length]);
 
   if (brandingTestimonials.length === 0) {
     return null;
   }
 
-  // Slider controls
-  const handlePrev = () => {
-    setCurrentIndex((prev) => (prev === 0 ? brandingTestimonials.length - 1 : prev - 1));
-  };
-  const handleNext = () => {
-    setCurrentIndex((prev) => (prev === brandingTestimonials.length - 1 ? 0 : prev + 1));
-  };
+  const handlePrev = () => setCurrentIndex((prev) => (prev - 1 + brandingTestimonials.length) % brandingTestimonials.length);
+  const handleNext = () => setCurrentIndex((prev) => (prev + 1) % brandingTestimonials.length);
+
+  const currentTestimonial = brandingTestimonials[currentIndex];
 
   return (
-    <section className="py-24 bg-white">
+    <section className="py-24 bg-[#F8F7FF]">
       <div className="max-w-[1280px] w-full mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-           <span className="inline-flex items-center gap-2 text-purple-600 text-sm uppercase tracking-wider font-light mb-4 px-4 py-1.5 rounded-full bg-purple-50 border border-purple-100 shadow-sm">
-              <MessageSquareText className="h-4 w-4" />
-              Client Feedback
-           </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            {content.testimonials?.title || "Success with Rapid Branding"}
+        <div className="text-center mb-16 max-w-4xl mx-auto">
+           <div className="inline-flex items-center gap-3 text-[#7C3AED] text-sm font-semibold mb-6 px-5 py-2.5 rounded-full border-2 border-[#E9D5FF] bg-white shadow-sm">
+              <FileText className="w-4 h-4 text-[#7C3AED]" />
+              <span>CLIENT FEEDBACK</span>
+           </div>
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            Success with Rapid Branding
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            {content.testimonials?.subtitle || "See what founders say about our branding package."}
+          <p className="text-xl text-gray-600 leading-relaxed">
+            Hear from founders who quickly established their market presence with our package.
           </p>
         </div>
-        {brandingTestimonials.length === 1 ? (
-          <div className="max-w-4xl mx-auto">
-            <TestimonialCard
-              key={brandingTestimonials[0].id}
-              quote={brandingTestimonials[0].quote}
-              authorName={brandingTestimonials[0].authorName}
-              authorTitle={brandingTestimonials[0].authorTitle}
-              imageUrl={brandingTestimonials[0].imageUrl}
-              companyLogoUrl={brandingTestimonials[0].companyLogoUrl}
-              projectShowcaseImage={brandingTestimonials[0].projectShowcaseImage}
-              accentColor="purple"
-            />
+        
+        <div className="bg-white rounded-3xl shadow-lg p-8 md:p-12 border-t-4 border-[#A78BFA] relative">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* Left side: Text content */}
+            <div className="relative">
+              <div className="absolute -top-4 -left-4 text-purple-100 z-0">
+                <Quote className="w-24 h-24" strokeWidth={1} />
+              </div>
+              <div className="relative z-10 flex flex-col h-full">
+                <p className="text-gray-600 text-lg italic leading-relaxed flex-grow">
+                  "{currentTestimonial.quote}"
+                </p>
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0 w-14 h-14 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-2xl border-2 border-purple-200">
+                      {currentTestimonial.authorName[0]}
+                    </div>
+                    <div className="ml-4">
+                      <p className="font-bold text-gray-900">{currentTestimonial.authorName}</p>
+                      <p className="text-gray-500 text-sm">{currentTestimonial.authorTitle}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right side: Image slider */}
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+              <AnimatePresence initial={false}>
+                <motion.img
+                  key={currentIndex}
+                  src={currentTestimonial.projectShowcaseImage}
+                  alt={`${currentTestimonial.authorName}'s project showcase`}
+                  className="absolute inset-0 w-full h-full object-contain"
+                  initial={{ opacity: 0, x: 100 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -100 }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                />
+              </AnimatePresence>
+              {brandingTestimonials.length > 1 && (
+                <>
+                  <button onClick={handlePrev} className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/50 hover:bg-white rounded-full p-2 transition-colors z-20 shadow-md">
+                    <ChevronLeft className="w-6 h-6 text-gray-700" />
+                  </button>
+                  <button onClick={handleNext} className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/50 hover:bg-white rounded-full p-2 transition-colors z-20 shadow-md">
+                    <ChevronRight className="w-6 h-6 text-gray-700" />
+                  </button>
+                </>
+              )}
+            </div>
           </div>
-        ) : (
-          <div
-            className="relative max-w-4xl mx-auto"
-            onMouseEnter={() => setPaused(true)}
-            onMouseLeave={() => setPaused(false)}
-          >
-            {/* Left Switcher */}
-            <button
-              onClick={handlePrev}
-              className="absolute -left-8 top-1/2 -translate-y-1/2 bg-white border border-gray-200 rounded-full shadow p-2 hover:bg-violet-50 transition"
-              aria-label="Previous testimonial"
-              style={{ zIndex: 2 }}
-            >
-              <ChevronLeft className="h-6 w-6 text-violet-600" />
-            </button>
-            {/* Testimonial Card */}
-            <TestimonialCard
-              key={brandingTestimonials[currentIndex].id}
-              quote={brandingTestimonials[currentIndex].quote}
-              authorName={brandingTestimonials[currentIndex].authorName}
-              authorTitle={brandingTestimonials[currentIndex].authorTitle}
-              imageUrl={brandingTestimonials[currentIndex].imageUrl}
-              companyLogoUrl={brandingTestimonials[currentIndex].companyLogoUrl}
-              projectShowcaseImage={brandingTestimonials[currentIndex].projectShowcaseImage}
-              accentColor="purple"
-            />
-            {/* Right Switcher */}
-            <button
-              onClick={handleNext}
-              className="absolute -right-8 top-1/2 -translate-y-1/2 bg-white border border-gray-200 rounded-full shadow p-2 hover:bg-violet-50 transition"
-              aria-label="Next testimonial"
-              style={{ zIndex: 2 }}
-            >
-              <ChevronRight className="h-6 w-6 text-violet-600" />
-            </button>
-          </div>
-        )}
-        {/* Dots below the card */}
+        </div>
+        
         {brandingTestimonials.length > 1 && (
-          <div className="flex justify-center mt-6 gap-2">
-            {brandingTestimonials.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => setCurrentIndex(idx)}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${currentIndex === idx ? "bg-violet-500 w-6" : "bg-gray-200"}`}
-                aria-label={`Go to testimonial ${idx + 1}`}
-              />
-            ))}
+          <div className="flex justify-center mt-8">
+            <div className="flex gap-2">
+              {brandingTestimonials.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentIndex(index)}
+                  className={`h-2.5 rounded-full transition-all duration-300 ${currentIndex === index ? 'w-8 bg-[#7C3AED]' : 'w-2.5 bg-gray-300 hover:bg-gray-400'}`}
+                />
+              ))}
+            </div>
           </div>
         )}
       </div>

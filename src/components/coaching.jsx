@@ -428,13 +428,13 @@ const CoachingPage = () => {
         </div>
 
         {/* +++ Render the Coaching Testimonials Section +++ */}
-        <CoachingTestimonialsSection content={content} />
+        
 
       </div>
-
+      <CoachingTestimonialsSection content={content} />
       {/* Add the new component */}
       <ExploreMoreSection excludeService="Coaching" />
-
+      
     </div>
   )
 }
