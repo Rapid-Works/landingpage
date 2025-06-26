@@ -3,13 +3,11 @@ import { X, Plus, Minus } from "lucide-react"
 import { useState } from "react"
 
 // Export FAQItem so it can be used in other components
-export const FAQItem = ({ question, answer, isDark = false }) => {
-  const [isOpen, setIsOpen] = useState(false)
-
+export const FAQItem = ({ question, answer, isDark = false, isOpen, onToggle }) => {
   return (
     <div className={isDark ? "py-4" : "py-6"}>
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={onToggle}
         className="flex justify-between items-center w-full text-left"
       >
         <h3 className={`text-lg font-medium pr-8 ${isDark ? 'text-white' : 'text-gray-900'}`}>
@@ -42,6 +40,12 @@ export const FAQItem = ({ question, answer, isDark = false }) => {
 }
 
 const FAQModal = ({ isOpen, onClose, faqItems }) => {
+  const [openItemIndex, setOpenItemIndex] = useState(null);
+
+  const handleToggle = (index) => {
+    setOpenItemIndex(openItemIndex === index ? null : index);
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -80,6 +84,8 @@ const FAQModal = ({ isOpen, onClose, faqItems }) => {
                       key={index}
                       question={item.question}
                       answer={item.answer}
+                      isOpen={openItemIndex === index}
+                      onToggle={() => handleToggle(index)}
                     />
                   ))}
                 </div>

@@ -27,7 +27,8 @@ import {
   Layers,
   ShieldCheck,
   Calendar,
-  MessageSquareText
+  MessageSquareText,
+  Brain
 } from "lucide-react"
 import RapidWorksHeader from "./new_landing_page_header"
 import { LanguageContext as AppLanguageContext } from "../App"
@@ -153,10 +154,9 @@ export default function RapidWorksPage() {
         title: "What All Our Offers Have in Common",
         points: [
           {
-            title: "They all cater to startups needs",
-            description: "We love startups and understand their needs from own previous startup journeys and working in the industry for years. Therefore all our services are built to cater the most common startup needs in the most time- and cost effective ways.",
-            
-            icon: "Target"
+            title: "They are tailored to your individual needs",
+            description: "There is no one-size-fits-all solution for startups. That's why we don't offer pre-packaged deals but take the time to understand your specific challenges and goals. Whether you need just one service or a comprehensive solution, we tailor our offerings to fit your needs.",
+            icon: "Tailored"
           },
           {
             title: "They deliver measurable results with unparalleled speed",
@@ -181,7 +181,7 @@ export default function RapidWorksPage() {
           {
             title: "They are strategically designed",
             description: "Our services are not random offerings but strategically designed elements that work together to move your startup forward. Each service is purposefully crafted to address specific startup challenges at the right time in your journey.",
-            icon: "Target"
+            icon: "Brain"
           }
         ]
       },
@@ -278,7 +278,7 @@ export default function RapidWorksPage() {
           {
             title: "Sie sind alle auf die Bedürfnisse von Startups zugeschnitten",
             description: "Wir lieben Startups und verstehen ihre Bedürfnisse aus eigenen früheren Startup-Reisen und jahrelanger Arbeit im Startup Ökosystem. Daher sind alle unsere Dienstleistungen darauf ausgelegt, die häufigsten Startup-Bedürfnisse auf die zeit- und kosteneffektivste Weise zu erfüllen.",
-            icon: "Target"
+            icon: "Tailored"
           },
           {
             title: "Sie liefern messbare Ergebnisse mit beispielloser Geschwindigkeit",
@@ -287,12 +287,12 @@ export default function RapidWorksPage() {
           },
           {
             title: "Sie sind entweder kostenlos oder können gefördert werden",
-            description: "„Wir wissen, dass in Startups jeder investierte Euro 10 Euro an Wert schaffen muss. Daher haben wir all unsere Services so ausgerichtet, dass sie durch Förderprogramme subventioniert werden können, oder gänzlich kostenfrei für dich sind. Wir zeigen dir gerne kostenfrei auf, welche Förderungen deinem Startup zustehen und unterstützen gerne bei der Beantragung.“",
+            description: "Wir wissen, dass in Startups jeder investierte Euro 10 Euro an Wert schaffen muss. Daher haben wir all unsere Services so ausgerichtet, dass sie durch Förderprogramme subventioniert werden können, oder gänzlich kostenfrei für dich sind. Wir zeigen dir gerne kostenfrei auf, welche Förderungen deinem Startup zustehen und unterstützen gerne bei der Beantragung.",
             icon: "Gift"
           },
           {
             title: "Sie bauen aufeinander auf",
-            description: "Alle unsere Dienstleistungen bauen aufeinander auf, erfordern sich jedoch nicht gegenseitig. Du kannst in jeder Phase ein- und aussteigen. Wenn du Hilfe benötigst, um herauszufinden, welche unserer Dienstleistungen dir am besten helfen könnten, buche gerne ein kostenloses Gespräch mit uns, um deine individuellen Bedürfnisse gemeinsam zu besprechen. Übrigens werden wir dich davon abhalten, Dienstleistungen zu buchen, die unserer Meinung nach nicht zu deinen aktuell größten Bedürfnissen passen. Wir bitten um dein Verständnis.",
+            description: "Alle unsere Dienstleistungen bauen sinnvoll aufeinander auf, funktionieren jedoch auch unabhängig voneinander. Du kannst in jeder Phase flexibel ein- und aussteigen. Gerne helfen wir dir in einem kostenlosen Gespräch herauszufinden, welche Leistung aktuell am besten zu deinen Bedürfnissen passt. Übrigens: Wir raten auch aktiv von Leistungen ab, die deiner Situation momentan nicht entsprechen. Wir bitten um dein Verständnis.",
             icon: "Layers"
           },
           {
@@ -302,8 +302,8 @@ export default function RapidWorksPage() {
           },
           {
             title: "Sie sind strategisch durchdacht",
-            description: "Unsere Dienstleistungen basieren nicht auf Zufall, sondern sind strategisch durchdachte Elemente, die zusammenarbeiten, um dein Startup voranzubringen. Jede Dienstleistung ist bewusst konzipiert, um spezifische Startup-Herausforderungen zur richtigen Zeit in deiner Reise anzugehen.",
-            icon: "Target"
+            description: "Unsere Dienstleistungen basieren nicht auf Zufall. Jedes Element – von der visuellen Gestaltung bis hin zur Customer Journey – ist bewusst so konzipiert, dass es deine Marke stärkt und dich näher an deine Ziele bringt.",
+            icon: "Brain"
           }
         ]
       },
@@ -361,10 +361,10 @@ export default function RapidWorksPage() {
           subtitle: "Mach dir keine Sorgen über die Finanzierung deines Wachstums. Wir zeigen dir die Möglichkeiten und helfen dir bei der Beantragung von Fördermitteln."
        },
       bundle: {
-        title: "Rapid Bundle",
-        description: "Erreiche das nächste Level mit all unseren Services kombiniert in einem Paket!",
-        financingNote: "Du denkst das wäre unbezahlbar? Ganz im Gegenteil, gemeinsam mit dir bereiten wir die Finanzierung unserer Dienstleistungen vor und suchen nach Fördermitteln, um die Kosten für dich auf einen Bruchteil marktüblicher Preise zu reduzieren!",
-        getBundle: "Dein Bundle sichern"
+        title: "Bündle & spare",
+        description: "Kombiniere unsere Dienstleistungen und erhalte einen Rabatt von 10%. Ideal für Startups, die umfassende Unterstützung benötigen.",
+        getBundle: "Paket schnüren",
+        financingNote: "Sie sind entweder kostenlos oder können gefördert werden"
       },
       cta: {
         title: "Bereit, dein Startup zu beschleunigen?",
@@ -388,9 +388,28 @@ export default function RapidWorksPage() {
     // Add other icons used elsewhere if needed for consistency, or keep separate
   };
 
+  const TailoredIcon = ({ className }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" className={className} fill="currentColor">
+      <path d="m13.637 2.363l1.676.335c.09.018.164.084.19.173a.25.25 0 0 1-.062.249l-1.373 1.374a.88.88 0 0 1-.619.256H12.31L9.45 7.611A1.5 1.5 0 1 1 6.5 8a1.5 1.5 0 0 1 1.889-1.449l2.861-2.862V2.552c0-.232.092-.455.256-.619L12.88.559a.25.25 0 0 1 .249-.062c.089.026.155.1.173.19Z"/>
+      <path d="M2 8a6 6 0 1 0 11.769-1.656a.751.751 0 1 1 1.442-.413a7.502 7.502 0 0 1-12.513 7.371A7.501 7.501 0 0 1 10.069.789a.75.75 0 0 1-.413 1.442A6 6 0 0 0 2 8"/>
+      <path d="M5 8a3.002 3.002 0 0 0 4.699 2.476a3 3 0 0 0 1.28-2.827a.748.748 0 0 1 1.045-.782a.75.75 0 0 1 .445.61A4.5 4.5 0 1 1 8.516 3.53a.75.75 0 1 1-.17 1.49A3 3 0 0 0 5 8"/>
+    </svg>
+  );
+
   const GetIcon = ({ name, className }) => {
-    const IconComponent = iconComponents[name];
-    return IconComponent ? <IconComponent className={className} /> : null;
+    const icons = {
+      Target: <Target className={className} />,
+      Zap: <Zap className={className} />,
+      Gift: <Gift className={className} />,
+      Layers: <Layers className={className} />,
+      ShieldCheck: <ShieldCheck className={className} />,
+      Calendar: <Calendar className={className} />,
+      MessageSquareText: <MessageSquareText className={className} />,
+      Tailored: <TailoredIcon className={className} />,
+      Brain: <Brain className={className} />,
+    };
+
+    return icons[name] || <Rocket className={className} />;
   };
 
   if (isLoading || !context) {
@@ -434,7 +453,7 @@ export default function RapidWorksPage() {
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               {content.testimonialSection?.title || "What Our Clients Say"}
             </h2>
-             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+             <p className="text-2xl text-gray-600 max-w-2xl mx-auto">
               {content.testimonialSection?.subtitle || "See how RapidWorks helps founders achieve their goals faster."}
             </p>
           </div>
@@ -489,7 +508,7 @@ export default function RapidWorksPage() {
                 </span>
               </h1>
               
-              <p className="text-xl text-white/90 leading-relaxed max-w-3xl mx-auto">
+              <p className="text-2xl text-white font-medium leading-relaxed max-w-3xl mx-auto">
                 {content.hero.subtitle}
               </p>
             </div>
@@ -498,7 +517,7 @@ export default function RapidWorksPage() {
 
           <button
             onClick={scrollToRapidAnswers}
-            className="absolute bottom-6 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none z-30"
+            className="absolute bottom-48 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none z-30"
             aria-label={content.hero.scrollIndicatorAria}
           >
             <svg className="w-8 h-8 text-white/70 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -511,12 +530,12 @@ export default function RapidWorksPage() {
       <section ref={rapidAnswersRef} className="py-20 relative">
         <div className="container mx-auto px-6">
           <div >
-            <div className="relative overflow-hidden rounded-2xl h-auto min-h-[300px] md:h-80">
-              <div className="absolute inset-0 bg-gradient-to-r from-teal-600/90 via-cyan-600/80 to-sky-600/90 mix-blend-multiply z-10"></div>
+            <div className="relative overflow-hidden rounded-2xl h-auto min-h-[350px] md:h-96">
+              <div className="absolute inset-0 bg-gradient-to-r from-teal-600/95 via-cyan-600/85 to-sky-600/95 z-10"></div>
               <img
                 src={LandingRapidAnswers}
                 alt="Rapid Answers Background"
-                className="absolute inset-0 w-full h-full object-cover object-center"
+                className="absolute inset-0 w-full h-full object-cover object-center saturate-50"
               />
               <div className="absolute inset-0 z-20 p-6 md:p-12 flex flex-col md:flex-row items-center justify-center md:justify-between">
                 <div className="mb-8 md:mb-0 w-full md:w-3/5">
@@ -552,7 +571,7 @@ export default function RapidWorksPage() {
         </div>
       </section>
 
-      <section ref={servicesRef} className="py-20 relative">
+      <section ref={servicesRef} className="py-20 relative bg-gray-50">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h3 className="text-3xl md:text-4xl font-bold mb-4">{content.services.title}</h3>
@@ -564,11 +583,11 @@ export default function RapidWorksPage() {
           <div className="grid md:grid-cols-2 gap-8 mb-8">
             <div className="group">
               <div className="relative overflow-hidden rounded-2xl aspect-[4/3] mb-0">
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-600/90 via-purple-600/80 to-indigo-600/90 mix-blend-multiply z-10"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-600/95 via-purple-600/85 to-indigo-600/95 z-10"></div>
                 <img
                   src={LandingPageHero}
                   alt="Rapid Branding Background"
-                  className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                  className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105 saturate-50"
                 />
 
                 <div className="absolute inset-0 z-20 p-8 flex flex-col justify-between">
@@ -600,11 +619,11 @@ export default function RapidWorksPage() {
 
             <div className="group">
               <div className="relative overflow-hidden rounded-2xl aspect-[4/3] mb-0">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/90 via-blue-600/80 to-sky-600/90 mix-blend-multiply z-10"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/95 via-blue-600/85 to-sky-600/95 z-10"></div>
                 <img
                   src={LandingExperts}
                   alt="Rapid Experts Background"
-                  className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                  className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105 saturate-50"
                 />
 
                 <div className="absolute inset-0 z-20 p-8 flex flex-col justify-between">
@@ -645,11 +664,11 @@ export default function RapidWorksPage() {
           <div className="grid md:grid-cols-2 gap-8 mb-8">
             <div className="group">
               <div className="relative overflow-hidden rounded-2xl aspect-[3/2] mb-0">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/90 via-blue-600/80 to-sky-600/90 mix-blend-multiply z-10"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/95 via-blue-600/85 to-sky-600/95 z-10"></div>
                 <img
                   src={LandingPartners}
                   alt="Rapid Partners Background"
-                  className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                  className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105 saturate-50"
                 />
 
                 <div className="absolute inset-0 z-20 p-6 flex flex-col justify-between">
@@ -681,11 +700,11 @@ export default function RapidWorksPage() {
 
             <div className="group">
               <div className="relative overflow-hidden rounded-2xl aspect-[3/2] mb-0">
-                <div className="absolute inset-0 bg-gradient-to-br from-amber-600/90 via-amber-600/80 to-amber-800/90 mix-blend-multiply z-10"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-amber-600/95 via-amber-600/85 to-amber-800/95 z-10"></div>
                 <img
                   src={LandingCoaching}
                   alt="Rapid Coaching Background"
-                  className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                  className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105 saturate-50"
                 />
 
                 <div className="absolute inset-0 z-20 p-6 flex flex-col justify-between">
@@ -730,11 +749,11 @@ export default function RapidWorksPage() {
            </div>
            <div >
              <div className="relative overflow-hidden rounded-2xl h-auto min-h-[300px] md:h-80">
-                <div className="absolute inset-0 bg-gradient-to-r from-rose-600/90 via-rose-600/80 to-orange-600/90 mix-blend-multiply z-10"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-rose-600/95 via-rose-600/85 to-orange-600/95 z-10"></div>
                 <img
                   src={LandingFinancing}
                   alt="Rapid Financing Background"
-                  className="absolute inset-0 w-full h-full object-cover object-center"
+                  className="absolute inset-0 w-full h-full object-cover object-center saturate-50"
                 />
                 <div className="absolute inset-0 z-20 p-6 md:p-12 flex flex-col md:flex-row items-center justify-between">
                   <div className="mb-8 md:mb-0 w-full md:w-3/5">
@@ -833,13 +852,13 @@ export default function RapidWorksPage() {
       </section>
       */}
 
-      <section className="py-20 relative bg-gradient-to-br from-gray-800 to-gray-900 text-white">
+      <section className="py-20 relative bg-[#492C6F] text-white">
          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDUwIDUwIj48cGF0aCBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDUiIGQ9Ik0xMCAxMEg1djQwaDM1di01SDEwdjAySDUwek00NSA1SDQwVjBoNXY1ek0yNSAyNWgtNXAzMFYwSDIwdjI1ek00NSA0NWgtNXY1aDV2NXoAg0MCIvPjwvc3ZnPg==')] opacity-30 pointer-events-none z-0"></div>
 
          <div className="container mx-auto px-6 relative z-10">
            <div className="max-w-3xl mx-auto text-center">
              <h2 className="text-3xl md:text-4xl font-bold mb-6">{content.whoWeAre.title}</h2>
-             <p className="text-lg text-gray-300 leading-relaxed">
+             <p className="text-lg text-gray-300 leading-loose">
                {content.whoWeAre.description}
              </p>
            </div>

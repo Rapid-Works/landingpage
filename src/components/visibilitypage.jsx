@@ -7,7 +7,7 @@ import RapidWorksLogo from "../images/logo512.png"
 import QRCodeLogo from "../images/qrcode.png"
 import PlaceholderImage from "../images/more.png"
 import RapidWorksHoodie from "../images/hoodie.png"
-import RapidWorksBanner from "../images/banner.png"
+import RapidWorksBanner from "../images/banner2.png"
 import RapidWorksEmailSignature from "../images/rapidworksemailsignature.png"
 import BusinessCard from "../images/card.png"
 import PhoneMockLogo from "../images/phonelap.png"
@@ -319,6 +319,7 @@ const VisibiltyBundle = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isFAQModalOpen, setIsFAQModalOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [openFaqIndex, setOpenFaqIndex] = useState(null)
 
   const contentSectionRef = useRef(null)
 
@@ -496,7 +497,7 @@ const VisibiltyBundle = () => {
       inhalt: {
         badge: "MAXIMUM IMPACT",
         title: "Contents",
-        description: "The Rapid Branding contains everything you need to draw the attention of customers, partners, investors and employees to your startup. You immediately become visible and a uniform brand design makes your brand recognizable."
+        description: "Das Rapid Branding enthält alles, was du brauchst, um die Aufmerksamkeit von Kunden, Partnern, Investoren und Mitarbeitern auf dein Startup zu lenken. Du wirst sofort sichtbar und ein einheitliches Markendesign macht deine Marke erkennbar."
       },
       cookies: {
         banner: {
@@ -671,7 +672,7 @@ const VisibiltyBundle = () => {
           },
           {
             question: "Warum ist ein Rapid Branding so wichtig für Startups?",
-            answer: "Unsere ehrliche Meinung? Ist es nicht. Startup Gründer haben wichtigeres zu tun, als sich mit Design zu beschäftigen. Wir sind davon überzeugt, dass es die wichtigste Aufgabe des Gründerteams ist, sich mit ihrem Markt und ihrem Produkt zu beschäftigen. Wir haben jedoch sowohl aus eigener Gründungserfahrung als auch aus der Beratung von über 50 Startups erkannt, dass die Entwicklung der Markenvisibilität eine überdimensionierte Menge der Ressourcen eines jungen Startups in Form von Zeit und Geld verschlingt und zu viele Fallstricke für unerfahrene Gründer beinhaltet. Die Verbindung und Abstimmung der einzelnen Elemente des Rapid Brandings eines Startups ist im Vergleich zu den Problemen, die ein Startup löst, nicht komplex. Aber sie ist kleinteilig und penibel. Genau diese kleinteiligen Schritte nehmen wir euch ab. Unser Ziel ist es, dass ihr in nur wenigen Tagen euer vollständiges Rapid Branding in den Händen haltet und somit lauffähig für das nächste Jahr seid. Wir halten unser Rapid Branding nicht für das finale Brand Design, dass ihr in 5 Jahren mit einer Million Kunden noch haben werdet, aber für den effizientesten Einstieg, der euch die Schaffensruhe gibt, um diese Skalierung erreichen zu können."
+            answer: "Unsere ehrliche Meinung? Ist es nicht. Startup Gründer haben wichtigeres zu tun, als sich mit Design zu beschäftigen. Wir sind davon überzeugt, dass es die wichtigste Aufgabe des Gründerteams ist, sich mit ihrem Markt und ihrem Produkt zu beschäftigen. Wir haben jedoch sowohl aus eigener Gründungserfahrung als auch aus der Beratung von über 50 Startups erkannt, dass die Entwicklung der Markenvisibilität eine überdimensionierte Menge der Ressourcen eines jungen Startups in Form von Zeit und Geld verschlingt und zu viele Fallstricke für unerfahrene Gründer beinhaltet. Die Verbindung und Abstimmung der einzelnen Elemente des Rapid Brandings eines Startups ist im Vergleich zu den Problemen, die ein Startup löst, nicht komplex. Aber sie ist kleinteilig und penibel. Genau diese kleinteiligen Schritte nehmen wir euch ab. Unser Ziel ist es, dass ihr in nur wenigen Tagen euer vollständiges Rapid Branding in den Händen haltet und somit lauffähig für das nächste Jahr seid. Wir halten unser Rapid Branding nicht für das finale Brand Design, welches ihr in 5 Jahren mit einer Million Kunden noch haben werdet, aber für den effizientesten Einstieg, der euch die Schaffensruhe gibt, um diese Skalierung erreichen zu können."
           },
           {
             question: "Warum sollte ich mein Rapid Branding von RapidWorks erstellen lassen?",
@@ -837,7 +838,7 @@ const VisibiltyBundle = () => {
           },
           {
             title: "Professioneller Auftritt",
-            description: "Medienübergreifende Form- und Bildsprache signalisieren Kompetenz und schaffen Vertrauen."
+            description: "Medienübergreifende Form- und Bildsprache signalisiert Kompetenz und schafft Vertrauen."
           },
           {
             title: "Flexibel anpassbar",
@@ -942,7 +943,7 @@ const VisibiltyBundle = () => {
                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-8 leading-tight tracking-tight text-white">
                   {content.hero.title}
                 </h1>
-                <p className="text-2xl md:text-3xl text-white/95 leading-relaxed font-light">
+                <p className="text-2xl md:text-3xl text-white/100 leading-relaxed font-medium">
                   {content.hero.subtitle}
                 </p>
               </div>
@@ -965,25 +966,56 @@ const VisibiltyBundle = () => {
                   </p>
 
                   {/* Service Tags */}
-                  <div className="flex flex-wrap gap-3">
-                    {content.keyPoints.map((point, index) => (
-                      <div
-                        key={index}
-                        className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-full border border-[#7C3BEC] text-[#7C3BEC] hover:bg-[#7C3BEC]/5 transition-colors"
-                        style={{ backgroundColor: '#F8F6FF' }}
-                      >
-                        <div className="w-3 h-3 rounded-full border border-[#7C3BEC] bg-transparent relative flex items-center justify-center">
-                          <div className="w-1 h-1 rounded-full bg-[#7C3BEC]"></div>
+                  <div className="space-y-4">
+                    {/* First row - 2 items */}
+                    <div className="flex gap-4">
+                      {content.keyPoints.slice(0, 2).map((point, index) => (
+                        <div
+                          key={index}
+                          className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-[#7C3BEC] text-black hover:bg-[#7C3BEC]/5 transition-colors bg-white"
+                        >
+                          <div className="w-3 h-3 rounded-full border-2 border-[#7C3BEC] bg-transparent relative flex items-center justify-center">
+                            <div className="w-1.5 h-1.5 rounded-full bg-[#7C3BEC]"></div>
+                          </div>
+                          <span className="text-base font-medium">{point}</span>
                         </div>
-                        <span className="text-sm font-medium">{point}</span>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
+                    
+                    {/* Second row - 2 items */}
+                    <div className="flex gap-4">
+                      {content.keyPoints.slice(2, 4).map((point, index) => (
+                        <div
+                          key={index + 2}
+                          className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-[#7C3BEC] text-black hover:bg-[#7C3BEC]/5 transition-colors bg-white"
+                        >
+                          <div className="w-3 h-3 rounded-full border-2 border-[#7C3BEC] bg-transparent relative flex items-center justify-center">
+                            <div className="w-1.5 h-1.5 rounded-full bg-[#7C3BEC]"></div>
+                          </div>
+                          <span className="text-base font-medium">{point}</span>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    {/* Third row - 1 item and "und mehr..." text */}
+                    <div className="flex items-center gap-4">
+                      {content.keyPoints.length > 4 && (
+                        <div
+                          className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-[#7C3BEC] text-black hover:bg-[#7C3BEC]/5 transition-colors bg-white"
+                        >
+                          <div className="w-3 h-3 rounded-full border-2 border-[#7C3BEC] bg-transparent relative flex items-center justify-center">
+                            <div className="w-1.5 h-1.5 rounded-full bg-[#7C3BEC]"></div>
+                          </div>
+                          <span className="text-base font-medium">{content.keyPoints[4]}</span>
+                        </div>
+                      )}
+                      
+                      {/* "und mehr..." text */}
+                      <p className="text-gray-600 text-lg font-medium">
+                        {content.seeMore}
+                      </p>
+                    </div>
                   </div>
-                  
-                  {/* "und mehr..." text */}
-                  <p className="text-gray-600 text-lg font-medium">
-                    {content.seeMore}
-                  </p>
 
                   {/* CTA Button */}
                   <button
@@ -1027,7 +1059,7 @@ const VisibiltyBundle = () => {
                 </h2>
                 
                 {/* Description */}
-                <p className="text-lg md:text-xl lg:text-2xl leading-relaxed font-light opacity-95">
+                <p className="text-lg md:text-xl lg:text-2xl leading-loose font-light opacity-95">
                   {content.inhalt.description}
                 </p>
               </div>
@@ -1053,14 +1085,14 @@ const VisibiltyBundle = () => {
                         viewport={{ once: true, margin: "-100px" }}
                         transition={{ duration: 0.8, delay: 0.2 }}
                       >
-                        <div className="bg-[#301d49] rounded-3xl p-8 md:p-12 text-white">
+                        <div className="bg-[#301d49] rounded-[3rem] p-8 md:p-12 text-white">
                           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                             {/* Text Content */}
                             <div className="space-y-6">
                               <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight">
                                 {item.title}
                               </h3>
-                              <p className="text-white/90 text-base md:text-lg leading-relaxed">
+                              <p className="text-white/90 text-base md:text-lg leading-[2.5]">
                                 {item.description}
                               </p>
                             </div>
@@ -1089,14 +1121,14 @@ const VisibiltyBundle = () => {
                         viewport={{ once: true, margin: "-100px" }}
                         transition={{ duration: 0.8, delay: 0.2 }}
                       >
-                        <div className="border border-white/60 rounded-3xl p-8 md:p-12 bg-transparent">
+                        <div className="border-2 border-white/60 rounded-[3rem] p-8 md:p-12 bg-transparent">
                           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                             {/* Text Content */}
                             <div className="space-y-6">
                               <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight">
                                 {item.title}
                               </h3>
-                              <p className="text-white/90 text-base md:text-lg leading-relaxed">
+                              <p className="text-white/90 text-base md:text-lg leading-[2.5]">
                                 {item.description}
                               </p>
                             </div>
@@ -1126,7 +1158,7 @@ const VisibiltyBundle = () => {
                     transition={{ duration: 0.8, delay: 0.2 }}
                   >
                     <div className={`flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-8 md:gap-16 lg:gap-24`}>
-                      <div className="w-full md:w-1/2 px-2 md:px-4">
+                      <div className="w-full md:w-1/2">
                         <div className="relative aspect-[4/3] overflow-hidden group rounded-3xl">
                             <div className="h-full transform-gpu flex items-center justify-center">
                             <img
@@ -1138,14 +1170,14 @@ const VisibiltyBundle = () => {
                         </div>
                       </div>
 
-                      <div className="w-full md:w-1/2 px-2 md:px-4">
-                        <div className="relative md:pl-0">
+                      <div className="w-full md:w-1/2">
+                        <div className="relative">
                           <div className="space-y-6 md:space-y-8">
                             <div className="space-y-4 md:space-y-6">
                                 <h3 className="text-2xl md:text-4xl lg:text-5xl font-light tracking-tight text-white leading-relaxed pb-1">
                                 {item.title}
                               </h3>
-                                <p className="text-white/90 text-base md:text-lg lg:text-xl leading-relaxed">
+                                <p className={`text-white/90 text-base md:text-lg lg:text-xl leading-[2.5]`}>
                                 {item.description}
                               </p>
                             </div>
@@ -1161,7 +1193,7 @@ const VisibiltyBundle = () => {
           </section>
 
           {/* Hoodie Section with Background */}
-          <section className="py-20 md:py-40 overflow-hidden relative" style={{ backgroundColor: '#492c6f' }}>
+          <section className="pt-6 md:pt-8 pb-20 md:pb-40 overflow-hidden relative" style={{ backgroundColor: '#492c6f' }}>
             {/* Background Image */}
             <div className="absolute inset-0 z-0">
               <img 
@@ -1187,14 +1219,14 @@ const VisibiltyBundle = () => {
                       viewport={{ once: true, margin: "-100px" }}
                       transition={{ duration: 0.8, delay: 0.2 }}
                     >
-                      <div className="border border-white/60 rounded-3xl p-8 md:p-12 bg-transparent">
+                      <div className="border-2 border-white/60 rounded-[3rem] p-8 md:p-12 bg-transparent">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center lg:grid-flow-col-dense">
                           {/* Text Content */}
                           <div className="space-y-6 lg:col-start-2">
                             <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight">
                               {item.title}
                             </h3>
-                            <p className="text-white/90 text-base md:text-lg leading-relaxed">
+                            <p className="text-white/90 text-base md:text-lg leading-[2.5]">
                               {item.description}
                             </p>
                           </div>
@@ -1298,13 +1330,12 @@ const VisibiltyBundle = () => {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
+              <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 max-w-6xl mx-auto">
                 {/* Pricing Card */}
-                <div className="order-1 lg:order-1">
-                  <div className="rounded-[32px] p-8 md:p-10 text-center h-full flex flex-col relative overflow-hidden"
+                <div className="order-1 lg:order-1 lg:col-span-2">
+                  <div className="rounded-[32px] p-8 md:p-10 text-center h-full flex flex-col relative overflow-hidden border-2 border-white/60"
                        style={{ 
-                         background: 'linear-gradient(140.21deg, #6A20AA 27.33%, #390866 56.88%)',
-                         border: '2px solid rgba(255, 255, 255, 0.1)'
+                         background: 'linear-gradient(140.21deg, #6A20AA 27.33%, #390866 56.88%)'
                        }}>
                     {/* Price */}
                     <div className="mb-6">
@@ -1318,13 +1349,15 @@ const VisibiltyBundle = () => {
                       <h3 className="text-2xl font-bold text-white mb-6">
                         {content.pricing.whatYouGet}
                       </h3>
-                      <div className="space-y-5 text-left">
-                        {content.pricing.items.map((item, index) => (
-                          <div key={index} className="flex items-center gap-4">
-                            <CheckCircle className="w-6 h-6 text-white flex-shrink-0" />
-                            <span className="text-white text-lg">{item}</span>
-                          </div>
-                        ))}
+                      <div className="flex justify-center">
+                        <div className="w-72 space-y-4 text-left pl-8 pr-4">
+                          {content.pricing.items.map((item, index) => (
+                            <div key={index} className="flex items-center gap-3">
+                              <CheckCircle className="w-5 h-5 text-white flex-shrink-0" />
+                              <span className="text-white text-lg">{item}</span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
 
@@ -1342,9 +1375,9 @@ const VisibiltyBundle = () => {
                 </div>
 
                 {/* Information Cards */}
-                <div className="order-2 lg:order-2 h-full flex flex-col gap-6">
+                <div className="order-2 lg:order-2 lg:col-span-3 h-full flex flex-col gap-6">
                   {/* Editable Files Card */}
-                  <div className="rounded-[32px] p-8 border-2 border-white/20 bg-transparent flex-1 flex flex-col">
+                  <div className="rounded-[32px] p-8 border-2 border-white/60 bg-transparent flex-1 flex flex-col">
                     <h3 className="text-2xl font-bold text-white mb-6">
                       {content.pricing.editableFiles.title}
                     </h3>
@@ -1354,7 +1387,7 @@ const VisibiltyBundle = () => {
                   </div>
 
                   {/* Flexible Adjustments Card */}
-                  <div className="rounded-[32px] p-8 border-2 border-white/20 bg-transparent flex-1 flex flex-col justify-center">
+                  <div className="rounded-[32px] p-8 border-2 border-white/60 bg-transparent flex-1 flex flex-col justify-center">
                     <p className="text-white/90 text-lg leading-relaxed">
                       {content.pricing.flexibleAdjustments.description}
                     </p>
@@ -1386,6 +1419,8 @@ const VisibiltyBundle = () => {
                     question={item.question}
                     answer={item.answer}
                           isDark={true}
+                          isOpen={openFaqIndex === index}
+                          onToggle={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
                   />
                       </div>
                 ))}
