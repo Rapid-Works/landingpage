@@ -16,6 +16,7 @@ import {
   ArrowDown, // For prompt
   CheckCircle // Used for badge
 } from "lucide-react"
+import LandingPartners from "../images/landing_partners.png"
 import RapidWorksHeader from "./new_landing_page_header"
 // Import the new Airtable service function
 import { submitPartnerInterestToAirtable } from '../utils/airtableService'
@@ -251,13 +252,13 @@ const PartnersPage = () => {
 
   const getPartnerIcon = (partnerId) => {
     switch (partnerId) {
-      case 'notary': return <Landmark className="h-5 w-5" />;
-      case 'tax-advisor': return <Calculator className="h-5 w-5" />;
-      case 'auditor': return <Briefcase className="h-5 w-5" />;
-      case 'legal-advisor': return <Scale className="h-5 w-5" />;
-      case 'funding-consultant': return <HandCoins className="h-5 w-5" />;
-      case 'data-protection': return <ShieldCheck className="h-5 w-5" />;
-      default: return <Users className="h-5 w-5" />; // Default icon
+      case 'notary': return <Landmark className="h-5 w-5 text-white" />;
+      case 'tax-advisor': return <Calculator className="h-5 w-5 text-white" />;
+      case 'auditor': return <Briefcase className="h-5 w-5 text-white" />;
+      case 'legal-advisor': return <Scale className="h-5 w-5 text-white" />;
+      case 'funding-consultant': return <HandCoins className="h-5 w-5 text-white" />;
+      case 'data-protection': return <ShieldCheck className="h-5 w-5 text-white" />;
+      default: return <Users className="h-5 w-5 text-white" />; // Default icon
     }
   };
 
@@ -272,71 +273,82 @@ const PartnersPage = () => {
       { value: "6+", label: language === 'de' ? "In 6+ Monaten" : "In 6+ Months" },
   ];
 
+  // Function to scroll to content
+  const scrollToContent = () => {
+    contentSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+  }
 
   return (
-    <div className="min-h-screen bg-white font-sans selection:bg-blue-200 selection:text-blue-900">
+    <div className="min-h-screen bg-white font-sans selection:bg-[#073E47]/20 selection:text-[#073E47]">
       {/* Noise overlay */}
       <div className="fixed inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMzAwdjMwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIwLjA1Ii8+PC9zdmc+')] opacity-30 pointer-events-none z-0"></div>
 
       <RapidWorksHeader />
 
-      {/* Hero Section - Adapted */}
-      <section className="bg-gradient-to-br from-blue-600 to-sky-600 text-white relative overflow-hidden min-h-[400px]">
-        <div className="container mx-auto px-6 pt-32 pb-24">
-           <div className="text-center max-w-3xl mx-auto">
-             {/* --- Add Badge --- */}
-             <div className="inline-flex items-center justify-center mb-5 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-xs shadow-sm">
-               <span className="relative flex h-2 w-2 mr-2">
-                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
-                 <span className="relative inline-flex rounded-full h-2 w-2 bg-sky-500"></span>
-               </span>
-               {content.badge.text}
-             </div>
-             {/* --- End Badge --- */}
-            <h1 className="text-4xl md:text-5xl lg:text-5xl font-extrabold mb-6 leading-tight tracking-tight text-white">
+      {/* === Updated Hero Section === */}
+      <section className="relative h-[70vh] min-h-[500px] overflow-hidden">
+        {/* Background image */}
+        <div className="absolute inset-0 z-0">
+          <img 
+            src={LandingPartners} 
+            alt="Rapid Partners Hero Background" 
+            className="w-full h-full object-cover object-center"
+          />
+        </div>
+        {/* Color overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#073E47]/90 to-[#185E53]/90 z-10"></div>
+
+        {/* Apply consistent padding and z-index */}
+        <div className="container mx-auto px-6 py-20 md:py-24 lg:py-32 flex flex-col justify-center relative z-20 h-full">
+          <div className="text-center max-w-3xl mx-auto">
+            {/* Ensure standardized font size */}
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-white">
               {content.hero.title}
             </h1>
-            <p className="text-xl text-white/90 leading-relaxed">
+            <p className="text-xl md:text-2xl text-white/90 leading-relaxed font-medium">
               {content.hero.subtitle}
             </p>
           </div>
         </div>
+        <button
+            onClick={scrollToContent}
+            className="absolute bottom-12 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none z-30"
+            aria-label="Scroll to content"
+          >
+            <svg className="w-8 h-8 text-white/70 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+        </button>
       </section>
+      {/* === End Updated Hero Section === */}
 
       {/* Main Content */}
       <main ref={contentSectionRef} className="py-20">
         <div className="container mx-auto px-6">
-          <div className="bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-200 w-full">
+          {/* Header section outside and centered above the card */}
+          <div className="text-center mb-12 max-w-4xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">{content.partners.title}</h2>
+            <p className="text-gray-600 text-lg mb-8">
+              {content.partners.subtitle}
+            </p>
+            <h3 className="text-xl font-semibold mb-6">{content.partners.selectionTitle}</h3>
+          </div>
+
+          <div className="bg-white rounded-3xl shadow-lg overflow-hidden w-full">
             <div className="lg:flex">
               {/* Left Column - Partner Selection */}
               <div className="lg:w-1/2 lg:border-r border-gray-200">
-                <div className="p-8">
-                  <div className="flex items-start gap-4 mb-8">
-                    <div className="bg-blue-100 p-3 rounded-xl">
-                      <Users className="h-6 w-6 text-blue-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-2xl font-bold mb-2">{content.partners.title}</h2>
-                      <p className="text-gray-600">
-                        {content.partners.subtitle}
-                      </p>
-                    </div>
-                  </div>
-
-                  <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-                    {content.partners.selectionTitle}
-                  </h3>
-
+                <div className="px-8 pb-8 pt-0">
                   <div className="space-y-4">
                     {content.partners.items.map((partner) => (
                       <div
                         key={partner.id}
-                        className={`p-4 rounded-xl border transition-all duration-300 ${
-                          partnerNeeds[partner.id] ? "border-blue-300 bg-blue-50" : "border-gray-200"
+                        className={`p-4 rounded-xl border border-gray-200 transition-all duration-300 ${
+                          partnerNeeds[partner.id] ? "bg-teal-50 border-teal-200" : ""
                         }`}
                       >
                         <div className="flex flex-wrap items-start gap-3">
-                          <div className={`p-2 rounded-lg flex-shrink-0 ${partnerNeeds[partner.id] ? "bg-blue-100" : "bg-gray-100"}`}>
+                          <div className="p-2 rounded-lg flex-shrink-0 bg-teal-800">
                             {getPartnerIcon(partner.id)}
                           </div>
                           <div className="flex-grow">
@@ -347,7 +359,7 @@ const PartnersPage = () => {
                             <select
                               value={partnerNeeds[partner.id] || "0"}
                               onChange={(e) => handleNeedChange(partner.id, e.target.value)}
-                              className="block w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                              className="block w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-[#073E47] focus:border-[#073E47]"
                             >
                               {monthOptions.map(opt => (
                                 <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -361,7 +373,7 @@ const PartnersPage = () => {
 
                   {/* Demand Info Box */}
                   <div className="mt-6 pt-6 border-t border-gray-100">
-                    <div className="bg-gradient-to-r from-blue-500 to-sky-500 p-6 rounded-xl text-white relative overflow-hidden">
+                    <div className="bg-gradient-to-r from-[#073E47] to-[#185E53] p-6 rounded-xl text-white relative overflow-hidden">
                        <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
                        <div className="absolute bottom-0 left-0 w-16 h-16 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2"></div>
                       <div className="relative z-10">
@@ -382,9 +394,9 @@ const PartnersPage = () => {
                  {showSelectionPrompt && Object.keys(partnerNeeds).length === 0 && (
                     <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 backdrop-blur-sm z-20 lg:flex p-4">
                       <div className="bg-white rounded-xl p-6 max-w-sm text-center">
-                        <h3 className="font-bold text-lg mb-2 text-blue-700">{content.selectionPrompt.title}</h3>
+                        <h3 className="font-bold text-lg mb-2 text-[#073E47]">{content.selectionPrompt.title}</h3>
                         <p className="text-gray-600 mb-4">{content.selectionPrompt.message}</p>
-                        <div className="text-blue-600 flex items-center justify-center gap-2 font-medium">
+                        <div className="text-[#185E53] flex items-center justify-center gap-2 font-medium">
                           <ArrowDown className="h-5 w-5 lg:hidden" />
                           <span className="lg:hidden">{content.selectionPrompt.mobileText}</span>
                           <ArrowDown className="h-5 w-5 transform -rotate-90 hidden lg:block" />
@@ -410,7 +422,7 @@ const PartnersPage = () => {
                             <input
                               type="email"
                               id="email"
-                              className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                              className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#073E47] focus:border-[#073E47]"
                               placeholder={content.form.emailPlaceholder}
                               value={email}
                               onChange={(e) => { setEmail(e.target.value); setError(""); }} // Clear error on change
@@ -430,15 +442,15 @@ const PartnersPage = () => {
                                 const partnerContent = getPartnerContent(partnerId);
                                 const monthLabel = monthOptions.find(opt => opt.value === months)?.label || months;
                                 return (
-                                  <div key={partnerId} className="bg-blue-50 border border-blue-200 rounded-xl p-3 flex items-start gap-3">
-                                    <div className="bg-blue-100 p-2 rounded-lg">
+                                  <div key={partnerId} className="bg-[#185E53]/5 border border-[#185E53]/20 rounded-xl p-3 flex items-start gap-3">
+                                    <div className="bg-teal-800 p-2 rounded-lg">
                                       {getPartnerIcon(partnerId)}
                                     </div>
                                     <div className="flex-grow">
                                       <h4 className="font-bold text-gray-900 text-sm">
                                         {partnerContent.title}
                                       </h4>
-                                      <p className="text-xs text-blue-700">{monthLabel}</p>
+                                      <p className="text-xs text-[#073E47]">{monthLabel}</p>
                                     </div>
                                     <button
                                       type="button"
@@ -465,7 +477,7 @@ const PartnersPage = () => {
                                   id="terms"
                                   name="terms"
                                   type="checkbox"
-                                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                  className="h-4 w-4 text-[#073E47] focus:ring-[#073E47] border-gray-300 rounded"
                                   required
                               />
                           </div>
@@ -479,7 +491,7 @@ const PartnersPage = () => {
 
                         <button
                           type="submit"
-                          className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-sky-500 hover:from-blue-600 hover:to-sky-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${Object.keys(partnerNeeds).length === 0 ? 'opacity-50 cursor-not-allowed' : ''
+                          className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-gradient-to-r from-[#073E47] to-[#185E53] hover:from-[#073E47]/90 hover:to-[#185E53]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#073E47] ${Object.keys(partnerNeeds).length === 0 ? 'opacity-50 cursor-not-allowed' : ''
                               }`}
                           disabled={Object.keys(partnerNeeds).length === 0}
                         >
@@ -502,7 +514,7 @@ const PartnersPage = () => {
                                  setPartnerNeeds({})
                                  setShowSelectionPrompt(true); // Show prompt again after success reset
                              }}
-                             className="text-blue-600 font-medium hover:text-blue-700"
+                             className="text-[#073E47] font-medium hover:text-[#185E53]"
                          >
                              {content.form.success.anotherEmail}
                          </button>

@@ -1,6 +1,7 @@
 "use client"
 
 import { ArrowRight, Euro, X, Loader2 } from "lucide-react"
+import LandingFinancing from "../images/landing_financing.png"
 import RapidWorksHeader from "./new_landing_page_header"
 import { useState, useEffect, useRef, useContext } from "react"
 import { LanguageContext as AppLanguageContext } from "../App"
@@ -18,38 +19,46 @@ const FinancingTestimonialsSection = ({ content }) => {
     return null
   }
 
-  const gridColsClass = `grid-cols-1 ${
-    financingTestimonials.length >= 2 ? 'md:grid-cols-2' : ''
-  } ${
-    financingTestimonials.length >= 3 ? 'lg:grid-cols-3' : ''
-  }`
-
   return (
-    <section className="py-24 bg-rose-50">
+    <section className="py-24 bg-rose-50/30">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
-           <span className="inline-flex items-center gap-2 text-rose-600 text-sm uppercase tracking-wider font-light mb-4 px-4 py-1.5 rounded-full bg-white border border-rose-100 shadow-sm">
-              <MessageSquareText className="h-4 w-4" />
-              Funding Success
-           </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            {content.testimonials?.title || "Financing Journeys"}
+        <div className="text-center mb-16 max-w-4xl mx-auto">
+           <div className="inline-flex items-center gap-3 text-rose-600 text-sm font-semibold mb-6 px-5 py-2.5 rounded-full border-2 border-rose-300 bg-white shadow-sm">
+              <div className="w-2.5 h-2.5 bg-rose-500 rounded-full"></div>
+              <span>KUNDENERFAHRUNGEN</span>
+           </div>
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            Erfolgsgeschichten Finanzierung
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            {content.testimonials?.subtitle || "How we helped startups secure the funding they needed."}
+          <p className="text-xl text-gray-600 leading-relaxed">
+            Lies, wie Startups mit unserer Unterstützung die Finanzierungslandschaft gemeistert haben.
           </p>
         </div>
-        <div className={`grid ${gridColsClass} gap-8 max-w-7xl mx-auto`}>
+        <div className="grid md:grid-cols-2 gap-8 max-w-7xl mx-auto">
           {financingTestimonials.map((testimonial) => (
-            <TestimonialCard
-              key={testimonial.id}
-              quote={testimonial.quote}
-              authorName={testimonial.authorName}
-              authorTitle={testimonial.authorTitle}
-              imageUrl={testimonial.imageUrl}
-              companyLogoUrl={testimonial.companyLogoUrl}
-              borderColor="border-rose-300"
-            />
+            <div key={testimonial.id} className="bg-white rounded-3xl shadow-lg p-8 md:p-12 border-t-4 border-rose-400 relative flex flex-col h-full">
+              <div className="absolute -top-4 -left-4 text-rose-100 z-0">
+                <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h4v10h-10z"/>
+                </svg>
+              </div>
+              <div className="relative z-10 flex flex-col h-full">
+                <p className="text-gray-600 text-lg italic leading-relaxed flex-grow mb-6">
+                  "{testimonial.quote}"
+                </p>
+                <div className="mt-auto pt-6 border-t border-gray-200">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0 w-14 h-14 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-2xl border-2 border-rose-200">
+                      {testimonial.authorName[0]}
+                    </div>
+                    <div className="ml-4">
+                      <p className="font-bold text-gray-900">{testimonial.authorName}</p>
+                      <p className="text-gray-500 text-sm">{testimonial.authorTitle}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       </div>
@@ -165,21 +174,39 @@ const FinancingPage = () => {
             <RapidWorksHeader />
 
             {/* === Updated Hero Section === */}
-            <section className="bg-gradient-to-br from-rose-600 to-pink-600 text-white relative overflow-hidden min-h-[400px]">
-                <div className="container mx-auto px-6 pt-32 pb-24">
-                    <div className="text-center max-w-3xl mx-auto">
-                        <div className="inline-flex items-center mb-4 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-sm">
-                            <Euro className="h-4 w-4 inline mr-1" />
-                            {content.badge.text}
-                        </div>
-                        <h1 className="text-4xl md:text-5xl lg:text-5xl font-extrabold mb-6 leading-tight tracking-tight text-white">
-                            {content.hero.title}
-                        </h1>
-                        <p className="text-xl text-white/90 leading-relaxed">
-                            {content.hero.subtitle}
-                        </p>
-                    </div>
+            <section className="relative h-[70vh] min-h-[500px] overflow-hidden">
+                {/* Background image */}
+                <div className="absolute inset-0 z-0">
+                  <img 
+                    src={LandingFinancing} 
+                    alt="Rapid Financing Hero Background" 
+                    className="w-full h-full object-cover object-center"
+                  />
                 </div>
+                {/* Color overlay */}
+                <div className="absolute inset-0 bg-gradient-to-br from-rose-600/70 to-pink-600/70 z-10"></div>
+
+                {/* Apply consistent padding and z-index */}
+                <div className="container mx-auto px-6 py-20 md:py-24 lg:py-32 flex flex-col justify-center relative z-20 h-full">
+                  <div className="text-center max-w-3xl mx-auto">
+                    {/* Ensure standardized font size */}
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-white">
+                      {content.hero.title}
+                    </h1>
+                    <p className="text-xl md:text-2xl text-white/90 leading-relaxed font-medium">
+                      {content.hero.subtitle}
+                    </p>
+                  </div>
+                </div>
+                <button
+                    onClick={scrollToContent}
+                    className="absolute bottom-12 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none z-30"
+                    aria-label={content.hero.scrollIndicatorAria}
+                  >
+                    <svg className="w-8 h-8 text-white/70 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                    </svg>
+                </button>
             </section>
             {/* === End Updated Hero Section === */}
 
@@ -187,25 +214,28 @@ const FinancingPage = () => {
             <main ref={contentSectionRef} className="py-20">
                 <div className="container mx-auto px-6">
                     
-                    {/* Add ref to the content section */}
-                    <div className="bg-gradient-to-br from-white to-rose-50 rounded-3xl overflow-hidden mb-20 relative p-8 md:p-12 text-center shadow-lg border border-rose-100">
+                    {/* Updated main section to match Figma */}
+                    <div className="bg-rose-50/50 rounded-3xl overflow-hidden mb-20 relative p-16 md:p-20 text-center shadow-xl max-w-6xl mx-auto">
+                        {/* Subtle background pattern */}
+                        <div className="absolute inset-0 opacity-5 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0iIzAwMCIvPgo8L3N2Zz4K')] z-0"></div>
+                        
                         <div className="relative z-10">
-                            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+                            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-10 leading-tight max-w-4xl mx-auto">
                                 {content.mainSection.title}
                             </h2>
-                            <p className="text-gray-700 text-lg mb-8 mx-auto max-w-3xl">
+                            <p className="text-gray-700 text-xl md:text-2xl mb-14 mx-auto max-w-5xl leading-relaxed font-light">
                                 {content.mainSection.description}
                             </p>
 
                             <button 
-                                className="bg-rose-600 text-white px-8 py-4 rounded-full font-medium hover:bg-rose-700 hover:shadow-lg hover:shadow-rose-900/20 transition-all flex items-center gap-2 group mx-auto"
+                                className="bg-[#FF6B6B] hover:bg-[#FF5252] text-white px-12 py-5 rounded-full font-semibold transition-all flex items-center gap-3 group mx-auto text-lg shadow-lg hover:shadow-xl hover:scale-105"
                                 onClick={() => {
                                     setIsCalendlyLoading(true);
                                     setIsModalOpen(true);
                                 }}
                             >
                                 {content.mainSection.buttonText}
-                                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                                <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
                             </button>
                         </div>
                     </div>
