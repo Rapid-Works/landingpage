@@ -1,6 +1,7 @@
 "use client"
 
 // import type React from "react"
+import React from "react"
 import { useState, useEffect, useContext, useRef } from "react"
 import {
   Rocket,
@@ -24,7 +25,8 @@ import {
   Loader2,
   Landmark,
   Tag,
-  MessageSquareText
+  MessageSquareText,
+  Info
 } from "lucide-react"
 import RapidWorksHeader from "./new_landing_page_header" 
 import { LanguageContext as AppLanguageContext } from "../App"
@@ -37,6 +39,12 @@ import { submitExpertRequestToAirtable } from '../utils/airtableService' // <-- 
 // Import team profile images
 import SamuelProfile from "../images/SamuelProfile.jpg"
 import PrinceArdiabah from "../images/princeardiabah.png"
+import LandingExperts from "../images/landing_experts.png"
+import TeamCtaImage from "../images/team_cta_image.png"
+import TeamMarketingImage from "../images/team_marketing_image.png"
+import TeamSoftwareImage from "../images/team_software_image.png"
+import TeamDesignBg from "../images/team_design_bg.png"
+import TeamFinancialBg from "../images/team_financial_bg.png"
 
 // Sample team member data
 const teamMembers = [
@@ -45,60 +53,44 @@ const teamMembers = [
     name: "Prince Ardiabah",
     role: "Marketing Expert",
     image: PrinceArdiabah,
+    bgImage: TeamMarketingImage,
     icon: <Megaphone className="h-5 w-5" />,
     calendlyLink: "https://calendly.com/princeardiabah/15min",
     skills: ["Digital Marketing", "SEO", "Content Strategy"],
-    color: "from-purple-600 to-indigo-600",
-    lightColor: "bg-purple-100",
-    textColor: "text-purple-700",
-    accentColor: "border-purple-300",
     quote: "Driving growth through strategic digital marketing solutions",
-    experience: "8+ years",
   },
   {
     id: 2,
     name: "Samuel Donkor",
     role: "Software Expert",
     image: SamuelProfile,
+    bgImage: TeamSoftwareImage,
     icon: <Code className="h-5 w-5" />,
     calendlyLink: "https://calendly.com/calvinsamueldonkor/15min",
     skills: ["Backend Development", "Frontend Development", "API Integration"],
-    color: "from-purple-600 to-indigo-600",
-    lightColor: "bg-purple-100",
-    textColor: "text-purple-700",
-    accentColor: "border-purple-300",
     quote: "Building scalable solutions with cutting-edge technologies",
-    experience: "5+ years",
   },
   {
     id: 3,
     name: "Coming Soon",
     role: "Design Expert",
     image: null,
+    bgImage: TeamDesignBg,
     icon: <Palette className="h-5 w-5" />,
     calendlyLink: null,
     skills: ["UI/UX Design", "Branding", "Visual Design"],
-    color: "from-purple-600 to-indigo-600",
-    lightColor: "bg-purple-100",
-    textColor: "text-purple-700",
-    accentColor: "border-purple-300",
     quote: "Creating beautiful, functional designs that delight users",
-    experience: null,
   },
   {
     id: 4,
     name: "Coming Soon",
     role: "Finance Expert",
     image: null,
+    bgImage: TeamFinancialBg,
     icon: <Euro className="h-5 w-5" />,
     calendlyLink: null,
     skills: ["Financial Planning", "Investment Strategy", "Budget Management"],
-    color: "from-purple-600 to-indigo-600",
-    lightColor: "bg-purple-100",
-    textColor: "text-purple-700",
-    accentColor: "border-purple-300",
     quote: "Optimizing financial strategies for sustainable growth",
-    experience: null,
   },
 ]
 
@@ -107,13 +99,13 @@ const benefits = [
   {
     id: 1,
     text: "No upfront cost",
-    icon: <DollarSign className="h-5 w-5" />,
+    icon: <DollarSign className="h-8 w-8" />,
     description: "Start working with our experts without any initial investment",
   },
   {
     id: 2,
     text: "Up to 70% cheaper with subsidies",
-    icon: <Landmark className="h-5 w-5" />,
+    icon: <Landmark className="h-8 w-8" />,
     description: "Save significantly with our Rapid Financing subsidy solutions",
     linkTo: "/financing",
     linkText: "Learn about subsidies"
@@ -121,19 +113,25 @@ const benefits = [
   {
     id: 5,
     text: "First hour for free",
-    icon: <Tag className="h-5 w-5" />,
+    icon: <Tag className="h-8 w-8" />,
     description: "Try our services with no risk or obligation",
+  },
+  {
+    id: 6,
+    text: "Transparent Communication",
+    icon: <Info className="h-8 w-8" />,
+    description: "Receive clear information about project status and direct communication with your personal expert."
   },
   {
     id: 3,
     text: "Pay by the hour",
-    icon: <Clock className="h-5 w-5" />,
+    icon: <Clock className="h-8 w-8" />,
     description: "Flexible payment model - only pay for the time you need",
   },
   {
     id: 4,
     text: "Always available",
-    icon: <Calendar className="h-5 w-5" />,
+    icon: <Calendar className="h-8 w-8" />,
     description: "Our experts are ready to start within a day",
   },
 ]
@@ -158,10 +156,10 @@ const ExpertsTestimonialsSection = ({ content }) => {
     <section className="py-24 bg-blue-50"> {/* Use blue theme background */}
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-           <span className="inline-flex items-center gap-2 text-blue-600 text-sm uppercase tracking-wider font-light mb-4 px-4 py-1.5 rounded-full bg-white border border-blue-100 shadow-sm">
-              <MessageSquareText className="h-4 w-4" />
-              Client Experiences
-           </span>
+           <div className="inline-flex items-center gap-2 text-blue-700 text-sm font-semibold mb-4 px-4 py-2 rounded-full border-2 border-blue-200 bg-white shadow-sm">
+              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+              <span>{content.testimonials?.badge || "Testimonials"}</span>
+           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             {content.testimonials?.title || "Success with Rapid Experts"}
           </h2>
@@ -217,10 +215,12 @@ const TeamPage = () => {
       },
       benefits: {
         title: "Why Choose The Rapid Experts?",
+        subtitle: "Your advantage with Rapid Experts – flexibility, efficiency, and zero risk",
         items: [
           { text: "No upfront cost", description: "Start working with our experts without any initial investment" },
           { text: "Up to 70% cheaper with subsidies", description: "Save significantly with our Rapid Financing subsidy solutions", linkText: "Learn about subsidies" },
           { text: "First hour for free", description: "Try our services with no risk or obligation" },
+          { text: "Transparent Communication", description: "Receive clear information about project status and direct communication with your personal expert." },
           { text: "Pay by the hour", description: "Flexible payment model - only pay for the time you need" },
           { text: "Always available", description: "Our experts are ready to start within a day" },
         ],
@@ -238,7 +238,8 @@ const TeamPage = () => {
         growingDescription: "We're constantly expanding our team of experts to better serve your needs. If you are interested in an expert we don't have yet, let us know by requesting the expert, you will then be the first to be informed as soon as the expert becomes available.",
         getNotified: "Get notified when new experts join",
         comingSoon: "Coming Soon",
-        requestExpertButton: "Request this Expert"
+        requestExpertButton: "Request this Expert",
+        bookNowButton: "Book Now"
       },
       modalContent: {
         title: "Request Expert Access",
@@ -253,6 +254,10 @@ const TeamPage = () => {
         submittingButton: "Submitting...",
         defaultError: "Failed to submit request. Please try again.",
         closeAriaLabel: "Close modal",
+        getNotified: "Benachrichtigt werden, wenn neue Experten beitreten",
+        comingSoon: "Demnächst verfügbar",
+        requestExpertButton: "Diesen Experten anfragen",
+        bookNowButton: "Jetzt buchen"
       },
       memberRoles: {
         "Marketing Expert": "Marketing Expert",
@@ -268,6 +273,7 @@ const TeamPage = () => {
       },
       memberExperienceSuffix: "years",
       testimonials: {
+        badge: "Customer Experiences",
         title: "Accelerated Development with Rapid Experts",
         subtitle: "Discover how founders leveraged our on-demand talent to build and scale faster."
       }
@@ -283,10 +289,12 @@ const TeamPage = () => {
       },
       benefits: {
         title: "Warum die Rapid Experts wählen?",
+        subtitle: "Dein Vorteil mit Rapid Experts – Flexibilität, Effizienz und null Risiko",
         items: [
           { text: "Keine Vorauskosten", description: "Beginne die Zusammenarbeit mit unseren Experten ohne anfängliche Investition" },
           { text: "Bis zu 70% günstiger mit Förderungen", description: "Spare erheblich mit unseren Rapid Financing Förderlösungen", linkText: "Erfahre mehr über Förderungen" },
           { text: "Erste Stunde kostenlos", description: "Teste unsere Dienstleistungen ohne Risiko oder Verpflichtung" },
+          { text: "Transparente Kommunikation", description: "Sie erhalten klare Informationen über den Projektstatus und direkte Kommunikation mit Ihrem persönlichen Experten." },
           { text: "Stundenweise bezahlen", description: "Flexibles Zahlungsmodell - bezahle nur für die Zeit, die du benötigst" },
           { text: "Immer verfügbar", description: "Unsere Experten sind bereit, innerhalb eines Tages zu starten" },
         ],
@@ -304,7 +312,8 @@ const TeamPage = () => {
         growingDescription: "Wir erweitern ständig unser Expertenteam, um deine Bedürfnisse besser zu erfüllen. Wenn du an einem Experten interessiert bist, den wir noch nicht haben, sag uns Bescheid, indem du den Experten anfragst. Du wirst dann als Erstes informiert, sobald der Experte verfügbar ist.",
         getNotified: "Benachrichtigt werden, wenn neue Experten beitreten",
         comingSoon: "Demnächst verfügbar",
-        requestExpertButton: "Diesen Experten anfragen"
+        requestExpertButton: "Diesen Experten anfragen",
+        bookNowButton: "Jetzt buchen"
       },
       modalContent: {
         title: "Expertenzugang anfordern",
@@ -319,6 +328,10 @@ const TeamPage = () => {
         submittingButton: "Wird gesendet...",
         defaultError: "Anfrage konnte nicht gesendet werden. Bitte versuche es erneut.",
         closeAriaLabel: "Modal schließen",
+        getNotified: "Benachrichtigt werden, wenn neue Experten beitreten",
+        comingSoon: "Demnächst verfügbar",
+        requestExpertButton: "Diesen Experten anfragen",
+        bookNowButton: "Jetzt buchen"
       },
       memberRoles: {
         "Marketing Expert": "Marketing Experte",
@@ -334,6 +347,7 @@ const TeamPage = () => {
       },
       memberExperienceSuffix: "Jahre",
       testimonials: {
+        badge: "Kundenerfahrungen",
         title: "Beschleunigte Entwicklung mit Rapid Experts",
         subtitle: "Entdecke, wie Gründer unsere On-Demand-Experten nutzten, um ihre Unternehmen schneller zu skalieren."
       }
@@ -376,110 +390,125 @@ const TeamPage = () => {
       <RapidWorksHeader />
 
       {/* === Updated Hero Section === */}
-      <section className="bg-gradient-to-br from-blue-600 to-sky-600 text-white relative overflow-hidden min-h-[400px]">
-        {/* Apply consistent padding */}
-        <div className="container mx-auto px-6 pt-32 pb-24">
+      <section className="relative text-white">
+        {/* Background image */}
+        <div className="absolute inset-0 z-0">
+          <img 
+            src={LandingExperts} 
+            alt="Rapid Experts Hero Background" 
+            className="w-full h-full object-cover object-center"
+          />
+        </div>
+        {/* Color overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1A75DA]/90 to-[#0E3E74]/90 z-10"></div>
+
+        {/* Apply consistent padding and z-index */}
+        <div className="container mx-auto px-6 py-40 md:py-48 lg:py-56 flex flex-col justify-center relative z-20">
           <div className="text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center mb-4 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-sm">
-              <Users className="h-4 w-4 inline mr-1.5" />
-              {content.pageTitle}
-            </div>
             {/* Ensure standardized font size */}
-            <h1 className="text-4xl md:text-5xl lg:text-5xl font-extrabold mb-6 leading-tight tracking-tight text-white">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight tracking-tight text-white">
               {content.hero.title1}
               {content.hero.titleHighlight && (
                 <span className="relative inline-block">
-                  <span className="relative z-10">
-                    {content.hero.titleHighlight}
-                  </span>
-                  <span className="absolute bottom-2 left-0 w-full h-4 bg-white/20 rounded-lg -z-10"></span>
+                  {content.hero.titleHighlight}
                 </span>
               )}
               {content.hero.title2}
             </h1>
-            <p className="text-xl text-white/90 leading-relaxed">
+            <p className="text-2xl text-white/90 leading-relaxed font-medium">
               {content.hero.subtitle}
             </p>
           </div>
         </div>
+        <button
+            onClick={scrollToBenefits}
+            className="absolute bottom-12 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none z-30"
+            aria-label={content.hero.scrollIndicatorAria}
+          >
+            <svg className="w-8 h-8 text-white/70 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+        </button>
       </section>
       {/* === End Updated Hero Section === */}
 
-      {/* Main Content - Add ref to the benefits container */}
-      <main ref={benefitsRef} className="py-20">
-        <div className="container mx-auto px-6">
-          {/* Add ref={benefitsRef} to the container holding the benefits section */}
-          <div ref={benefitsRef} className="flex flex-col lg:flex-row gap-16 items-start">
-            {/* Left Column - Benefits */}
-            <div className="lg:w-5/12 lg:sticky lg:top-32">
-              <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
-                <div className="p-8">
-                  <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                    <Shield className="h-6 w-6 text-purple-600" />
-                    <span>{content.benefits.title}</span>
-                  </h2>
+      {/* Main Content */}
+      <main className="bg-gray-50/50">
+        <section ref={benefitsRef} className="pt-24">
+          <div className="container mx-auto px-6">
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
+                {content.benefits.title}
+              </h2>
+              <p className="text-lg text-gray-600 leading-relaxed">
+                {content.benefits.subtitle}
+              </p>
+            </div>
 
-                  {/* Benefits */}
-                  <div className="space-y-4">
-                    {benefitsContent.map((benefit, index) => {
-                      const gradients = [
-                        "from-purple-600 to-indigo-600",
-                        "from-blue-600 to-indigo-600",
-                        "from-rose-500 to-pink-600",
-                        "from-amber-500 to-orange-600",
-                        "from-emerald-500 to-teal-600"
-                      ];
-                      const gradient = gradients[index % gradients.length];
-                      const originalBenefit = benefits[index];
-                      
-                      return (
-                        <div
-                          key={index}
-                          className="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors duration-300"
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+              {benefitsContent.map((benefit, index) => {
+                const originalBenefit = benefits.find(b => b.text.toLowerCase() === benefit.text.toLowerCase()) || benefits[index];
+                
+                return (
+                  <div
+                    key={index}
+                    className="bg-white rounded-2xl shadow-lg border border-gray-100/80 p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+                  >
+                    <div className="flex items-center gap-6">
+                      <div
+                        className="flex-shrink-0 w-16 h-16 rounded-xl flex items-center justify-center text-white"
+                        style={{ background: 'linear-gradient(to bottom right, #1A75DA, #0E3E74)' }}
+                      >
+                        {originalBenefit?.icon || <Star className="h-8 w-8" />}
+                      </div>
+                      <h3 className="text-xl font-bold text-gray-900">{benefit.text}</h3>
+                    </div>
+                    <div className="mt-4">
+                      <p className="text-gray-600 text-base leading-relaxed">{benefit.description}</p>
+                      {benefit.linkText && (
+                        <a 
+                          href={originalBenefit?.linkTo}
+                          className="text-blue-600 font-semibold mt-3 inline-flex items-center gap-1.5 group"
                         >
-                          <div className={`bg-gradient-to-br ${gradient} p-3 rounded-xl text-white shadow-md`}>
-                            {originalBenefit?.icon || <Star className="h-5 w-5" />}
-                          </div>
-                          <div>
-                            <h3 className="font-bold text-gray-900">{benefit.text}</h3>
-                            <p className="text-gray-600 text-sm mt-1">{benefit.description}</p>
-                            {benefit.linkText && (
-                              <a 
-                                href={originalBenefit?.linkTo}
-                                className="text-purple-600 text-sm font-medium mt-1 flex items-center gap-1 hover:gap-2 transition-all"
-                              >
-                                {benefit.linkText} <ChevronRight className="h-3 w-3" />
-                              </a>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
+                          {benefit.linkText} 
+                          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                        </a>
+                      )}
+                    </div>
                   </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
 
-                  <div className="mt-6 pt-6 border-t border-gray-100">
-                    <button className="text-purple-600 font-medium text-sm flex items-center gap-1 hover:gap-2 transition-all">
-                      {content.benefits.discoverMore} <ChevronRight className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-
-                {/* CTA Section */}
-                <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-8 relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
-                  <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2"></div>
-
-                  <h3 className="text-xl font-bold text-white mb-4 relative z-10">{content.cta.title}</h3>
-                  <p className="text-white/80 mb-6 relative z-10">
-                    {content.cta.description}
-                  </p>
-
-                  {/* Dropdown for available experts */}
+        <section className="py-16 bg-white">
+          <div className="container mx-auto px-6">
+            <div 
+              className="rounded-3xl p-12 relative overflow-hidden max-w-6xl mx-auto bg-cover bg-right"
+              style={{ backgroundImage: `url(${TeamCtaImage})` }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-[#0E3E74]/90 via-[#1A75DA]/70 to-transparent"></div>
+              
+              <div className="relative z-10 text-left max-w-2xl">
+                <h2 className="text-4xl font-extrabold text-white mb-4">
+                  {content.cta.title}
+                </h2>
+                <p className="text-white/90 text-lg mb-8 leading-relaxed">
+                  {content.cta.description}
+                </p>
+  
+                <div className="relative inline-block">
                   <select
-                    className="w-full py-4 px-4 bg-white text-purple-700 rounded-xl font-medium mb-2"
+                    className="appearance-none bg-white text-blue-800 font-bold py-4 pl-6 pr-12 rounded-full shadow-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600 cursor-pointer min-w-[600px]"
                     defaultValue=""
                     onChange={e => {
                       if (e.target.value) window.open(e.target.value, '_blank');
+                    }}
+                    style={{ 
+                      WebkitAppearance: 'none', 
+                      MozAppearance: 'none', 
+                      backgroundImage: 'none' 
                     }}
                   >
                     <option value="" disabled>
@@ -493,127 +522,100 @@ const TeamPage = () => {
                         </option>
                       ))}
                   </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
+                    <ChevronDown className="h-5 w-5 text-blue-800" />
+                  </div>
                 </div>
               </div>
             </div>
+          </div>
+        </section>
 
-            {/* Right Column - Team Members */}
-            <div className="lg:w-7/12">
-              <div className="grid md:grid-cols-2 gap-8">
-                {teamMembers.map((member) => {
-                  const memberName = member.name === "Coming Soon" ? content.team.comingSoon : member.name;
-                  const memberRole = content.memberRoles[member.role] || member.role;
-                  let memberQuote;
-                  if (member.id === 1) memberQuote = content.memberQuotes.prince;
-                  else if (member.id === 2) memberQuote = content.memberQuotes.samuel;
-                  else if (member.id === 3) memberQuote = content.memberQuotes.design;
-                  else if (member.id === 4) memberQuote = content.memberQuotes.finance;
-                  else memberQuote = member.quote;
+        <section className="pb-24 bg-white">
+          <div className="container mx-auto px-6">
+            <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+              {teamMembers.map((member) => {
+                const memberName = member.name === "Coming Soon" ? content.team.comingSoon : member.name;
+                const memberRole = content.memberRoles[member.role] || member.role;
+                let memberQuote;
+                if (member.id === 1) memberQuote = content.memberQuotes.prince;
+                else if (member.id === 2) memberQuote = content.memberQuotes.samuel;
+                else if (member.id === 3) memberQuote = content.memberQuotes.design;
+                else if (member.id === 4) memberQuote = content.memberQuotes.finance;
+                else memberQuote = member.quote;
 
-                  return (
-                  <div
-                    key={member.id}
-                    className="group bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
-                  >
-                    {/* Header with gradient */}
-                    <div className={`h-24 bg-gradient-to-r ${member.color} relative overflow-hidden`}>
-                      <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
-                      <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2"></div>
-
-                      {/* Role badge */}
-                      <div className="absolute bottom-0 right-0 m-4">
-                        <div className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-white text-sm font-medium flex items-center gap-2">
-                          {member.icon}
-                            {memberRole}
+                return (
+                  <div key={member.id} className="bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-200/80 flex flex-col">
+                    {/* Header */}
+                    <div className="h-28 relative" style={{ backgroundImage: `url(${member.bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                      <div className="absolute inset-0 bg-gradient-to-br from-[#1A75DA]/80 to-[#0E3E74]/80"></div>
+                      {/* Role Badge */}
+                      <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
+                          <div className="bg-black/30 backdrop-blur-sm px-3 py-1 rounded-full text-white text-xs font-medium flex items-center gap-1.5">
+                            {React.cloneElement(member.icon, {className: "h-3 w-3"})}
+                            <span>{memberRole}</span>
                         </div>
                       </div>
                     </div>
-
-                    {/* Profile section */}
-                    <div className="px-8 pt-8 pb-6 relative">
-                      <div className="absolute -top-12 left-8">
+                    
+                    {/* Body */}
+                    <div className="px-6 pt-4 pb-8 flex-grow flex flex-col relative">
+                      {/* Floating Profile Image */}
+                      <div className="absolute -top-14 left-6">
                         {member.image ? (
-                          <div className="w-24 h-24 rounded-2xl overflow-hidden border-4 border-white shadow-lg group-hover:scale-105 transition-transform duration-300">
-                            <img
-                                src={member.image}
-                                alt={memberName}
-                                className="w-full h-full object-cover [image-rendering:smooth]"
-                            />
-                          </div>
+                          <img src={member.image} alt={memberName} className="w-24 h-24 rounded-xl object-cover border-4 border-white shadow-md" />
                         ) : (
-                          <div className="w-24 h-24 rounded-2xl border-4 border-white shadow-lg bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
-                            <Users className="h-10 w-10 text-gray-400" />
+                          <div className="w-24 h-24 rounded-xl bg-gray-200 flex items-center justify-center border-4 border-white shadow-md">
+                              <Users className="h-10 w-10 text-gray-400" />
                           </div>
                         )}
                       </div>
-
-                      {/* Name and quote */}
-                      <div className="mt-12">
-                          <h3 className="text-xl font-bold text-gray-900 mb-2">{memberName}</h3>
-                          <p className={`${member.textColor} text-sm italic mb-4`}>"{memberQuote}"</p>
-                  </div>
-                </div>
-
-                    {/* Skills section */}
-                    <div className="px-8 pb-8">
-                      <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">{content.team.expertiseTitle}</h4>
-                      <div className="space-y-2">
-                        {member.skills.map((skill, index) => (
-                          <div
-                            key={index}
-                            className={`${member.lightColor} ${member.textColor} px-4 py-2 rounded-lg text-sm font-medium`}
-                          >
-                            {skill}
-                          </div>
-                        ))}
+                      
+                      <div className="pt-14">
+                        <h3 className="text-xl font-bold text-gray-900">{memberName}</h3>
+                        <p className="text-gray-500 text-sm mt-1 italic">"{memberQuote}"</p>
                       </div>
-                      {/* Flex row for "...and more" and Book Now */}
-                      <div className="mt-2 flex items-center justify-between gap-2">
-                        {/* ...and more badge */}
-                        <span className="inline-block px-3 py-1 text-xs text-gray-600 bg-gray-100 rounded-full shadow-sm">
+                      
+                      <div className="mt-6 flex-grow">
+                        <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Expertise</h4>
+                        <div className="mt-2 space-y-2">
+                          {member.skills.map((skill, index) => (
+                            <div key={index} className="text-left border border-gray-300 rounded-lg py-1.5 px-3 text-gray-700 font-medium text-sm">
+                              {skill}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="mt-6 flex justify-between items-center">
+                        <span className="bg-gray-200 text-gray-600 px-3 py-1 rounded-full text-xs font-medium">
                           {content.team.moreSkills}
                         </span>
-                        {/* Button */}
                         {member.calendlyLink ? (
-                          <a
-                            href={member.calendlyLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-purple-600 to-indigo-600 rounded-full shadow hover:from-purple-700 hover:to-indigo-700 transition"
-                          >
-                            <ArrowRight className="w-4 h-4 mr-1" />
-                            Book Now
+                          <a href={member.calendlyLink} target="_blank" rel="noopener noreferrer" className="bg-[#FF6B6B] hover:bg-red-500 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
+                            {content.team.bookNowButton}
                           </a>
                         ) : (
-                          <button
-                            className="inline-flex items-center gap-1 px-4 py-2 text-sm font-semibold text-purple-700 border-2 border-purple-300 bg-white rounded-full shadow hover:bg-purple-50 hover:border-purple-500 transition"
-                            onClick={() => handleRequestExpert(member.role)} // <-- Call handler to open modal
-                          >
-                            <ArrowRight className="w-4 h-4 mr-1" />
-                            {/* Use translated text for button if available */}
-                            {content.team?.requestExpertButton || "Request this Expert"}
+                          <button onClick={() => handleRequestExpert(member.role)} className="bg-[#FF6B6B] hover:bg-red-500 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
+                            {content.team.requestExpertButton}
                           </button>
                         )}
                       </div>
                     </div>
                   </div>
-                  )
-                })}
-              </div>
+                )
+              })}
+            </div>
 
-              {/* Team expansion note */}
-              <div className="mt-12 bg-gradient-to-br from-gray-50 to-white rounded-2xl p-8 border border-gray-200 relative overflow-hidden">
-                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiBmaWxsPSJub25lIj48Y2lyY2xlIGN4PSIyIiBjeT0iMiIgcj0iMiIgZmlsbD0iI0UwRTdGRiIvPjwvc3ZnPg==')] opacity-20"></div>
-                <div className="relative z-10">
-                  <h3 className="text-xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-purple-700 to-indigo-700">{content.team.growingTitle}</h3>
-                  <p className="text-gray-700 mb-4">
-                    {content.team.growingDescription}
-                  </p>
-                </div>
-              </div>
+            {/* Team expansion note */}
+            <div className="mt-12 bg-gray-100 rounded-3xl p-12 text-center max-w-6xl mx-auto">
+                <h3 className="text-3xl font-bold mb-4 text-gray-800">{content.team.growingTitle}</h3>
+                <p className="text-gray-600 leading-relaxed max-w-2xl mx-auto">
+                  {content.team.growingDescription}
+                </p>
             </div>
           </div>
-        </div>
+        </section>
       </main>
       
       {/* Add the new component */}

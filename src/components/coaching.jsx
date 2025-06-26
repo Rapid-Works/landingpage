@@ -1,8 +1,9 @@
 "use client"
 
 import { useState, useEffect, useContext, useRef } from "react"
-import { ArrowRight, Compass, Calendar, Check, Target, TrendingUp, MessageSquare, MapPin, Loader2, MessageSquareText } from "lucide-react"
-import YannickProfile from "../images/yannickprofile.png"
+import { ArrowRight, Compass, Calendar, Check, Target, TrendingUp, MessageSquare, MapPin, Loader2, MessageSquareText, User } from "lucide-react"
+import YannickProfile from "../images/yannick_plain_bg.png"
+import LandingCoaching from "../images/landing_coaching.png"
 import RapidWorksHeader from "./new_landing_page_header"
 import { LanguageContext as AppLanguageContext } from "../App"
 import ExploreMoreSection from "./ExploreMoreSection"
@@ -51,18 +52,18 @@ const CoachingTestimonialsSection = ({ content }) => {
   }`;
 
   return (
-    <section className="py-24 bg-orange-50"> {/* Use orange theme background */}
+    <section className="py-24 bg-[#FFFBF5]">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
-           <span className="inline-flex items-center gap-2 text-orange-600 text-sm uppercase tracking-wider font-light mb-4 px-4 py-1.5 rounded-full bg-white border border-orange-100 shadow-sm">
-              <MessageSquareText className="h-4 w-4" />
-              Founder Feedback
-           </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            {content.testimonials?.title || "Transformed by Coaching"}
+        <div className="text-center mb-16 max-w-4xl mx-auto">
+           <div className="inline-flex items-center gap-3 text-orange-600 text-sm font-semibold mb-6 px-5 py-2.5 rounded-full border-2 border-orange-300 bg-white shadow-sm">
+              <div className="w-2.5 h-2.5 bg-orange-500 rounded-full"></div>
+              <span>{content.testimonials?.badge || "KUNDENERFAHRUNGEN"}</span>
+           </div>
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            {content.testimonials?.title || "Durch Coaching transformiert"}
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            {content.testimonials?.subtitle || "See how founders benefited from expert guidance."}
+          <p className="text-xl text-gray-600 leading-relaxed">
+            {content.testimonials?.subtitle || "Erfahre, wie unser persönliches Coaching Gründern half, Herausforderungen zu meistern und dein Unternehmenswachstum zu beschleunigen."}
           </p>
         </div>
         <div className={`grid ${gridColsClass} gap-8 max-w-7xl mx-auto`}>
@@ -74,7 +75,7 @@ const CoachingTestimonialsSection = ({ content }) => {
               authorTitle={testimonial.authorTitle}
               imageUrl={testimonial.imageUrl}
               companyLogoUrl={testimonial.companyLogoUrl}
-              borderColor="border-orange-300" // Use orange border
+              borderColor="border-orange-400" // Use orange border
             />
           ))}
         </div>
@@ -153,8 +154,9 @@ const CoachingPage = () => {
         coachedStartups: "Coached 50 Startups in the DigitalHUB Aachen"
       },
       testimonials: {
-        title: "Transformed by Coaching",
-        subtitle: "Hear how personalized guidance helped founders overcome challenges and accelerate growth."
+        badge: "KUNDENERFAHRUNGEN",
+        title: "Durch Coaching transformiert",
+        subtitle: "Erfahre, wie unser persönliches Coaching Gründern half, Herausforderungen zu meistern und dein Unternehmenswachstum zu beschleunigen."
       }
     },
     de: {
@@ -209,6 +211,7 @@ const CoachingPage = () => {
         coachedStartups: "50 Startups im DigitalHUB Aachen gecoacht"
       },
       testimonials: {
+        badge: "KUNDENERFAHRUNGEN",
         title: "Durch Coaching transformiert",
         subtitle: "Erfahre, wie unser persönliches Coaching Gründern half, Herausforderungen zu meistern und dein Unternehmenswachstum zu beschleunigen."
       }
@@ -234,166 +237,200 @@ const CoachingPage = () => {
       {/* Replace custom header with shared header component */}
       <RapidWorksHeader />
 
-      {/* Hero Section Wrapper */}
-      <section className="bg-gradient-to-br from-orange-600 to-amber-600 text-white relative overflow-hidden min-h-[400px]">
-        <div className="container mx-auto px-6 pt-32 pb-24">
-          {/* Page intro */}
-          <div className="text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center mb-4 px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white font-medium text-sm">
-              <Compass className="h-4 w-4 inline mr-1" />
-              {content.pageBadge}
-            </div>
+      {/* === Updated Hero Section === */}
+      <section className="relative text-white">
+        {/* Background image */}
+        <div className="absolute inset-0 z-0">
+          <img 
+            src={LandingCoaching} 
+            alt="Rapid Coaching Hero Background" 
+            className="w-full h-full object-cover object-center"
+          />
+        </div>
+        {/* Color overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-600/70 to-amber-600/70 z-10"></div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-5xl font-extrabold mb-6 leading-tight tracking-tight text-white">
+        {/* Apply consistent padding and z-index */}
+        <div className="container mx-auto px-6 py-40 md:py-48 lg:py-56 flex flex-col justify-center relative z-20">
+          <div className="text-center max-w-3xl mx-auto">
+            {/* Ensure standardized font size */}
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight tracking-tight text-white">
               {content.heroTitle}{" "}
-              <span className="relative inline-block">
-                <span className="relative z-10">
+              {content.heroHighlight && (
+                <span className="relative inline-block">
                   {content.heroHighlight}
                 </span>
-                <span className="absolute bottom-2 left-0 w-full h-4 bg-white/20 rounded-lg -z-10"></span>
-              </span>
+              )}
             </h1>
-
-            <p className="text-xl text-white/90 leading-relaxed">
+            <p className="text-2xl text-white/90 leading-relaxed font-medium">
               {content.heroSubtitle}
             </p>
           </div>
         </div>
+        <button
+            onClick={scrollToWhySection}
+            className="absolute bottom-12 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none z-30"
+            aria-label={content.scrollIndicatorAria}
+          >
+            <svg className="w-8 h-8 text-white/70 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+        </button>
       </section>
+      {/* === End Updated Hero Section === */}
 
       {/* Main Content */}
       <main className="py-20">
         <div className="container mx-auto px-6">
           {/* Add ref to the "Why" Section */}
-          <div ref={whySectionRef} className="bg-gradient-to-br from-white to-orange-50 rounded-3xl overflow-hidden mb-20 relative p-8 md:p-12 text-center shadow-lg border border-orange-100">
+          <div ref={whySectionRef} className="bg-white rounded-3xl overflow-hidden mb-20 relative p-16 md:p-20 text-center shadow-xl max-w-6xl mx-auto">
+            {/* Subtle background pattern */}
+            <div className="absolute inset-0 opacity-5 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0iIzAwMCIvPgo8L3N2Zz4K')] z-0"></div>
+            
             <div className="relative z-10">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">{content.whySection.title}</h2>
-              <p className="text-gray-700 text-lg mb-8 mx-auto max-w-3xl">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-10 leading-tight max-w-4xl mx-auto">{content.whySection.title}</h2>
+              <p className="text-gray-700 text-xl md:text-2xl mb-14 mx-auto max-w-5xl leading-relaxed font-light">
                 {content.whySection.description}
               </p>
 
               <button
-                className="bg-orange-600 text-white px-8 py-4 rounded-full font-medium hover:bg-orange-700 hover:shadow-lg hover:shadow-orange-900/20 transition-all flex items-center gap-2 group mx-auto"
+                className="bg-[#FF6B6B] hover:bg-[#FF5252] text-white px-12 py-5 rounded-full font-semibold transition-all flex items-center gap-3 group mx-auto text-lg shadow-lg hover:shadow-xl hover:scale-105"
                 onClick={() => window.open("https://calendly.com/yannick-familie-heeren/30min", "_blank")}
               >
                 {content.whySection.ctaButton}
-                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
           </div>
+        </div>
+      </main>
 
-          {/* Single Coach Profile Section */}
-          <div className="mb-20">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">{content.coachSection.title}</h2>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                {content.coachSection.subtitle}
-              </p>
+      {/* Single Coach Profile Section */}
+      <section className="py-20 bg-gradient-to-br from-orange-400 to-orange-600 text-white">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">{content.coachSection.title}</h2>
+            <p className="text-xl text-white/90 max-w-3xl mx-auto leading-relaxed">
+              {content.coachSection.subtitle}
+            </p>
+          </div>
+
+          {/* Main Coach Card */}
+          <div className="bg-transparent rounded-3xl overflow-hidden mb-8 max-w-6xl mx-auto border-2 border-white relative pt-12">
+            <div className="absolute top-8 left-8 z-10">
+              <div className="bg-white/20 backdrop-blur-sm text-white text-sm font-medium px-4 py-2 rounded-full inline-flex items-center gap-2">
+                <User className="h-4 w-4" />
+                <span>{content.coachSection.badgeText}</span>
+              </div>
             </div>
-
-            <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 max-w-5xl mx-auto">
-              <div className="md:flex">
-                <div className="md:w-2/5">
-                  <div className="h-full relative">
-                    <img
-                      src={coach.image}
-                      alt={coach.name}
-                      className="w-full h-full object-cover object-center"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent md:bg-gradient-to-r"></div>
-                    <div className="absolute bottom-0 left-0 p-6 md:p-8">
-                      <div className="bg-orange-100 text-orange-700 text-xs font-medium px-2 py-1 rounded-full inline-block mb-2">
-                        {content.coachSection.badgeText}
-                      </div>
-                      <h3 className="text-2xl font-bold text-white">{coach.name}</h3>
-                      <p className="text-white/80">{coach.role}</p>
-                      <p className="text-white/70 text-sm mt-1">{content.coachSection.subtext}</p>
-                    </div>
+            <div className="flex flex-col lg:flex-row">
+              <div className="lg:w-2/5 relative">
+                <div className="aspect-[4/5] lg:aspect-auto lg:h-full relative">
+                  <img
+                    src={coach.image}
+                    alt={coach.name}
+                    className="w-full h-full object-cover object-center filter drop-shadow-[0_15px_45px_rgba(255,193,7,0.6)]"
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 p-6 pt-12" style={{ background: 'linear-gradient(to top, rgba(217, 119, 6, 0.5) 10%, transparent 100%)' }}>
+                    <h3 className="text-3xl font-bold text-white mb-1">{coach.name}</h3>
+                    <p className="text-white/90 text-lg">{coach.role}</p>
+                    <p className="text-white/80 text-sm mt-1">{content.coachSection.subtext}</p>
                   </div>
                 </div>
+              </div>
 
-                <div className="md:w-3/5 p-6 md:p-8">
-                  <p className="text-gray-700 mb-6 text-lg leading-relaxed">
-                    {content.coachSection.coachBio}
-                  </p>
-
-                  <div className="mb-6">
-                    <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">{content.coachSection.achievementsTitle}</h4>
-                    <ul className="space-y-2">
-                      {Object.keys(content.achievements).map((key) => (
-                        <li key={key} className="flex items-start gap-2">
-                          <div className="text-orange-600 mt-1">
-                            <Check className="h-4 w-4" />
-                          </div>
-                          <span className="text-gray-700">{content.achievements[key]}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="mb-6">
-                    <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">{content.coachSection.expertiseTitle}</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {Object.keys(content.expertise).map((key) => (
-                        <span
-                          key={key}
-                          className="bg-orange-50 text-orange-700 px-3 py-1 rounded-full text-sm font-medium"
-                        >
-                          {content.expertise[key]}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <button
-                    className="w-full py-4 bg-orange-600 text-white rounded-xl hover:bg-orange-700 transition-colors flex items-center justify-center gap-2 mt-6"
-                    onClick={() => window.open("https://calendly.com/yannick-familie-heeren/30min", "_blank")}
-                  >
-                    <Calendar className="h-5 w-5" />
-                    {content.coachSection.ctaButton}
-                  </button>
-                </div>
+              <div className="lg:w-3/5 p-8 lg:p-12">
+                <p className="text-white/95 text-lg lg:text-xl leading-relaxed">
+                  {content.coachSection.coachBio}
+                </p>
               </div>
             </div>
           </div>
 
-          {/* How It Works Section */}
-          <div className="mb-20">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">{content.howItWorks.title}</h2>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                {content.howItWorks.subtitle}
-              </p>
+          {/* Achievement and Expertise Cards */}
+          <div className="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto">
+            {/* Achievements Card */}
+            <div className="bg-transparent rounded-3xl p-8 border-2 border-white">
+              <h4 className="text-white font-bold text-lg uppercase tracking-wider mb-6">{content.coachSection.achievementsTitle}</h4>
+              <ul className="space-y-4">
+                {Object.keys(content.achievements).map((key) => (
+                  <li key={key} className="flex items-start gap-3">
+                    <div className="text-white mt-1 flex-shrink-0">
+                      <Check className="h-5 w-5" />
+                    </div>
+                    <span className="text-white/90 text-base leading-relaxed">{content.achievements[key]}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
 
-            <div className="grid md:grid-cols-4 gap-8">
-              {content.howItWorks.steps.map((step, index) => {
-                const icons = [<MapPin className="h-6 w-6 text-orange-600" />, <Target className="h-6 w-6 text-orange-600" />, <MessageSquare className="h-6 w-6 text-orange-600" />, <TrendingUp className="h-6 w-6 text-orange-600" />];
-                return (
-                  <div key={index} className="bg-white rounded-2xl shadow-md p-6 border border-gray-100 relative">
-                    <div className="absolute -top-4 -left-4 w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold">
-                      {index + 1}
+            {/* Expertise Card */}
+            <div className="bg-transparent rounded-3xl p-8 border-2 border-white">
+              <h4 className="text-white font-bold text-lg uppercase tracking-wider mb-6">{content.coachSection.expertiseTitle}</h4>
+              <div className="grid grid-cols-2 gap-3">
+                {Object.keys(content.expertise).map((key) => (
+                  <div key={key} className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full border-2 border-white bg-transparent relative flex items-center justify-center">
+                      <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
                     </div>
-                    <div className="mb-4">
-                      <div className="bg-orange-100 p-3 rounded-xl inline-block">
+                    <span className="text-white/90 text-sm font-medium">
+                      {content.expertise[key]}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              
+              <button
+                className="w-full mt-8 py-4 bg-[#FF6B6B] text-white rounded-2xl hover:bg-[#FF5252] transition-all flex items-center justify-center gap-2 font-semibold text-lg shadow-lg hover:shadow-xl"
+                onClick={() => window.open("https://calendly.com/yannick-familie-heeren/30min", "_blank")}
+              >
+                {content.coachSection.ctaButton}
+                <ArrowRight className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="container mx-auto px-6">
+        {/* How It Works Section */}
+        <div className="mb-20 pt-20">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">{content.howItWorks.title}</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              {content.howItWorks.subtitle}
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
+            {content.howItWorks.steps.map((step, index) => {
+              const icons = [<MapPin className="h-7 w-7 text-orange-500" />, <Target className="h-7 w-7 text-orange-500" />, <Calendar className="h-7 w-7 text-orange-500" />, <TrendingUp className="h-7 w-7 text-orange-500" />];
+              return (
+                <div key={index} className="relative">
+                  <div className="absolute -top-8 left-4 w-16 h-16 bg-orange-300 rounded-2xl flex items-center justify-center text-white text-3xl font-bold shadow-lg">
+                    {index + 1}
+                  </div>
+                  <div className="bg-white rounded-2xl shadow-lg p-8 h-full border border-gray-100 pt-12">
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className="flex-shrink-0">
                         {icons[index % icons.length]}
                       </div>
+                      <h3 className="text-xl font-bold text-gray-800">{step.title}</h3>
                     </div>
-                    <h3 className="text-xl font-bold mb-3">{step.title}</h3>
-                    <p className="text-gray-600">
+                    <p className="text-gray-600 leading-relaxed">
                       {step.description}
                     </p>
                   </div>
-                );
-              })}
-            </div>
+                </div>
+              );
+            })}
           </div>
-
-          {/* +++ Render the Coaching Testimonials Section +++ */}
-          <CoachingTestimonialsSection content={content} />
-
         </div>
-      </main>
+
+        {/* +++ Render the Coaching Testimonials Section +++ */}
+        <CoachingTestimonialsSection content={content} />
+
+      </div>
 
       {/* Add the new component */}
       <ExploreMoreSection excludeService="Coaching" />

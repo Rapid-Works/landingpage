@@ -73,7 +73,7 @@ export default function RapidWorksHeader() {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white py-4 shadow-sm`}
     >
       <div className="container mx-auto px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-6">
           <Link to="/" className="flex items-center group">
             <img src={logo} alt="RapidWorks" className="h-10 w-auto" />
           </Link>
