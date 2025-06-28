@@ -11,8 +11,8 @@ const TestimonialCard = ({ quote, authorName, authorTitle, imageUrl, companyLogo
       </div>
       <div className="relative z-10 flex flex-col flex-grow">
         <p className="text-gray-700 text-lg leading-relaxed mb-6 flex-grow">
-          "{quote}"
-        </p>
+            "{quote}"
+          </p>
         <hr className="my-6 border-gray-200" />
         <div className="flex items-center">
           <div className={`flex-shrink-0 w-14 h-14 rounded-full border-2 ${borderColor ? borderColor.replace('border-t-4', 'border') : 'border-gray-200'} flex items-center justify-center font-bold text-2xl bg-orange-50`} style={{ color: borderColor ? '#F97316' : '#4B5563' }}>
@@ -21,11 +21,11 @@ const TestimonialCard = ({ quote, authorName, authorTitle, imageUrl, companyLogo
           <div className="ml-4">
             <p className="font-bold text-gray-900">{authorName}</p>
             <p className="text-gray-600 text-sm">{authorTitle}</p>
-          </div>
+      </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default TestimonialCard;
+export default TestimonialCard; 

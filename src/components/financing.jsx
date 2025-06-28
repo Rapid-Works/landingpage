@@ -188,15 +188,15 @@ const FinancingPage = () => {
 
                 {/* Apply consistent padding and z-index */}
                 <div className="container mx-auto px-6 py-20 md:py-24 lg:py-32 flex flex-col justify-center relative z-20 h-full">
-                  <div className="text-center max-w-3xl mx-auto">
+                    <div className="text-center max-w-3xl mx-auto">
                     {/* Ensure standardized font size */}
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-white">
-                      {content.hero.title}
-                    </h1>
-                    <p className="text-xl md:text-2xl text-white/90 leading-relaxed font-medium">
-                      {content.hero.subtitle}
-                    </p>
-                  </div>
+                    <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight tracking-tight text-white">
+                            {content.hero.title}
+                        </h1>
+                    <p className="text-2xl text-white/90 leading-relaxed font-medium">
+                            {content.hero.subtitle}
+                        </p>
+                    </div>
                 </div>
                 <button
                     onClick={scrollToContent}

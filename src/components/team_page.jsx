@@ -390,7 +390,7 @@ const TeamPage = () => {
       <RapidWorksHeader />
 
       {/* === Updated Hero Section === */}
-      <section className="relative text-white">
+      <section className="relative h-[70vh] min-h-[500px] overflow-hidden text-white">
         {/* Background image */}
         <div className="absolute inset-0 z-0">
           <img 
@@ -403,14 +403,14 @@ const TeamPage = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-[#1A75DA]/90 to-[#0E3E74]/90 z-10"></div>
 
         {/* Apply consistent padding and z-index */}
-        <div className="container mx-auto px-6 py-40 md:py-48 lg:py-56 flex flex-col justify-center relative z-20">
+        <div className="container mx-auto px-6 py-20 md:py-24 lg:py-32 flex flex-col justify-center relative z-20 h-full">
           <div className="text-center max-w-3xl mx-auto">
             {/* Ensure standardized font size */}
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight tracking-tight text-white">
               {content.hero.title1}
               {content.hero.titleHighlight && (
                 <span className="relative inline-block">
-                  {content.hero.titleHighlight}
+                    {content.hero.titleHighlight}
                 </span>
               )}
               {content.hero.title2}
@@ -435,25 +435,25 @@ const TeamPage = () => {
       {/* Main Content */}
       <main className="bg-gray-50/50">
         <section ref={benefitsRef} className="pt-24">
-          <div className="container mx-auto px-6">
+        <div className="container mx-auto px-6">
             <div className="text-center max-w-3xl mx-auto mb-16">
               <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
                 {content.benefits.title}
-              </h2>
+                  </h2>
               <p className="text-lg text-gray-600 leading-relaxed">
                 {content.benefits.subtitle}
               </p>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-              {benefitsContent.map((benefit, index) => {
+                    {benefitsContent.map((benefit, index) => {
                 const originalBenefit = benefits.find(b => b.text.toLowerCase() === benefit.text.toLowerCase()) || benefits[index];
-                
-                return (
-                  <div
-                    key={index}
+                      
+                      return (
+                        <div
+                          key={index}
                     className="bg-white rounded-2xl shadow-lg border border-gray-100/80 p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
-                  >
+                        >
                     <div className="flex items-center gap-6">
                       <div
                         className="flex-shrink-0 w-16 h-16 rounded-xl flex items-center justify-center text-white"
@@ -462,24 +462,24 @@ const TeamPage = () => {
                         {originalBenefit?.icon || <Star className="h-8 w-8" />}
                       </div>
                       <h3 className="text-xl font-bold text-gray-900">{benefit.text}</h3>
-                    </div>
+                          </div>
                     <div className="mt-4">
                       <p className="text-gray-600 text-base leading-relaxed">{benefit.description}</p>
-                      {benefit.linkText && (
-                        <a 
-                          href={originalBenefit?.linkTo}
+                            {benefit.linkText && (
+                              <a 
+                                href={originalBenefit?.linkTo}
                           className="text-blue-600 font-semibold mt-3 inline-flex items-center gap-1.5 group"
-                        >
+                              >
                           {benefit.linkText} 
                           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                        </a>
-                      )}
-                    </div>
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-                );
-              })}
-            </div>
-          </div>
+                  </div>
         </section>
 
         <section className="py-16 bg-white">
@@ -495,9 +495,9 @@ const TeamPage = () => {
                   {content.cta.title}
                 </h2>
                 <p className="text-white/90 text-lg mb-8 leading-relaxed">
-                  {content.cta.description}
-                </p>
-  
+                    {content.cta.description}
+                  </p>
+
                 <div className="relative inline-block">
                   <select
                     className="appearance-none bg-white text-blue-800 font-bold py-4 pl-6 pr-12 rounded-full shadow-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600 cursor-pointer min-w-[600px]"
@@ -534,17 +534,17 @@ const TeamPage = () => {
         <section className="pb-24 bg-white">
           <div className="container mx-auto px-6">
             <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-              {teamMembers.map((member) => {
-                const memberName = member.name === "Coming Soon" ? content.team.comingSoon : member.name;
-                const memberRole = content.memberRoles[member.role] || member.role;
-                let memberQuote;
-                if (member.id === 1) memberQuote = content.memberQuotes.prince;
-                else if (member.id === 2) memberQuote = content.memberQuotes.samuel;
-                else if (member.id === 3) memberQuote = content.memberQuotes.design;
-                else if (member.id === 4) memberQuote = content.memberQuotes.finance;
-                else memberQuote = member.quote;
+                {teamMembers.map((member) => {
+                  const memberName = member.name === "Coming Soon" ? content.team.comingSoon : member.name;
+                  const memberRole = content.memberRoles[member.role] || member.role;
+                  let memberQuote;
+                  if (member.id === 1) memberQuote = content.memberQuotes.prince;
+                  else if (member.id === 2) memberQuote = content.memberQuotes.samuel;
+                  else if (member.id === 3) memberQuote = content.memberQuotes.design;
+                  else if (member.id === 4) memberQuote = content.memberQuotes.finance;
+                  else memberQuote = member.quote;
 
-                return (
+                  return (
                   <div key={member.id} className="bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-200/80 flex flex-col">
                     {/* Header */}
                     <div className="h-28 relative" style={{ backgroundImage: `url(${member.bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
@@ -557,7 +557,7 @@ const TeamPage = () => {
                         </div>
                       </div>
                     </div>
-                    
+
                     {/* Body */}
                     <div className="px-6 pt-4 pb-8 flex-grow flex flex-col relative">
                       {/* Floating Profile Image */}
@@ -566,24 +566,24 @@ const TeamPage = () => {
                           <img src={member.image} alt={memberName} className="w-24 h-24 rounded-xl object-cover border-4 border-white shadow-md" />
                         ) : (
                           <div className="w-24 h-24 rounded-xl bg-gray-200 flex items-center justify-center border-4 border-white shadow-md">
-                              <Users className="h-10 w-10 text-gray-400" />
+                            <Users className="h-10 w-10 text-gray-400" />
                           </div>
                         )}
                       </div>
-                      
+
                       <div className="pt-14">
                         <h3 className="text-xl font-bold text-gray-900">{memberName}</h3>
                         <p className="text-gray-500 text-sm mt-1 italic">"{memberQuote}"</p>
-                      </div>
-                      
+                </div>
+
                       <div className="mt-6 flex-grow">
                         <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Expertise</h4>
                         <div className="mt-2 space-y-2">
-                          {member.skills.map((skill, index) => (
+                        {member.skills.map((skill, index) => (
                             <div key={index} className="text-left border border-gray-300 rounded-lg py-1.5 px-3 text-gray-700 font-medium text-sm">
-                              {skill}
-                            </div>
-                          ))}
+                            {skill}
+                          </div>
+                        ))}
                         </div>
                       </div>
                       
@@ -603,16 +603,16 @@ const TeamPage = () => {
                       </div>
                     </div>
                   </div>
-                )
-              })}
-            </div>
+                  )
+                })}
+              </div>
 
-            {/* Team expansion note */}
+              {/* Team expansion note */}
             <div className="mt-12 bg-gray-100 rounded-3xl p-12 text-center max-w-6xl mx-auto">
                 <h3 className="text-3xl font-bold mb-4 text-gray-800">{content.team.growingTitle}</h3>
                 <p className="text-gray-600 leading-relaxed max-w-2xl mx-auto">
-                  {content.team.growingDescription}
-                </p>
+                    {content.team.growingDescription}
+                  </p>
             </div>
           </div>
         </section>

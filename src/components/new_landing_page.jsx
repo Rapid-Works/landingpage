@@ -484,11 +484,11 @@ export default function RapidWorksPage() {
 
       <RapidWorksHeader />
 
-      <section className="pb-16 relative overflow-hidden">
+      <section className="relative overflow-hidden">
         <div className="absolute top-20 right-0 w-96 h-96 bg-purple-200 rounded-full filter blur-3xl opacity-20 -z-10"></div>
         <div className="absolute bottom-0 left-10 w-72 h-72 bg-blue-200 rounded-full filter blur-3xl opacity-20 -z-10"></div>
 
-        <div className="text-white relative overflow-hidden flex items-center">
+        <div className="text-white relative overflow-hidden flex items-center h-[70vh] min-h-[500px]">
           {/* Background image */}
           <div className="absolute inset-0 z-0">
             <img 
@@ -499,7 +499,7 @@ export default function RapidWorksPage() {
           </div>
           {/* Color overlay */}
           <div className="absolute inset-0 bg-gradient-to-br from-purple-600/90 to-indigo-600/90 z-10"></div>
-          <div className="container mx-auto px-6 py-40 md:py-48 lg:py-56 flex flex-col justify-center relative z-20">
+          <div className="container mx-auto px-6 h-full flex flex-col justify-center relative z-20">
             <div className="text-center mb-8">
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight tracking-tight">
                 {content.hero.title1}
@@ -517,7 +517,7 @@ export default function RapidWorksPage() {
 
           <button
             onClick={scrollToRapidAnswers}
-            className="absolute bottom-48 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none z-30"
+            className="absolute bottom-12 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none z-30"
             aria-label={content.hero.scrollIndicatorAria}
           >
             <svg className="w-8 h-8 text-white/70 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -530,12 +530,12 @@ export default function RapidWorksPage() {
       <section ref={rapidAnswersRef} className="py-20 relative">
         <div className="container mx-auto px-6">
           <div >
-            <div className="relative overflow-hidden rounded-2xl h-auto min-h-[350px] md:h-96">
-              <div className="absolute inset-0 bg-gradient-to-r from-teal-600/95 via-cyan-600/85 to-sky-600/95 z-10"></div>
+            <div className="relative overflow-hidden rounded-2xl h-[475px]">
+              <div className="absolute inset-0 bg-[#127238]/65 z-10"></div>
               <img
                 src={LandingRapidAnswers}
                 alt="Rapid Answers Background"
-                className="absolute inset-0 w-full h-full object-cover object-center saturate-50"
+                className="absolute inset-0 w-full h-full object-cover object-center"
               />
               <div className="absolute inset-0 z-20 p-6 md:p-12 flex flex-col md:flex-row items-center justify-center md:justify-between">
                 <div className="mb-8 md:mb-0 w-full md:w-3/5">
@@ -565,7 +565,7 @@ export default function RapidWorksPage() {
                   {content.services.rapidAnswers.joinWebinar} <ArrowRight className="h-5 w-5" />
                 </button>
               </div>
-              <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-gradient-to-r from-teal-400/30 to-cyan-400/30 rounded-full -translate-y-1/2 blur-xl z-0"></div>
+              <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-[#127238]/30 rounded-full -translate-y-1/2 blur-xl z-0"></div>
             </div>
           </div>
         </div>
@@ -583,33 +583,32 @@ export default function RapidWorksPage() {
           <div className="grid md:grid-cols-2 gap-8 mb-8">
             <div className="group">
               <div className="relative overflow-hidden rounded-2xl aspect-[4/3] mb-0">
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-600/95 via-purple-600/85 to-indigo-600/95 z-10"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-600/85 via-purple-600/75 to-indigo-600/85 z-10"></div>
                 <img
                   src={LandingPageHero}
                   alt="Rapid Branding Background"
                   className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105 saturate-50"
                 />
 
-                <div className="absolute inset-0 z-20 p-8 flex flex-col justify-between">
-                  <div className="flex justify-between items-start w-full">
-                  <div className="bg-white/20 backdrop-blur-md w-14 h-14 rounded-2xl flex items-center justify-center">
-                      <Megaphone className="h-6 w-6 text-white" />
-                    </div>
+                <div className="absolute inset-0 z-20 p-8 flex flex-col">
+                  <div className="flex justify-end">
                     <span className="text-xs font-medium text-white bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
                       {content.services.branding.category}
                     </span>
                   </div>
-                  <div>
-                    <h3 className="text-3xl font-bold text-white mb-2">{content.services.branding.title}</h3>
-                    <p className="text-white/90 max-w-md mb-3">
-                      {content.services.branding.description}
-                    </p>
-                    <Link
-                      to="/branding"
-                      className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-4 py-2 rounded-lg hover:bg-white/30 transition-all"
-                    >
-                      {content.services.branding.learnMore} <ArrowRight className="h-4 w-4" />
-                    </Link>
+                  <div className="flex-grow flex flex-col justify-center">
+                    <div>
+                      <h3 className="text-3xl font-bold text-white mb-2">{content.services.branding.title}</h3>
+                      <p className="text-white/90 max-w-md mb-3">
+                        {content.services.branding.description}
+                      </p>
+                      <Link
+                        to="/branding"
+                        className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-4 py-2 rounded-lg hover:bg-white/30 transition-all"
+                      >
+                        {content.services.branding.learnMore} <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    </div>
                   </div>
                 </div>
 
@@ -619,39 +618,38 @@ export default function RapidWorksPage() {
 
             <div className="group">
               <div className="relative overflow-hidden rounded-2xl aspect-[4/3] mb-0">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/95 via-blue-600/85 to-sky-600/95 z-10"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/85 via-blue-600/75 to-sky-600/85 z-10"></div>
                 <img
                   src={LandingExperts}
                   alt="Rapid Experts Background"
                   className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105 saturate-50"
                 />
 
-                <div className="absolute inset-0 z-20 p-8 flex flex-col justify-between">
-                  <div className="flex justify-between items-start w-full">
-                  <div className="bg-white/20 backdrop-blur-md w-14 h-14 rounded-2xl flex items-center justify-center">
-                    <Users className="h-6 w-6 text-white" />
-                    </div>
+                <div className="absolute inset-0 z-20 p-8 flex flex-col">
+                  <div className="flex justify-end">
                     <span className="text-xs font-medium text-white bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
                       {content.services.experts.category}
                     </span>
                   </div>
-                  <div>
-                    <h3 className="text-3xl font-bold text-white mb-2">{content.services.experts.title}</h3>
-                    <p className="text-white/90 max-w-md mb-3">{content.services.experts.description}</p>
-                    <div className="flex justify-between items-center">
-                      <Link
-                        to="/experts"
-                        className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-4 py-2 rounded-lg hover:bg-white/30 transition-all"
-                      >
-                        {content.services.experts.learnMore} <ArrowRight className="h-4 w-4" />
-                      </Link>
-                      
-                      <Link
-                        to="/experts"
-                        className="inline-flex items-center gap-2 text-blue-600 font-medium bg-white px-4 py-2 rounded-lg hover:bg-blue-50 transition-all"
-                      >
-                        {content.services.experts.freeHour} <ArrowRight className="h-4 w-4" />
-                      </Link>
+                  <div className="flex-grow flex flex-col justify-center">
+                    <div>
+                      <h3 className="text-3xl font-bold text-white mb-2">{content.services.experts.title}</h3>
+                      <p className="text-white/90 max-w-md mb-3">{content.services.experts.description}</p>
+                      <div className="flex justify-between items-center">
+                        <Link
+                          to="/experts"
+                          className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-4 py-2 rounded-lg hover:bg-white/30 transition-all"
+                        >
+                          {content.services.experts.learnMore} <ArrowRight className="h-4 w-4" />
+                        </Link>
+                        
+                        <Link
+                          to="/experts"
+                          className="inline-flex items-center gap-2 text-blue-600 font-medium bg-white px-4 py-2 rounded-lg hover:bg-blue-50 transition-all"
+                        >
+                          {content.services.experts.freeHour} <ArrowRight className="h-4 w-4" />
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -664,33 +662,32 @@ export default function RapidWorksPage() {
           <div className="grid md:grid-cols-2 gap-8 mb-8">
             <div className="group">
               <div className="relative overflow-hidden rounded-2xl aspect-[3/2] mb-0">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/95 via-blue-600/85 to-sky-600/95 z-10"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/85 via-blue-600/75 to-sky-600/85 z-10"></div>
                 <img
                   src={LandingPartners}
                   alt="Rapid Partners Background"
                   className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105 saturate-50"
                 />
 
-                <div className="absolute inset-0 z-20 p-6 flex flex-col justify-between">
-                  <div className="flex justify-between items-start w-full">
-                    <div className="bg-white/20 backdrop-blur-md w-12 h-12 rounded-xl flex items-center justify-center">
-                      <Handshake className="h-5 w-5 text-white" />
-                </div>
-                  <span className="text-xs font-medium text-white bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
-                    {content.services.partners.category}
-                  </span>
-                </div>
-                  <div>
-                    <h3 className="text-2xl font-bold text-white mb-2">{content.services.partners.title}</h3>
-                    <p className="text-white/90 max-w-md text-sm mb-3">
-                      {content.services.partners.description}
-                    </p>
-                    <Link
-                      to="/partners"
-                      className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-lg text-sm hover:bg-white/30 transition-all"
-                    >
-                      {content.services.partners.learnMore} <ArrowRight className="h-4 w-4" />
-                    </Link>
+                <div className="absolute inset-0 z-20 p-6 flex flex-col">
+                  <div className="flex justify-end">
+                    <span className="text-xs font-medium text-white bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
+                      {content.services.partners.category}
+                    </span>
+                  </div>
+                  <div className="flex-grow flex flex-col justify-center">
+                    <div>
+                      <h3 className="text-2xl font-bold text-white mb-2">{content.services.partners.title}</h3>
+                      <p className="text-white/90 max-w-md text-sm mb-3">
+                        {content.services.partners.description}
+                      </p>
+                      <Link
+                        to="/partners"
+                        className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-lg text-sm hover:bg-white/30 transition-all"
+                      >
+                        {content.services.partners.learnMore} <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    </div>
                   </div>
                 </div>
 
@@ -700,33 +697,32 @@ export default function RapidWorksPage() {
 
             <div className="group">
               <div className="relative overflow-hidden rounded-2xl aspect-[3/2] mb-0">
-                <div className="absolute inset-0 bg-gradient-to-br from-amber-600/95 via-amber-600/85 to-amber-800/95 z-10"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-amber-600/85 via-amber-600/75 to-amber-800/85 z-10"></div>
                 <img
                   src={LandingCoaching}
                   alt="Rapid Coaching Background"
                   className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105 saturate-50"
                 />
 
-                <div className="absolute inset-0 z-20 p-6 flex flex-col justify-between">
-                  <div className="flex justify-between items-start w-full">
-                    <div className="bg-white/20 backdrop-blur-md w-12 h-12 rounded-xl flex items-center justify-center">
-                      <Compass className="h-5 w-5 text-white" />
-                </div>
-                  <span className="text-xs font-medium text-white bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
-                    {content.services.coaching.category}
-                  </span>
-                </div>
-                  <div>
-                    <h3 className="text-2xl font-bold text-white mb-2">{content.services.coaching.title}</h3>
-                    <p className="text-white/90 max-w-md text-sm mb-3">
-                  {content.services.coaching.description}
-                </p>
-                    <Link
-                      to="/coaching"
-                      className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-lg text-sm hover:bg-white/30 transition-all"
-                    >
-                      {content.services.coaching.learnMore} <ArrowRight className="h-4 w-4" />
-                    </Link>
+                <div className="absolute inset-0 z-20 p-6 flex flex-col">
+                  <div className="flex justify-end">
+                    <span className="text-xs font-medium text-white bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
+                      {content.services.coaching.category}
+                    </span>
+                  </div>
+                  <div className="flex-grow flex flex-col justify-center">
+                    <div>
+                      <h3 className="text-2xl font-bold text-white mb-2">{content.services.coaching.title}</h3>
+                      <p className="text-white/90 max-w-md text-sm mb-3">
+                        {content.services.coaching.description}
+                      </p>
+                      <Link
+                        to="/coaching"
+                        className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-lg text-sm hover:bg-white/30 transition-all"
+                      >
+                        {content.services.coaching.learnMore} <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    </div>
                   </div>
                 </div>
 
@@ -748,8 +744,8 @@ export default function RapidWorksPage() {
              </p>
            </div>
            <div >
-             <div className="relative overflow-hidden rounded-2xl h-auto min-h-[300px] md:h-80">
-                <div className="absolute inset-0 bg-gradient-to-r from-rose-600/95 via-rose-600/85 to-orange-600/95 z-10"></div>
+             <div className="relative overflow-hidden rounded-2xl h-[475px]">
+                <div className="absolute inset-0 bg-[#5A0223]/65 z-10"></div>
                 <img
                   src={LandingFinancing}
                   alt="Rapid Financing Background"
