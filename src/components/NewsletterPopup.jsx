@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion"
 import { X } from "lucide-react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
+import { LanguageContext } from '../App'
 
 // Function to submit data to Airtable
 const submitToAirtable = async (email) => {
@@ -36,12 +37,49 @@ const submitToAirtable = async (email) => {
 const NewsletterPopup = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState('')
+  const context = useContext(LanguageContext)
+  
+  if (!context) {
+    return null // Return null if context is not available
+  }
+
+  const { language } = context
+
+  // Translation object
+  const translations = {
+    en: {
+      newsletter: {
+        popup: {
+          title: "Stay Updated",
+          subtitle: "Subscribe to our newsletter for the latest updates and exclusive offers.",
+          placeholder: "Enter your email",
+          button: "Subscribe",
+          success: "✓ Successfully subscribed!",
+          error: "× Something went wrong. Please try again."
+        }
+      }
+    },
+    de: {
+      newsletter: {
+        popup: {
+          title: "Bleib auf dem Laufenden",
+          subtitle: "Abonniere unseren Newsletter für die neuesten Updates und exklusive Angebote.",
+          placeholder: "E-Mail eingeben",
+          button: "Abonnieren",
+          success: "✓ Erfolgreich abonniert!",
+          error: "× Etwas ist schiefgelaufen. Bitte versuche es erneut."
+        }
+      }
+    }
+  }
+
+  const content = translations[language]?.newsletter?.popup || translations.de.newsletter.popup
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
       await submitToAirtable(email)
-      setStatus('✓ Successfully subscribed!')
+      setStatus(content.success)
       localStorage.setItem('newsletterSubscribed', 'true') // Mark as subscribed
       // Show success state for 2 seconds before closing
       setTimeout(() => {
@@ -50,7 +88,7 @@ const NewsletterPopup = ({ isOpen, onClose }) => {
         setTimeout(() => setStatus(''), 500); 
       }, 2000)
     } catch (error) {
-      setStatus('× Something went wrong. Please try again.')
+      setStatus(content.error)
     }
   }
 
@@ -86,9 +124,9 @@ const NewsletterPopup = ({ isOpen, onClose }) => {
               </button>
 
               <div className="text-center">
-                <h3 className="text-2xl font-medium mb-3">Stay Updated</h3>
+                <h3 className="text-2xl font-medium mb-3">{content.title}</h3>
                 <p className="text-gray-600 text-sm mb-6">
-                  Subscribe to our newsletter for the latest updates and exclusive offers.
+                  {content.subtitle}
                 </p>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -96,7 +134,7 @@ const NewsletterPopup = ({ isOpen, onClose }) => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
+                    placeholder={content.placeholder}
                     className="w-full px-4 py-2.5 border border-gray-200 rounded-md text-sm 
                       focus:outline-none focus:ring-1 focus:ring-black
                       text-gray-900 placeholder:text-gray-500"
@@ -106,7 +144,7 @@ const NewsletterPopup = ({ isOpen, onClose }) => {
                     type="submit"
                     className="w-full px-4 py-2.5 bg-black text-white text-sm font-medium rounded-md hover:bg-gray-900 transition-colors"
                   >
-                    Subscribe
+                    {content.button}
                   </button>
                 </form>
 

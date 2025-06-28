@@ -246,7 +246,7 @@ const BrandingTestimonialsSection = ({ content }) => {
             <div className="relative">
               <div className="absolute -top-4 -left-4 text-purple-100 z-0">
                 <Quote className="w-24 h-24" strokeWidth={1} />
-              </div>
+          </div>
               <div className="relative z-10 flex flex-col h-full">
                 <p className="text-gray-600 text-lg italic leading-relaxed flex-grow">
                   "{currentTestimonial.quote}"
@@ -283,12 +283,12 @@ const BrandingTestimonialsSection = ({ content }) => {
                 <>
                   <button onClick={handlePrev} className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/50 hover:bg-white rounded-full p-2 transition-colors z-20 shadow-md">
                     <ChevronLeft className="w-6 h-6 text-gray-700" />
-                  </button>
+            </button>
                   <button onClick={handleNext} className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/50 hover:bg-white rounded-full p-2 transition-colors z-20 shadow-md">
                     <ChevronRight className="w-6 h-6 text-gray-700" />
                   </button>
                 </>
-              )}
+        )}
             </div>
           </div>
         </div>
@@ -297,12 +297,12 @@ const BrandingTestimonialsSection = ({ content }) => {
           <div className="flex justify-center mt-8">
             <div className="flex gap-2">
               {brandingTestimonials.map((_, index) => (
-                <button
+              <button
                   key={index}
                   onClick={() => setCurrentIndex(index)}
                   className={`h-2.5 rounded-full transition-all duration-300 ${currentIndex === index ? 'w-8 bg-[#7C3AED]' : 'w-2.5 bg-gray-300 hover:bg-gray-400'}`}
-                />
-              ))}
+              />
+            ))}
             </div>
           </div>
         )}
@@ -925,7 +925,7 @@ const VisibiltyBundle = () => {
       <div className="min-h-screen bg-white">
         <main className="relative w-full overflow-x-hidden">
 
-          <section className="text-white relative overflow-hidden min-h-screen">
+          <section className="relative h-[70vh] min-h-[500px] overflow-hidden text-white">
             {/* Background image */}
             <div className="absolute inset-0 z-0">
               <img 
@@ -937,16 +937,25 @@ const VisibiltyBundle = () => {
             {/* Color overlay */}
             <div className="absolute inset-0 bg-[#270A5C]/90 z-10"></div>
             
-            <div className="container mx-auto px-6 pt-40 pb-40 relative z-20 flex items-center min-h-screen">
+            <div className="container mx-auto px-6 py-20 md:py-24 lg:py-32 relative z-20 flex items-center justify-center h-full">
               <div className="text-center max-w-4xl mx-auto">
                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-8 leading-tight tracking-tight text-white">
                   {content.hero.title}
                 </h1>
-                <p className="text-2xl md:text-3xl text-white/100 leading-relaxed font-medium">
+                <p className="text-2xl text-white/90 leading-relaxed font-medium">
                   {content.hero.subtitle}
                 </p>
               </div>
             </div>
+            <button
+              onClick={scrollToContent}
+              className="absolute bottom-12 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none z-30"
+              aria-label="Scroll to content"
+            >
+              <svg className="w-8 h-8 text-white/70 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              </svg>
+            </button>
           </section>
 
           <section ref={contentSectionRef} className="py-20 bg-white">
@@ -969,17 +978,17 @@ const VisibiltyBundle = () => {
                     {/* First row - 2 items */}
                     <div className="flex gap-4">
                       {content.keyPoints.slice(0, 2).map((point, index) => (
-                        <div
-                          key={index}
+                      <div
+                        key={index}
                           className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-[#7C3BEC] text-black hover:bg-[#7C3BEC]/5 transition-colors bg-white"
-                        >
+                      >
                           <div className="w-3 h-3 rounded-full border-2 border-[#7C3BEC] bg-transparent relative flex items-center justify-center">
                             <div className="w-1.5 h-1.5 rounded-full bg-[#7C3BEC]"></div>
-                          </div>
-                          <span className="text-base font-medium">{point}</span>
                         </div>
-                      ))}
-                    </div>
+                          <span className="text-base font-medium">{point}</span>
+                      </div>
+                    ))}
+                  </div>
                     
                     {/* Second row - 2 items */}
                     <div className="flex gap-4">
@@ -1008,18 +1017,18 @@ const VisibiltyBundle = () => {
                           <span className="text-base font-medium">{content.keyPoints[4]}</span>
                         </div>
                       )}
-                      
-                      {/* "und mehr..." text */}
-                      <p className="text-gray-600 text-lg font-medium">
-                        {content.seeMore}
-                      </p>
+                  
+                  {/* "und mehr..." text */}
+                  <p className="text-gray-600 text-lg font-medium">
+                    {content.seeMore}
+                  </p>
                     </div>
                   </div>
 
                   {/* CTA Button */}
                   <button
                     onClick={() => setIsModalOpen(true)}
-                    className="inline-flex items-center justify-center px-8 py-4 text-white font-medium rounded-full transition-all duration-300 hover:shadow-lg hover:scale-105"
+                    className="inline-flex items-center justify-center px-8 py-4 text-white font-medium rounded-3xl transition-all duration-300 hover:shadow-lg hover:scale-105"
                     style={{ backgroundColor: '#FF6B6B' }}
                     onMouseEnter={(e) => e.target.style.backgroundColor = '#FF5252'}
                     onMouseLeave={(e) => e.target.style.backgroundColor = '#FF6B6B'}
@@ -1350,12 +1359,12 @@ const VisibiltyBundle = () => {
                       </h3>
                       <div className="flex justify-center">
                         <div className="w-72 space-y-4 text-left pl-8 pr-4">
-                          {content.pricing.items.map((item, index) => (
+                        {content.pricing.items.map((item, index) => (
                             <div key={index} className="flex items-center gap-3">
                               <CheckCircle className="w-5 h-5 text-white flex-shrink-0" />
-                              <span className="text-white text-lg">{item}</span>
-                            </div>
-                          ))}
+                            <span className="text-white text-lg">{item}</span>
+                          </div>
+                        ))}
                         </div>
                       </div>
                     </div>
@@ -1363,7 +1372,7 @@ const VisibiltyBundle = () => {
                     {/* CTA Button */}
                     <button
                       onClick={() => setIsModalOpen(true)}
-                      className="w-full py-4 px-8 rounded-full font-semibold text-white transition-all duration-300 hover:scale-105 text-lg"
+                      className="w-full py-4 px-8 rounded-3xl font-semibold text-white transition-all duration-300 hover:scale-105 text-lg"
                       style={{ backgroundColor: '#FF6B6B' }}
                       onMouseEnter={(e) => e.target.style.backgroundColor = '#FF5252'}
                       onMouseLeave={(e) => e.target.style.backgroundColor = '#FF6B6B'}
@@ -1442,7 +1451,7 @@ const VisibiltyBundle = () => {
           <section className="py-20">
             <div className={containerClass}>
               <div className="max-w-2xl mx-auto text-center">
-                <h2 className="text-4xl font-light mb-8">
+                <h2 className="text-4xl font-bold mb-8">
                   {content.finalCta.title}
                 </h2>
                 <p className="text-xl mb-8 text-gray-600">
@@ -1450,7 +1459,7 @@ const VisibiltyBundle = () => {
                 </p>
                 <button
                   onClick={() => window.open('https://calendly.com/yannick-familie-heeren/30min', '_blank')}
-                  className="text-white px-8 py-3 rounded-none font-light transition duration-300 inline-flex items-center text-lg"
+                  className="text-white px-8 py-3 rounded-3xl font-light transition duration-300 inline-flex items-center text-lg"
                   style={{ backgroundColor: '#7C3BEC' }}
                   onMouseEnter={(e) => e.target.style.backgroundColor = '#6B2DD4'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = '#7C3BEC'}

@@ -238,7 +238,7 @@ const CoachingPage = () => {
       <RapidWorksHeader />
 
       {/* === Updated Hero Section === */}
-      <section className="relative text-white">
+      <section className="relative h-[70vh] min-h-[500px] overflow-hidden text-white">
         {/* Background image */}
         <div className="absolute inset-0 z-0">
           <img 
@@ -251,13 +251,13 @@ const CoachingPage = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-orange-600/70 to-amber-600/70 z-10"></div>
 
         {/* Apply consistent padding and z-index */}
-        <div className="container mx-auto px-6 py-40 md:py-48 lg:py-56 flex flex-col justify-center relative z-20">
+        <div className="container mx-auto px-6 py-20 md:py-24 lg:py-32 flex flex-col justify-center relative z-20 h-full">
           <div className="text-center max-w-3xl mx-auto">
             {/* Ensure standardized font size */}
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight tracking-tight text-white">
               {content.heroTitle}{" "}
               {content.heroHighlight && (
-                <span className="relative inline-block">
+              <span className="relative inline-block">
                   {content.heroHighlight}
                 </span>
               )}
@@ -305,15 +305,15 @@ const CoachingPage = () => {
         </div>
       </main>
 
-      {/* Single Coach Profile Section */}
+          {/* Single Coach Profile Section */}
       <section className="py-20 bg-gradient-to-br from-orange-400 to-orange-600 text-white">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-12">
+            <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">{content.coachSection.title}</h2>
             <p className="text-xl text-white/90 max-w-3xl mx-auto leading-relaxed">
-              {content.coachSection.subtitle}
-            </p>
-          </div>
+                {content.coachSection.subtitle}
+              </p>
+            </div>
 
           {/* Main Coach Card */}
           <div className="bg-transparent rounded-3xl overflow-hidden mb-8 max-w-6xl mx-auto border-2 border-white relative pt-12">
@@ -326,23 +326,23 @@ const CoachingPage = () => {
             <div className="flex flex-col lg:flex-row">
               <div className="lg:w-2/5 relative">
                 <div className="aspect-[4/5] lg:aspect-auto lg:h-full relative">
-                  <img
-                    src={coach.image}
-                    alt={coach.name}
+                    <img
+                      src={coach.image}
+                      alt={coach.name}
                     className="w-full h-full object-cover object-center filter drop-shadow-[0_15px_45px_rgba(255,193,7,0.6)]"
                   />
                   <div className="absolute bottom-0 left-0 right-0 p-6 pt-12" style={{ background: 'linear-gradient(to top, rgba(217, 119, 6, 0.5) 10%, transparent 100%)' }}>
                     <h3 className="text-3xl font-bold text-white mb-1">{coach.name}</h3>
                     <p className="text-white/90 text-lg">{coach.role}</p>
                     <p className="text-white/80 text-sm mt-1">{content.coachSection.subtext}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
 
               <div className="lg:w-3/5 p-8 lg:p-12">
                 <p className="text-white/95 text-lg lg:text-xl leading-relaxed">
-                  {content.coachSection.coachBio}
-                </p>
+                    {content.coachSection.coachBio}
+                  </p>
               </div>
             </div>
           </div>
@@ -353,22 +353,22 @@ const CoachingPage = () => {
             <div className="bg-transparent rounded-3xl p-8 border-2 border-white">
               <h4 className="text-white font-bold text-lg uppercase tracking-wider mb-6">{content.coachSection.achievementsTitle}</h4>
               <ul className="space-y-4">
-                {Object.keys(content.achievements).map((key) => (
+                      {Object.keys(content.achievements).map((key) => (
                   <li key={key} className="flex items-start gap-3">
                     <div className="text-white mt-1 flex-shrink-0">
                       <Check className="h-5 w-5" />
-                    </div>
+                          </div>
                     <span className="text-white/90 text-base leading-relaxed">{content.achievements[key]}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
 
             {/* Expertise Card */}
             <div className="bg-transparent rounded-3xl p-8 border-2 border-white">
               <h4 className="text-white font-bold text-lg uppercase tracking-wider mb-6">{content.coachSection.expertiseTitle}</h4>
               <div className="grid grid-cols-2 gap-3">
-                {Object.keys(content.expertise).map((key) => (
+                      {Object.keys(content.expertise).map((key) => (
                   <div key={key} className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full border-2 border-white bg-transparent relative flex items-center justify-center">
                       <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
@@ -378,38 +378,38 @@ const CoachingPage = () => {
                     </span>
                   </div>
                 ))}
-              </div>
-              
-              <button
+                  </div>
+
+                  <button
                 className="w-full mt-8 py-4 bg-[#FF6B6B] text-white rounded-2xl hover:bg-[#FF5252] transition-all flex items-center justify-center gap-2 font-semibold text-lg shadow-lg hover:shadow-xl"
-                onClick={() => window.open("https://calendly.com/yannick-familie-heeren/30min", "_blank")}
-              >
-                {content.coachSection.ctaButton}
+                    onClick={() => window.open("https://calendly.com/yannick-familie-heeren/30min", "_blank")}
+                  >
+                    {content.coachSection.ctaButton}
                 <ArrowRight className="h-5 w-5" />
-              </button>
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
       </section>
 
       <div className="container mx-auto px-6">
-        {/* How It Works Section */}
+          {/* How It Works Section */}
         <div className="mb-20 pt-20">
           <div className="text-center mb-20">
             <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">{content.howItWorks.title}</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              {content.howItWorks.subtitle}
-            </p>
-          </div>
+                {content.howItWorks.subtitle}
+              </p>
+            </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
-            {content.howItWorks.steps.map((step, index) => {
+              {content.howItWorks.steps.map((step, index) => {
               const icons = [<MapPin className="h-7 w-7 text-orange-500" />, <Target className="h-7 w-7 text-orange-500" />, <Calendar className="h-7 w-7 text-orange-500" />, <TrendingUp className="h-7 w-7 text-orange-500" />];
-              return (
+                return (
                 <div key={index} className="relative">
                   <div className="absolute -top-8 left-4 w-16 h-16 bg-orange-300 rounded-2xl flex items-center justify-center text-white text-3xl font-bold shadow-lg">
-                    {index + 1}
-                  </div>
+                      {index + 1}
+                    </div>
                   <div className="bg-white rounded-2xl shadow-lg p-8 h-full border border-gray-100 pt-12">
                     <div className="flex items-center gap-4 mb-4">
                       <div className="flex-shrink-0">
@@ -421,20 +421,20 @@ const CoachingPage = () => {
                       {step.description}
                     </p>
                   </div>
-                </div>
-              );
-            })}
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
 
-        {/* +++ Render the Coaching Testimonials Section +++ */}
+          {/* +++ Render the Coaching Testimonials Section +++ */}
         
 
-      </div>
+        </div>
       <CoachingTestimonialsSection content={content} />
       {/* Add the new component */}
       <ExploreMoreSection excludeService="Coaching" />
-      
+
     </div>
   )
 }

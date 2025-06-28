@@ -186,6 +186,19 @@ const translations = {
       copyright: "© 2025 RapidWorks Agency. All rights reserved.",
       terms: "Terms of Service",
       privacy: "Privacy Policy",
+      faq: "FAQ",
+      contact: "Contact"
+    },
+    newsletter: {
+      title: "Subscribe to Our Newsletter",
+      placeholder: "Enter your email",
+      button: "Subscribe",
+      popup: {
+        title: "Stay Updated",
+        subtitle: "Subscribe to our newsletter for the latest updates and exclusive offers.",
+        success: "✓ Successfully subscribed!",
+        error: "× Something went wrong. Please try again."
+      }
     },
     impressum: {
       title: "Legal Notice",
@@ -446,6 +459,19 @@ const translations = {
       copyright: "© 2025 RapidWorks Agency. Alle Rechte vorbehalten.",
       terms: "AGB",
       privacy: "Datenschutz",
+      faq: "FAQ",
+      contact: "Kontakt"
+    },
+    newsletter: {
+      title: "Abonniere unseren Newsletter",
+      placeholder: "E-Mail eingeben",
+      button: "Abonnieren",
+      popup: {
+        title: "Bleib auf dem Laufenden",
+        subtitle: "Abonniere unseren Newsletter für die neuesten Updates und exklusive Angebote.",
+        success: "✓ Erfolgreich abonniert!",
+        error: "× Etwas ist schiefgelaufen. Bitte versuche es erneut."
+      }
     },
     impressum: {
       title: "Impressum",
