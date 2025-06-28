@@ -212,8 +212,8 @@ export default function RapidWorksPage() {
         partners: {
           category: "Network",
           title: "Rapid Partners",
-          description: "Vernetze dich mit geprüften Notaren, Steuerberatern, Wirtschaftsprüfern und mehr.",
-          learnMore: "Mehr erfahren"
+          description: "Connect with verified notaries, tax advisors, auditors, and more.",
+          learnMore: "Learn more"
         },
         coaching: {
           category: "Growth",
@@ -666,7 +666,7 @@ export default function RapidWorksPage() {
                 <img
                   src={LandingPartners}
                   alt="Rapid Partners Background"
-                  className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105 saturate-50"
+                  className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105 saturate-50 scale-110"
                 />
 
                 <div className="absolute inset-0 z-20 p-6 flex flex-col">
