@@ -32,6 +32,8 @@ import TestimonialCard from "./TestimonialCard"
 import BrandingBg from '../images/branding bg.png'
 import HoodieBg from '../images/hoodiebg.png'
 import PricingBg from '../images/pricing_bg.png'
+import VisibilityAllInclusive from '../images/visibility_all_inclusive.png'
+import VisibilityProfessional from '../images/visibility_professional.png'
 
 const BundleItem = ({ title, description, index, imageSrc }) => (
   <motion.div
@@ -496,7 +498,7 @@ const VisibiltyBundle = () => {
       inhalt: {
         badge: "MAXIMUM IMPACT",
         title: "Contents",
-        description: "Das Rapid Branding enthält alles, was du brauchst, um die Aufmerksamkeit von Kunden, Partnern, Investoren und Mitarbeitern auf dein Startup zu lenken. Du wirst sofort sichtbar und ein einheitliches Markendesign macht deine Marke erkennbar."
+        description: "The Rapid Branding contains everything you need to draw the attention of customers, partners, investors and employees to your startup. You immediately become visible and a uniform brand design makes your brand recognizable."
       },
       cookies: {
         banner: {
@@ -1100,7 +1102,7 @@ const VisibiltyBundle = () => {
                               <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight">
                                 {item.title}
                               </h3>
-                              <p className="text-white/90 text-base md:text-lg leading-[2.5]">
+                              <p className="text-white/90 text-base md:text-lg leading-[40px]">
                                 {item.description}
                               </p>
                             </div>
@@ -1136,7 +1138,7 @@ const VisibiltyBundle = () => {
                               <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight">
                                 {item.title}
                               </h3>
-                              <p className="text-white/90 text-base md:text-lg leading-[2.5]">
+                              <p className="text-white/90 text-base md:text-lg leading-[40px]">
                                 {item.description}
                               </p>
                             </div>
@@ -1185,7 +1187,7 @@ const VisibiltyBundle = () => {
                                 <h3 className="text-2xl md:text-4xl lg:text-5xl font-light tracking-tight text-white leading-relaxed pb-1">
                                 {item.title}
                               </h3>
-                                <p className={`text-white/90 text-base md:text-lg lg:text-xl leading-[2.5]`}>
+                                <p className={`text-white/90 text-base md:text-lg lg:text-xl leading-[40px]`}>
                                 {item.description}
                               </p>
                             </div>
@@ -1234,7 +1236,7 @@ const VisibiltyBundle = () => {
                             <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight">
                               {item.title}
                             </h3>
-                            <p className="text-white/90 text-base md:text-lg leading-[2.5]">
+                            <p className="text-white/90 text-base md:text-lg leading-[40px]">
                               {item.description}
                             </p>
                           </div>
@@ -1282,12 +1284,8 @@ const VisibiltyBundle = () => {
                     <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>,
-                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>,
-                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                    </svg>,
+                    <img src={VisibilityAllInclusive} alt="All inclusive icon" className="w-12 h-12" />,
+                    <img src={VisibilityProfessional} alt="Professional appearance icon" className="w-12 h-12" />,
                     <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
@@ -1302,10 +1300,10 @@ const VisibiltyBundle = () => {
                       {/* Bottom gradient border */}
                       <div className="absolute bottom-0 left-0 right-0 h-1" 
                            style={{ background: 'linear-gradient(270deg, #9257DD 23.12%, rgba(255, 107, 107, 0.3) 49.61%, #9257DD 81.85%)' }}></div>
-                      <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-8" style={{ backgroundColor: '#540E92' }}>
+                      <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-8" style={{ background: 'linear-gradient(to bottom right, #9257DD, #540E92)' }}>
                         {icons[index]}
                       </div>
-                      <h3 className="text-2xl font-bold mb-6 text-[#2D1B69]">{benefit.title}</h3>
+                      <h3 className="text-xl font-black mb-6 text-[#2D1B69]">{benefit.title}</h3>
                       <p className="text-[#2D1B69] leading-relaxed flex-grow">
                         {benefit.description}
                       </p>
@@ -1354,11 +1352,11 @@ const VisibiltyBundle = () => {
 
                     {/* What you get */}
                     <div className="mb-6 flex-grow">
-                      <h3 className="text-2xl font-bold text-white mb-6">
+                      <h3 className="text-xl font-black text-white mb-6">
                         {content.pricing.whatYouGet}
                       </h3>
                       <div className="flex justify-center">
-                        <div className="w-72 space-y-4 text-left pl-8 pr-4">
+                        <div className="space-y-4">
                         {content.pricing.items.map((item, index) => (
                             <div key={index} className="flex items-center gap-3">
                               <CheckCircle className="w-5 h-5 text-white flex-shrink-0" />
@@ -1386,7 +1384,7 @@ const VisibiltyBundle = () => {
                 <div className="order-2 lg:order-2 lg:col-span-3 h-full flex flex-col gap-6">
                   {/* Editable Files Card */}
                   <div className="rounded-[32px] p-8 border-2 border-white/60 bg-transparent flex-1 flex flex-col">
-                    <h3 className="text-2xl font-bold text-white mb-6">
+                    <h3 className="text-xl font-black text-white mb-6">
                       {content.pricing.editableFiles.title}
                     </h3>
                     <p className="text-white/90 text-lg leading-relaxed flex-grow">
@@ -1451,7 +1449,7 @@ const VisibiltyBundle = () => {
           <section className="py-20">
             <div className={containerClass}>
               <div className="max-w-2xl mx-auto text-center">
-                <h2 className="text-4xl font-bold mb-8">
+                <h2 className="text-3xl font-black mb-8">
                   {content.finalCta.title}
                 </h2>
                 <p className="text-xl mb-8 text-gray-600">
