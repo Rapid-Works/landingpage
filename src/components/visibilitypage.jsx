@@ -1355,15 +1355,13 @@ const VisibiltyBundle = () => {
                       <h3 className="text-xl font-black text-white mb-6">
                         {content.pricing.whatYouGet}
                       </h3>
-                      <div className="flex justify-center">
-                        <div className="space-y-4">
+                      <div className="space-y-4">
                         {content.pricing.items.map((item, index) => (
-                            <div key={index} className="flex items-center gap-3">
+                            <div key={index} className="flex items-center justify-center gap-3">
                               <CheckCircle className="w-5 h-5 text-white flex-shrink-0" />
                             <span className="text-white text-lg">{item}</span>
                           </div>
                         ))}
-                        </div>
                       </div>
                     </div>
 
