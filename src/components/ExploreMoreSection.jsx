@@ -29,7 +29,7 @@ const ExploreMoreSection = ({ excludeService }) => {
       }
     },
     de: {
-      badge: "Mehr Entdecken",
+      badge: "MEHR ENTDECKEN",
       title: "Wusstest du, dass wir mehr als nur das anbieten?",
       description: "Entdecke unsere weiteren Dienstleistungen, die dir beim Wachstum deines Startups helfen - von Expertenunterstützung über MVP-Entwicklung bis hin zu Coaching und Finanzierungslösungen.",
       cta: "Alle Services entdecken",
@@ -47,11 +47,11 @@ const ExploreMoreSection = ({ excludeService }) => {
 
   // Define all possible services
   const allServices = [
-    { icon: <Megaphone className="h-6 w-6" />, labelKey: "Branding", path: "/branding" },
-    { icon: <Users className="h-6 w-6" />, labelKey: "Experts", path: "/experts" },
-    { icon: <Handshake className="h-6 w-6" />, labelKey: "Partners", path: "/partners" },
-    { icon: <Compass className="h-6 w-6" />, labelKey: "Coaching", path: "/coaching" },
-    { icon: <Euro className="h-6 w-6" />, labelKey: "Financing", path: "/financing" }
+    { icon: <Megaphone className="h-8 w-8" />, labelKey: "Branding", path: "/branding" },
+    { icon: <Users className="h-8 w-8" />, labelKey: "Experts", path: "/experts" },
+    { icon: <Handshake className="h-8 w-8" />, labelKey: "Partners", path: "/partners" },
+    { icon: <Compass className="h-8 w-8" />, labelKey: "Coaching", path: "/coaching" },
+    { icon: <Euro className="h-8 w-8" />, labelKey: "Financing", path: "/financing" }
   ];
 
   // Filter out the service specified by the prop
@@ -88,48 +88,53 @@ const ExploreMoreSection = ({ excludeService }) => {
   const containerClass = "max-w-[1280px] w-full mx-auto px-4 sm:px-6 lg:px-8 relative";
 
   return (
-    <section className="py-16 sm:py-32 bg-gradient-to-br from-violet-900 via-indigo-900 to-purple-900 text-white relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/30 rounded-full -translate-y-1/2 translate-x-1/2 blur-xl"></div>
-      <div className="absolute bottom-0 left-0 w-72 h-72 bg-indigo-500/30 rounded-full translate-y-1/2 -translate-x-1/4 blur-xl"></div>
-      
-      <div className={`${containerClass} relative z-10`}>
+    <section className="py-20 md:py-32" style={{ background: 'linear-gradient(63.21deg, #19042C 36.84%, #3B2888 96.53%)' }}>
+      <div className={containerClass}>
         <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 text-violet-300 text-sm uppercase tracking-wider font-light mb-6 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm mx-auto">
-            <span className="w-2 h-2 rounded-full bg-violet-400 animate-pulse"></span>
-            {content.badge}
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/30 text-white mb-8 bg-white/5 backdrop-blur-sm">
+            <div className="w-2 h-2 rounded-full bg-white"></div>
+            <span className="text-sm font-medium uppercase tracking-wider">
+              {content.badge}
+            </span>
           </div>
           
-          <h2 className="text-2xl sm:text-4xl md:text-5xl font-light mb-6 bg-gradient-to-r from-violet-200 via-white to-indigo-200 bg-clip-text text-transparent md:leading-snug">
+          {/* Title */}
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
             {dynamicTitle}
           </h2>
           
-          <p className="text-sm sm:text-xl text-indigo-100 mb-10 leading-relaxed max-w-2xl mx-auto">
+          {/* Description */}
+          <p className="text-xl text-white/90 mb-12 leading-relaxed max-w-3xl mx-auto">
             {content.description}
           </p>
           
-          {/* Render filtered services in a flex row */}
-          <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mb-10">
+          {/* Service Cards */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12 max-w-4xl mx-auto">
             {servicesToShow.map((item, index) => (
               <Link 
                 to={item.path}
                 key={index} 
-                className="bg-white/10 backdrop-blur-sm p-4 rounded-xl flex flex-col items-center gap-2 hover:bg-white/20 transition-colors cursor-pointer w-28 sm:w-32 flex-shrink-0"
+                className="bg-white/10 backdrop-blur-sm p-6 md:p-8 rounded-3xl flex flex-col items-center gap-4 hover:bg-white/20 transition-all duration-300 hover:scale-105 min-h-[140px] justify-center border border-white/10"
               >
-                {item.icon}
-                <span className="text-sm text-center">{content.services[item.labelKey]}</span>
+                <div className="text-white">
+                  {item.icon}
+                </div>
+                <span className="text-white text-lg font-medium text-center">{content.services[item.labelKey]}</span>
               </Link>
             ))}
           </div>
           
+          {/* CTA Button */}
           <Link
-            to="/" // Link to the main landing page
-            className="group relative inline-flex items-center justify-center px-6 py-3 text-sm font-medium overflow-hidden rounded-full text-violet-900 bg-white transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            to="/"
+            className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white rounded-3xl transition-all duration-300 hover:scale-105"
+            style={{ backgroundColor: '#8B2CDF' }}
+            onMouseEnter={(e) => e.target.style.backgroundColor = '#7A25CD'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = '#8B2CDF'}
           >
-            <span className="relative z-10 flex items-center">
-              {content.cta}
-              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-violet-200 to-indigo-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            {content.cta}
+            <ArrowRight className="ml-3 h-5 w-5" />
           </Link>
         </div>
       </div>

@@ -494,7 +494,8 @@ export default function RapidWorksPage() {
             <img 
               src={LandingPageHero} 
               alt="Landing Page Hero Background" 
-              className="w-full h-full object-cover object-center"
+              className="w-full h-full object-cover"
+              style={{ objectPosition: 'center 3.6rem' }}
             />
           </div>
           {/* Color overlay */}

@@ -894,11 +894,9 @@ const ImpressumSection = () => {
                         <p>{translate("impressum.companyInfo.street")}</p>
                         <p>{translate("impressum.companyInfo.city")}</p>
                         <p>{translate("impressum.companyInfo.country")}</p>
-                        <p>Email: {translate("impressum.companyInfo.email")}</p>
-                        <p>Tel: {translate("impressum.companyInfo.phone")}</p>
-                        <p>
-                            {translate("impressum.companyInfo.managing")}: {translate("impressum.companyInfo.managingName")}
-                        </p>
+                        <p>{translate("impressum.companyInfo.email")}</p>
+                        <p>{translate("impressum.companyInfo.phone")}</p>
+                        <p>{translate("impressum.companyInfo.managing")}</p>
                     </div>
 
                     <div>
@@ -911,7 +909,8 @@ const ImpressumSection = () => {
                     <div>
                         <h3 className="text-xl font-semibold mb-4">{translate("impressum.responsibility.title")}</h3>
                         <p>{translate("impressum.responsibility.name")}</p>
-                        <p>{translate("impressum.responsibility.address")}</p>
+                        <p>{translate("impressum.responsibility.street")}</p>
+                        <p>{translate("impressum.responsibility.city")}</p>
                     </div>
                 </div>
             </div>
