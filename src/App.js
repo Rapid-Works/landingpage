@@ -204,27 +204,26 @@ const translations = {
       title: "Legal Notice",
       accordingTo: "Information pursuant to § 5 TMG:",
       companyInfo: {
-        title: "Contact Information",
-        name: "Yannick Heeren",
-        careOf: "(c/o RapidWorks – in foundation)",
+        title: "Company Information",
+        name: "HappyStay UG",
         street: "Tulpenweg 24a",
         city: "52222 Stolberg",
         country: "Germany",
+        email: "Email: contact@rapid-works.io",
+        phone: "Phone: +49 (0) 157 823 244 53",
+        managing: "Managing Director: Yannick Heeren"
       },
-      contact: {
-        title: "Contact",
-        email: "Email: yannick@familie-heeren.de",
-        phone: "Phone: +49 157 823 244 53",
+      registration: {
+        title: "Registry Entry",
+        court: "Amtsgericht Aachen",
+        number: "HRB 22303",
+        vatId: "VAT ID: DE321168712"
       },
       responsibility: {
         title: "Responsible for Content",
-        responsiblePerson: "Responsible for the content according to § 55 Abs. 2 RStV:",
         name: "Yannick Heeren",
-        address: "(address as above)",
-      },
-      note: {
-        title: "Note",
-        text: "The company has not yet been founded. A final legal form and entry in the commercial register will follow shortly."
+        street: "Tulpenweg 24a",
+        city: "52222 Stolberg"
       }
     },
     agb: {
@@ -477,27 +476,26 @@ const translations = {
       title: "Impressum",
       accordingTo: "Angaben gemäß § 5 TMG:",
       companyInfo: {
-        title: "Kontaktinformationen",
-        name: "Yannick Heeren",
-        careOf: "(c/o RapidWorks – in Gründung)",
+        title: "Unternehmensangaben",
+        name: "HappyStay UG",
         street: "Tulpenweg 24a",
         city: "52222 Stolberg",
         country: "Deutschland",
+        email: "E-Mail: contact@rapid-works.io",
+        phone: "Tel: +49 (0) 157 823 244 53",
+        managing: "Geschäftsführer: Yannick Heeren"
       },
-      contact: {
-        title: "Kontakt",
-        email: "E-Mail: yannick@familie-heeren.de",
-        phone: "Telefon: +49 157 823 244 53",
+      registration: {
+        title: "Registereintrag",
+        court: "Amtsgericht Aachen",
+        number: "HRB 22303",
+        vatId: "USt-IdNr.: DE321168712"
       },
       responsibility: {
         title: "Verantwortlich für den Inhalt",
-        responsiblePerson: "Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV:",
         name: "Yannick Heeren",
-        address: "(Adresse wie oben)",
-      },
-      note: {
-        title: "Hinweis",
-        text: "Das Unternehmen ist noch nicht gegründet. Eine finale Rechtsform und Eintragung im Handelsregister erfolgen zeitnah."
+        street: "Tulpenweg 24a",
+        city: "52222 Stolberg"
       }
     },
     agb: {

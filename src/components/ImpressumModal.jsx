@@ -28,29 +28,28 @@ const ImpressumModal = ({ onClose }) => {
             <div className="space-y-6">
               <div>
                 <p className="font-semibold mb-2">{translate("impressum.accordingTo")}</p>
+                <h3 className="text-xl font-semibold mb-2">{translate("impressum.companyInfo.title")}</h3>
                 <p>{translate("impressum.companyInfo.name")}</p>
-                <p>{translate("impressum.companyInfo.careOf")}</p>
                 <p>{translate("impressum.companyInfo.street")}</p>
                 <p>{translate("impressum.companyInfo.city")}</p>
                 <p>{translate("impressum.companyInfo.country")}</p>
+                <p>{translate("impressum.companyInfo.email")}</p>
+                <p>{translate("impressum.companyInfo.phone")}</p>
+                <p>{translate("impressum.companyInfo.managing")}</p>
               </div>
 
               <div>
-                <h3 className="text-xl font-semibold mb-2">{translate("impressum.contact.title")}</h3>
-                <p>{translate("impressum.contact.email")}</p>
-                <p>{translate("impressum.contact.phone")}</p>
+                <h3 className="text-xl font-semibold mb-2">{translate("impressum.registration.title")}</h3>
+                <p>{translate("impressum.registration.court")}</p>
+                <p>{translate("impressum.registration.number")}</p>
+                <p>{translate("impressum.registration.vatId")}</p>
               </div>
 
               <div>
                 <h3 className="text-xl font-semibold mb-2">{translate("impressum.responsibility.title")}</h3>
-                <p>{translate("impressum.responsibility.responsiblePerson")}</p>
                 <p>{translate("impressum.responsibility.name")}</p>
-                <p>{translate("impressum.responsibility.address")}</p>
-              </div>
-
-              <div>
-                <h3 className="text-xl font-semibold mb-2">{translate("impressum.note.title")}</h3>
-                <p className="text-sm text-gray-600">{translate("impressum.note.text")}</p>
+                <p>{translate("impressum.responsibility.street")}</p>
+                <p>{translate("impressum.responsibility.city")}</p>
               </div>
             </div>
           </section>
