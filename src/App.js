@@ -50,6 +50,7 @@ import BlogPostPage from './components/BlogPostPage'
 import QRCodeRedirect from './components/QRCodeRedirect'
 import AGBPage from './components/AGBPage'
 import PrivacyPage from './components/PrivacyPage'
+import ImpressumPage from './components/ImpressumPage'
 import CookieConsent from './components/CookieConsent'
 
 // Create and export Language Context with initial values
@@ -186,6 +187,7 @@ const translations = {
       copyright: "© 2025 RapidWorks Agency. All rights reserved.",
       terms: "Terms of Service",
       privacy: "Privacy Policy",
+      impressum: "Legal Notice",
       faq: "FAQ",
       contact: "Contact"
     },
@@ -458,6 +460,7 @@ const translations = {
       copyright: "© 2025 RapidWorks Agency. Alle Rechte vorbehalten.",
       terms: "AGB",
       privacy: "Datenschutz",
+      impressum: "Impressum",
       faq: "FAQ",
       contact: "Kontakt"
     },
@@ -481,7 +484,7 @@ const translations = {
         street: "Tulpenweg 24a",
         city: "52222 Stolberg",
         country: "Deutschland",
-        email: "E-Mail: contact@rapid-works.io",
+        email: "Email: contact@rapid-works.io",
         phone: "Tel: +49 (0) 157 823 244 53",
         managing: "Geschäftsführer: Yannick Heeren"
       },
@@ -1310,118 +1313,21 @@ function App() {
             <Route path="/qrcodeblueprint" element={<QRCodeRedirect />} />
             <Route path="/qrcodebundle" element={<QRCodeRedirect />} />
             <Route path="/qrcodepartners" element={<QRCodeRedirect />} />
-            <Route
-              path="/"
-              element={
-                <main className="flex-1">
-                  <RapidWorksPage />
-                </main>
-              }
-            />
-            <Route
-              path="/experts"
-              element={
-                <main className="flex-1">
-                  <TeamPage />
-                </main>
-              }
-            />
-            <Route
-              path="/blueprint"
-              element={
-                <main className="flex-1">
-                  <BlueprintPage />
-                </main>
-              }
-            />
-            <Route
-              path="/workshop"
-              element={
-                <main className="flex-1">
-                  <WorkshopsPage />
-                </main>
-              }
-            />
-            <Route
-              path="/branding"
-              element={
-                <main className="flex-1">
-                  <VisibiltyBundle />
-                </main>
-              }
-            />
-            <Route
-              path="/coaching"
-              element={
-                <main className="flex-1">
-                  <CoachingPage />
-                </main>
-              }
-            />
-            <Route
-              path="/financing"
-              element={
-                <main className="flex-1">
-                  <FinancingPage />
-                </main>
-              }
-            />
-            <Route
-              path="/mvp"
-              element={
-                <main className="flex-1">
-                  <NewMVPpage />
-                </main>
-              }
-            />
-            <Route
-              path="/bundle"
-              element={
-                <main className="flex-1">
-                  <BundlePage />
-                </main>
-              }
-            />
-            <Route
-              path="/partners"
-              element={
-                <main className="flex-1">
-                  <PartnersPage />
-                </main>
-              }
-            />
-            <Route
-              path="/blogs"
-              element={
-                <main className="flex-1">
-                  <BlogListPage />
-                </main>
-              }
-            />
-            <Route
-              path="/blogs/:slug"
-              element={
-                <main className="flex-1">
-                  <BlogPostPage />
-                </main>
-              }
-            />
-            <Route
-              path="/agb"
-              element={
-                <main className="flex-1">
-                  <AGBPage />
-                </main>
-              }
-            />
-            <Route
-              path="/datenschutz"
-              element={
-                <main className="flex-1">
-                  <PrivacyPage />
-                </main>
-              }
-            />
+            <Route path="/" element={<RapidWorksPage />} />
+            <Route path="/experts" element={<TeamPage />} />
+            <Route path="/blueprint" element={<BlueprintPage />} />
+            <Route path="/workshop" element={<WorkshopsPage />} />
+            <Route path="/branding" element={<VisibiltyBundle />} />
+            <Route path="/coaching" element={<CoachingPage />} />
+            <Route path="/financing" element={<FinancingPage />} />
+            <Route path="/mvp" element={<NewMVPpage />} />
+            <Route path="/bundle" element={<BundlePage />} />
+            <Route path="/partners" element={<PartnersPage />} />
+            <Route path="/blogs" element={<BlogListPage />} />
+            <Route path="/blog/:id" element={<BlogPostPage />} />
+            <Route path="/agb" element={<AGBPage />} />
+            <Route path="/datenschutz" element={<PrivacyPage />} />
+            <Route path="/impressum" element={<ImpressumPage />} />
           </Routes>
           <WebinarFAB />
           <WebinarModal

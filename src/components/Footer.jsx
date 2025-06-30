@@ -20,8 +20,8 @@ const Footer = ({ showFAQ = false, onFAQClick }) => {
         copyright: "© 2025 RapidWorks. All rights reserved.",
         terms: "Terms of Service",
         privacy: "Privacy Policy",
-        faq: "FAQ",
-        contact: "Contact"
+        impressum: "Legal Notice",
+        faq: "FAQ"
       }
     },
     de: {
@@ -29,8 +29,8 @@ const Footer = ({ showFAQ = false, onFAQClick }) => {
         copyright: "© 2025 RapidWorks. Alle Rechte vorbehalten.",
         terms: "AGB",
         privacy: "Datenschutz",
-        faq: "FAQ",
-        contact: "Kontakt"
+        impressum: "Impressum",
+        faq: "FAQ"
       }
     }
   }
@@ -67,6 +67,12 @@ const Footer = ({ showFAQ = false, onFAQClick }) => {
                 >
                   {content.privacy}
                 </Link>
+                <Link 
+                  to="/impressum" 
+                  className="text-gray-400 hover:text-[#7C3BEC] transition-colors"
+                >
+                  {content.impressum}
+                </Link>
                 {showFAQ && (
                   <button 
                     onClick={onFAQClick}
@@ -75,9 +81,6 @@ const Footer = ({ showFAQ = false, onFAQClick }) => {
                     {content.faq}
                   </button>
                 )}
-                <Link to="#contact" className="text-gray-400 hover:text-[#7C3BEC] transition-colors">
-                  {content.contact}
-                </Link>
               </div>
             </div>
           </div>
