@@ -26,7 +26,13 @@ import {
   Landmark,
   Tag,
   MessageSquareText,
-  Info
+  Info,
+  BarChart,
+  Bot,
+  GitMerge,
+  Bug,
+  Database,
+  Infinity
 } from "lucide-react"
 import RapidWorksHeader from "./new_landing_page_header" 
 import { LanguageContext as AppLanguageContext } from "../App"
@@ -45,6 +51,13 @@ import TeamMarketingImage from "../images/team_marketing_image.png"
 import TeamSoftwareImage from "../images/team_software_image.png"
 import TeamDesignBg from "../images/team_design_bg.png"
 import TeamFinancialBg from "../images/team_financial_bg.png"
+import TeamsDesignExpert from "../images/teams_design_expert.png"
+import TeamsAiExpert from "../images/teams_ai_expert.png"
+import TeamsSoftwareTester from "../images/teams_software_tester.png"
+import TeamsDatabaseExpert from "../images/teams_database_expert.png"
+import TeamsDataAnalysis from "../images/teams_data_analysis.png"
+import TeamsDevopsExpert from "../images/teams_devops_expert.png"
+import TeamsSocialMedia from "../images/teams_social_media.png"
 
 // Sample team member data
 const teamMembers = [
@@ -72,9 +85,9 @@ const teamMembers = [
   },
   {
     id: 3,
-    name: "Coming Soon",
+    name: "Laila Vitera",
     role: "Design Expert",
-    image: null,
+    image: TeamsDesignExpert,
     bgImage: TeamDesignBg,
     icon: <Palette className="h-5 w-5" />,
     calendlyLink: null,
@@ -91,6 +104,72 @@ const teamMembers = [
     calendlyLink: null,
     skills: ["Financial Planning", "Investment Strategy", "Budget Management"],
     quote: "Optimizing financial strategies for sustainable growth",
+  },
+  {
+    id: 5,
+    name: "Coming Soon",
+    role: "Data Analysis Expert",
+    image: null,
+    bgImage: TeamsDataAnalysis,
+    icon: <BarChart className="h-5 w-5" />,
+    calendlyLink: null,
+    skills: ["Data Mining", "Data Visualization", "Business Intelligence"],
+    quote: "Transform data into valuable insights that enable strategic decisions",
+  },
+  {
+    id: 6,
+    name: "Coming Soon",
+    role: "AI Expert",
+    image: null,
+    bgImage: TeamsAiExpert,
+    icon: <Bot className="h-5 w-5" />,
+    calendlyLink: null,
+    skills: ["Machine Learning", "Natural Language Processing", "AI Strategy"],
+    quote: "Develop intelligent systems that automate processes and promote innovation",
+  },
+  {
+    id: 7,
+    name: "Coming Soon",
+    role: "DevOps Expert",
+    image: null,
+    bgImage: TeamsDevopsExpert,
+    icon: <Infinity className="h-5 w-5" />,
+    calendlyLink: null,
+    skills: ["CI/CD Pipelines", "Cloud Infrastructure", "Container & Kubernetes"],
+    quote: "Create efficient development and deployment processes for sustainable scalability",
+  },
+  {
+    id: 8,
+    name: "Coming Soon",
+    role: "Software Test Expert",
+    image: null,
+    bgImage: TeamsSoftwareTester,
+    icon: <Bug className="h-5 w-5" />,
+    calendlyLink: null,
+    skills: ["Test Automation", "Quality Assurance", "Bug Tracking"],
+    quote: "Ensure reliable software through targeted testing and quality assurance",
+  },
+  {
+    id: 9,
+    name: "Coming Soon",
+    role: "Database Expert",
+    image: null,
+    bgImage: TeamsDatabaseExpert,
+    icon: <Database className="h-5 w-5" />,
+    calendlyLink: null,
+    skills: ["SQL & NoSQL", "Data Modeling", "Performance Tuning"],
+    quote: "Design performant and secure data architecture for modern applications",
+  },
+  {
+    id: 10,
+    name: "Coming Soon",
+    role: "Social Media Expert",
+    image: null,
+    bgImage: TeamsSocialMedia,
+    icon: <MessageSquareText className="h-5 w-5" />,
+    calendlyLink: null,
+    skills: ["Content Creation", "Social Ads", "Community Management"],
+    quote: "Build digital reach through creative and data-driven social media strategies",
   },
 ]
 
@@ -264,12 +343,24 @@ const TeamPage = () => {
         "Software Expert": "Software Expert",
         "Design Expert": "Design Expert",
         "Finance Expert": "Finance Expert",
+        "Data Analysis Expert": "Data Analysis Expert",
+        "AI Expert": "AI Expert",
+        "DevOps Expert": "DevOps Expert",
+        "Software Test Expert": "Software Test Expert",
+        "Database Expert": "Database Expert",
+        "Social Media Expert": "Social Media Expert",
       },
       memberQuotes: {
         "prince": "Driving growth through strategic digital marketing solutions",
         "samuel": "Building scalable solutions with cutting-edge technologies",
         "design": "Creating beautiful, functional designs that delight users",
         "finance": "Optimizing financial strategies for sustainable growth",
+        "data": "Transform data into valuable insights that enable strategic decisions",
+        "ai": "Develop intelligent systems that automate processes and promote innovation",
+        "devops": "Create efficient development and deployment processes for sustainable scalability",
+        "test": "Ensure reliable software through targeted testing and quality assurance",
+        "database": "Design performant and secure data architecture for modern applications",
+        "social": "Build digital reach through creative and data-driven social media strategies",
       },
       memberExperienceSuffix: "years",
       testimonials: {
@@ -338,12 +429,24 @@ const TeamPage = () => {
         "Software Expert": "Software Experte",
         "Design Expert": "Design Experte",
         "Finance Expert": "Finanz Experte",
+        "Data Analysis Expert": "Datenanalyse Experte",
+        "AI Expert": "KI Experte",
+        "DevOps Expert": "DevOps Experte",
+        "Software Test Expert": "Softwaretest Experte",
+        "Database Expert": "Datenbank Experte",
+        "Social Media Expert": "Social Media Experte",
       },
       memberQuotes: {
         "prince": "Wachstum durch strategische digitale Marketinglösungen vorantreiben",
         "samuel": "Skalierbare Lösungen mit Spitzentechnologien entwickeln",
         "design": "Schöne, funktionale Designs schaffen, die Benutzer begeistern",
         "finance": "Finanzstrategien für nachhaltiges Wachstum optimieren",
+        "data": "Daten in wertvolle Erkenntnisse verwandeln, die strategische Entscheidungen ermöglichen",
+        "ai": "Intelligente Systeme entwickeln, die Prozesse automatisieren und Innovation fördern",
+        "devops": "Effiziente Entwicklungs- und Deployment-Prozesse für nachhaltige Skalierbarkeit schaffen",
+        "test": "Zuverlässige Software durch gezieltes Testing und Qualitätssicherung gewährleisten",
+        "database": "Performante und sichere Datenarchitektur für moderne Anwendungen gestalten",
+        "social": "Digitale Reichweite aufbauen durch kreative und datenbasierte Social Media Strategien",
       },
       memberExperienceSuffix: "Jahre",
       testimonials: {
@@ -542,6 +645,12 @@ const TeamPage = () => {
                   else if (member.id === 2) memberQuote = content.memberQuotes.samuel;
                   else if (member.id === 3) memberQuote = content.memberQuotes.design;
                   else if (member.id === 4) memberQuote = content.memberQuotes.finance;
+                  else if (member.id === 5) memberQuote = content.memberQuotes.data;
+                  else if (member.id === 6) memberQuote = content.memberQuotes.ai;
+                  else if (member.id === 7) memberQuote = content.memberQuotes.devops;
+                  else if (member.id === 8) memberQuote = content.memberQuotes.test;
+                  else if (member.id === 9) memberQuote = content.memberQuotes.database;
+                  else if (member.id === 10) memberQuote = content.memberQuotes.social;
                   else memberQuote = member.quote;
 
                   return (
@@ -592,11 +701,11 @@ const TeamPage = () => {
                           {content.team.moreSkills}
                         </span>
                         {member.calendlyLink ? (
-                          <a href={member.calendlyLink} target="_blank" rel="noopener noreferrer" className="bg-[#FF6B6B] hover:bg-red-500 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
+                          <a href={member.calendlyLink} target="_blank" rel="noopener noreferrer" className="bg-[#FF6B6B] hover:bg-red-500 text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors">
                             {content.team.bookNowButton}
                           </a>
                         ) : (
-                          <button onClick={() => handleRequestExpert(member.role)} className="bg-[#FF6B6B] hover:bg-red-500 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
+                          <button onClick={() => handleRequestExpert(member.role)} className="bg-[#FF6B6B] hover:bg-red-500 text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors">
                             {content.team.requestExpertButton}
                           </button>
                         )}
