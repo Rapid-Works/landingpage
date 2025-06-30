@@ -95,7 +95,7 @@ const ExploreMoreSection = ({ excludeService }) => {
           <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/30 text-white mb-8 bg-white/5 backdrop-blur-sm">
             <div className="w-2 h-2 rounded-full bg-white"></div>
             <span className="text-sm font-medium uppercase tracking-wider">
-              {content.badge}
+            {content.badge}
             </span>
           </div>
           
@@ -118,7 +118,7 @@ const ExploreMoreSection = ({ excludeService }) => {
                 className="bg-white/10 backdrop-blur-sm p-6 md:p-8 rounded-3xl flex flex-col items-center gap-4 hover:bg-white/20 transition-all duration-300 hover:scale-105 min-h-[140px] justify-center border border-white/10"
               >
                 <div className="text-white">
-                  {item.icon}
+                {item.icon}
                 </div>
                 <span className="text-white text-lg font-medium text-center">{content.services[item.labelKey]}</span>
               </Link>
@@ -133,7 +133,7 @@ const ExploreMoreSection = ({ excludeService }) => {
             onMouseEnter={(e) => e.target.style.backgroundColor = '#7A25CD'}
             onMouseLeave={(e) => e.target.style.backgroundColor = '#8B2CDF'}
           >
-            {content.cta}
+              {content.cta}
             <ArrowRight className="ml-3 h-5 w-5" />
           </Link>
         </div>
