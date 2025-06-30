@@ -1102,7 +1102,7 @@ const VisibiltyBundle = () => {
                               <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight">
                                 {item.title}
                               </h3>
-                              <p className="text-white/90 text-base md:text-lg leading-[40px]">
+                              <p className="text-white/90 text-base md:text-lg" style={{ lineHeight: '2' }}>
                                 {item.description}
                               </p>
                             </div>
@@ -1138,7 +1138,7 @@ const VisibiltyBundle = () => {
                               <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight">
                                 {item.title}
                               </h3>
-                              <p className="text-white/90 text-base md:text-lg leading-[40px]">
+                              <p className="text-white/90 text-base md:text-lg" style={{ lineHeight: '2' }}>
                                 {item.description}
                               </p>
                             </div>
@@ -1187,7 +1187,7 @@ const VisibiltyBundle = () => {
                                 <h3 className="text-2xl md:text-4xl lg:text-5xl font-light tracking-tight text-white leading-relaxed pb-1">
                                 {item.title}
                               </h3>
-                                <p className={`text-white/90 text-base md:text-lg lg:text-xl leading-[40px]`}>
+                                <p className={`text-white/90 text-base md:text-lg lg:text-xl`} style={{ lineHeight: '2' }}>
                                 {item.description}
                               </p>
                             </div>
@@ -1236,7 +1236,7 @@ const VisibiltyBundle = () => {
                             <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight">
                               {item.title}
                             </h3>
-                            <p className="text-white/90 text-base md:text-lg leading-[40px]">
+                            <p className="text-white/90 text-base md:text-lg" style={{ lineHeight: '2' }}>
                               {item.description}
                             </p>
                           </div>
