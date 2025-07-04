@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, User, LogOut, Settings } from 'lucide-react'
 import { LanguageContext } from '../App'
+import { useAuth } from '../contexts/AuthContext'
 import RapidWorksLogo from '../images/logo512.png'
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const location = useLocation()
+  const navigate = useNavigate()
   const { language, setLanguage } = React.useContext(LanguageContext)
+  const { currentUser, logout } = useAuth()
 
   // Retrieve language from localStorage on component mount
   useEffect(() => {
@@ -18,10 +22,34 @@ const Navbar = () => {
     }
   }, [setLanguage])
 
+  // Close user menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isUserMenuOpen && !event.target.closest('.user-menu-container')) {
+        setIsUserMenuOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isUserMenuOpen])
+
   // Function to change language and store it in localStorage
   const changeLanguage = (lang) => {
     setLanguage(lang)
     localStorage.setItem('language', lang)
+  }
+
+  const handleLogout = async () => {
+    try {
+      await logout()
+      navigate('/')
+      setIsUserMenuOpen(false)
+    } catch (error) {
+      console.error('Failed to log out:', error)
+    }
   }
 
   const isActive = (path) => location.pathname === path
@@ -64,7 +92,7 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Right: CTA & Language - Visible on all views */}
+          {/* Right: CTA & Language & Auth - Visible on all views */}
           <div className="flex items-center space-x-4">
             <button
               onClick={() => window.open('https://calendly.com/yannick-familie-heeren/30min', '_blank')}
@@ -72,6 +100,60 @@ const Navbar = () => {
             >
               Book a Call
             </button>
+            
+            {/* Authentication section */}
+            {currentUser ? (
+              <div className="relative user-menu-container">
+                <button
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className="flex items-center space-x-2 px-3 py-2 text-sm font-light text-gray-600 hover:text-gray-900 rounded-full hover:bg-gray-100 transition-colors"
+                >
+                  <User className="h-5 w-5" />
+                  <span className="hidden md:inline">
+                    {currentUser.displayName || currentUser.email}
+                  </span>
+                </button>
+                
+                {/* User dropdown menu */}
+                {isUserMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 z-50">
+                    <div className="py-2">
+                      <Link
+                        to="/dashboard"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        <Settings className="h-4 w-4 mr-2" />
+                        Dashboard
+                      </Link>
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        <LogOut className="h-4 w-4 mr-2" />
+                        Sign Out
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <Link
+                  to="/login"
+                  className="px-4 py-2 text-sm font-light text-gray-600 hover:text-gray-900 rounded-full hover:bg-gray-100 transition-colors"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  to="/signup"
+                  className="px-4 py-2 text-sm font-light text-violet-600 border border-violet-600 rounded-full hover:bg-violet-50 transition-colors"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )}
+            
             <div className="hidden md:flex items-center space-x-1 text-sm font-sans">
               <button
                 onClick={() => changeLanguage('en')}
@@ -137,6 +219,52 @@ const Navbar = () => {
               >
                 Visibility Bundle
               </Link>
+              
+              {/* Mobile Authentication Section */}
+              {currentUser ? (
+                <div className="border-t border-gray-100 pt-4 space-y-2">
+                  <div className="flex items-center px-4 py-2 text-sm text-gray-700">
+                    <User className="h-4 w-4 mr-2" />
+                    {currentUser.displayName || currentUser.email}
+                  </div>
+                  <Link
+                    to="/dashboard"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center px-4 py-2 text-sm text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100"
+                  >
+                    <Settings className="h-4 w-4 mr-2" />
+                    Dashboard
+                  </Link>
+                  <button
+                    onClick={() => {
+                      handleLogout()
+                      setIsMenuOpen(false)
+                    }}
+                    className="flex items-center w-full px-4 py-2 text-sm text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100"
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
+                  </button>
+                </div>
+              ) : (
+                <div className="border-t border-gray-100 pt-4 space-y-2">
+                  <Link
+                    to="/login"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100"
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    to="/signup"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block px-4 py-2 text-sm text-violet-600 border border-violet-600 rounded-lg hover:bg-violet-50 text-center"
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+              )}
+              
               <div className="flex justify-center items-center space-x-1 text-sm border-t border-gray-100 pt-4 font-sans">
                 <button
                   onClick={() => changeLanguage('en')}
