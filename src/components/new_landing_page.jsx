@@ -499,7 +499,7 @@ export default function RapidWorksPage() {
             />
           </div>
           {/* Color overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-600/90 to-indigo-600/90 z-10"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-[#8B2CDF]/75 to-[#540E92]/75 z-10"></div>
           <div className="container mx-auto px-6 h-full flex flex-col justify-center relative z-20">
             <div className="text-center mb-8">
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight tracking-tight">
@@ -584,7 +584,7 @@ export default function RapidWorksPage() {
           <div className="grid md:grid-cols-2 gap-8 mb-8">
             <div className="group">
               <div className="relative overflow-hidden rounded-2xl aspect-[4/3] mb-0">
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-600/85 via-purple-600/75 to-indigo-600/85 z-10"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-600/70 via-purple-600/60 to-indigo-600/70 z-10"></div>
                 <img
                   src={LandingPageHero}
                   alt="Rapid Branding Background"
@@ -619,7 +619,7 @@ export default function RapidWorksPage() {
 
             <div className="group">
               <div className="relative overflow-hidden rounded-2xl aspect-[4/3] mb-0">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/85 via-blue-600/75 to-sky-600/85 z-10"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/70 via-blue-600/60 to-sky-600/70 z-10"></div>
                 <img
                   src={LandingExperts}
                   alt="Rapid Experts Background"
@@ -663,7 +663,7 @@ export default function RapidWorksPage() {
           <div className="grid md:grid-cols-2 gap-8 mb-8">
             <div className="group">
               <div className="relative overflow-hidden rounded-2xl aspect-[3/2] mb-0">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/85 via-blue-600/75 to-sky-600/85 z-10"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-[#185E53]/70 via-[#185E53]/60 to-[#073F47]/70 z-10"></div>
                 <img
                   src={LandingPartners}
                   alt="Rapid Partners Background"
@@ -692,13 +692,13 @@ export default function RapidWorksPage() {
                   </div>
                 </div>
 
-                <div className="absolute top-1/2 right-0 w-40 h-40 bg-gradient-to-r from-blue-400/30 to-sky-600/30 rounded-full -translate-x-1/4 -translate-y-1/2 blur-xl z-0"></div>
+                <div className="absolute top-1/2 right-0 w-40 h-40 bg-gradient-to-r from-[#185E53]/30 to-[#073F47]/30 rounded-full -translate-x-1/4 -translate-y-1/2 blur-xl z-0"></div>
               </div>
             </div>
 
             <div className="group">
               <div className="relative overflow-hidden rounded-2xl aspect-[3/2] mb-0">
-                <div className="absolute inset-0 bg-gradient-to-br from-amber-600/85 via-amber-600/75 to-amber-800/85 z-10"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-amber-600/70 via-amber-600/60 to-amber-800/70 z-10"></div>
                 <img
                   src={LandingCoaching}
                   alt="Rapid Coaching Background"

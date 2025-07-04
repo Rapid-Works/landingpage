@@ -53,6 +53,14 @@ import PrivacyPage from './components/PrivacyPage'
 import ImpressumPage from './components/ImpressumPage'
 import CookieConsent from './components/CookieConsent'
 
+// Authentication imports
+import { AuthProvider } from './contexts/AuthContext'
+import LoginPage from './components/LoginPage'
+import SignupPage from './components/SignupPage'
+import Dashboard from './components/Dashboard'
+import ForgotPassword from './components/ForgotPassword'
+import ProtectedRoute from './components/ProtectedRoute'
+
 // Create and export Language Context with initial values
 export const LanguageContext = createContext({
   language: 'de',
@@ -1298,48 +1306,63 @@ function App() {
   }
 
   return (
-    <LanguageContext.Provider value={contextValue}>
-      <>
-        <div className="flex flex-col min-h-screen bg-white">
-          <ScrollToTop />
-          <Analytics />
-          <Routes>
-            <Route path="/qrcodebranding" element={<QRCodeRedirect />} />
-            <Route path="/qrcodevisibility" element={<QRCodeRedirect />} />
-            <Route path="/qrcodemvp" element={<QRCodeRedirect />} />
-            <Route path="/qrcodecoaching" element={<QRCodeRedirect />} />
-            <Route path="/qrcodefinancing" element={<QRCodeRedirect />} />
-            <Route path="/qrcodeworkshop" element={<QRCodeRedirect />} />
-            <Route path="/qrcodeblueprint" element={<QRCodeRedirect />} />
-            <Route path="/qrcodebundle" element={<QRCodeRedirect />} />
-            <Route path="/qrcodepartners" element={<QRCodeRedirect />} />
-            <Route path="/" element={<RapidWorksPage />} />
-            <Route path="/experts" element={<TeamPage />} />
-            <Route path="/blueprint" element={<BlueprintPage />} />
-            <Route path="/workshop" element={<WorkshopsPage />} />
-            <Route path="/branding" element={<VisibiltyBundle />} />
-            <Route path="/coaching" element={<CoachingPage />} />
-            <Route path="/financing" element={<FinancingPage />} />
-            <Route path="/mvp" element={<NewMVPpage />} />
-            <Route path="/bundle" element={<BundlePage />} />
-            <Route path="/partners" element={<PartnersPage />} />
-            <Route path="/blogs" element={<BlogListPage />} />
-            <Route path="/blog/:id" element={<BlogPostPage />} />
-            <Route path="/agb" element={<AGBPage />} />
-            <Route path="/datenschutz" element={<PrivacyPage />} />
-            <Route path="/impressum" element={<ImpressumPage />} />
-          </Routes>
-          <WebinarFAB />
-          <WebinarModal
-            isOpen={showTimedWebinarModal}
-            onClose={() => setShowTimedWebinarModal(false)}
-            webinarDates={nextWebinarDateForPopup}
-          />
-          <Footer />
-          <CookieConsent />
-        </div>
-      </>
-    </LanguageContext.Provider>
+    <AuthProvider>
+      <LanguageContext.Provider value={contextValue}>
+        <>
+          <div className="flex flex-col min-h-screen bg-white">
+            <ScrollToTop />
+            <Analytics />
+            <Routes>
+              {/* Authentication Routes */}
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignupPage />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/dashboard" element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              } />
+              
+              {/* QR Code Routes */}
+              <Route path="/qrcodebranding" element={<QRCodeRedirect />} />
+              <Route path="/qrcodevisibility" element={<QRCodeRedirect />} />
+              <Route path="/qrcodemvp" element={<QRCodeRedirect />} />
+              <Route path="/qrcodecoaching" element={<QRCodeRedirect />} />
+              <Route path="/qrcodefinancing" element={<QRCodeRedirect />} />
+              <Route path="/qrcodeworkshop" element={<QRCodeRedirect />} />
+              <Route path="/qrcodeblueprint" element={<QRCodeRedirect />} />
+              <Route path="/qrcodebundle" element={<QRCodeRedirect />} />
+              <Route path="/qrcodepartners" element={<QRCodeRedirect />} />
+              
+              {/* Main App Routes */}
+              <Route path="/" element={<RapidWorksPage />} />
+              <Route path="/experts" element={<TeamPage />} />
+              <Route path="/blueprint" element={<BlueprintPage />} />
+              <Route path="/workshop" element={<WorkshopsPage />} />
+              <Route path="/branding" element={<VisibiltyBundle />} />
+              <Route path="/coaching" element={<CoachingPage />} />
+              <Route path="/financing" element={<FinancingPage />} />
+              <Route path="/mvp" element={<NewMVPpage />} />
+              <Route path="/bundle" element={<BundlePage />} />
+              <Route path="/partners" element={<PartnersPage />} />
+              <Route path="/blogs" element={<BlogListPage />} />
+              <Route path="/blog/:id" element={<BlogPostPage />} />
+              <Route path="/agb" element={<AGBPage />} />
+              <Route path="/datenschutz" element={<PrivacyPage />} />
+              <Route path="/impressum" element={<ImpressumPage />} />
+            </Routes>
+            <WebinarFAB />
+            <WebinarModal
+              isOpen={showTimedWebinarModal}
+              onClose={() => setShowTimedWebinarModal(false)}
+              webinarDates={nextWebinarDateForPopup}
+            />
+            <Footer />
+            <CookieConsent />
+          </div>
+        </>
+      </LanguageContext.Provider>
+    </AuthProvider>
   )
 }
 

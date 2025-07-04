@@ -34,6 +34,7 @@ import HoodieBg from '../images/hoodiebg.png'
 import PricingBg from '../images/pricing_bg.png'
 import VisibilityAllInclusive from '../images/visibility_all_inclusive.png'
 import VisibilityProfessional from '../images/visibility_professional.png'
+import { useAuth } from '../contexts/AuthContext'
 
 const BundleItem = ({ title, description, index, imageSrc }) => (
   <motion.div
@@ -321,6 +322,8 @@ const VisibiltyBundle = () => {
   const [isFAQModalOpen, setIsFAQModalOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [openFaqIndex, setOpenFaqIndex] = useState(null)
+  const { currentUser } = useAuth()
+  const navigate = useNavigate()
 
   const contentSectionRef = useRef(null)
 
@@ -347,6 +350,12 @@ const VisibiltyBundle = () => {
   }
 
   const handleGetBundle = () => {
+    if (!currentUser) {
+      // Redirect to login with redirect back to this page
+      const currentPath = window.location.pathname + window.location.search
+      navigate(`/login?redirect=${encodeURIComponent(currentPath)}`)
+      return
+    }
     setIsModalOpen(true)
   }
 
@@ -1029,7 +1038,7 @@ const VisibiltyBundle = () => {
 
                   {/* CTA Button */}
                   <button
-                    onClick={() => setIsModalOpen(true)}
+                    onClick={handleGetBundle}
                     className="inline-flex items-center justify-center px-8 py-4 text-white font-medium rounded-3xl transition-all duration-300 hover:shadow-lg hover:scale-105"
                     style={{ backgroundColor: '#FF6B6B' }}
                     onMouseEnter={(e) => e.target.style.backgroundColor = '#FF5252'}
