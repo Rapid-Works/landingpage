@@ -2,13 +2,64 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { blogPosts } from '../blogData'; // Import sample data
 import RapidWorksHeader from "./new_landing_page_header"; // Assuming you want the standard header
+import { messaging, db } from '../firebase/config'; // Import Firebase config
+import { getToken } from 'firebase/messaging';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { requestNotificationPermission } from '../firebase/messaging'; // Use the new function
 
 const BlogListPage = () => {
+
+  const handleSubscription = () => {
+    requestNotificationPermission();
+  };
+
+  const testNotification = () => {
+    console.log('Testing notification. Current permission state:', Notification.permission);
+    if (Notification.permission === 'granted') {
+      try {
+        const notification = new Notification('Direct Test from Website', {
+          body: 'If you see this, your browser can show notifications.',
+          icon: '/logo192.png',
+          tag: 'test-notification'
+        });
+        console.log('Successfully created a notification object.', notification);
+      } catch (error) {
+        console.error('Error creating notification:', error);
+      }
+    } else {
+      console.log('Permission is not granted. Requesting it now...');
+      Notification.requestPermission().then(permission => {
+        console.log('Permission request result:', permission);
+        if (permission === 'granted') {
+          new Notification('Permission was just granted!', {
+            body: 'Notifications are now enabled.'
+          });
+        }
+      });
+    }
+  };
+
   return (
     <div className="pt-20"> {/* Add padding top to account for fixed header */}
        <RapidWorksHeader />
       <div className="container mx-auto px-6 py-12">
-        <h1 className="text-4xl font-bold mb-12 text-center">RapidWorks Blog</h1> {/* Increased margin */}
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-800">Our Blog</h1>
+          <div className="flex gap-4">
+            <button 
+              onClick={handleSubscription}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Subscribe to Notifications
+            </button>
+            <button 
+              onClick={testNotification}
+              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Test Notification
+            </button>
+          </div>
+        </div>
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {blogPosts.map((post) => (
             // Use flex column layout for the card
