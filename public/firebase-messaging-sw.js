@@ -25,55 +25,34 @@ const messaging = firebase.messaging();
 console.log('Firebase messaging instance created');
 
 messaging.onBackgroundMessage((payload) => {
-  console.log('[firebase-messaging-sw.js] Received background message ', payload);
-  
-  // Extract notification data
-  const notificationTitle = payload.notification?.title || 'New Blog Post!';
-  const notificationBody = payload.notification?.body || 'Check out our latest article.';
-  
-  console.log('Showing notification:', notificationTitle, notificationBody);
-  
-  // Customize notification here
+  console.log("[firebase-messaging-sw.js] Received background message ", payload);
+
+  // The browser may already display the notification automatically from the F-A-P
+  // but we are creating it manually here to control the click behavior.
+  const notificationTitle = payload.notification.title;
   const notificationOptions = {
-    body: notificationBody,
-    icon: '/logo192.png',
-    badge: '/logo192.png',
-    tag: 'blog-notification',
-    requireInteraction: true,
-    actions: [
-      {
-        action: 'open',
-        title: 'Read Now',
-        icon: '/logo192.png'
-      },
-      {
-        action: 'close',
-        title: 'Close'
-      }
-    ],
+    body: payload.notification.body,
+    icon: payload.webpush?.notification?.icon || "https://landingpage-606e9.web.app/logo192.png",
+    badge: payload.webpush?.notification?.badge,
+    actions: payload.webpush?.notification?.actions,
     data: {
-      url: 'https://landingpage-606e9.web.app/blog'
-    }
+      url: payload.data.url, // Pass the URL from our data payload
+    },
   };
 
-  console.log('About to show notification with options:', notificationOptions);
-  
   return self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
 // Handle notification clicks
-self.addEventListener('notificationclick', (event) => {
-  console.log('Notification click received:', event);
+self.addEventListener("notificationclick", (event) => {
+  const clickedUrl = event.notification.data.url;
+  console.log("Notification click received. URL:", clickedUrl);
   
   event.notification.close();
   
-  if (event.action === 'open' || !event.action) {
-    console.log('Opening blog page');
-    // Open the blog page
-    event.waitUntil(
-      clients.openWindow('https://landingpage-606e9.web.app/blog')
-    );
-  }
+  event.waitUntil(
+    clients.openWindow(clickedUrl)
+  );
 });
 
 console.log('Service worker setup complete');

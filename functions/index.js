@@ -29,19 +29,32 @@ exports.sendNewBlogNotification = onDocumentCreated(
       console.log("Sending notification to", tokens.length, "tokens.");
 
       try {
-        // Use the modern send method instead of sendToDevice
         const messages = tokens.map((token) => ({
+          token,
+          // Generic notification for mobile lock screens etc.
           notification: {
-            title: `New Blog Post: ${title}`,
+            title,
             body: content,
           },
+          // Specific instructions for web browsers (Desktop & Android Chrome)
           webpush: {
             notification: {
-              icon: "/logo192.png",
-              click_action: "https://landingpage-606e9.web.app/blog",
+              title, // Be explicit
+              body: content,
+              icon: "https://landingpage-606e9.web.app/logo512.png", // Larger icon for web
+              badge: "https://landingpage-606e9.web.app/logo192.png", // For mobile UI
+              actions: [
+                {action: "open_blog", title: "Read Now"},
+              ],
+            },
+            fcmOptions: {
+              link: "https://landingpage-606e9.web.app/blog",
             },
           },
-          token: token,
+          // Custom data for your service worker to handle clicks
+          data: {
+            url: "https://landingpage-606e9.web.app/blog",
+          },
         }));
 
         const response = await admin.messaging().sendEach(messages);
