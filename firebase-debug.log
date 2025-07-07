@@ -1,0 +1,29 @@
+[debug] [2025-07-07T19:37:19.195Z] ----------------------------------------------------------------------
+[debug] [2025-07-07T19:37:19.199Z] Command:       /opt/homebrew/Cellar/node/24.2.0/bin/node /opt/homebrew/bin/firebase deploy --only functions
+[debug] [2025-07-07T19:37:19.200Z] CLI Version:   14.9.0
+[debug] [2025-07-07T19:37:19.200Z] Platform:      darwin
+[debug] [2025-07-07T19:37:19.200Z] Node Version:  v24.2.0
+[debug] [2025-07-07T19:37:19.200Z] Time:          Mon Jul 07 2025 19:37:19 GMT+0000 (Greenwich Mean Time)
+[debug] [2025-07-07T19:37:19.200Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-07-07T19:37:19.475Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-07-07T19:37:19.476Z] > authorizing via signed-in user (rapidworks2025@gmail.com)
+[debug] [2025-07-07T19:37:19.476Z] [iam] checking project landingpage-606e9 for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2025-07-07T19:37:19.476Z] Checked if tokens are valid: true, expires at: 1751919464318
+[debug] [2025-07-07T19:37:19.476Z] Checked if tokens are valid: true, expires at: 1751919464318
+[debug] [2025-07-07T19:37:19.477Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/landingpage-606e9:testIamPermissions [none]
+[debug] [2025-07-07T19:37:19.477Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/landingpage-606e9:testIamPermissions x-goog-quota-user=projects/landingpage-606e9
+[debug] [2025-07-07T19:37:19.477Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/landingpage-606e9:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2025-07-07T19:37:21.015Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/landingpage-606e9:testIamPermissions 200
+[debug] [2025-07-07T19:37:21.015Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/landingpage-606e9:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2025-07-07T19:37:21.015Z] Checked if tokens are valid: true, expires at: 1751919464318
+[debug] [2025-07-07T19:37:21.015Z] Checked if tokens are valid: true, expires at: 1751919464318
+[debug] [2025-07-07T19:37:21.015Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/landingpage-606e9/serviceAccounts/landingpage-606e9@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2025-07-07T19:37:21.016Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/landingpage-606e9/serviceAccounts/landingpage-606e9@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2025-07-07T19:37:21.997Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/landingpage-606e9/serviceAccounts/landingpage-606e9@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2025-07-07T19:37:21.997Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/landingpage-606e9/serviceAccounts/landingpage-606e9@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[info] 
+[info] === Deploying to 'landingpage-606e9'...
+[info] 
+[info] i  deploying functions 
+[info] Running command: npm --prefix "$RESOURCE_DIR" run lint
