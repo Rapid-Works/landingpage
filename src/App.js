@@ -52,6 +52,7 @@ import AGBPage from './components/AGBPage'
 import PrivacyPage from './components/PrivacyPage'
 import ImpressumPage from './components/ImpressumPage'
 import CookieConsent from './components/CookieConsent'
+import TestimonialCard from './components/TestimonialCard'
 
 // Authentication imports
 import { AuthProvider } from './contexts/AuthContext'
@@ -60,6 +61,7 @@ import SignupPage from './components/SignupPage'
 import Dashboard from './components/Dashboard'
 import ForgotPassword from './components/ForgotPassword'
 import ProtectedRoute from './components/ProtectedRoute'
+import { unregisterServiceWorkers, onForegroundMessage } from './firebase/messaging'
 
 // Create and export Language Context with initial values
 export const LanguageContext = createContext({
@@ -1289,6 +1291,47 @@ function App() {
     transition: { duration: 0.6 },
   }
 
+  useEffect(() => {
+    // Temporarily disable service worker cleanup to ensure Firebase messaging works
+    // if (process.env.NODE_ENV === 'development') {
+    //   unregisterServiceWorkers();
+    // }
+    
+    // Handle messages received while the app is in the foreground
+    onForegroundMessage((payload) => {
+      console.log('Foreground message received:', payload);
+      
+      // Create a more user-friendly notification
+      const title = payload.notification.title || 'New Blog Post!';
+      const body = payload.notification.body || 'Check out our latest article.';
+      
+      // Show a browser notification even when the app is in foreground
+      if (Notification.permission === 'granted') {
+        const notification = new Notification(title, {
+          body: body,
+          icon: '/logo192.png',
+          badge: '/logo192.png',
+          tag: 'blog-notification',
+          requireInteraction: true,
+          data: {
+            url: '/blog'
+          }
+        });
+        
+        notification.onclick = () => {
+          window.focus();
+          window.location.href = '/blog';
+          notification.close();
+        };
+        
+        // Auto-close after 10 seconds
+        setTimeout(() => {
+          notification.close();
+        }, 10000);
+      }
+    });
+
+  }, []);
 
   const NewMVPpage = () => {
     return (
@@ -1307,12 +1350,12 @@ function App() {
 
   return (
     <AuthProvider>
-      <LanguageContext.Provider value={contextValue}>
-        <>
-          <div className="flex flex-col min-h-screen bg-white">
-            <ScrollToTop />
-            <Analytics />
-            <Routes>
+    <LanguageContext.Provider value={contextValue}>
+      <>
+        <div className="flex flex-col min-h-screen bg-white">
+          <ScrollToTop />
+          <Analytics />
+          <Routes>
               {/* Authentication Routes */}
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
@@ -1324,44 +1367,44 @@ function App() {
               } />
               
               {/* QR Code Routes */}
-              <Route path="/qrcodebranding" element={<QRCodeRedirect />} />
-              <Route path="/qrcodevisibility" element={<QRCodeRedirect />} />
-              <Route path="/qrcodemvp" element={<QRCodeRedirect />} />
-              <Route path="/qrcodecoaching" element={<QRCodeRedirect />} />
-              <Route path="/qrcodefinancing" element={<QRCodeRedirect />} />
-              <Route path="/qrcodeworkshop" element={<QRCodeRedirect />} />
-              <Route path="/qrcodeblueprint" element={<QRCodeRedirect />} />
-              <Route path="/qrcodebundle" element={<QRCodeRedirect />} />
-              <Route path="/qrcodepartners" element={<QRCodeRedirect />} />
+            <Route path="/qrcodebranding" element={<QRCodeRedirect />} />
+            <Route path="/qrcodevisibility" element={<QRCodeRedirect />} />
+            <Route path="/qrcodemvp" element={<QRCodeRedirect />} />
+            <Route path="/qrcodecoaching" element={<QRCodeRedirect />} />
+            <Route path="/qrcodefinancing" element={<QRCodeRedirect />} />
+            <Route path="/qrcodeworkshop" element={<QRCodeRedirect />} />
+            <Route path="/qrcodeblueprint" element={<QRCodeRedirect />} />
+            <Route path="/qrcodebundle" element={<QRCodeRedirect />} />
+            <Route path="/qrcodepartners" element={<QRCodeRedirect />} />
               
               {/* Main App Routes */}
-              <Route path="/" element={<RapidWorksPage />} />
-              <Route path="/experts" element={<TeamPage />} />
-              <Route path="/blueprint" element={<BlueprintPage />} />
-              <Route path="/workshop" element={<WorkshopsPage />} />
-              <Route path="/branding" element={<VisibiltyBundle />} />
-              <Route path="/coaching" element={<CoachingPage />} />
-              <Route path="/financing" element={<FinancingPage />} />
-              <Route path="/mvp" element={<NewMVPpage />} />
-              <Route path="/bundle" element={<BundlePage />} />
-              <Route path="/partners" element={<PartnersPage />} />
-              <Route path="/blogs" element={<BlogListPage />} />
-              <Route path="/blog/:id" element={<BlogPostPage />} />
-              <Route path="/agb" element={<AGBPage />} />
-              <Route path="/datenschutz" element={<PrivacyPage />} />
-              <Route path="/impressum" element={<ImpressumPage />} />
-            </Routes>
-            <WebinarFAB />
-            <WebinarModal
-              isOpen={showTimedWebinarModal}
-              onClose={() => setShowTimedWebinarModal(false)}
-              webinarDates={nextWebinarDateForPopup}
-            />
-            <Footer />
-            <CookieConsent />
-          </div>
-        </>
-      </LanguageContext.Provider>
+            <Route path="/" element={<RapidWorksPage />} />
+            <Route path="/experts" element={<TeamPage />} />
+            <Route path="/blueprint" element={<BlueprintPage />} />
+            <Route path="/workshop" element={<WorkshopsPage />} />
+            <Route path="/branding" element={<VisibiltyBundle />} />
+            <Route path="/coaching" element={<CoachingPage />} />
+            <Route path="/financing" element={<FinancingPage />} />
+            <Route path="/mvp" element={<NewMVPpage />} />
+            <Route path="/bundle" element={<BundlePage />} />
+            <Route path="/partners" element={<PartnersPage />} />
+            <Route path="/blogs" element={<BlogListPage />} />
+            <Route path="/blog/:id" element={<BlogPostPage />} />
+            <Route path="/agb" element={<AGBPage />} />
+            <Route path="/datenschutz" element={<PrivacyPage />} />
+            <Route path="/impressum" element={<ImpressumPage />} />
+          </Routes>
+          <WebinarFAB />
+          <WebinarModal
+            isOpen={showTimedWebinarModal}
+            onClose={() => setShowTimedWebinarModal(false)}
+            webinarDates={nextWebinarDateForPopup}
+          />
+          <Footer />
+          <CookieConsent />
+        </div>
+      </>
+    </LanguageContext.Provider>
     </AuthProvider>
   )
 }
