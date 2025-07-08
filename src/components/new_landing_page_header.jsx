@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react"
+import { useState, useEffect, useContext, useRef } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import {
   Rocket,
@@ -15,30 +15,55 @@ import {
   User,
   LogOut,
   Settings,
-  Calendar
+  Calendar,
+  Bell,
+  ChevronDown
 } from "lucide-react"
 import { LanguageContext as AppLanguageContext } from "../App"
 import { useAuth } from "../contexts/AuthContext"
+import { useNotifications } from '../contexts/NotificationContext'
 import logo from "../images/logo.png"
+import { auth, db } from '../firebase/config'
+import { collection, getDocs, orderBy, query } from 'firebase/firestore'
+import { signOut } from 'firebase/auth'
 
 export default function RapidWorksHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const [imgError, setImgError] = useState(false)
+  const [notificationPanelOpen, setNotificationPanelOpen] = useState(false)
+  const notificationRef = useRef(null)
+  const userMenuRef = useRef(null)
   const location = useLocation()
   const navigate = useNavigate()
   const context = useContext(AppLanguageContext)
   const { currentUser, logout } = useAuth()
+  const { notifications, notificationCount, markAsRead } = useNotifications()
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (isUserMenuOpen && !event.target.closest(".user-menu-container")) {
         setIsUserMenuOpen(false)
-    }
+      }
     }
     document.addEventListener("mousedown", handleClickOutside)
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [isUserMenuOpen])
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+        setNotificationPanelOpen(false)
+      }
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setIsUserMenuOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [notificationRef, userMenuRef])
 
   if (!context) {
     console.error("LanguageContext not found in RapidWorksHeader")
@@ -117,6 +142,13 @@ export default function RapidWorksHeader() {
         )}
       </div>
     );
+  }
+
+  const handleNotificationClick = () => {
+    setNotificationPanelOpen(!notificationPanelOpen)
+    if (!notificationPanelOpen && notificationCount > 0) {
+      markAsRead()
+    }
   }
 
   return (
@@ -207,9 +239,43 @@ export default function RapidWorksHeader() {
           </div>
 
             {/* Right-aligned Auth */}
-            <div className="absolute right-0 top-1/2 -translate-y-1/2">
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-4">
+              {/* Notification Bell - Commented out for now
+              <div className="relative" ref={notificationRef}>
+                  <button onClick={handleNotificationClick} className="relative text-gray-600 hover:text-purple-600 focus:outline-none">
+                      <Bell size={24} />
+                      {notificationCount > 0 && (
+                          <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">
+                              {notificationCount}
+                          </span>
+                      )}
+                  </button>
+                  {notificationPanelOpen && (
+                      <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl overflow-hidden border border-gray-100">
+                          <div className="p-4 border-b">
+                              <h3 className="font-semibold text-gray-800">New Notifications</h3>
+                          </div>
+                          {notifications.length > 0 ? (
+                              <ul className="divide-y max-h-96 overflow-y-auto">
+                                  {notifications.map(blog => (
+                                      <li key={blog.id}>
+                                          <Link to={blog.url} onClick={() => setNotificationPanelOpen(false)} className="block p-4 hover:bg-gray-50">
+                                              <p className="font-semibold text-sm text-gray-800">{blog.title}</p>
+                                              <p className="text-xs text-gray-500">{blog.body}</p>
+                                          </Link>
+                                      </li>
+                                  ))}
+                              </ul>
+                          ) : (
+                              <p className="p-4 text-sm text-gray-500">No new notifications.</p>
+                          )}
+                      </div>
+                  )}
+              </div>
+              */}
+
               {currentUser ? (
-                <div className="relative user-menu-container">
+                <div className="relative user-menu-container" ref={userMenuRef}>
                <button
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                     className="flex items-center"

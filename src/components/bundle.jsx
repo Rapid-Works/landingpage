@@ -249,7 +249,7 @@ const BundlePage = () => {
         service: "Bundle",
         notes: "Requested early access to Rapid Bundle"
       });
-      console.log('Email submitted to Airtable:', email);
+      // console.log('Email submitted to Airtable:', email);
       return true; // Return success for the EmailWaitlistForm component
     } catch (error) {
       console.error("Error submitting to Airtable:", error);

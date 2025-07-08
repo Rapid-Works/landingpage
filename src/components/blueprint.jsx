@@ -28,7 +28,7 @@ const BlueprintPage = () => {
         service: "Blueprint",
         notes: "Joined Blueprint waitlist"
       });
-      console.log('Email submitted to Airtable:', email);
+      // console.log('Email submitted to Airtable:', email);
       return true;
     } catch (error) {
       console.error("Error submitting to Airtable:", error);
