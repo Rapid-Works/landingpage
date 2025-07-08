@@ -155,7 +155,7 @@ Founders: ${formData.founderCount || 1}
         notes: notes.trim()
       });
       
-      console.log('Form submitted to Airtable:', formData);
+      // console.log('Form submitted to Airtable:', formData);
       nextStep(); // Proceed to the success screen
     } catch (error) {
       console.error("Error submitting to Airtable:", error);

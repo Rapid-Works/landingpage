@@ -10,7 +10,7 @@ exports.sendNewBlogNotification = onDocumentCreated(
     async (event) => {
       const snapshot = event.data;
       if (!snapshot) {
-        console.log("No data associated with the event");
+        // console.log("No data associated with the event");
         return;
       }
       const blogData = snapshot.data();
@@ -22,11 +22,10 @@ exports.sendNewBlogNotification = onDocumentCreated(
       const tokens = tokensSnapshot.docs.map((doc) => doc.data().token);
 
       if (tokens.length === 0) {
-        console.log("No notification tokens to send to.");
+        // console.log("No notification tokens to send to.");
         return;
       }
-
-      console.log("Sending notification to", tokens.length, "tokens.");
+      //  console.log("Sending notification to", tokens.length, "tokens.");
 
       try {
         const messages = tokens.map((token) => ({
@@ -41,25 +40,25 @@ exports.sendNewBlogNotification = onDocumentCreated(
             notification: {
               title, // Be explicit
               body: content,
-              icon: "https://landingpage-606e9.web.app/logo512.png", // Larger icon for web
-              badge: "https://landingpage-606e9.web.app/logo192.png", // For mobile UI
+              icon: "https://www.rapid-works.io/opengraphimage.jpg", // Custom notification icon
+              badge: "https://www.rapid-works.io/logo192.png", // For mobile UI
               actions: [
                 {action: "open_blog", title: "Read Now"},
               ],
             },
             fcmOptions: {
-              link: "https://landingpage-606e9.web.app/blog",
+              link: "https://www.rapid-works.io/blog",
             },
           },
           // Custom data for your service worker to handle clicks
           data: {
-            url: "https://landingpage-606e9.web.app/blog",
+            url: "https://www.rapid-works.io/blog",
           },
         }));
 
         const response = await admin.messaging().sendEach(messages);
-        console.log("Successfully sent messages:", response.successCount);
-        console.log("Failed to send messages:", response.failureCount);
+        // console.log("Successfully sent messages:", response.successCount);
+        // console.log("Failed to send messages:", response.failureCount);
 
         // Clean up invalid tokens
         const tokensToRemove = [];

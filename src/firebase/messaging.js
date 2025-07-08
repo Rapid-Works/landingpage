@@ -19,12 +19,12 @@ export const unregisterServiceWorkers = async () => {
       // Only unregister service workers that are NOT the Firebase messaging worker
       if (registration.scope.includes('firebase-cloud-messaging-push-scope') || 
           registration.scope.includes('firebase-messaging-sw.js')) {
-        console.log('Keeping Firebase messaging service worker:', registration.scope);
+        // console.log('Keeping Firebase messaging service worker:', registration.scope);
         continue; // Skip unregistering this one
       }
       
       await registration.unregister();
-      console.log('Service worker unregistered:', registration.scope);
+      // console.log('Service worker unregistered:', registration.scope);
     }
   } catch (error) {
     console.error('Error managing service workers: ', error);
@@ -41,11 +41,11 @@ export const requestNotificationPermission = async () => {
   try {
     const permission = await Notification.requestPermission();
     if (permission === 'granted') {
-      console.log('Notification permission granted.');
+      // console.log('Notification permission granted.');
 
       const currentToken = await getToken(messaging, { vapidKey: VAPID_KEY });
       if (currentToken) {
-        console.log('FCM Token:', currentToken);
+        // console.log('FCM Token:', currentToken);
         const tokensCollection = collection(db, 'fcmTokens');
         await addDoc(tokensCollection, {
           token: currentToken,
@@ -53,11 +53,11 @@ export const requestNotificationPermission = async () => {
         });
         alert('You have successfully subscribed to notifications!');
       } else {
-        console.log('No registration token available. Request permission to generate one.');
+        // console.log('No registration token available. Request permission to generate one.');
         alert('Could not get notification token. Please ensure you have granted permission.');
       }
     } else {
-      console.log('Unable to get permission to notify.');
+      // console.log('Unable to get permission to notify.');
       alert('You have denied notification permissions.');
     }
   } catch (error) {
@@ -69,7 +69,7 @@ export const requestNotificationPermission = async () => {
 export const onForegroundMessage = (callback) => {
   if (messaging) {
     onMessage(messaging, (payload) => {
-      console.log('Message received in foreground: ', payload);
+      // console.log('Message received in foreground: ', payload);
       callback(payload);
     });
   }

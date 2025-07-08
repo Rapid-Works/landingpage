@@ -85,7 +85,7 @@ const teamMembers = [
   },
   {
     id: 3,
-    name: "Laila Vitera",
+    name: "Olena Donchenko",
     role: "Design Expert",
     image: TeamsDesignExpert,
     bgImage: TeamDesignBg,

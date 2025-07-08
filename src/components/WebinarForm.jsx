@@ -36,27 +36,27 @@ const WebinarForm = ({ webinarDates, onClose }) => {
       );
       const displayDateString = selectedDateObject ? formatDate(selectedDateObject) : 'N/A';
 
-      console.log('Submitting webinar registration:', {
-         ...formData,
-         selectedDateString: displayDateString
-       });
+      // console.log('Submitting webinar registration:', {
+      //    ...formData,
+      //    selectedDateString: displayDateString
+      //  });
 
       await submitWebinarRegistrationToAirtable({
         ...formData,
         selectedDate: formData.selectedDate,
         selectedDateString: displayDateString
       });
-      console.log('Webinar registration successful');
+      // console.log('Webinar registration successful');
       webinarSuccess = true;
 
       if (newsletterOptIn) {
-         console.log('Submitting email to newsletter list:', formData.email);
+        //  console.log('Submitting email to newsletter list:', formData.email);
          await submitToAirtable({
            email: formData.email,
            service: "Newsletter (Opt-in via Webinar)",
            notes: `Opted-in during webinar registration for date: ${displayDateString}`
          });
-         console.log('Newsletter submission successful');
+        //  console.log('Newsletter submission successful');
          localStorage.setItem('newsletterSubscribed', 'true');
       }
 

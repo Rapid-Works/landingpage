@@ -62,6 +62,7 @@ import Dashboard from './components/Dashboard'
 import ForgotPassword from './components/ForgotPassword'
 import ProtectedRoute from './components/ProtectedRoute'
 import { unregisterServiceWorkers, onForegroundMessage } from './firebase/messaging'
+import { NotificationProvider } from './contexts/NotificationContext'
 
 // Create and export Language Context with initial values
 export const LanguageContext = createContext({
@@ -1291,82 +1292,24 @@ function App() {
     transition: { duration: 0.6 },
   }
 
-  useEffect(() => {
-    // Temporarily disable service worker cleanup to ensure Firebase messaging works
-    // if (process.env.NODE_ENV === 'development') {
-    //   unregisterServiceWorkers();
-    // }
-    
-    // Handle messages received while the app is in the foreground
-    onForegroundMessage((payload) => {
-      console.log('Foreground message received:', payload);
-      
-      // Create a more user-friendly notification
-      const title = payload.notification.title || 'New Blog Post!';
-      const body = payload.notification.body || 'Check out our latest article.';
-      
-      // Show a browser notification even when the app is in foreground
-      if (Notification.permission === 'granted') {
-        const notification = new Notification(title, {
-          body: body,
-          icon: '/logo192.png',
-          badge: '/logo192.png',
-          tag: 'blog-notification',
-          requireInteraction: true,
-          data: {
-            url: '/blog'
-          }
-        });
-        
-        notification.onclick = () => {
-          window.focus();
-          window.location.href = '/blog';
-          notification.close();
-        };
-        
-        // Auto-close after 10 seconds
-        setTimeout(() => {
-          notification.close();
-        }, 10000);
-      }
-    });
-
-  }, []);
-
-  const NewMVPpage = () => {
-    return (
-      <div>
-        <main className="flex-1 pt-16">
-          <HeroSection fadeIn={fadeIn} />
-          <ServicesSection fadeIn={fadeIn} />
-          <ApproachSection fadeIn={fadeIn} />
-          <WhyChooseUsSection fadeIn={fadeIn} />
-          <PostMVPOfferSection fadeIn={fadeIn} />
-          <ContactSection fadeIn={fadeIn} />
-        </main>
-      </div>
-    )
-  }
-
   return (
     <AuthProvider>
-    <LanguageContext.Provider value={contextValue}>
-      <>
-        <div className="flex flex-col min-h-screen bg-white">
+      <NotificationProvider>
+        <LanguageContext.Provider value={contextValue}>
           <ScrollToTop />
           <Analytics />
           <Routes>
-              {/* Authentication Routes */}
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/signup" element={<SignupPage />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/dashboard" element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              } />
-              
-              {/* QR Code Routes */}
+            {/* Authentication Routes */}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
+            
+            {/* QR Code Routes */}
             <Route path="/qrcodebranding" element={<QRCodeRedirect />} />
             <Route path="/qrcodevisibility" element={<QRCodeRedirect />} />
             <Route path="/qrcodemvp" element={<QRCodeRedirect />} />
@@ -1376,8 +1319,8 @@ function App() {
             <Route path="/qrcodeblueprint" element={<QRCodeRedirect />} />
             <Route path="/qrcodebundle" element={<QRCodeRedirect />} />
             <Route path="/qrcodepartners" element={<QRCodeRedirect />} />
-              
-              {/* Main App Routes */}
+            
+            {/* Main App Routes */}
             <Route path="/" element={<RapidWorksPage />} />
             <Route path="/experts" element={<TeamPage />} />
             <Route path="/blueprint" element={<BlueprintPage />} />
@@ -1385,7 +1328,7 @@ function App() {
             <Route path="/branding" element={<VisibiltyBundle />} />
             <Route path="/coaching" element={<CoachingPage />} />
             <Route path="/financing" element={<FinancingPage />} />
-            <Route path="/mvp" element={<NewMVPpage />} />
+            <Route path="/mvp" element={<MVPpage />} />
             <Route path="/bundle" element={<BundlePage />} />
             <Route path="/partners" element={<PartnersPage />} />
             <Route path="/blogs" element={<BlogListPage />} />
@@ -1402,9 +1345,8 @@ function App() {
           />
           <Footer />
           <CookieConsent />
-        </div>
-      </>
-    </LanguageContext.Provider>
+        </LanguageContext.Provider>
+      </NotificationProvider>
     </AuthProvider>
   )
 }

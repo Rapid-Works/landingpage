@@ -525,7 +525,7 @@ const VisibilityFormulaForm = () => {
   const uploadToCloudinary = async (file) => {
     if (!file) return null
 
-    console.log(`Starting upload for file: ${file.name}, type: ${file.type}, size: ${file.size} bytes`)
+    // console.log(`Starting upload for file: ${file.name}, type: ${file.type}, size: ${file.size} bytes`)
 
     const formData = new FormData()
     formData.append("file", file)
@@ -533,7 +533,7 @@ const VisibilityFormulaForm = () => {
 
     try {
       const url = `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/auto/upload`
-      console.log(`Uploading to: ${url}`)
+      // console.log(`Uploading to: ${url}`)
 
       const response = await fetch(url, {
         method: "POST",
@@ -541,14 +541,14 @@ const VisibilityFormulaForm = () => {
       })
 
       const responseText = await response.text()
-      console.log("Raw response:", responseText)
+      // console.log("Raw response:", responseText)
 
       if (!response.ok) {
         throw new Error(`Upload failed: ${responseText}`)
       }
 
       const data = JSON.parse(responseText)
-      console.log("Upload successful, received URL:", data.secure_url)
+      // console.log("Upload successful, received URL:", data.secure_url)
 
       return {
         url: data.secure_url,
@@ -707,7 +707,7 @@ const VisibilityFormulaForm = () => {
       // Submit to Airtable
       const response = await submitToAirtable(fieldsToSubmit)
       
-      console.log("Airtable response:", response)
+      // console.log("Airtable response:", response)
       setSuccess(true)
       // Optional: Reset form after successful submission
       // resetForm();
@@ -747,7 +747,7 @@ const VisibilityFormulaForm = () => {
   const submitToAirtable = async (fields) => {
     const url = `https://api.airtable.com/v0/${airtableConfig.baseId}/${encodeURIComponent(airtableConfig.tableName)}`
     
-    console.log("Submitting to Airtable with fields:", JSON.stringify(fields, null, 2))
+    // console.log("Submitting to Airtable with fields:", JSON.stringify(fields, null, 2))
     
     const response = await fetch(url, {
       method: "POST",
