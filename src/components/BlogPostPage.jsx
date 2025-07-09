@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
-import { blogPosts } from '../blogData';
+import { getBlogPostBySlug, getRelatedPosts } from '../utils/blogService';
 import RapidWorksHeader from "./new_landing_page_header";
 import ReactMarkdown from 'react-markdown';
 // Import required plugins for proper markdown rendering
@@ -10,15 +10,58 @@ import rehypeSanitize from 'rehype-sanitize';
 
 const BlogPostPage = () => {
   const { slug } = useParams();
-  const post = blogPosts.find((p) => p.slug === slug);
+  const [post, setPost] = useState(null);
+  const [relatedPosts, setRelatedPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const postData = await getBlogPostBySlug(slug);
+        if (postData) {
+          setPost(postData);
+          
+          // Fetch related posts
+          const related = await getRelatedPosts(slug, postData.tags || []);
+          setRelatedPosts(related);
+        } else {
+          setError('Post not found');
+        }
+      } catch (err) {
+        setError(err.message);
+        console.error('Error fetching blog post:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPost();
     window.scrollTo(0, 0);
     setCopied(false); // Reset copied state when slug changes
   }, [slug]);
 
-  if (!post) {
+  if (loading) {
+    return (
+      <div className="pt-20">
+        <RapidWorksHeader />
+        <div className="container mx-auto px-4 sm:px-6 py-8">
+          <div className="flex justify-center items-center min-h-[400px]">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+              <p className="text-gray-600">Loading blog post...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !post) {
     return <Navigate to="/blogs" replace />;
   }
 
@@ -33,29 +76,7 @@ const BlogPostPage = () => {
     });
   };
 
-  // Find related posts based on shared tags or just show recent posts if no matching tags
-  // const relatedPosts = post.tags && post.tags.length > 0
-  //   ? blogPosts
-  //       .filter(p => p.slug !== slug && p.tags.some(tag => post.tags.includes(tag)))
-  //       .slice(0, 2)
-  //   : blogPosts.filter(p => p.slug !== slug).slice(0, 2);
-
-  const currentIndex = blogPosts.findIndex(p => p.slug === slug);
-  const relatedPosts = [];
-  const numPosts = blogPosts.length;
-
-  if (currentIndex !== -1 && numPosts > 1) { // Check if current post is found and there's more than one post
-    // First related post (next in sequence, or wraps around)
-    const nextPostIndex1 = (currentIndex + 1) % numPosts;
-    relatedPosts.push(blogPosts[nextPostIndex1]);
-
-    // Second related post (the one after nextPostIndex1, or wraps around)
-    // Only add if there are more than 2 posts in total, to avoid duplicating the first related post
-    if (numPosts > 2) {
-      const nextPostIndex2 = (currentIndex + 2) % numPosts;
-      relatedPosts.push(blogPosts[nextPostIndex2]);
-    }
-  }
+  // Related posts are now fetched from Firebase in the useEffect
 
   return (
     <div className="pt-20"> {/* Add padding top for header */}
@@ -181,9 +202,9 @@ const BlogPostPage = () => {
             <h3 className="text-2xl font-bold mb-6">Related Articles</h3>
             <div className="grid gap-6 md:grid-cols-2">
               {relatedPosts.map(related => (
-                <div key={related.slug} className="bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                <div key={related.slug || related.id} className="bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                   {related.imageUrl && (
-                    <Link to={`/blogs/${related.slug}`} className="block h-48 overflow-hidden">
+                    <Link to={`/blogs/${related.slug || related.id}`} className="block h-48 overflow-hidden">
                       <img 
                         src={related.imageUrl}
                         alt={related.title}
@@ -196,7 +217,7 @@ const BlogPostPage = () => {
                       {new Date(related.date).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })}
                     </p>
                     <h4 className="text-lg font-semibold mb-2">
-                      <Link to={`/blogs/${related.slug}`} className="hover:text-purple-600 transition-colors">
+                      <Link to={`/blogs/${related.slug || related.id}`} className="hover:text-purple-600 transition-colors">
                         {related.title}
                       </Link>
                     </h4>

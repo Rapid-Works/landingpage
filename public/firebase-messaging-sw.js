@@ -27,13 +27,13 @@ const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
   // console.log("[firebase-messaging-sw.js] Received background message ", payload);
-
+  
   // The browser may already display the notification automatically from the F-A-P
   // but we are creating it manually here to control the click behavior.
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
-    icon: payload.webpush?.notification?.icon || "https://www.rapid-works.io/opengraphimage.jpg",
+    icon: payload.webpush?.notification?.icon || "https://www.rapid-works.io/opengraphimage.png",
     badge: payload.webpush?.notification?.badge || "https://www.rapid-works.io/logo192.png",
     actions: payload.webpush?.notification?.actions,
     data: {

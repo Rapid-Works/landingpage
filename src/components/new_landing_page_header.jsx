@@ -57,7 +57,7 @@ export default function RapidWorksHeader() {
       }
       if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
         setIsUserMenuOpen(false)
-      }
+    }
     }
     document.addEventListener("mousedown", handleClickOutside)
     return () => {
@@ -234,8 +234,8 @@ export default function RapidWorksHeader() {
                >
                  DE
                </button>
-                </div>
              </div>
+          </div>
           </div>
 
             {/* Right-aligned Auth */}
