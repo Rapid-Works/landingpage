@@ -3,11 +3,14 @@ import { Link } from 'react-router-dom';
 import { getAllBlogPosts } from '../utils/blogService';
 import RapidWorksHeader from "./new_landing_page_header";
 import { requestNotificationPermission } from '../firebase/messaging';
+import { Bell, BellRing, Check, X, Loader2 } from 'lucide-react';
 
 const BlogListPage = () => {
   const [blogPosts, setBlogPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [notificationState, setNotificationState] = useState('default'); // 'default', 'loading', 'success', 'error'
+  const [notificationMessage, setNotificationMessage] = useState('');
 
   useEffect(() => {
     const fetchBlogPosts = async () => {
@@ -26,8 +29,89 @@ const BlogListPage = () => {
     fetchBlogPosts();
   }, []);
 
-  const handleSubscription = () => {
-    requestNotificationPermission();
+  const handleSubscription = async () => {
+    setNotificationState('loading');
+    setNotificationMessage('');
+    
+    try {
+      await requestNotificationPermission();
+      setNotificationState('success');
+      setNotificationMessage('🎉 You\'re all set! You\'ll get notified about new blog posts.');
+      
+      // Reset to default after 5 seconds
+      setTimeout(() => {
+        setNotificationState('default');
+        setNotificationMessage('');
+      }, 5000);
+    } catch (err) {
+      setNotificationState('error');
+      setNotificationMessage('Failed to subscribe. Please try again.');
+      
+      // Reset to default after 5 seconds
+      setTimeout(() => {
+        setNotificationState('default');
+        setNotificationMessage('');
+      }, 5000);
+    }
+  };
+
+  const NotificationButton = () => {
+    const getButtonContent = () => {
+      switch (notificationState) {
+        case 'loading':
+          return (
+            <>
+              <Loader2 className="h-5 w-5 animate-spin" />
+              <span>Subscribing...</span>
+            </>
+          );
+        case 'success':
+          return (
+            <>
+              <Check className="h-5 w-5" />
+              <span>Subscribed!</span>
+            </>
+          );
+        case 'error':
+          return (
+            <>
+              <X className="h-5 w-5" />
+              <span>Try Again</span>
+            </>
+          );
+        default:
+          return (
+            <>
+              <BellRing className="h-5 w-5" />
+              <span className="hidden sm:inline">Get Notified</span>
+              <span className="sm:hidden">Notify Me</span>
+            </>
+          );
+      }
+    };
+
+    const getButtonStyles = () => {
+      switch (notificationState) {
+        case 'loading':
+          return 'bg-gray-500 cursor-not-allowed';
+        case 'success':
+          return 'bg-green-500 hover:bg-green-600';
+        case 'error':
+          return 'bg-red-500 hover:bg-red-600';
+        default:
+          return 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700';
+      }
+    };
+
+    return (
+      <button 
+        onClick={handleSubscription}
+        disabled={notificationState === 'loading'}
+        className={`${getButtonStyles()} text-white font-semibold py-3 px-4 sm:px-6 rounded-full transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0`}
+      >
+        {getButtonContent()}
+      </button>
+    );
   };
 
   if (loading) {
@@ -72,15 +156,30 @@ const BlogListPage = () => {
     <div className="pt-20"> {/* Add padding top to account for fixed header */}
        <RapidWorksHeader />
       <div className="container mx-auto px-6 py-12">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800">Our Blog</h1>
-          <button 
-            onClick={handleSubscription}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          >
-            Subscribe to Notifications
-          </button>
+        {/* Header Section with improved notification UI */}
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+          <div>
+            <h1 className="text-4xl font-bold text-gray-800 mb-2">Our Blog</h1>
+            <p className="text-gray-600">Stay updated with insights, tips, and stories from the RapidWorks team</p>
+          </div>
         </div>
+
+        {/* Notification Feature Banner */}
+        <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-2xl p-6 mb-8">
+          <div className="flex items-center gap-4">
+            <div className="bg-purple-100 p-3 rounded-full">
+              <Bell className="h-6 w-6 text-purple-600" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-gray-900 mb-1">Never Miss a Post</h3>
+              <p className="text-gray-600 text-sm">Get instant notifications when we publish new articles, insights, and startup tips.</p>
+            </div>
+            <div className="hidden sm:block">
+              <NotificationButton />
+            </div>
+          </div>
+        </div>
+
         {blogPosts.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-600 text-lg">No blog posts found.</p>

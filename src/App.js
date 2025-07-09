@@ -1292,10 +1292,10 @@ function App() {
     transition: { duration: 0.6 },
   }
 
-  return (
+    return (
     <AuthProvider>
       <NotificationProvider>
-        <LanguageContext.Provider value={contextValue}>
+    <LanguageContext.Provider value={contextValue}>
           <ScrollToTop />
           <Analytics />
           <Routes>
@@ -1345,7 +1345,7 @@ function App() {
           />
           <Footer />
           <CookieConsent />
-        </LanguageContext.Provider>
+    </LanguageContext.Provider>
       </NotificationProvider>
     </AuthProvider>
   )

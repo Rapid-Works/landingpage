@@ -506,10 +506,10 @@ const TeamPage = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-[#1A75DA]/90 to-[#0E3E74]/90 z-10"></div>
 
         {/* Apply consistent padding and z-index */}
-        <div className="container mx-auto px-6 py-20 md:py-24 lg:py-32 flex flex-col justify-center relative z-20 h-full">
+        <div className="container mx-auto px-4 sm:px-6 py-16 sm:py-20 md:py-24 lg:py-32 flex flex-col justify-center relative z-20 h-full">
           <div className="text-center max-w-3xl mx-auto">
             {/* Ensure standardized font size */}
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight tracking-tight text-white">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold mb-4 sm:mb-6 leading-tight tracking-tight text-white">
               {content.hero.title1}
               {content.hero.titleHighlight && (
                 <span className="relative inline-block">
@@ -518,17 +518,17 @@ const TeamPage = () => {
               )}
               {content.hero.title2}
             </h1>
-            <p className="text-2xl text-white/90 leading-relaxed font-medium">
+            <p className="text-lg sm:text-xl md:text-2xl text-white/90 leading-relaxed font-medium px-2">
               {content.hero.subtitle}
             </p>
           </div>
         </div>
         <button
             onClick={scrollToBenefits}
-            className="absolute bottom-12 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none z-30"
+            className="absolute bottom-6 sm:bottom-12 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none z-30"
             aria-label={content.hero.scrollIndicatorAria}
           >
-            <svg className="w-8 h-8 text-white/70 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 sm:w-8 sm:h-8 text-white/70 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
             </svg>
         </button>
@@ -601,9 +601,9 @@ const TeamPage = () => {
                     {content.cta.description}
                   </p>
 
-                <div className="relative inline-block">
+                <div className="relative inline-block w-full sm:w-auto">
                   <select
-                    className="appearance-none bg-white text-blue-800 font-bold py-4 pl-6 pr-12 rounded-full shadow-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600 cursor-pointer min-w-[600px]"
+                    className="appearance-none bg-white text-blue-800 font-bold py-4 pl-6 pr-12 rounded-full shadow-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600 cursor-pointer w-full sm:min-w-[400px] md:min-w-[500px] lg:min-w-[600px]"
                     defaultValue=""
                     onChange={e => {
                       if (e.target.value) window.open(e.target.value, '_blank');

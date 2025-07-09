@@ -948,22 +948,22 @@ const VisibiltyBundle = () => {
             {/* Color overlay */}
             <div className="absolute inset-0 bg-[#270A5C]/90 z-10"></div>
             
-            <div className="container mx-auto px-6 py-20 md:py-24 lg:py-32 relative z-20 flex items-center justify-center h-full">
+            <div className="container mx-auto px-4 sm:px-6 py-16 sm:py-20 md:py-24 lg:py-32 relative z-20 flex items-center justify-center h-full">
               <div className="text-center max-w-4xl mx-auto">
-                <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-8 leading-tight tracking-tight text-white">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold mb-6 sm:mb-8 leading-tight tracking-tight text-white">
                   {content.hero.title}
                 </h1>
-                <p className="text-2xl text-white/90 leading-relaxed font-medium">
+                <p className="text-lg sm:text-xl md:text-2xl text-white/90 leading-relaxed font-medium px-2">
                   {content.hero.subtitle}
                 </p>
               </div>
             </div>
             <button
               onClick={scrollToContent}
-              className="absolute bottom-12 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none z-30"
+              className="absolute bottom-6 sm:bottom-12 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none z-30"
               aria-label="Scroll to content"
             >
-              <svg className="w-8 h-8 text-white/70 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 sm:w-8 sm:h-8 text-white/70 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
               </svg>
             </button>
