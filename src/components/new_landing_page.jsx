@@ -500,16 +500,16 @@ export default function RapidWorksPage() {
           </div>
           {/* Color overlay */}
           <div className="absolute inset-0 bg-gradient-to-br from-[#8B2CDF]/75 to-[#540E92]/75 z-10"></div>
-          <div className="container mx-auto px-6 h-full flex flex-col justify-center relative z-20">
-            <div className="text-center mb-8">
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight tracking-tight">
+          <div className="container mx-auto px-4 sm:px-6 h-full flex flex-col justify-center relative z-20">
+            <div className="text-center mb-6 sm:mb-8">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-extrabold mb-3 sm:mb-4 md:mb-6 leading-tight tracking-tight">
                 {content.hero.title1}
-                <span className="block mt-2">
+                <span className="block mt-0.5 sm:mt-1 md:mt-2">
                   {content.hero.title2}
                 </span>
               </h1>
               
-              <p className="text-2xl text-white font-medium leading-relaxed max-w-3xl mx-auto">
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white font-medium leading-relaxed max-w-3xl mx-auto px-2">
                 {content.hero.subtitle}
               </p>
             </div>
@@ -518,10 +518,10 @@ export default function RapidWorksPage() {
 
           <button
             onClick={scrollToRapidAnswers}
-            className="absolute bottom-12 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none z-30"
+            className="absolute bottom-6 sm:bottom-12 left-0 right-0 flex justify-center animate-bounce cursor-pointer bg-transparent border-none focus:outline-none z-30"
             aria-label={content.hero.scrollIndicatorAria}
           >
-            <svg className="w-8 h-8 text-white/70 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 sm:w-8 sm:h-8 text-white/70 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
             </svg>
           </button>
@@ -626,7 +626,7 @@ export default function RapidWorksPage() {
                   className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105 saturate-50"
                 />
 
-                <div className="absolute inset-0 z-20 p-8 flex flex-col">
+                <div className="absolute inset-0 z-20 p-4 sm:p-6 md:p-8 flex flex-col">
                   <div className="flex justify-end">
                     <span className="text-xs font-medium text-white bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
                       {content.services.experts.category}
@@ -634,19 +634,19 @@ export default function RapidWorksPage() {
                   </div>
                   <div className="flex-grow flex flex-col justify-center">
                     <div>
-                      <h3 className="text-3xl font-bold text-white mb-2">{content.services.experts.title}</h3>
-                      <p className="text-white/90 max-w-md mb-3">{content.services.experts.description}</p>
-                      <div className="flex justify-between items-center">
+                      <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2">{content.services.experts.title}</h3>
+                      <p className="text-white/90 max-w-md mb-4 text-sm sm:text-base">{content.services.experts.description}</p>
+                      <div className="flex flex-col sm:flex-row gap-3 sm:justify-between sm:items-center">
                         <Link
                           to="/experts"
-                          className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-4 py-2 rounded-lg hover:bg-white/30 transition-all"
+                          className="inline-flex items-center gap-2 text-white font-medium bg-white/20 backdrop-blur-md px-4 py-2 rounded-lg hover:bg-white/30 transition-all text-sm sm:text-base"
                         >
                           {content.services.experts.learnMore} <ArrowRight className="h-4 w-4" />
                         </Link>
                         
                         <Link
                           to="/experts"
-                          className="inline-flex items-center gap-2 text-blue-600 font-medium bg-white px-4 py-2 rounded-lg hover:bg-blue-50 transition-all"
+                          className="inline-flex items-center gap-2 text-blue-600 font-medium bg-white px-4 py-2 rounded-lg hover:bg-blue-50 transition-all text-sm sm:text-base"
                         >
                           {content.services.experts.freeHour} <ArrowRight className="h-4 w-4" />
                         </Link>
