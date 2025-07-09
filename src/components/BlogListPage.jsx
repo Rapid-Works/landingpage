@@ -1,17 +1,72 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { blogPosts } from '../blogData'; // Import sample data
-import RapidWorksHeader from "./new_landing_page_header"; // Assuming you want the standard header
-import { messaging, db } from '../firebase/config'; // Import Firebase config
-import { getToken } from 'firebase/messaging';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { requestNotificationPermission } from '../firebase/messaging'; // Use the new function
+import { getAllBlogPosts } from '../utils/blogService';
+import RapidWorksHeader from "./new_landing_page_header";
+import { requestNotificationPermission } from '../firebase/messaging';
 
 const BlogListPage = () => {
+  const [blogPosts, setBlogPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchBlogPosts = async () => {
+      try {
+        setLoading(true);
+        const posts = await getAllBlogPosts();
+        setBlogPosts(posts);
+      } catch (err) {
+        setError(err.message);
+        console.error('Error fetching blog posts:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBlogPosts();
+  }, []);
 
   const handleSubscription = () => {
     requestNotificationPermission();
   };
+
+  if (loading) {
+    return (
+      <div className="pt-20">
+        <RapidWorksHeader />
+        <div className="container mx-auto px-6 py-12">
+          <div className="flex justify-center items-center min-h-[400px]">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+              <p className="text-gray-600">Loading blog posts...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="pt-20">
+        <RapidWorksHeader />
+        <div className="container mx-auto px-6 py-12">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold text-gray-800 mb-4">Our Blog</h1>
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+              Error loading blog posts: {error}
+            </div>
+            <button 
+              onClick={() => window.location.reload()}
+              className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="pt-20"> {/* Add padding top to account for fixed header */}
@@ -26,8 +81,13 @@ const BlogListPage = () => {
             Subscribe to Notifications
           </button>
         </div>
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {blogPosts.map((post) => (
+        {blogPosts.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-600 text-lg">No blog posts found.</p>
+          </div>
+        ) : (
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {blogPosts.map((post) => (
             // Use flex column layout for the card
             <div key={post.slug} className="flex flex-col border rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden"> {/* Added overflow-hidden */}
               {/* +++ Add Image Section +++ */}
@@ -63,7 +123,8 @@ const BlogListPage = () => {
               </div>
             </div>
           ))}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

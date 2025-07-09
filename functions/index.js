@@ -16,7 +16,9 @@ exports.sendNewBlogNotification = onDocumentCreated(
       const blogData = snapshot.data();
 
       const title = blogData.title || "New Post!";
-      const content = blogData.summary || "Check out our latest article.";
+      const content = blogData.excerpt || "Check out our latest article.";
+      const blogSlug = blogData.slug || event.params.blogId;
+      const blogUrl = `https://www.rapid-works.io/blogs/${blogSlug}`;
 
       const tokensSnapshot = await db.collection("fcmTokens").get();
       const tokens = tokensSnapshot.docs.map((doc) => doc.data().token);
@@ -40,19 +42,22 @@ exports.sendNewBlogNotification = onDocumentCreated(
             notification: {
               title, // Be explicit
               body: content,
-              icon: "https://www.rapid-works.io/opengraphimage.jpg", // Custom notification icon
+              icon: "https://www.rapid-works.io/opengraphimage.png", // Custom notification icon
               badge: "https://www.rapid-works.io/logo192.png", // For mobile UI
               actions: [
                 {action: "open_blog", title: "Read Now"},
               ],
             },
             fcmOptions: {
-              link: "https://www.rapid-works.io/blog",
+              link: blogUrl,
             },
           },
           // Custom data for your service worker to handle clicks
           data: {
-            url: "https://www.rapid-works.io/blog",
+            url: blogUrl,
+            title: title,
+            excerpt: content,
+            slug: blogSlug,
           },
         }));
 
