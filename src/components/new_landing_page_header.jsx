@@ -115,14 +115,25 @@ export default function RapidWorksHeader() {
     return name.substring(0, 2).toUpperCase();
   };
 
+  // Dynamic accent color based on route
+  const routeColorMap = {
+    "/branding": "#7C3BEC", // purple
+    "/experts": "#1A75DA", // blue
+    "/coaching": "#FF9800", // orange
+    "/financing": "#FF6B6B", // rose
+    "/partners": "#185E53", // teal
+  };
+  // Find the best match for the current route
+  const currentPath = location.pathname.split("/")[1] ? `/${location.pathname.split("/")[1]}` : "/branding";
+  const accentColor = routeColorMap[currentPath] || "#7C3BEC";
+
   const navItems = [
-    { name: "Branding", icon: <Megaphone className="h-4 w-4" />, path: "/branding", color: "[#7C3BEC]" },
-    { name: "Experts", icon: <Users className="h-4 w-4" />, path: "/experts", color: "[#7C3BEC]" },
-    { name: "Coaching", icon: <Compass className="h-4 w-4" />, path: "/coaching", color: "[#7C3BEC]" },
-    { name: "Financing", icon: <Euro className="h-4 w-4" />, path: "/financing", color: "[#7C3BEC]" },
-    { name: "Partners", icon: <Handshake className="h-4 w-4" />, path: "/partners", color: "[#7C3BEC]" },
-    // { name: "Blog", icon: <Newspaper className="h-4 w-4" />, path: "/blogs", color: "[#7C3BEC]" },
-  ]
+    { name: "Branding", icon: <Megaphone className="h-4 w-4" />, path: "/branding" },
+    { name: "Experts", icon: <Users className="h-4 w-4" />, path: "/experts" },
+    { name: "Coaching", icon: <Compass className="h-4 w-4" />, path: "/coaching" },
+    { name: "Financing", icon: <Euro className="h-4 w-4" />, path: "/financing" },
+    { name: "Partners", icon: <Handshake className="h-4 w-4" />, path: "/partners" },
+  ];
 
   const renderUserAvatar = (isMobile = false) => {
     const hasPhoto = currentUser && currentUser.photoURL && currentUser.photoURL.trim() !== '' && !imgError;
@@ -188,17 +199,14 @@ export default function RapidWorksHeader() {
                   to={item.path}
                   className={`relative px-4 py-2 rounded-full flex items-center gap-2 transition-all duration-300 text-sm font-medium z-10 ${
                     isActive(item.path)
-                      ? `bg-[#7C3BEC]/10 text-[#7C3BEC]`
-                      : `text-gray-700 hover:text-[#7C3BEC]`
+                      ? `text-[${accentColor}]`
+                      : `text-gray-700 hover:text-[${accentColor}]`
                   }`}
                 >
                   <span className="w-4 h-4">{item.icon}</span>
                   <span>{item.name}</span>
                 </Link>
-                <div className={`absolute -bottom-1 left-0 right-0 h-0.5 bg-[#7C3BEC] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left ${isActive(item.path) ? 'scale-x-100' : ''}`}></div>
-                {!isActive(item.path) && (
-                  <div className={`absolute inset-0 bg-[#7C3BEC]/5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10`}></div>
-                )}
+                <div className={`absolute -bottom-1 left-0 right-0 h-0.5`} style={{background: accentColor, opacity: isActive(item.path) ? 1 : 0, transform: isActive(item.path) ? 'scaleX(1)' : 'scaleX(0)', transition: 'transform 0.3s'}}></div>
               </div>
             ))}
               </nav>
@@ -209,7 +217,8 @@ export default function RapidWorksHeader() {
               href="https://calendly.com/yannick-familie-heeren/30min"
               target="_blank"
               rel="noopener noreferrer"
-                  className={`px-8 py-2.5 bg-[#7C3BEC] hover:bg-[#6B2BD1] text-white rounded-full hover:shadow-lg hover:translate-y-[-2px] active:translate-y-[0px] transition-all duration-300 font-medium text-sm`}
+              className={`px-8 py-2.5 rounded-full hover:shadow-lg hover:translate-y-[-2px] active:translate-y-[0px] transition-all duration-300 font-medium text-sm`}
+              style={{background: accentColor, color: '#fff', boxShadow: `0 2px 8px 0 ${accentColor}22`}}
             >
               {translate('nav.bookCall')}
             </a>
@@ -218,9 +227,10 @@ export default function RapidWorksHeader() {
                  onClick={() => handleLanguageButtonClick('en')}
                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors duration-200 ${
                    language === 'en'
-                     ? `bg-[#7C3BEC] text-white shadow-sm`
+                     ? 'shadow-sm'
                      : 'text-gray-500 hover:text-gray-700'
                  }`}
+                 style={language === 'en' ? { background: accentColor, color: '#fff' } : {}}
                >
                  EN
                </button>
@@ -228,9 +238,10 @@ export default function RapidWorksHeader() {
                  onClick={() => handleLanguageButtonClick('de')}
                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors duration-200 ${
                    language === 'de'
-                     ? `bg-[#7C3BEC] text-white shadow-sm`
+                     ? 'shadow-sm'
                      : 'text-gray-500 hover:text-gray-700'
                  }`}
+                 style={language === 'de' ? { background: accentColor, color: '#fff' } : {}}
                >
                  DE
                </button>
@@ -323,9 +334,13 @@ export default function RapidWorksHeader() {
               to={item.path}
               className={`px-4 py-3 rounded-lg flex items-center gap-2 transition-all duration-300 font-medium w-full text-left ${
                 isActive(item.path)
-                  ? `bg-[#7C3BEC]/10 text-[#7C3BEC]`
-                  : `hover:bg-[#7C3BEC]/5 text-gray-700 hover:text-[#7C3BEC]`
+                  ? ''
+                  : ''
               }`}
+              style={isActive(item.path)
+                ? { color: accentColor }
+                : { color: '#374151' /* gray-700 */ }
+              }
               onClick={() => setMobileMenuOpen(false)}
             >
               {item.icon}
@@ -341,28 +356,28 @@ export default function RapidWorksHeader() {
                     {currentUser.displayName || currentUser.email}
                   </span>
                 </div>
-                <button onClick={() => { handleDashboardRedirect(); setMobileMenuOpen(false); }} className="flex items-center w-full px-4 py-3 text-gray-700 hover:text-[#7C3BEC] hover:bg-[#7C3BEC]/5 rounded-lg transition-all duration-300">
+                <button onClick={() => { handleDashboardRedirect(); setMobileMenuOpen(false); }} className="flex items-center w-full px-4 py-3 rounded-lg transition-all duration-300" style={{ color: accentColor }}>
                   <Settings className="h-4 w-4 mr-3" />
                   Dashboard
                 </button>
-                <button onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="flex items-center w-full px-4 py-3 text-gray-700 hover:text-[#7C3BEC] hover:bg-[#7C3BEC]/5 rounded-lg transition-all duration-300">
+                <button onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="flex items-center w-full px-4 py-3 rounded-lg transition-all duration-300" style={{ color: accentColor }}>
                   <LogOut className="h-4 w-4 mr-3" />
                   Sign Out
                 </button>
               </>
             ) : (
               <>
-                <button onClick={() => { handleLoginRedirect(); setMobileMenuOpen(false); }} className="flex items-center w-full px-4 py-3 text-gray-700 hover:text-[#7C3BEC] hover:bg-[#7C3BEC]/5 rounded-lg transition-all duration-300">
+                <button onClick={() => { handleLoginRedirect(); setMobileMenuOpen(false); }} className="flex items-center w-full px-4 py-3 rounded-lg transition-all duration-300" style={{ color: accentColor }}>
                   <User className="h-4 w-4 mr-3" />
                   Sign In
                 </button>
-                <Link to="/signup" onClick={() => setMobileMenuOpen(false)} className="flex items-center w-full px-4 py-3 text-[#7C3BEC] border border-[#7C3BEC] rounded-lg hover:bg-[#7C3BEC]/5 transition-all duration-300">
+                <Link to="/signup" onClick={() => setMobileMenuOpen(false)} className="flex items-center w-full px-4 py-3 rounded-lg transition-all duration-300" style={{ color: accentColor, border: `1px solid ${accentColor}` }}>
                   <User className="h-4 w-4 mr-3" />
                   Sign Up
                 </Link>
               </>
             )}
-            <a href="https://calendly.com/yannick-familie-heeren/30min" target="_blank" rel="noopener noreferrer" className="flex items-center w-full px-4 py-3 bg-[#7C3BEC] text-white rounded-lg hover:bg-[#6B2BD1] transition-all duration-300" onClick={() => setMobileMenuOpen(false)}>
+            <a href="https://calendly.com/yannick-familie-heeren/30min" target="_blank" rel="noopener noreferrer" className="flex items-center w-full px-4 py-3 rounded-lg transition-all duration-300" style={{ background: accentColor, color: '#fff' }} onClick={() => setMobileMenuOpen(false)}>
               <Calendar className="h-4 w-4 mr-3" />
               {translate("nav.bookCall")}
             </a>
@@ -371,9 +386,10 @@ export default function RapidWorksHeader() {
                 onClick={() => handleLanguageButtonClick("en")}
                 className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors duration-200 ${
                   language === "en"
-                    ? "bg-[#7C3BEC] text-white shadow-sm"
+                    ? "shadow-sm"
                     : "bg-gray-100 text-gray-500"
                 }`}
+                style={language === 'en' ? { background: accentColor, color: '#fff' } : {}}
               >
                 EN
               </button>
@@ -381,9 +397,10 @@ export default function RapidWorksHeader() {
                 onClick={() => handleLanguageButtonClick("de")}
                 className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors duration-200 ${
                   language === "de"
-                    ? "bg-[#7C3BEC] text-white shadow-sm"
+                    ? "shadow-sm"
                     : "bg-gray-100 text-gray-500"
                 }`}
+                style={language === 'de' ? { background: accentColor, color: '#fff' } : {}}
               >
                 DE
               </button>
