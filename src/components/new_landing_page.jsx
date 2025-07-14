@@ -49,6 +49,7 @@ import LandingExperts from "../images/landing_experts.png"
 import LandingPartners from "../images/landing_partners.png"
 import LandingCoaching from "../images/landing_coaching.png"
 import LandingFinancing from "../images/landing_financing.png"
+import CoachingImage from "../images/coaching_image.png"
 
 export default function RapidWorksPage() {
   const [scrolled, setScrolled] = useState(false)
@@ -700,7 +701,7 @@ export default function RapidWorksPage() {
               <div className="relative overflow-hidden rounded-2xl aspect-[3/2] mb-0">
                 <div className="absolute inset-0 bg-gradient-to-br from-amber-600/70 via-amber-600/60 to-amber-800/70 z-10"></div>
                 <img
-                  src={LandingCoaching}
+                  src={CoachingImage}
                   alt="Rapid Coaching Background"
                   className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105 saturate-50"
                 />

@@ -942,7 +942,7 @@ const VisibiltyBundle = () => {
               <img 
                 src={BrandingBg} 
                 alt="Branding Background" 
-                className="w-full h-full object-cover object-[center_20%]"
+                className="w-full h-full object-cover object-[center_-50%]"
               />
                 </div>
             {/* Color overlay */}

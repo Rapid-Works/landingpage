@@ -178,9 +178,9 @@ const FinancingPage = () => {
                 {/* Background image */}
                 <div className="absolute inset-0 z-0">
                   <img 
-                    src={LandingFinancing} 
-                    alt="Rapid Financing Hero Background" 
-                    className="w-full h-full object-cover object-center"
+                    src={LandingFinancing}
+                    alt="Rapid Financing Hero Background"
+                    className="w-full h-full object-cover object-[center_-85%]"
                   />
                 </div>
                 {/* Color overlay */}

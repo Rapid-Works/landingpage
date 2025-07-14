@@ -3,7 +3,7 @@
 import { useState, useEffect, useContext, useRef } from "react"
 import { ArrowRight, Compass, Calendar, Check, Target, TrendingUp, MessageSquare, MapPin, Loader2, MessageSquareText, User } from "lucide-react"
 import YannickProfile from "../images/yannick_plain_bg.png"
-import LandingCoaching from "../images/landing_coaching.png"
+import CoachingImage from "../images/coaching_image.png"
 import RapidWorksHeader from "./new_landing_page_header"
 import { LanguageContext as AppLanguageContext } from "../App"
 import ExploreMoreSection from "./ExploreMoreSection"
@@ -241,9 +241,9 @@ const CoachingPage = () => {
       <section className="relative h-[70vh] min-h-[500px] overflow-hidden text-white">
         {/* Background image */}
         <div className="absolute inset-0 z-0">
-          <img 
-            src={LandingCoaching} 
-            alt="Rapid Coaching Hero Background" 
+          <img
+            src={CoachingImage}
+            alt="Rapid Coaching Hero Background"
             className="w-full h-full object-cover object-center"
           />
         </div>
