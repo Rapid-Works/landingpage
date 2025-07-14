@@ -659,7 +659,7 @@ const TeamPage = () => {
                     <div className="h-28 relative" style={{ backgroundImage: `url(${member.bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
                       <div className="absolute inset-0 bg-gradient-to-br from-[#1A75DA]/80 to-[#0E3E74]/80"></div>
                       {/* Role Badge */}
-                      <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
+                      <div className="absolute bottom-3 right-6">
                           <div className="bg-black/30 backdrop-blur-sm px-3 py-1 rounded-full text-white text-xs font-medium flex items-center gap-1.5">
                             {React.cloneElement(member.icon, {className: "h-3 w-3"})}
                             <span>{memberRole}</span>
