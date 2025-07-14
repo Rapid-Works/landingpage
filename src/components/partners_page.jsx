@@ -290,9 +290,9 @@ const PartnersPage = () => {
         {/* Background image */}
         <div className="absolute inset-0 z-0">
           <img 
-            src={LandingPartners} 
-            alt="Rapid Partners Hero Background" 
-            className="w-full h-full object-cover object-center"
+            src={LandingPartners}
+            alt="Rapid Partners Hero Background"
+            className="w-full h-full object-cover object-[center_30%]"
           />
         </div>
         {/* Color overlay */}
