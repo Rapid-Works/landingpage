@@ -50,6 +50,12 @@ import LandingPartners from "../images/landing_partners.png"
 import LandingCoaching from "../images/landing_coaching.png"
 import LandingFinancing from "../images/landing_financing.png"
 import CoachingImage from "../images/coaching_image.png"
+import LandingPageBolt from "../images/landing_page_bolt.png"
+import LandingPageGoal from "../images/landing_page_goal.png"
+import LandingPageGift from "../images/landing_page_gift.png"
+import LandingPageBrain from "../images/landing_page_brain.png"
+import LandingPageSecurity from "../images/landing_page_security.png"
+import LandingPageStack from "../images/landing_page_stack.png"
 
 export default function RapidWorksPage() {
   const [scrolled, setScrolled] = useState(false)
@@ -157,32 +163,32 @@ export default function RapidWorksPage() {
           {
             title: "They are tailored to your individual needs",
             description: "There is no one-size-fits-all solution for startups. That's why we don't offer pre-packaged deals but take the time to understand your specific challenges and goals. Whether you need just one service or a comprehensive solution, we tailor our offerings to fit your needs.",
-            icon: "Tailored"
+            icon: LandingPageGoal // Changed from "Tailored" to image
           },
           {
             title: "They deliver measurable results with unparalleled speed",
             description: "Startups cant afford to loose time. We know that, so we built all our services so that you can get the first measurable results in just 1 week time. Doesn't matter if you need to enter a market, develop an mvp, get expert coaching, have a meeting with a tax advisor ... we will get you in action.",
-            icon: "Zap"
+            icon: LandingPageBolt // Changed from "Zap" to image
           },
           {
             title: "They are either free or can be subsidized",
             description: "We know that in startups, every Euro invested must create 10 Euros in value. Therefore, we have designed all our services so that they can be subsidized through funding programs, or are completely free for you. We are happy to show you free of charge which subsidies are available to your startup and gladly support you with the application process.",
-            icon: "Gift"
+            icon: LandingPageGift // Changed from "Gift" to image
           },
           {
             title: "They build upon each other",
             description: "All of our services build on one another, though they don't require each other. You can step in and out at every stage. If you need guidance finding out which of our services might help you the best feel free to book a free call with us to discuss your individual needs together. By the way we will stop you from booking services we don't see fit your current biggest needs. We hope for your understanding.",
-            icon: "Layers"
+            icon: LandingPageStack // Changed from "Layers" to image
           },
           {
             title: "They all provide cost transparency and always deliver value before we charge you",
             description: "You will always know upfront what we will charge and when we will do so. We will always only charge when you are satisfied with our work.",
-            icon: "ShieldCheck"
+            icon: LandingPageSecurity // Changed from "ShieldCheck" to image
           },
           {
             title: "They are strategically designed",
             description: "Our services are not random offerings but strategically designed elements that work together to move your startup forward. Each service is purposefully crafted to address specific startup challenges at the right time in your journey.",
-            icon: "Brain"
+            icon: LandingPageBrain // Changed from "Brain" to image (re-using for now)
           }
         ]
       },
@@ -279,32 +285,32 @@ export default function RapidWorksPage() {
           {
             title: "Sie sind alle auf die Bedürfnisse von Startups zugeschnitten",
             description: "Wir lieben Startups und verstehen ihre Bedürfnisse aus eigenen früheren Startup-Reisen und jahrelanger Arbeit im Startup Ökosystem. Daher sind alle unsere Dienstleistungen darauf ausgelegt, die häufigsten Startup-Bedürfnisse auf die zeit- und kosteneffektivste Weise zu erfüllen.",
-            icon: "Tailored"
+            icon: LandingPageGoal // Changed from "Tailored" to image
           },
           {
             title: "Sie liefern messbare Ergebnisse mit beispielloser Geschwindigkeit",
             description: "Startups können es sich nicht leisten, Zeit zu verlieren. Wir wissen das, deshalb haben wir alle unsere Dienstleistungen so aufgebaut, dass du bereits nach einer Woche erste messbare Ergebnisse erzielen kannst. Egal, ob du einen Markt erschließen, ein MVP entwickeln, Experten-Coaching erhalten oder ein Treffen mit einem Steuerberater benötigst ... wir bringen dich in Aktion.",
-            icon: "Zap"
+            icon: LandingPageBolt // Changed from "Zap" to image
           },
           {
             title: "Sie sind entweder kostenlos oder können gefördert werden",
             description: "Wir wissen, dass in Startups jeder investierte Euro 10 Euro an Wert schaffen muss. Daher haben wir all unsere Services so ausgerichtet, dass sie durch Förderprogramme subventioniert werden können, oder gänzlich kostenfrei für dich sind. Wir zeigen dir gerne kostenfrei auf, welche Förderungen deinem Startup zustehen und unterstützen gerne bei der Beantragung.",
-            icon: "Gift"
+            icon: LandingPageGift // Changed from "Gift" to image
           },
           {
             title: "Sie bauen aufeinander auf",
             description: "Alle unsere Dienstleistungen bauen sinnvoll aufeinander auf, funktionieren jedoch auch unabhängig voneinander. Du kannst in jeder Phase flexibel ein- und aussteigen. Gerne helfen wir dir in einem kostenlosen Gespräch herauszufinden, welche Leistung aktuell am besten zu deinen Bedürfnissen passt. Übrigens: Wir raten auch aktiv von Leistungen ab, die deiner Situation momentan nicht entsprechen. Wir bitten um dein Verständnis.",
-            icon: "Layers"
+            icon: LandingPageStack // Changed from "Layers" to image
           },
           {
             title: "Sie bieten alle Kostentransparenz und liefern immer Wert, bevor wir etwas berechnen",
             description: "Du wirst immer im Voraus wissen, was wir berechnen und wann wir dies tun. Wir berechnen immer erst dann etwas, wenn du mit unserer Arbeit zufrieden bist.",
-            icon: "ShieldCheck"
+            icon: LandingPageSecurity // Changed from "ShieldCheck" to image
           },
           {
             title: "Sie sind strategisch durchdacht",
             description: "Unsere Dienstleistungen basieren nicht auf Zufall. Jedes Element – von der visuellen Gestaltung bis hin zur Customer Journey – ist bewusst so konzipiert, dass es deine Marke stärkt und dich näher an deine Ziele bringt.",
-            icon: "Brain"
+            icon: LandingPageBrain // Changed from "Brain" to image (re-using for now)
           }
         ]
       },
@@ -387,30 +393,6 @@ export default function RapidWorksPage() {
   const iconComponents = {
     Target, Zap, Gift, Layers, ShieldCheck, Calendar,
     // Add other icons used elsewhere if needed for consistency, or keep separate
-  };
-
-  const TailoredIcon = ({ className }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" className={className} fill="currentColor">
-      <path d="m13.637 2.363l1.676.335c.09.018.164.084.19.173a.25.25 0 0 1-.062.249l-1.373 1.374a.88.88 0 0 1-.619.256H12.31L9.45 7.611A1.5 1.5 0 1 1 6.5 8a1.5 1.5 0 0 1 1.889-1.449l2.861-2.862V2.552c0-.232.092-.455.256-.619L12.88.559a.25.25 0 0 1 .249-.062c.089.026.155.1.173.19Z"/>
-      <path d="M2 8a6 6 0 1 0 11.769-1.656a.751.751 0 1 1 1.442-.413a7.502 7.502 0 0 1-12.513 7.371A7.501 7.501 0 0 1 10.069.789a.75.75 0 0 1-.413 1.442A6 6 0 0 0 2 8"/>
-      <path d="M5 8a3.002 3.002 0 0 0 4.699 2.476a3 3 0 0 0 1.28-2.827a.748.748 0 0 1 1.045-.782a.75.75 0 0 1 .445.61A4.5 4.5 0 1 1 8.516 3.53a.75.75 0 1 1-.17 1.49A3 3 0 0 0 5 8"/>
-    </svg>
-  );
-
-  const GetIcon = ({ name, className }) => {
-    const icons = {
-      Target: <Target className={className} />,
-      Zap: <Zap className={className} />,
-      Gift: <Gift className={className} />,
-      Layers: <Layers className={className} />,
-      ShieldCheck: <ShieldCheck className={className} />,
-      Calendar: <Calendar className={className} />,
-      MessageSquareText: <MessageSquareText className={className} />,
-      Tailored: <TailoredIcon className={className} />,
-      Brain: <Brain className={className} />,
-    };
-
-    return icons[name] || <Rocket className={className} />;
   };
 
   if (isLoading || !context) {
@@ -871,9 +853,9 @@ export default function RapidWorksPage() {
            <div className="flex flex-wrap justify-center gap-8">
              {content.commonGround.points.map((point, index) => (
                <div key={index} className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)] bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300 flex flex-col text-left border border-gray-100 hover:border-purple-200">
-                 <div className="flex items-center space-x-4 mb-4">
+                 <div className="flex items-start space-x-4 mb-4">
                    <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center">
-                     <GetIcon name={point.icon} className="h-6 w-6 text-purple-600" />
+                     <img src={point.icon} alt={point.title} className="h-6 w-6 object-contain" />
                    </div>
                    <h3 className="text-lg font-semibold text-gray-800">{point.title}</h3>
                  </div>
