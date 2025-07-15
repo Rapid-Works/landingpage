@@ -17,30 +17,23 @@ import {
 import { Input } from "./components/ui/input"
 import { Textarea } from "./components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card"
-import HeroImage from "./images/heroimage.jpg"
 import HeroImage1 from "./images/heroimage2.jpg"
 import HeroImage2 from "./images/heroimage3.jpg"
 import NRWLogo from "./images/nwrlogo.png"
 import { Link, Routes, Route } from "react-router-dom"
 import { ArrowRight } from "lucide-react"
-import BundleForm from "./components/BundleForm"
 import VisibiltyBundle from "./components/visibilitypage"
-import mockuplapall from "./images/mockuplapall.jpg"
 import platformBg from "./images/platform-bg.png"
-import Navbar from './components/Navbar'
 import ScrollToTop from './components/ScrollToTop'
-import NewsletterPopup from './components/NewsletterPopup'
 import Footer from './components/Footer'
 import RapidWorksPage from "./components/new_landing_page"
 import TeamPage from "./components/team_page"
-import BlueprintComingSoon from "./components/blueprint"
 import BlueprintPage from "./components/blueprint"
 import WorkshopsPage from "./components/workshop"
 import CoachingPage from "./components/coaching"
 import FinancingPage from "./components/financing"
 import MVPpage from "./components/mvppage"
 import BundlePage from "./components/bundle"
-import RapidWorksHeader from "./components/new_landing_page_header"
 import WebinarFAB from "./components/WebinarFAB"
 import PartnersPage from "./components/partners_page"
 import WebinarModal from './components/WebinarModal'
@@ -52,7 +45,6 @@ import AGBPage from './components/AGBPage'
 import PrivacyPage from './components/PrivacyPage'
 import ImpressumPage from './components/ImpressumPage'
 import CookieConsent from './components/CookieConsent'
-import TestimonialCard from './components/TestimonialCard'
 
 // Authentication imports
 import { AuthProvider } from './contexts/AuthContext'
@@ -61,7 +53,6 @@ import SignupPage from './components/SignupPage'
 import Dashboard from './components/Dashboard'
 import ForgotPassword from './components/ForgotPassword'
 import ProtectedRoute from './components/ProtectedRoute'
-import { unregisterServiceWorkers, onForegroundMessage } from './firebase/messaging'
 import { NotificationProvider } from './contexts/NotificationContext'
 
 // Create and export Language Context with initial values
