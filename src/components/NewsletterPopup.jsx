@@ -1,37 +1,8 @@
 import { motion, AnimatePresence } from "framer-motion"
 import { X } from "lucide-react"
-import { useState, useEffect, useContext } from "react"
+import { useState, useContext } from "react"
 import { LanguageContext } from '../App'
-
-// Function to submit data to Airtable
-const submitToAirtable = async (email) => {
-  // const apiKey = process.env.REACT_APP_NEWSLETTER_AIRTABLE_API_KEY;
-  // const baseId = process.env.REACT_APP_NEWSLETTER_AIRTABLE_BASE_ID;
-  const apiKey = process.env.REACT_APP_AIRTABLE_API_KEY;
-  const baseId = process.env.REACT_APP_AIRTABLE_BASE_ID;
-  const tableName = 'Newsletter';
-
-  const url = `https://api.airtable.com/v0/${baseId}/${tableName}`;
-
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      fields: {
-        Email: email,
-      },
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to submit data to Airtable');
-  }
-
-  return response.json();
-};
+import { submitNewsletterSubscription } from '../utils/airtableService' // Adjust path as needed
 
 // Make component fully controlled by props
 const NewsletterPopup = ({ isOpen, onClose }) => {
@@ -78,7 +49,7 @@ const NewsletterPopup = ({ isOpen, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      await submitToAirtable(email)
+      await submitNewsletterSubscription(email)
       setStatus(content.success)
       localStorage.setItem('newsletterSubscribed', 'true') // Mark as subscribed
       // Show success state for 2 seconds before closing
@@ -166,4 +137,4 @@ const NewsletterPopup = ({ isOpen, onClose }) => {
   )
 }
 
-export default NewsletterPopup 
+export default NewsletterPopup
