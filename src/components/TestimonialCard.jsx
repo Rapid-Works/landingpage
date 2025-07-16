@@ -15,7 +15,7 @@ const TestimonialCard = ({ quote, authorName, authorTitle, imageUrl, companyLogo
           </p>
         <hr className="my-6 border-gray-200" />
         <div className="flex items-center">
-          <div className={`flex-shrink-0 w-14 h-14 rounded-full border-2 ${borderColor ? borderColor.replace('border-t-4', 'border') : 'border-gray-200'} flex items-center justify-center font-bold text-2xl bg-orange-50`} style={{ color: borderColor ? '#F97316' : '#4B5563' }}>
+          <div className={`flex-shrink-0 w-14 h-14 rounded-full border-2 ${borderColor ? borderColor.replace('border-t-4', 'border') : 'border-blue-300'} flex items-center justify-center font-bold text-2xl bg-blue-50`} style={{ color: borderColor ? '#2563EB' : '#2563EB' }}>
             {initial}
           </div>
           <div className="ml-4">

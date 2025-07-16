@@ -75,7 +75,7 @@ const CoachingTestimonialsSection = ({ content }) => {
               authorTitle={testimonial.authorTitle}
               imageUrl={testimonial.imageUrl}
               companyLogoUrl={testimonial.companyLogoUrl}
-              borderColor="border-orange-400" // Use orange border
+              borderColor="border-blue-400" // Use blue border
             />
           ))}
         </div>
@@ -293,13 +293,15 @@ const CoachingPage = () => {
                 {content.whySection.description}
               </p>
 
-              <button
-                className="bg-[#FF6B6B] hover:bg-[#FF5252] text-white px-12 py-5 rounded-full font-semibold transition-all flex items-center gap-3 group mx-auto text-lg shadow-lg hover:shadow-xl hover:scale-105"
-                onClick={() => window.open("https://calendly.com/yannick-familie-heeren/30min", "_blank")}
-              >
-                {content.whySection.ctaButton}
-                <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
-              </button>
+              <div className="flex justify-center">
+                <button
+                  className="bg-[#FF6B6B] hover:bg-[#FF5252] text-white px-6 sm:px-8 md:px-12 py-3 sm:py-4 md:py-5 rounded-full font-semibold transition-all flex items-center justify-center gap-2 sm:gap-3 group text-sm sm:text-base md:text-lg shadow-lg hover:shadow-xl hover:scale-105 whitespace-nowrap"
+                  onClick={() => window.open("https://calendly.com/yannick-familie-heeren/30min", "_blank")}
+                >
+                  {content.whySection.ctaButton}
+                  <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -381,11 +383,11 @@ const CoachingPage = () => {
                   </div>
 
                   <button
-                className="w-full mt-8 py-4 bg-[#FF6B6B] text-white rounded-2xl hover:bg-[#FF5252] transition-all flex items-center justify-center gap-2 font-semibold text-lg shadow-lg hover:shadow-xl"
+                className="w-full mt-8 py-4 bg-[#FF6B6B] text-white rounded-2xl hover:bg-[#FF5252] transition-all flex items-center justify-center gap-2 font-semibold text-sm sm:text-base md:text-lg shadow-lg hover:shadow-xl whitespace-nowrap"
                     onClick={() => window.open("https://calendly.com/yannick-familie-heeren/30min", "_blank")}
                   >
                     {content.coachSection.ctaButton}
-                <ArrowRight className="h-5 w-5" />
+                <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
                   </button>
                 </div>
               </div>
