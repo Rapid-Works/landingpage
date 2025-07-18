@@ -294,13 +294,13 @@ const CoachingPage = () => {
               </p>
 
               <div className="flex justify-center">
-                <button
+              <button
                   className="bg-[#FF6B6B] hover:bg-[#FF5252] text-white px-6 sm:px-8 md:px-12 py-3 sm:py-4 md:py-5 rounded-full font-semibold transition-all flex items-center justify-center gap-2 sm:gap-3 group text-sm sm:text-base md:text-lg shadow-lg hover:shadow-xl hover:scale-105 whitespace-nowrap"
-                  onClick={() => window.open("https://calendly.com/yannick-familie-heeren/30min", "_blank")}
-                >
-                  {content.whySection.ctaButton}
+                onClick={() => window.open("https://calendly.com/yannick-familie-heeren/30min", "_blank")}
+              >
+                {content.whySection.ctaButton}
                   <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 group-hover:translate-x-1 transition-transform" />
-                </button>
+              </button>
               </div>
             </div>
           </div>

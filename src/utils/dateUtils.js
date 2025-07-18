@@ -8,11 +8,15 @@ export const getNextWebinarDates = (count = 5) => {
   
   // Additional exception: July 17th, 2025, 17:00 CEST (15:00 UTC) - replacement for skipped July 10th
   const julyExceptionDate = new Date(Date.UTC(2025, 6, 17, 15, 0, 0)); // July 17th, 2025
+  
+  // Additional exception: July 31st, 2025, 17:00 CEST (15:00 UTC) - replacement for skipped July 24th
+  const julyExceptionDate2 = new Date(Date.UTC(2025, 6, 31, 15, 0, 0)); // July 31st, 2025
 
   // Skip dates - dates to exclude from the regular schedule
   const skipDates = [
     new Date(Date.UTC(2025, 6, 10, 15, 0, 0)), // July 10th, 2025 - Thursday to skip
     new Date(Date.UTC(2025, 6, 12, 8, 0, 0)),  // July 12th, 2025 - Saturday to skip (same week)
+    new Date(Date.UTC(2025, 6, 24, 15, 0, 0)), // July 24th, 2025 - Thursday to skip (moved to July 31st)
   ];
 
   // Reference Thursday: May 15th, 2025, 17:00 CEST (15:00 UTC)
@@ -36,6 +40,11 @@ export const getNextWebinarDates = (count = 5) => {
   // Add July 17th exception if in future
   if (julyExceptionDate > now) {
     dates.push(julyExceptionDate);
+  }
+  
+  // Add July 31st exception if in future
+  if (julyExceptionDate2 > now) {
+    dates.push(julyExceptionDate2);
   }
 
   // --- Find First Relevant Thursday & Saturday After Now ---
