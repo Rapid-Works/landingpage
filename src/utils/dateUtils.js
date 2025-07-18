@@ -8,7 +8,7 @@ export const getNextWebinarDates = (count = 5) => {
   
   // Additional exception: July 17th, 2025, 17:00 CEST (15:00 UTC) - replacement for skipped July 10th
   const julyExceptionDate = new Date(Date.UTC(2025, 6, 17, 15, 0, 0)); // July 17th, 2025
-  
+
   // Additional exception: July 31st, 2025, 17:00 CEST (15:00 UTC) - replacement for skipped July 24th
   const julyExceptionDate2 = new Date(Date.UTC(2025, 6, 31, 15, 0, 0)); // July 31st, 2025
 
