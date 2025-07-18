@@ -151,11 +151,11 @@ const AIAssistantChatbot = () => {
   }, [handleSendMessage]);
 
   const FABButton = () => (
-    <div className="fixed bottom-6 right-6 z-50 max-md:bottom-4 max-md:right-4">
+    <div className="fixed bottom-6 right-6 z-50 max-md:bottom-4 max-md:right-3">
       <div className="relative">
         <button
           onClick={() => setIsOpen(true)}
-          className="w-20 h-20 max-md:w-16 max-md:h-16 rounded-full hover:scale-105 transition-all duration-300 overflow-hidden p-0 border-0 bg-transparent"
+          className="w-20 h-20 max-md:w-14 max-md:h-14 rounded-full hover:scale-105 transition-all duration-300 overflow-hidden p-0 border-0 bg-transparent"
           aria-label="AI Assistant öffnen"
           style={{ background: 'none', boxShadow: 'none' }}
         >
@@ -166,7 +166,7 @@ const AIAssistantChatbot = () => {
             style={{ border: 'none', outline: 'none', boxShadow: 'none' }}
           />
         </button>
-        <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-[#47156D] text-white text-xs font-medium px-4 py-1.5 rounded-full shadow-lg whitespace-nowrap max-md:hidden">
+        <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-[#47156D] text-white text-xs font-medium px-4 py-1.5 rounded-full shadow-lg whitespace-nowrap max-md:-top-5 max-md:text-xs max-md:px-3 max-md:py-1 max-md:right-0 max-md:left-auto max-md:transform-none max-md:-translate-x-0">
           {t.aiAssistant}
         </div>
       </div>
@@ -185,14 +185,14 @@ const AIAssistantChatbot = () => {
       
       <div className={`fixed z-50 rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-all duration-300 ${
         isMaximized 
-          ? 'top-20 left-20 right-20 bottom-20 w-auto h-auto max-w-4xl max-h-3xl mx-auto max-md:top-4 max-md:left-4 max-md:right-4 max-md:bottom-4 max-md:max-w-none max-md:max-h-none' 
-          : 'bottom-6 right-6 w-[420px] h-[600px] md:w-[420px] md:h-[600px] max-md:bottom-4 max-md:right-4 max-md:left-4 max-md:w-auto max-md:h-[80vh] max-md:max-h-[600px]'
+          ? 'top-20 left-20 right-20 bottom-20 w-auto h-auto max-w-4xl max-h-3xl mx-auto max-md:top-4 max-md:left-3 max-md:right-3 max-md:bottom-4 max-md:max-w-none max-md:max-h-none' 
+          : 'bottom-6 right-6 w-[420px] h-[600px] md:w-[420px] md:h-[600px] max-md:bottom-4 max-md:right-3 max-md:left-3 max-md:w-auto max-md:h-[80vh] max-md:max-h-[600px]'
       }`} style={{ background: 'linear-gradient(135deg, #540E92 0%, #540E92 100%)' }}>
       {/* Header */}
       <div className="p-6 max-md:p-4 text-white">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-4 max-md:space-x-3">
-            <div className="w-16 h-16 max-md:w-12 max-md:h-12 rounded-full overflow-hidden border-2 border-white/20">
+            <div className="w-16 h-16 max-md:w-12 max-md:h-12 rounded-full overflow-hidden">
               <img 
                 src={AILogoBotAvatar} 
                 alt="Rapi AI Assistant" 
