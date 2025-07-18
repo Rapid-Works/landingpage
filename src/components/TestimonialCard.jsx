@@ -3,7 +3,6 @@ import { Quote } from 'lucide-react';
 
 const TestimonialCard = ({ quote, authorName, authorTitle, imageUrl, companyLogoUrl, borderColor }) => {
   const initial = authorName ? authorName[0].toUpperCase() : '';
-
   return (
     <div className={`bg-white rounded-2xl shadow-lg p-8 h-full relative border-t-4 ${borderColor || 'border-gray-200'} flex flex-col`}>
       <div className="absolute top-6 left-6 text-gray-100 z-0">
