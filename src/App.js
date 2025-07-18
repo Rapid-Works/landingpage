@@ -34,7 +34,8 @@ import CoachingPage from "./components/coaching"
 import FinancingPage from "./components/financing"
 import MVPpage from "./components/mvppage"
 import BundlePage from "./components/bundle"
-import WebinarFAB from "./components/WebinarFAB"
+// import WebinarFAB from "./components/WebinarFAB" // Commented out - replaced with AI Assistant
+import AIAssistantChatbot from "./components/AIAssistantChatbot"
 import PartnersPage from "./components/partners_page"
 import WebinarModal from './components/WebinarModal'
 import { getNextWebinarDates } from './utils/dateUtils'
@@ -1328,7 +1329,8 @@ function App() {
             <Route path="/datenschutz" element={<PrivacyPage />} />
             <Route path="/impressum" element={<ImpressumPage />} />
           </Routes>
-          <WebinarFAB />
+          {/* <WebinarFAB /> */}
+          <AIAssistantChatbot />
           <WebinarModal
             isOpen={showTimedWebinarModal}
             onClose={() => setShowTimedWebinarModal(false)}
