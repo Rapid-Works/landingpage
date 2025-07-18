@@ -151,11 +151,11 @@ const AIAssistantChatbot = () => {
   }, [handleSendMessage]);
 
   const FABButton = () => (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-6 right-6 z-50 max-md:bottom-4 max-md:right-4">
       <div className="relative">
         <button
           onClick={() => setIsOpen(true)}
-          className="w-20 h-20 rounded-full hover:scale-105 transition-all duration-300 overflow-hidden p-0 border-0 bg-transparent"
+          className="w-20 h-20 max-md:w-16 max-md:h-16 rounded-full hover:scale-105 transition-all duration-300 overflow-hidden p-0 border-0 bg-transparent"
           aria-label="AI Assistant öffnen"
           style={{ background: 'none', boxShadow: 'none' }}
         >
@@ -166,7 +166,7 @@ const AIAssistantChatbot = () => {
             style={{ border: 'none', outline: 'none', boxShadow: 'none' }}
           />
         </button>
-        <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-[#47156D] text-white text-xs font-medium px-4 py-1.5 rounded-full shadow-lg whitespace-nowrap">
+        <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-[#47156D] text-white text-xs font-medium px-4 py-1.5 rounded-full shadow-lg whitespace-nowrap max-md:hidden">
           {t.aiAssistant}
         </div>
       </div>
@@ -174,16 +174,25 @@ const AIAssistantChatbot = () => {
   );
 
   const ChatWindow = () => (
-    <div className={`fixed z-50 rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-all duration-300 ${
-      isMaximized 
-        ? 'top-20 left-20 right-20 bottom-20 w-auto h-auto max-w-4xl max-h-3xl mx-auto' 
-        : 'bottom-6 right-6 w-[420px] h-[600px]'
-    }`} style={{ background: 'linear-gradient(135deg, #540E92 0%, #540E92 100%)' }}>
+    <>
+      {/* Backdrop for mobile */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+      
+      <div className={`fixed z-50 rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-all duration-300 ${
+        isMaximized 
+          ? 'top-20 left-20 right-20 bottom-20 w-auto h-auto max-w-4xl max-h-3xl mx-auto max-md:top-4 max-md:left-4 max-md:right-4 max-md:bottom-4 max-md:max-w-none max-md:max-h-none' 
+          : 'bottom-6 right-6 w-[420px] h-[600px] md:w-[420px] md:h-[600px] max-md:bottom-4 max-md:right-4 max-md:left-4 max-md:w-auto max-md:h-[80vh] max-md:max-h-[600px]'
+      }`} style={{ background: 'linear-gradient(135deg, #540E92 0%, #540E92 100%)' }}>
       {/* Header */}
-      <div className="p-6 text-white">
+      <div className="p-6 max-md:p-4 text-white">
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-4">
-            <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/20">
+          <div className="flex items-center space-x-4 max-md:space-x-3">
+            <div className="w-16 h-16 max-md:w-12 max-md:h-12 rounded-full overflow-hidden border-2 border-white/20">
               <img 
                 src={AILogoBotAvatar} 
                 alt="Rapi AI Assistant" 
@@ -191,22 +200,22 @@ const AIAssistantChatbot = () => {
               />
             </div>
             <div>
-              <h3 className="font-semibold text-lg">Rapi</h3>
-              <p className="text-sm text-white/80">{t.aiAssistant}</p>
+              <h3 className="font-semibold text-lg max-md:text-base">Rapi</h3>
+              <p className="text-sm max-md:text-xs text-white/80">{t.aiAssistant}</p>
             </div>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 max-md:space-x-1">
             <button
               onClick={() => setIsMaximized(!isMaximized)}
-              className="p-2 hover:bg-white/20 rounded-full transition-colors"
+              className="p-2 max-md:p-1.5 hover:bg-white/20 rounded-full transition-colors"
             >
-              <Maximize2 className="w-5 h-5" />
+              <Maximize2 className="w-5 h-5 max-md:w-4 max-md:h-4" />
             </button>
             <button
               onClick={() => setIsOpen(false)}
-              className="p-2 hover:bg-white/20 rounded-full transition-colors"
+              className="p-2 max-md:p-1.5 hover:bg-white/20 rounded-full transition-colors"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5 max-md:w-4 max-md:h-4" />
             </button>
           </div>
         </div>
@@ -222,7 +231,7 @@ const AIAssistantChatbot = () => {
       </div>
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-white">
+      <div className="flex-1 overflow-y-auto p-6 max-md:p-4 space-y-4 bg-white">
             {/* Quick Response Buttons */}
             {messages.length === 1 && (
               <div className="space-y-3">
@@ -245,7 +254,7 @@ const AIAssistantChatbot = () => {
                 className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`${isMaximized ? 'max-w-lg' : 'max-w-xs'} px-4 py-3 rounded-2xl ${
+                  className={`${isMaximized ? 'max-w-lg max-md:max-w-sm' : 'max-w-xs max-md:max-w-[280px]'} px-4 py-3 rounded-2xl ${
                     message.sender === 'user'
                       ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white'
                       : 'bg-gray-100 text-gray-800'
@@ -282,7 +291,7 @@ const AIAssistantChatbot = () => {
           </div>
 
           {/* Input Area */}
-          <div className="p-6 bg-white border-t border-gray-200">
+          <div className="p-6 max-md:p-4 bg-white border-t border-gray-200">
             <form onSubmit={(e) => {
               e.preventDefault();
               const formData = new FormData(e.target);
@@ -292,26 +301,27 @@ const AIAssistantChatbot = () => {
                 e.target.reset();
               }
             }}>
-              <div className="flex space-x-3">
+              <div className="flex space-x-3 max-md:space-x-2">
                 <input
                   ref={inputRef}
                   type="text"
                   name="message"
                   placeholder={t.placeholder}
-                  className="flex-1 px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm bg-gray-50"
+                  className="flex-1 px-4 py-3 max-md:px-3 max-md:py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm bg-gray-50"
                   autoComplete="off"
                 />
                 <button
                   type="submit"
-                  className="w-12 h-12 text-white rounded-2xl flex items-center justify-center hover:opacity-90 transition-all shadow-lg"
+                  className="w-12 h-12 max-md:w-10 max-md:h-10 text-white rounded-2xl flex items-center justify-center hover:opacity-90 transition-all shadow-lg"
                   style={{ backgroundColor: '#540E92' }}
                 >
-                  <Send className="w-5 h-5" style={{ transform: 'rotate(0deg)' }} />
+                  <Send className="w-5 h-5 max-md:w-4 max-md:h-4" style={{ transform: 'rotate(0deg)' }} />
                 </button>
               </div>
             </form>
           </div>
-      </div>
+        </div>
+      </>
     );
 
   return (
