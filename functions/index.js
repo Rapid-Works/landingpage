@@ -165,6 +165,38 @@ exports.submitNewsletterSubscription = onCall(async (request) => {
   }
 });
 
+// Callable function for AI prompt logging
+exports.submitAIPrompt = onCall(async (request) => {
+  const {
+    userPrompt,
+    aiResponse,
+    language,
+    sessionId,
+    userEmail,
+    timestamp,
+  } = request.data;
+
+  if (!userPrompt || !aiResponse) {
+    throw new Error("User prompt and AI response are required");
+  }
+
+  try {
+    const result = await submitToAirtableTable("AI user prompts", {
+      "User Prompt": userPrompt,
+      "AI Response": aiResponse,
+      "Language": language || "de",
+      "Session ID": sessionId || "",
+      "User Email": userEmail || "",
+      "Timestamp": timestamp || new Date().toISOString(),
+    });
+
+    return {success: true, data: result};
+  } catch (error) {
+    console.error("Error in submitAIPrompt:", error);
+    throw new Error(`Failed to submit AI prompt: ${error.message}`);
+  }
+});
+
 // Alternative: Firestore-triggered functions
 exports.onServiceRequestCreated = onDocumentCreated(
     "serviceRequests/{requestId}",
@@ -305,6 +337,47 @@ exports.onExpertRequestCreated = onDocumentCreated(
         console.log("Expert request synced to Airtable successfully");
       } catch (error) {
         console.error("Failed to sync expert request to Airtable:", error);
+
+        await snapshot.ref.update({
+          syncedToAirtable: false,
+          syncError: error.message,
+          syncedAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
+      }
+    },
+);
+
+exports.onAIPromptCreated = onDocumentCreated(
+    "aiPrompts/{promptId}",
+    async (event) => {
+      const snapshot = event.data;
+      if (!snapshot) {
+        console.log("No data associated with the event");
+        return;
+      }
+
+      const promptData = snapshot.data();
+
+      try {
+        await submitToAirtableTable("AI user prompts", {
+          "User Prompt": promptData.userPrompt,
+          "AI Response": promptData.aiResponse,
+          "Language": promptData.language || "de",
+          "Session ID": promptData.sessionId || "",
+          "User Email": promptData.userEmail || "",
+          "Timestamp": promptData.createdAt ?
+            promptData.createdAt.toDate().toISOString() :
+            new Date().toISOString(),
+        });
+
+        await snapshot.ref.update({
+          syncedToAirtable: true,
+          syncedAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
+
+        console.log("AI prompt synced to Airtable successfully");
+      } catch (error) {
+        console.error("Failed to sync AI prompt to Airtable:", error);
 
         await snapshot.ref.update({
           syncedToAirtable: false,

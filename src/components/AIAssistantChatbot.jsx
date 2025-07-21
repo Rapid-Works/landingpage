@@ -4,18 +4,94 @@ import ReactMarkdown from 'react-markdown';
 import AILogo from '../images/ailogo.png';
 import AILogoBotAvatar from '../images/ai_logo_bot.png';
 import { LanguageContext } from '../App';
+import { useAuth } from '../contexts/AuthContext';
 import { sendMessageToAI } from '../utils/aiService';
+import { submitAIPromptToAirtable, submitToFirestore } from '../utils/airtableService';
 
 const AIAssistantChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
   const [messages, setMessages] = useState([]);
+  const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substring(2)}`);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const context = useContext(LanguageContext);
+  const { currentUser } = useAuth();
 
   // Use language context or default to German
   const language = context?.language || 'de';
+
+  // Helper function to log AI interactions
+  const logAIInteraction = useCallback(async (userPrompt, aiResponse) => {
+    try {
+      // Try to log to Airtable first (via Firebase Functions)
+      await submitAIPromptToAirtable({
+        userPrompt,
+        aiResponse,
+        language,
+        sessionId,
+        userEmail: currentUser?.email || null // Use the current user's email
+      });
+    } catch (error) {
+      console.warn('Failed to log to Airtable, trying Firestore backup:', error);
+      
+      // Fallback to Firestore if Airtable fails
+      try {
+        await submitToFirestore.aiPrompt({
+          userPrompt,
+          aiResponse,
+          language,
+          sessionId,
+          userEmail: currentUser?.email || null // Use the current user's email
+        });
+      } catch (firestoreError) {
+        console.error('Failed to log AI interaction to both Airtable and Firestore:', firestoreError);
+        // Don't throw error here to avoid breaking the chat experience
+      }
+    }
+  }, [language, sessionId, currentUser?.email]);
+
+  // Add custom styles for animations
+  const animationStyles = `
+    @keyframes aiRotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    @keyframes aiPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    .ai-fab-button {
+      animation: aiPulse 2s ease-in-out infinite;
+      transition: all 0.3s ease;
+    }
+    
+    .ai-fab-button:hover {
+      animation: aiPulse 1s ease-in-out infinite;
+      transform: scale(1.1);
+    }
+    
+    .ai-fab-image {
+      animation: aiRotate 10s linear infinite;
+    }
+    
+    .ai-fab-button:hover .ai-fab-image {
+      animation: aiRotate 3s linear infinite;
+    }
+  `;
+
+  // Add styles to document head
+  useEffect(() => {
+    const styleElement = document.createElement('style');
+    styleElement.textContent = animationStyles;
+    document.head.appendChild(styleElement);
+    
+    return () => {
+      document.head.removeChild(styleElement);
+    };
+  }, [animationStyles]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -128,6 +204,10 @@ const AIAssistantChatbot = () => {
       
       // Scroll to bottom after bot response
       setTimeout(() => scrollToBottom(), 100);
+
+      // Log the interaction
+      await logAIInteraction(messageText, aiResponse);
+
     } catch (error) {
       console.error('Error getting AI response:', error);
       // Replace loading message with error message
@@ -144,7 +224,7 @@ const AIAssistantChatbot = () => {
       );
       setTimeout(() => scrollToBottom(), 100);
     }
-  }, [t, language]);
+  }, [t, language, logAIInteraction]);
 
   const handleQuickResponse = useCallback((response) => {
     handleSendMessage(response);
@@ -155,17 +235,16 @@ const AIAssistantChatbot = () => {
       <div className="relative">
         <button
           onClick={() => setIsOpen(true)}
-          className="w-20 h-20 max-md:w-14 max-md:h-14 rounded-full hover:scale-105 transition-all duration-300 overflow-hidden p-0 border-0 bg-transparent"
+          className="ai-fab-button w-20 h-20 max-md:w-14 max-md:h-14 rounded-full overflow-hidden p-0 border-0 bg-transparent"
           aria-label="AI Assistant öffnen"
-          style={{ background: 'none', boxShadow: 'none' }}
         >
           <img 
             src={AILogo} 
             alt="AI Assistant" 
-            className="w-full h-full object-cover rounded-full border-0"
-            style={{ border: 'none', outline: 'none', boxShadow: 'none' }}
+            className="ai-fab-image w-full h-full object-cover rounded-full"
           />
         </button>
+        
         <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-[#47156D] text-white text-xs font-medium px-4 py-1.5 rounded-full shadow-lg whitespace-nowrap max-md:-top-5 max-md:text-xs max-md:px-3 max-md:py-1 max-md:right-0 max-md:left-auto max-md:transform-none max-md:-translate-x-0">
           {t.aiAssistant}
         </div>

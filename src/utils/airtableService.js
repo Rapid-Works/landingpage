@@ -93,6 +93,32 @@ export const submitNewsletterSubscription = async (email) => {
   }
 };
 
+// New function for AI prompt logging
+export const submitAIPromptToAirtable = async ({ 
+  userPrompt, 
+  aiResponse, 
+  language, 
+  sessionId = null,
+  userEmail = null 
+}) => {
+  try {
+    const submitAIPrompt = httpsCallable(functions, 'submitAIPrompt');
+    const result = await submitAIPrompt({
+      userPrompt,
+      aiResponse,
+      language,
+      sessionId,
+      userEmail,
+      timestamp: new Date().toISOString()
+    });
+    
+    return result.data;
+  } catch (error) {
+    console.error("Error submitting AI prompt:", error);
+    throw error;
+  }
+};
+
 
 // Alternative approach: Store in Firestore first (for better reliability)
 export const submitToFirestore = {
@@ -168,6 +194,32 @@ export const submitToFirestore = {
       return { id: docRef.id, success: true };
     } catch (error) {
       console.error("Error adding expert request:", error);
+      throw error;
+    }
+  },
+
+  // New AI prompt logging function
+  aiPrompt: async ({ 
+    userPrompt, 
+    aiResponse, 
+    language, 
+    sessionId = null,
+    userEmail = null 
+  }) => {
+    try {
+      const docRef = await addDoc(collection(db, 'aiPrompts'), {
+        userPrompt,
+        aiResponse,
+        language,
+        sessionId,
+        userEmail,
+        createdAt: serverTimestamp(),
+        syncedToAirtable: false
+      });
+      
+      return { id: docRef.id, success: true };
+    } catch (error) {
+      console.error("Error adding AI prompt:", error);
       throw error;
     }
   }
