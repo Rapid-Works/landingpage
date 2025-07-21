@@ -166,7 +166,7 @@ const BlogListPage = () => {
 
         {/* Notification Feature Banner */}
         <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-2xl p-6 mb-8">
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <div className="bg-purple-100 p-3 rounded-full">
               <Bell className="h-6 w-6 text-purple-600" />
             </div>
@@ -174,7 +174,7 @@ const BlogListPage = () => {
               <h3 className="font-semibold text-gray-900 mb-1">Never Miss a Post</h3>
               <p className="text-gray-600 text-sm">Get instant notifications when we publish new articles, insights, and startup tips.</p>
             </div>
-            <div className="hidden sm:block">
+            <div className="w-full sm:w-auto">
               <NotificationButton />
             </div>
           </div>
