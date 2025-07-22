@@ -1,13 +1,45 @@
-// src/components/ui/button.jsx
-import React from 'react';
+import React, { forwardRef } from "react";
+import { cn } from "./utils";
 
-export function Button({ children, className, ...props }) {
-    return (
-      <button
-        className={`px-4 py-2 bg-black text-white rounded-md hover:bg-black/90 ${className}`}
-        {...props}
-      >
-        {children}
-      </button>
-    );
-  }
+const buttonVariants = {
+  default: "bg-blue-600 text-white hover:bg-blue-700",
+  outline: "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50",
+  secondary: "bg-gray-200 text-gray-900 hover:bg-gray-300",
+  ghost: "text-gray-700 hover:bg-gray-100",
+};
+
+const sizeVariants = {
+  default: "h-10 px-4 py-2",
+  sm: "h-8 px-3 text-sm",
+  lg: "h-12 px-6 text-lg",
+};
+
+const Button = forwardRef(({ 
+  className, 
+  variant = "default", 
+  size = "default", 
+  children, 
+  asChild = false,
+  ...props 
+}, ref) => {
+  const Comp = asChild ? "span" : "button";
+  
+  return (
+    <Comp
+      className={cn(
+        "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:pointer-events-none disabled:opacity-50",
+        buttonVariants[variant],
+        sizeVariants[size],
+        className
+      )}
+      ref={ref}
+      {...props}
+    >
+      {children}
+    </Comp>
+  );
+});
+
+Button.displayName = "Button";
+
+export { Button };
