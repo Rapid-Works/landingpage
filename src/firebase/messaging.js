@@ -1,6 +1,6 @@
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { db, auth } from './config';
-import { collection, addDoc, serverTimestamp, query, where, getDocs, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, query, where, getDocs, deleteDoc, updateDoc } from 'firebase/firestore';
 
 const VAPID_KEY = 'BC9X8U5hWzbbGbbB8x_net_q4eG5RA798jZxKcOPS5e5joRHXN7XcCS2yv-UwCKY0lZZ59mOOspl_aSWEjSV33M';
 
@@ -70,7 +70,7 @@ export const requestNotificationPermission = async () => {
           
           if (!existingData.email && userEmail) {
             // Update existing token with email since user is now logged in
-            await existingDoc.ref.update({
+            await updateDoc(existingDoc.ref, {
               email: userEmail,
               updatedAt: serverTimestamp(),
             });
@@ -142,7 +142,7 @@ export const requestBrandingKitNotifications = async () => {
     } else {
       // Token exists, ensure it has the user's email
       const existingDoc = existingTokenSnapshot.docs[0];
-      await existingDoc.ref.update({
+      await updateDoc(existingDoc.ref, {
         email: currentUser.email,
         updatedAt: serverTimestamp(),
         subscriptionType: 'both', // Both blog and branding kit
