@@ -1,101 +1,118 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { motion } from 'framer-motion';
-import { Calendar, Layers } from 'lucide-react';
+import { Calendar, Layers, Bell, BellRing, Check, X, Loader2, TestTube } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import RapidWorksHeader from './new_landing_page_header';
 import BrandingKits from './BrandingKits';
 import UserAvatar from './UserAvatar';
-import BrandingKitNotifications from './BrandingKitNotifications';
-import BrandingKitTestNotifications from './BrandingKitTestNotifications';
-
-// Debug component to check notification subscription status
-const NotificationDebugInfo = () => {
-  const { currentUser } = useAuth();
-  const [debugInfo, setDebugInfo] = React.useState(null);
-  const [loading, setLoading] = React.useState(false);
-
-  const checkSubscriptionStatus = async () => {
-    if (!currentUser?.email) return;
-    
-    setLoading(true);
-    try {
-      const { getFirestore, collection, query, where, getDocs } = await import('firebase/firestore');
-      const db = getFirestore();
-      
-      // Check for FCM tokens for this user
-      const tokensQuery = query(
-        collection(db, 'fcmTokens'),
-        where('email', '==', currentUser.email)
-      );
-      const tokensSnapshot = await getDocs(tokensQuery);
-      
-      const tokens = [];
-      tokensSnapshot.forEach((doc) => {
-        tokens.push({
-          id: doc.id,
-          ...doc.data(),
-          tokenPreview: doc.data().token?.substring(0, 20) + '...'
-        });
-      });
-      
-      setDebugInfo({
-        email: currentUser.email,
-        tokensFound: tokens.length,
-        tokens: tokens,
-        timestamp: new Date().toLocaleString()
-      });
-    } catch (error) {
-      setDebugInfo({
-        error: error.message,
-        email: currentUser.email
-      });
-    }
-    setLoading(false);
-  };
-
-  React.useEffect(() => {
-    checkSubscriptionStatus();
-  }, [currentUser]);
-
-  if (!debugInfo) return null;
-
-  return (
-    <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-      <h3 className="font-semibold text-yellow-800 mb-2">🔍 Notification Debug Info</h3>
-      <div className="text-sm text-yellow-700 space-y-1">
-        <p><strong>Email:</strong> {debugInfo.email}</p>
-        <p><strong>FCM Tokens Found:</strong> {debugInfo.tokensFound}</p>
-        {debugInfo.error && <p className="text-red-600"><strong>Error:</strong> {debugInfo.error}</p>}
-        {debugInfo.tokens && debugInfo.tokens.length > 0 && (
-          <div>
-            <p><strong>Token Details:</strong></p>
-            {debugInfo.tokens.map((token, index) => (
-              <div key={index} className="ml-4 text-xs">
-                <p>• Token {index + 1}: {token.tokenPreview}</p>
-                <p>  Created: {token.createdAt?.toDate?.()?.toLocaleString() || 'Unknown'}</p>
-              </div>
-            ))}
-          </div>
-        )}
-        <p className="text-xs text-gray-500">Last checked: {debugInfo.timestamp}</p>
-      </div>
-      <button 
-        onClick={checkSubscriptionStatus}
-        disabled={loading}
-        className="mt-2 text-xs bg-yellow-200 hover:bg-yellow-300 px-2 py-1 rounded"
-      >
-        {loading ? 'Checking...' : 'Refresh'}
-      </button>
-    </div>
-  );
-};
+import { requestNotificationPermission } from '../firebase/messaging';
+import { testBrandingKitNotification } from '../utils/airtableService';
 
 const accent = "#7C3BEC";
 
 const Dashboard = () => {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
+  const [notificationState, setNotificationState] = useState('default'); // 'default', 'loading', 'success', 'error'
+  const [notificationMessage, setNotificationMessage] = useState('');
+  const [testingNotification, setTestingNotification] = useState(false);
+
+  const handleSubscribeToNotifications = async () => {
+    setNotificationState('loading');
+    setNotificationMessage('');
+    
+    try {
+      await requestNotificationPermission();
+      setNotificationState('success');
+      setNotificationMessage('🎉 You\'re subscribed! You\'ll get notified when your branding kits are ready.');
+      
+      // Reset to default after 5 seconds
+      setTimeout(() => {
+        setNotificationState('default');
+        setNotificationMessage('');
+      }, 5000);
+    } catch (err) {
+      setNotificationState('error');
+      setNotificationMessage('Failed to subscribe. Please try again.');
+      
+      // Reset to default after 5 seconds
+      setTimeout(() => {
+        setNotificationState('default');
+        setNotificationMessage('');
+      }, 5000);
+    }
+  };
+
+  const handleTestNotification = async () => {
+    if (!currentUser?.email) {
+      alert('Please make sure you are logged in');
+      return;
+    }
+
+    setTestingNotification(true);
+    
+    try {
+      const testKitId = `test-kit-${Date.now()}`;
+      await testBrandingKitNotification({
+        kitId: testKitId,
+        email: currentUser.email
+      });
+      
+      alert(`Test notification sent! A test kit "${testKitId}" was marked as ready for ${currentUser.email}. You should receive a notification if you're subscribed.`);
+    } catch (error) {
+      console.error('Test notification failed:', error);
+      alert('Failed to send test notification. Make sure Firebase functions are deployed.');
+    } finally {
+      setTestingNotification(false);
+    }
+  };
+
+  const getNotificationButtonContent = () => {
+    switch (notificationState) {
+      case 'loading':
+        return (
+          <>
+            <Loader2 className="h-5 w-5 animate-spin" />
+            <span>Subscribing...</span>
+          </>
+        );
+      case 'success':
+        return (
+          <>
+            <Check className="h-5 w-5" />
+            <span>Subscribed!</span>
+          </>
+        );
+      case 'error':
+        return (
+          <>
+            <X className="h-5 w-5" />
+            <span>Try Again</span>
+          </>
+        );
+      default:
+        return (
+          <>
+            <BellRing className="h-5 w-5" />
+            <span>Get Notified</span>
+          </>
+        );
+    }
+  };
+
+  const getNotificationButtonStyles = () => {
+    switch (notificationState) {
+      case 'loading':
+        return 'bg-gray-500 cursor-not-allowed';
+      case 'success':
+        return 'bg-green-500 hover:bg-green-600';
+      case 'error':
+        return 'bg-red-500 hover:bg-red-600';
+      default:
+        return 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600';
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -107,7 +124,7 @@ const Dashboard = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="relative bg-white/70 backdrop-blur-md rounded-2xl shadow-2xl p-10 mb-8 flex flex-col items-center justify-center overflow-hidden"
+          className="relative bg-white/70 backdrop-blur-md rounded-2xl shadow-2xl p-10 mb-10 flex flex-col items-center justify-center overflow-hidden"
           style={{ boxShadow: `0 8px 32px 0 ${accent}22` }}
         >
           {/* Glassmorphism background effect */}
@@ -120,6 +137,30 @@ const Dashboard = () => {
             <p className="text-lg text-gray-600 mb-6">
               Ready to build your brand today?
             </p>
+
+            {/* Notification Subscription Section */}
+            <div className="mb-6 text-center">
+              <button 
+                onClick={handleSubscribeToNotifications}
+                disabled={notificationState === 'loading'}
+                className={`${getNotificationButtonStyles()} text-white font-semibold py-3 px-6 rounded-full transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0 mb-2`}
+              >
+                {getNotificationButtonContent()}
+              </button>
+              <p className="text-sm text-gray-500">
+                Get instant notifications when your branding kits are ready
+              </p>
+              {notificationMessage && (
+                <motion.p 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`text-sm mt-2 ${notificationState === 'success' ? 'text-green-600' : 'text-red-600'}`}
+                >
+                  {notificationMessage}
+                </motion.p>
+              )}
+            </div>
+
             {/* Quick Actions */}
             <div className="flex gap-4 justify-center">
               <button onClick={() => navigate('/branding')} className="flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold shadow-lg hover:scale-105 transition-transform">
@@ -132,37 +173,50 @@ const Dashboard = () => {
           </div>
         </motion.div>
 
-        {/* Add debug info right after the hero section */}
-        <NotificationDebugInfo />
-
-        {/* Notification Subscription Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="mb-8"
-        >
-          <BrandingKitNotifications variant="dashboard" />
-        </motion.div>
-
         {/* Branding Kits Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="bg-white rounded-2xl shadow-xl p-8 mb-8"
+          className="bg-white rounded-2xl shadow-xl p-8 mb-10"
         >
           <BrandingKits />
         </motion.div>
 
-        {/* Test Notifications Section (Development Only) */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-        >
-          <BrandingKitTestNotifications />
-        </motion.div>
+        {/* Testing Section - Only show in development */}
+        {process.env.NODE_ENV === 'development' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="bg-yellow-50 border border-yellow-200 rounded-2xl shadow-lg p-6"
+          >
+            <h3 className="text-lg font-semibold text-yellow-800 mb-4 flex items-center gap-2">
+              <TestTube className="h-5 w-5" />
+              Testing Area (Development Only)
+            </h3>
+            <p className="text-yellow-700 mb-4 text-sm">
+              Use this button to test the branding kit notification system. Make sure you've subscribed to notifications first!
+            </p>
+            <button
+              onClick={handleTestNotification}
+              disabled={testingNotification}
+              className="flex items-center gap-2 px-4 py-2 bg-yellow-500 hover:bg-yellow-600 disabled:bg-yellow-300 text-white rounded-lg font-medium transition-colors"
+            >
+              {testingNotification ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Sending Test...
+                </>
+              ) : (
+                <>
+                  <Bell className="h-4 w-4" />
+                  Send Test Notification
+                </>
+              )}
+            </button>
+          </motion.div>
+        )}
       </div>
     </div>
   );
