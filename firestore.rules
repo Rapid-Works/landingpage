@@ -12,6 +12,14 @@ service cloud.firestore {
       allow read, write: if true;
     }
     
+    // Allow access to branding kits for authenticated users
+    match /brandkits/{kitId} {
+      // Authenticated users can read all brandkits (filtering happens in client code)
+      allow read: if request.auth != null;
+      // Only functions/admins can write (functions run with admin privileges)
+      allow write: if false;
+    }
+    
     // Default: deny all other access
     match /{document=**} {
       allow read, write: if false;
