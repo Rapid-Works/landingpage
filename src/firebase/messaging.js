@@ -11,6 +11,37 @@ try {
   console.error('Failed to initialize Firebase Messaging', err);
 }
 
+// Register the Firebase messaging service worker
+const registerServiceWorker = async () => {
+  if ('serviceWorker' in navigator) {
+    try {
+      const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+      console.log('Firebase messaging service worker registered:', registration);
+      return registration;
+    } catch (error) {
+      console.error('Firebase messaging service worker registration failed:', error);
+      throw error;
+    }
+  } else {
+    throw new Error('Service Worker not supported');
+  }
+};
+
+// Initialize messaging - register service worker when module loads
+export const initializeMessaging = async () => {
+  try {
+    await registerServiceWorker();
+    console.log('Firebase messaging initialized successfully');
+  } catch (error) {
+    console.error('Failed to initialize Firebase messaging:', error);
+  }
+};
+
+// Auto-initialize when module loads
+if (typeof window !== 'undefined') {
+  initializeMessaging();
+}
+
 // Function to unregister problematic service workers (but keep Firebase messaging)
 export const unregisterServiceWorkers = async () => {
   try {
@@ -38,6 +69,9 @@ export const requestNotificationPermission = async () => {
   }
 
   try {
+    // Ensure service worker is registered (in case auto-init failed)
+    await registerServiceWorker();
+    
     const permission = await Notification.requestPermission();
     if (permission === 'granted') {
       // console.log('Notification permission granted.');
