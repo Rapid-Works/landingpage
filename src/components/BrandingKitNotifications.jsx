@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Bell, BellRing, Check, X, Loader2 } from 'lucide-react';
-import { requestNotificationPermission } from '../firebase/messaging';
+import { requestBrandingKitNotifications } from '../firebase/messaging';
 
 const BrandingKitNotifications = ({ 
   className = "", 
@@ -14,7 +14,7 @@ const BrandingKitNotifications = ({
     setNotificationMessage('');
     
     try {
-      await requestNotificationPermission();
+      const result = await requestBrandingKitNotifications();
       setNotificationState('success');
       setNotificationMessage('🎉 Perfect! You\'ll get notified when your branding kits are ready.');
       
@@ -25,13 +25,21 @@ const BrandingKitNotifications = ({
       }, 5000);
     } catch (err) {
       setNotificationState('error');
-      setNotificationMessage('Failed to subscribe. Please try again.');
+      let errorMessage = 'Failed to subscribe. Please try again.';
       
-      // Reset to default after 5 seconds
+      if (err.message.includes('logged in')) {
+        errorMessage = 'Please log in first to subscribe to branding kit notifications.';
+      } else if (err.message.includes('permission')) {
+        errorMessage = 'Please allow notifications in your browser.';
+      }
+      
+      setNotificationMessage(errorMessage);
+      
+      // Reset to default after 8 seconds for longer error messages
       setTimeout(() => {
         setNotificationState('default');
         setNotificationMessage('');
-      }, 5000);
+      }, 8000);
     }
   };
 

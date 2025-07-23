@@ -12,6 +12,18 @@ service cloud.firestore {
       allow read, write: if true;
     }
     
+    // Allow access to branding kits for authenticated users
+    match /brandkits/{kitId} {
+      // Users can read their own kits and query by their email
+      allow read: if request.auth != null && 
+        (resource.data.email == request.auth.token.email || 
+         (resource.data.email is list && request.auth.token.email in resource.data.email));
+      // Allow querying branding kits collection if user is authenticated
+      allow list: if request.auth != null;
+      // Only functions/admins can write
+      allow write: if false;
+    }
+    
     // Default: deny all other access
     match /{document=**} {
       allow read, write: if false;
