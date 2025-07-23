@@ -9,6 +9,88 @@ import UserAvatar from './UserAvatar';
 import BrandingKitNotifications from './BrandingKitNotifications';
 import BrandingKitTestNotifications from './BrandingKitTestNotifications';
 
+// Debug component to check notification subscription status
+const NotificationDebugInfo = () => {
+  const { currentUser } = useAuth();
+  const [debugInfo, setDebugInfo] = React.useState(null);
+  const [loading, setLoading] = React.useState(false);
+
+  const checkSubscriptionStatus = async () => {
+    if (!currentUser?.email) return;
+    
+    setLoading(true);
+    try {
+      const { getFirestore, collection, query, where, getDocs } = await import('firebase/firestore');
+      const db = getFirestore();
+      
+      // Check for FCM tokens for this user
+      const tokensQuery = query(
+        collection(db, 'fcmTokens'),
+        where('email', '==', currentUser.email)
+      );
+      const tokensSnapshot = await getDocs(tokensQuery);
+      
+      const tokens = [];
+      tokensSnapshot.forEach((doc) => {
+        tokens.push({
+          id: doc.id,
+          ...doc.data(),
+          tokenPreview: doc.data().token?.substring(0, 20) + '...'
+        });
+      });
+      
+      setDebugInfo({
+        email: currentUser.email,
+        tokensFound: tokens.length,
+        tokens: tokens,
+        timestamp: new Date().toLocaleString()
+      });
+    } catch (error) {
+      setDebugInfo({
+        error: error.message,
+        email: currentUser.email
+      });
+    }
+    setLoading(false);
+  };
+
+  React.useEffect(() => {
+    checkSubscriptionStatus();
+  }, [currentUser]);
+
+  if (!debugInfo) return null;
+
+  return (
+    <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+      <h3 className="font-semibold text-yellow-800 mb-2">🔍 Notification Debug Info</h3>
+      <div className="text-sm text-yellow-700 space-y-1">
+        <p><strong>Email:</strong> {debugInfo.email}</p>
+        <p><strong>FCM Tokens Found:</strong> {debugInfo.tokensFound}</p>
+        {debugInfo.error && <p className="text-red-600"><strong>Error:</strong> {debugInfo.error}</p>}
+        {debugInfo.tokens && debugInfo.tokens.length > 0 && (
+          <div>
+            <p><strong>Token Details:</strong></p>
+            {debugInfo.tokens.map((token, index) => (
+              <div key={index} className="ml-4 text-xs">
+                <p>• Token {index + 1}: {token.tokenPreview}</p>
+                <p>  Created: {token.createdAt?.toDate?.()?.toLocaleString() || 'Unknown'}</p>
+              </div>
+            ))}
+          </div>
+        )}
+        <p className="text-xs text-gray-500">Last checked: {debugInfo.timestamp}</p>
+      </div>
+      <button 
+        onClick={checkSubscriptionStatus}
+        disabled={loading}
+        className="mt-2 text-xs bg-yellow-200 hover:bg-yellow-300 px-2 py-1 rounded"
+      >
+        {loading ? 'Checking...' : 'Refresh'}
+      </button>
+    </div>
+  );
+};
+
 const accent = "#7C3BEC";
 
 const Dashboard = () => {
@@ -49,6 +131,9 @@ const Dashboard = () => {
             </div>
           </div>
         </motion.div>
+
+        {/* Add debug info right after the hero section */}
+        <NotificationDebugInfo />
 
         {/* Notification Subscription Section */}
         <motion.div

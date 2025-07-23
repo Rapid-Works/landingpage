@@ -680,6 +680,9 @@ exports.onBrandingKitUpdated = onDocumentUpdated(
           if (tokens.length === 0) {
             const emailList = userEmails.join(", ");
             console.log(`No FCM tokens found for users: ${emailList}`);
+            const subscribeNote = "Note: Users need to subscribe to " +
+              "branding kit notifications while logged in.";
+            console.log(subscribeNote);
             return;
           }
 
@@ -743,3 +746,68 @@ exports.onBrandingKitUpdated = onDocumentUpdated(
       }
     },
 );
+
+// Callable function to clean up invalid FCM tokens
+exports.cleanupInvalidTokens = onCall(async (request) => {
+  try {
+    // Get all FCM tokens
+    const tokensSnapshot = await db.collection("fcmTokens").get();
+    let totalTokens = 0;
+    let invalidTokens = 0;
+    let cleanedTokens = 0;
+
+    console.log(`Starting cleanup of ${tokensSnapshot.size} tokens`);
+
+    // Test each token by trying to send a test message
+    const cleanupPromises = tokensSnapshot.docs.map(async (doc) => {
+      totalTokens++;
+      const tokenData = doc.data();
+      const token = tokenData.token;
+
+      try {
+        // Try to validate the token by sending a dry-run message
+        await admin.messaging().send({
+          token: token,
+          notification: {
+            title: "Test",
+            body: "Test",
+          },
+        }, true); // dry-run mode
+
+        console.log(`Token valid: ${token.substring(0, 10)}...`);
+      } catch (error) {
+        invalidTokens++;
+        const tokenPrefix = token.substring(0, 10);
+
+        if (error.code === "messaging/registration-token-not-registered" ||
+            error.code === "messaging/invalid-registration-token") {
+          // Delete invalid token
+          await doc.ref.delete();
+          cleanedTokens++;
+          console.log(`Removed invalid token: ${tokenPrefix}...`);
+        } else {
+          const errorMsg = `Token error (not removed): ${tokenPrefix}... - ` +
+            `${error.code}`;
+          console.log(errorMsg);
+        }
+      }
+    });
+
+    await Promise.all(cleanupPromises);
+
+    const result = {
+      totalTokens,
+      invalidTokens,
+      cleanedTokens,
+      message: `Cleanup complete. Removed ${cleanedTokens} invalid ` +
+        `tokens out of ${invalidTokens} invalid tokens found from ` +
+        `${totalTokens} total tokens.`,
+    };
+
+    console.log(result.message);
+    return result;
+  } catch (error) {
+    console.error("Error cleaning up tokens:", error);
+    throw new Error(`Failed to cleanup tokens: ${error.message}`);
+  }
+});

@@ -50,24 +50,32 @@ export const requestNotificationPermission = async () => {
         const currentUser = auth.currentUser;
         const userEmail = currentUser?.email || null;
         
-        // Remove any existing tokens for this user/device to avoid duplicates
-        if (userEmail) {
-          const tokensCollection = collection(db, 'fcmTokens');
-          const existingTokensQuery = query(tokensCollection, where('email', '==', userEmail));
-          const existingTokensSnapshot = await getDocs(existingTokensQuery);
-          
-          // Delete existing tokens for this user
-          const deletePromises = existingTokensSnapshot.docs.map(doc => deleteDoc(doc.ref));
-          await Promise.all(deletePromises);
-        }
-        
-        // Store the new token with user email
+        // Check if this exact token already exists
         const tokensCollection = collection(db, 'fcmTokens');
-        await addDoc(tokensCollection, {
-          token: currentToken,
-          email: userEmail,
-          createdAt: serverTimestamp(),
-        });
+        const existingTokenQuery = query(tokensCollection, where('token', '==', currentToken));
+        const existingTokenSnapshot = await getDocs(existingTokenQuery);
+        
+        if (existingTokenSnapshot.empty) {
+          // Token doesn't exist, create new one
+          await addDoc(tokensCollection, {
+            token: currentToken,
+            email: userEmail,
+            createdAt: serverTimestamp(),
+            deviceType: 'web',
+          });
+        } else {
+          // Token exists, update it with email if user is now logged in
+          const existingDoc = existingTokenSnapshot.docs[0];
+          const existingData = existingDoc.data();
+          
+          if (!existingData.email && userEmail) {
+            // Update existing token with email since user is now logged in
+            await existingDoc.ref.update({
+              email: userEmail,
+              updatedAt: serverTimestamp(),
+            });
+          }
+        }
         
         alert('You have successfully subscribed to notifications!');
       } else {
@@ -90,5 +98,60 @@ export const onForegroundMessage = (callback) => {
       // console.log('Message received in foreground: ', payload);
       callback(payload);
     });
+  }
+};
+
+// Specific function for branding kit notifications (requires authentication)
+export const requestBrandingKitNotifications = async () => {
+  if (!messaging) {
+    throw new Error('Messaging is not supported in this browser.');
+  }
+
+  // Check if user is authenticated
+  const currentUser = auth.currentUser;
+  if (!currentUser?.email) {
+    throw new Error('You must be logged in to subscribe to branding kit notifications.');
+  }
+
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
+      throw new Error('Notification permission was denied.');
+    }
+
+    const currentToken = await getToken(messaging, { vapidKey: VAPID_KEY });
+    if (!currentToken) {
+      throw new Error('Could not get notification token. Please ensure you have granted permission.');
+    }
+
+    const tokensCollection = collection(db, 'fcmTokens');
+    
+    // Check if this exact token already exists
+    const existingTokenQuery = query(tokensCollection, where('token', '==', currentToken));
+    const existingTokenSnapshot = await getDocs(existingTokenQuery);
+    
+    if (existingTokenSnapshot.empty) {
+      // Token doesn't exist, create new one with email
+      await addDoc(tokensCollection, {
+        token: currentToken,
+        email: currentUser.email,
+        createdAt: serverTimestamp(),
+        deviceType: 'web',
+        subscriptionType: 'branding_kit', // Mark as branding kit subscription
+      });
+    } else {
+      // Token exists, ensure it has the user's email
+      const existingDoc = existingTokenSnapshot.docs[0];
+      await existingDoc.ref.update({
+        email: currentUser.email,
+        updatedAt: serverTimestamp(),
+        subscriptionType: 'both', // Both blog and branding kit
+      });
+    }
+
+    return { success: true, message: 'Successfully subscribed to branding kit notifications!' };
+  } catch (error) {
+    console.error('Error subscribing to branding kit notifications:', error);
+    throw error;
   }
 }; 

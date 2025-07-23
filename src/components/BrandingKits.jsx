@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/Tabs";
 import AssetPreview from "./AssetPreview";
 import { brandingKits } from "../data/brandingKits";
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { getFirestore, collection, getDocs, query, where } from "firebase/firestore";
 import { useAuth } from "../contexts/AuthContext";
 import BrandingKitNotifications from "./BrandingKitNotifications";
 import JSZip from 'jszip';
@@ -33,23 +33,43 @@ const BrandingKits = () => {
   const { currentUser } = useAuth();
 
   useEffect(() => {
-    if (tab === "my" && currentUser) {
+    if (tab === "my" && currentUser?.email) {
       setLoadingMyKits(true);
       const fetchMyKits = async () => {
-        const db = getFirestore();
-        const querySnapshot = await getDocs(collection(db, "brandkits"));
-        const userKits = [];
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          // email can be array or string
-          if (Array.isArray(data.email) && data.email.includes(currentUser.email)) {
-            userKits.push({ id: doc.id, ...data });
-          } else if (typeof data.email === "string" && data.email === currentUser.email) {
-            userKits.push({ id: doc.id, ...data });
-          }
-        });
-        setMyKits(userKits);
-        setLoadingMyKits(false);
+        try {
+          const db = getFirestore();
+          const userKits = [];
+          
+          // Query for documents where email field equals user's email (string)
+          const stringEmailQuery = query(
+            collection(db, "brandkits"),
+            where("email", "==", currentUser.email)
+          );
+          const stringEmailSnapshot = await getDocs(stringEmailQuery);
+          stringEmailSnapshot.forEach((doc) => {
+            userKits.push({ id: doc.id, ...doc.data() });
+          });
+          
+          // Query for documents where email field contains user's email (array)
+          const arrayEmailQuery = query(
+            collection(db, "brandkits"),
+            where("email", "array-contains", currentUser.email)
+          );
+          const arrayEmailSnapshot = await getDocs(arrayEmailQuery);
+          arrayEmailSnapshot.forEach((doc) => {
+            // Check if this document is already in userKits to avoid duplicates
+            if (!userKits.some(kit => kit.id === doc.id)) {
+              userKits.push({ id: doc.id, ...doc.data() });
+            }
+          });
+          
+          setMyKits(userKits);
+        } catch (error) {
+          console.error("Error fetching user kits:", error);
+          setMyKits([]); // Set empty array on error
+        } finally {
+          setLoadingMyKits(false);
+        }
       };
       fetchMyKits();
     }
