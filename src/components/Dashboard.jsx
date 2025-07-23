@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { motion } from 'framer-motion';
-import { Calendar, Layers, Bell, BellRing, Check, X, Loader2, TestTube } from 'lucide-react';
+import { Calendar, Layers, Bell, BellRing, Check, X, Loader2, TestTube, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import RapidWorksHeader from './new_landing_page_header';
 import BrandingKits from './BrandingKits';
 import UserAvatar from './UserAvatar';
 import { requestNotificationPermission } from '../firebase/messaging';
-import { testBrandingKitNotification } from '../utils/airtableService';
+import { testBrandingKitNotification, cleanupInvalidTokens } from '../utils/airtableService';
 
 const accent = "#7C3BEC";
 
@@ -17,6 +17,7 @@ const Dashboard = () => {
   const [notificationState, setNotificationState] = useState('default'); // 'default', 'loading', 'success', 'error'
   const [notificationMessage, setNotificationMessage] = useState('');
   const [testingNotification, setTestingNotification] = useState(false);
+  const [cleaningTokens, setCleaningTokens] = useState(false);
 
   const handleSubscribeToNotifications = async () => {
     setNotificationState('loading');
@@ -65,6 +66,20 @@ const Dashboard = () => {
       alert('Failed to send test notification. Make sure Firebase functions are deployed.');
     } finally {
       setTestingNotification(false);
+    }
+  };
+
+  const handleCleanupTokens = async () => {
+    setCleaningTokens(true);
+    
+    try {
+      const result = await cleanupInvalidTokens();
+      alert(`Token cleanup complete! ${result.message}\n\nValid tokens: ${result.validTokens}\nInvalid tokens removed: ${result.invalidTokens}`);
+    } catch (error) {
+      console.error('Token cleanup failed:', error);
+      alert('Failed to cleanup tokens. Make sure Firebase functions are deployed.');
+    } finally {
+      setCleaningTokens(false);
     }
   };
 
@@ -196,25 +211,45 @@ const Dashboard = () => {
               Testing Area (Development Only)
             </h3>
             <p className="text-yellow-700 mb-4 text-sm">
-              Use this button to test the branding kit notification system. Make sure you've subscribed to notifications first!
+              Use these buttons to test the notification system and clean up invalid tokens.
             </p>
-            <button
-              onClick={handleTestNotification}
-              disabled={testingNotification}
-              className="flex items-center gap-2 px-4 py-2 bg-yellow-500 hover:bg-yellow-600 disabled:bg-yellow-300 text-white rounded-lg font-medium transition-colors"
-            >
-              {testingNotification ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Sending Test...
-                </>
-              ) : (
-                <>
-                  <Bell className="h-4 w-4" />
-                  Send Test Notification
-                </>
-              )}
-            </button>
+            <div className="flex gap-3 flex-wrap">
+              <button
+                onClick={handleTestNotification}
+                disabled={testingNotification}
+                className="flex items-center gap-2 px-4 py-2 bg-yellow-500 hover:bg-yellow-600 disabled:bg-yellow-300 text-white rounded-lg font-medium transition-colors"
+              >
+                {testingNotification ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Sending Test...
+                  </>
+                ) : (
+                  <>
+                    <Bell className="h-4 w-4" />
+                    Send Test Notification
+                  </>
+                )}
+              </button>
+              
+              <button
+                onClick={handleCleanupTokens}
+                disabled={cleaningTokens}
+                className="flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300 text-white rounded-lg font-medium transition-colors"
+              >
+                {cleaningTokens ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Cleaning...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="h-4 w-4" />
+                    Cleanup Invalid Tokens
+                  </>
+                )}
+              </button>
+            </div>
           </motion.div>
         )}
       </div>
