@@ -202,15 +202,24 @@ exports.submitAIPrompt = onCall(async (request) => {
 exports.onBrandingKitUpdated = onDocumentUpdated(
     "brandkits/{kitId}",
     async (event) => {
+      console.log("🔥 BRANDING KIT NOTIFICATION TRIGGER FIRED");
+
       const beforeData = event.data.before.data();
       const afterData = event.data.after.data();
+
+      console.log("🛠️ Branding kit update:", {
+        kitId: event.params.kitId,
+        beforeReady: beforeData.ready,
+        afterReady: afterData.ready,
+        email: afterData.email,
+      });
 
       // Check if the ready field changed from false/undefined to true
       const wasReady = beforeData.ready === true;
       const isNowReady = afterData.ready === true;
 
       if (!wasReady && isNowReady) {
-        console.log("Branding kit is ready, sending notification");
+        console.log("🎉 Branding kit is ready, sending notification");
 
         try {
           // Get user email(s) - can be string or array
@@ -222,9 +231,11 @@ exports.onBrandingKitUpdated = onDocumentUpdated(
           }
 
           if (userEmails.length === 0) {
-            console.log("No email found in branding kit document");
+            console.log("❌ No email found in branding kit document");
             return;
           }
+
+          console.log("📧 Branding kit ready for emails:", userEmails);
 
           // Get FCM tokens for the specific users
           const tokens = [];
@@ -240,8 +251,11 @@ exports.onBrandingKitUpdated = onDocumentUpdated(
             });
           }
 
+          console.log(`📱 Found ${tokens.length} FCM tokens for ` +
+            "branding kit notification");
+
           if (tokens.length === 0) {
-            console.log(`No FCM tokens found for users: ` +
+            console.log(`❌ No FCM tokens found for users: ` +
               `${userEmails.join(", ")}`);
             return;
           }
@@ -249,6 +263,12 @@ exports.onBrandingKitUpdated = onDocumentUpdated(
           // Get kit name from afterData or use default
           const kitName = afterData.name || afterData.id ||
             "Your branding kit";
+
+          console.log("📬 Sending branding kit notifications:", {
+            kitName: kitName,
+            recipientCount: tokens.length,
+            kitId: event.params.kitId,
+          });
 
           // Send notification to tokens for users whose kit is ready
           const message = {
@@ -271,11 +291,11 @@ exports.onBrandingKitUpdated = onDocumentUpdated(
                 ...message,
                 token: token,
               });
-              console.log(`Notification sent successfully to token: ` +
+              console.log(`✅ Branding kit notification sent to token: ` +
                 `${token.substring(0, 10)}...`);
             } catch (error) {
-              console.error(`Failed to send notification to token ` +
-                `${token.substring(0, 10)}...:`, error);
+              console.error(`❌ Failed to send branding kit notification ` +
+                `to token ${token.substring(0, 10)}...:`, error);
               // Optionally remove invalid tokens from database
               if (error.code ===
                 "messaging/registration-token-not-registered") {
@@ -285,18 +305,23 @@ exports.onBrandingKitUpdated = onDocumentUpdated(
                 tokenQuery.forEach(async (doc) => {
                   await doc.ref.delete();
                 });
+                console.log(`🗑️ Removed invalid token: ` +
+                  token.substring(0, 10) + "...");
               }
             }
           });
 
           await Promise.all(sendPromises);
 
-          console.log(`Branding kit ready notifications sent for kit: ` +
-            `${event.params.kitId}`);
+          console.log("🎉 Branding kit ready notifications " +
+            "completed for kit: " + event.params.kitId);
         } catch (error) {
-          console.error("Error sending branding kit ready notification:",
+          console.error("💥 Error sending branding kit ready notification:",
               error);
         }
+      } else {
+        console.log("ℹ️ Branding kit updated but not marked as ready, " +
+          "skipping notification");
       }
     },
 );
@@ -673,19 +698,31 @@ exports.onAIPromptCreated = onDocumentCreated(
 exports.sendNewBlogNotification = onDocumentCreated(
     "blogs/{blogId}",
     async (event) => {
+      console.log("🔥 BLOG NOTIFICATION TRIGGER FIRED");
+
       const snapshot = event.data;
       if (!snapshot) {
+        console.log("❌ No snapshot data in blog notification trigger");
         return;
       }
 
       const blogData = snapshot.data();
+      console.log("📝 Blog data:", {
+        id: snapshot.id,
+        title: blogData.title,
+        published: blogData.published,
+        hasExcerpt: !!blogData.excerpt,
+      });
 
       // Only send notifications for published blogs
       if (!blogData.published) {
+        console.log("⏸️ Blog not published, skipping notification");
         return;
       }
 
       try {
+        console.log("📡 Getting FCM tokens for blog notification...");
+
         // Get all FCM tokens
         const tokensSnapshot = await db.collection("fcmTokens").get();
         const tokens = [];
@@ -695,8 +732,11 @@ exports.sendNewBlogNotification = onDocumentCreated(
           tokens.push(tokenData.token);
         });
 
+        console.log(`📱 Found ${tokens.length} FCM tokens ` +
+          "for blog notification");
+
         if (tokens.length === 0) {
-          console.log("No FCM tokens found for blog notification");
+          console.log("❌ No FCM tokens found for blog notification");
           return;
         }
 
@@ -704,6 +744,12 @@ exports.sendNewBlogNotification = onDocumentCreated(
         const notificationTitle = `📝 New Blog Post: ${blogData.title}`;
         const notificationBody = blogData.excerpt ||
           "A new blog post has been published!";
+
+        console.log("📬 Sending blog notifications:", {
+          title: notificationTitle,
+          body: notificationBody,
+          recipientCount: tokens.length,
+        });
 
         // Send notifications to all tokens
         const sendPromises = tokens.map(async (token) => {
@@ -720,10 +766,10 @@ exports.sendNewBlogNotification = onDocumentCreated(
               },
               token: token,
             });
-            console.log(`Blog notification sent to: ` +
+            console.log(`✅ Blog notification sent to: ` +
               `${token.substring(0, 10)}...`);
           } catch (error) {
-            console.error(`Failed to send blog notification to ` +
+            console.error(`❌ Failed to send blog notification to ` +
               `${token.substring(0, 10)}...:`, error);
 
             // Remove invalid tokens
@@ -734,14 +780,16 @@ exports.sendNewBlogNotification = onDocumentCreated(
               tokenQuery.forEach(async (doc) => {
                 await doc.ref.delete();
               });
+              console.log(`🗑️ Removed invalid token: ` +
+                token.substring(0, 10) + "...");
             }
           }
         });
 
         await Promise.all(sendPromises);
-        console.log(`Blog notifications sent for: ${blogData.title}`);
+        console.log(`🎉 Blog notifications completed for: ${blogData.title}`);
       } catch (error) {
-        console.error("Error sending blog notification:", error);
+        console.error("💥 Error sending blog notification:", error);
       }
     },
 );

@@ -56,6 +56,9 @@ import ForgotPassword from './components/ForgotPassword'
 import ProtectedRoute from './components/ProtectedRoute'
 import { NotificationProvider } from './contexts/NotificationContext'
 
+// Initialize Firebase messaging and service worker
+import './firebase/messaging'
+
 // Create and export Language Context with initial values
 export const LanguageContext = createContext({
   language: 'de',
