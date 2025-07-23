@@ -6,6 +6,7 @@ import AssetPreview from "./AssetPreview";
 import { brandingKits } from "../data/brandingKits";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 import { useAuth } from "../contexts/AuthContext";
+import BrandingKitNotifications from "./BrandingKitNotifications";
 import JSZip from 'jszip';
 
 const SkeletonCard = () => (
@@ -173,63 +174,82 @@ const BrandingKits = () => {
   // Main render
   return (
     <div className="space-y-8">
-      {/* Tab Switcher */}
-      <div className="flex gap-4 mb-8">
-        <Button variant={tab === "my" ? "default" : "outline"} onClick={() => { setTab("my"); setSelectedKit(null); }}>
-          My Kits
-        </Button>
-        <Button variant={tab === "all" ? "default" : "outline"} onClick={() => { setTab("all"); setSelectedKit(null); }}>
-          Explore Kits
-        </Button>
+      {/* Header with Title and Tab Switcher */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <h1 className="text-2xl font-bold text-gray-900">Your Branding Kits</h1>
+        <div className="flex gap-4">
+          <Button variant={tab === "my" ? "default" : "outline"} onClick={() => { setTab("my"); setSelectedKit(null); }}>
+            My Kits
+          </Button>
+          <Button variant={tab === "all" ? "default" : "outline"} onClick={() => { setTab("all"); setSelectedKit(null); }}>
+            Explore Kits
+          </Button>
+        </div>
       </div>
 
       {/* My Kits Tab */}
       {tab === "my" && (
-        loadingMyKits ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-12">
-            <SkeletonCard />
-            <SkeletonCard />
-            <SkeletonCard />
-          </div>
-        ) : myKits.length === 0 ? (
-          <div className="text-center text-gray-500 py-12">
-            You don't have any kits yet.<br />
-            <span className="text-blue-600 cursor-pointer underline" onClick={() => setTab("all")}>Explore kits</span> or contact admin to get started!
-          </div>
-        ) : selectedKit ? (
-          renderKit(myKits.find(k => k.id === selectedKit), true)
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {myKits.map((kit) => {
-              const kitData = brandingKits.find(k => k.id.toLowerCase() === kit.id.toLowerCase());
-              if (!kitData) return null;
-              return (
-                <div
-                  key={kit.id}
-                  onClick={() => setSelectedKit(kit.id)}
-                  className="group block overflow-hidden rounded-lg border bg-white shadow-sm transition-all hover:shadow-md cursor-pointer"
-                >
-                  <div className="aspect-video overflow-hidden bg-gray-100">
-                    <img
-                      src={kitData.thumbnail || "/placeholder.svg"}
-                      alt={kitData.name}
-                      className="h-full w-full object-contain transition-transform group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="font-semibold text-lg text-gray-900 group-hover:text-blue-600 transition-colors">
-                      {kitData.name}
-                    </h3>
-                    <div className="mt-4 flex items-center text-sm text-gray-500">
-                      <span>{kitData.assets.length} assets</span>
-                      <ArrowRight className="ml-auto h-4 w-4 group-hover:translate-x-1 transition-transform" />
+        <>
+          {/* Notification subscription for My Kits */}
+          {myKits.length > 0 && !selectedKit && (
+            <BrandingKitNotifications variant="compact" className="mb-6" />
+          )}
+
+          {loadingMyKits ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-12">
+              <SkeletonCard />
+              <SkeletonCard />
+              <SkeletonCard />
+            </div>
+          ) : myKits.length === 0 ? (
+            <div className="text-center py-12 space-y-6">
+              <div className="text-gray-500">
+                <p className="text-lg mb-2">You don't have any kits yet.</p>
+                <p>
+                  <span className="text-blue-600 cursor-pointer underline" onClick={() => setTab("all")}>Explore kits</span> or contact admin to get started!
+                </p>
+              </div>
+              
+              {/* Notification subscription for empty state */}
+              <div className="max-w-md mx-auto">
+                <BrandingKitNotifications variant="default" />
+              </div>
+            </div>
+          ) : selectedKit ? (
+            renderKit(myKits.find(k => k.id === selectedKit), true)
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {myKits.map((kit) => {
+                const kitData = brandingKits.find(k => k.id.toLowerCase() === kit.id.toLowerCase());
+                if (!kitData) return null;
+                return (
+                  <div
+                    key={kit.id}
+                    onClick={() => setSelectedKit(kit.id)}
+                    className="group block overflow-hidden rounded-lg border bg-white shadow-sm transition-all hover:shadow-md cursor-pointer"
+                  >
+                    <div className="aspect-video overflow-hidden bg-gray-100">
+                      <img
+                        src={kitData.thumbnail || "/placeholder.svg"}
+                        alt={kitData.name}
+                        className="h-full w-full object-contain transition-transform group-hover:scale-105"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-semibold text-lg text-gray-900 group-hover:text-blue-600 transition-colors">
+                        {kitData.name}
+                      </h3>
+                      <div className="mt-4 flex items-center text-sm text-gray-500">
+                        <span>{kitData.assets.length} assets</span>
+                        <ArrowRight className="ml-auto h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        )
+                );
+              })}
+            </div>
+          )}
+        </>
       )}
 
       {/* Explore Kits Tab */}

@@ -119,6 +119,22 @@ export const submitAIPromptToAirtable = async ({
   }
 };
 
+// Test function for branding kit notifications
+export const testBrandingKitNotification = async ({ kitId, email }) => {
+  try {
+    const testBrandingKit = httpsCallable(functions, 'testBrandingKitReady');
+    const result = await testBrandingKit({
+      kitId,
+      email
+    });
+    
+    return result.data;
+  } catch (error) {
+    console.error("Error testing branding kit notification:", error);
+    throw error;
+  }
+};
+
 
 // Alternative approach: Store in Firestore first (for better reliability)
 export const submitToFirestore = {

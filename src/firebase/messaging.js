@@ -1,6 +1,6 @@
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
-import { db } from './config';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db, auth } from './config';
+import { collection, addDoc, serverTimestamp, query, where, getDocs, deleteDoc } from 'firebase/firestore';
 
 const VAPID_KEY = 'BC9X8U5hWzbbGbbB8x_net_q4eG5RA798jZxKcOPS5e5joRHXN7XcCS2yv-UwCKY0lZZ59mOOspl_aSWEjSV33M';
 
@@ -31,7 +31,6 @@ export const unregisterServiceWorkers = async () => {
   }
 };
 
-
 export const requestNotificationPermission = async () => {
   if (!messaging) {
     alert('Messaging is not supported in this browser.');
@@ -46,11 +45,30 @@ export const requestNotificationPermission = async () => {
       const currentToken = await getToken(messaging, { vapidKey: VAPID_KEY });
       if (currentToken) {
         // console.log('FCM Token:', currentToken);
+        
+        // Get current user email if available
+        const currentUser = auth.currentUser;
+        const userEmail = currentUser?.email || null;
+        
+        // Remove any existing tokens for this user/device to avoid duplicates
+        if (userEmail) {
+          const tokensCollection = collection(db, 'fcmTokens');
+          const existingTokensQuery = query(tokensCollection, where('email', '==', userEmail));
+          const existingTokensSnapshot = await getDocs(existingTokensQuery);
+          
+          // Delete existing tokens for this user
+          const deletePromises = existingTokensSnapshot.docs.map(doc => deleteDoc(doc.ref));
+          await Promise.all(deletePromises);
+        }
+        
+        // Store the new token with user email
         const tokensCollection = collection(db, 'fcmTokens');
         await addDoc(tokensCollection, {
           token: currentToken,
+          email: userEmail,
           createdAt: serverTimestamp(),
         });
+        
         alert('You have successfully subscribed to notifications!');
       } else {
         // console.log('No registration token available. Request permission to generate one.');
