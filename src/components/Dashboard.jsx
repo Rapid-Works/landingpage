@@ -6,6 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import RapidWorksHeader from './new_landing_page_header';
 import BrandingKits from './BrandingKits';
 import UserAvatar from './UserAvatar';
+import BrandingKitNotifications from './BrandingKitNotifications';
+import BrandingKitTestNotifications from './BrandingKitTestNotifications';
 
 const accent = "#7C3BEC";
 
@@ -23,7 +25,7 @@ const Dashboard = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="relative bg-white/70 backdrop-blur-md rounded-2xl shadow-2xl p-10 mb-10 flex flex-col items-center justify-center overflow-hidden"
+          className="relative bg-white/70 backdrop-blur-md rounded-2xl shadow-2xl p-10 mb-8 flex flex-col items-center justify-center overflow-hidden"
           style={{ boxShadow: `0 8px 32px 0 ${accent}22` }}
         >
           {/* Glassmorphism background effect */}
@@ -48,14 +50,33 @@ const Dashboard = () => {
           </div>
         </motion.div>
 
+        {/* Notification Subscription Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="mb-8"
+        >
+          <BrandingKitNotifications variant="dashboard" />
+        </motion.div>
+
         {/* Branding Kits Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="bg-white rounded-2xl shadow-xl p-8"
+          className="bg-white rounded-2xl shadow-xl p-8 mb-8"
         >
           <BrandingKits />
+        </motion.div>
+
+        {/* Test Notifications Section (Development Only) */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          <BrandingKitTestNotifications />
         </motion.div>
       </div>
     </div>

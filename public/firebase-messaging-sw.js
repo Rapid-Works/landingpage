@@ -1,5 +1,5 @@
 // Scripts for firebase and firebase messaging
-// Version: 1.3 - Using opengraphimage.jpg for notification icon
+// Version: 1.4 - Added branding kit ready notifications
 importScripts("https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js");
 importScripts("https://www.gstatic.com/firebasejs/9.15.0/firebase-messaging-compat.js");
 
@@ -31,15 +31,36 @@ messaging.onBackgroundMessage((payload) => {
   // The browser may already display the notification automatically from the F-A-P
   // but we are creating it manually here to control the click behavior.
   const notificationTitle = payload.notification.title;
-  const notificationOptions = {
+  
+  // Customize notification based on type
+  let notificationOptions = {
     body: payload.notification.body,
     icon: payload.webpush?.notification?.icon || "https://www.rapid-works.io/opengraphimage.png",
     badge: payload.webpush?.notification?.badge || "https://www.rapid-works.io/logo192.png",
     actions: payload.webpush?.notification?.actions,
     data: {
-      url: payload.data.url, // Pass the URL from our data payload
+      url: payload.data.url || "/blog", // Default fallback
+      type: payload.data.type || "general",
+      kitId: payload.data.kitId || null
     },
   };
+  
+  // Special handling for branding kit notifications
+  if (payload.data.type === "branding_kit_ready") {
+    notificationOptions.icon = "https://www.rapid-works.io/opengraphimage.png";
+    notificationOptions.badge = "https://www.rapid-works.io/logo192.png";
+    notificationOptions.requireInteraction = true; // Keep notification visible until clicked
+    notificationOptions.actions = [
+      {
+        action: 'view',
+        title: 'View Kit'
+      },
+      {
+        action: 'dismiss',
+        title: 'Dismiss'
+      }
+    ];
+  }
 
   // console.log("[firebase-messaging-sw.js] Notification options:", notificationOptions);
 
@@ -49,13 +70,30 @@ messaging.onBackgroundMessage((payload) => {
 // Handle notification clicks
 self.addEventListener("notificationclick", (event) => {
   const clickedUrl = event.notification.data.url;
-  // console.log("Notification click received. URL:", clickedUrl);
+  const notificationType = event.notification.data.type;
+  const kitId = event.notification.data.kitId;
+  
+  // console.log("Notification click received. URL:", clickedUrl, "Type:", notificationType);
   
   event.notification.close();
   
-  event.waitUntil(
-    clients.openWindow(clickedUrl)
-  );
+  // Handle different actions for branding kit notifications
+  if (notificationType === "branding_kit_ready") {
+    if (event.action === 'dismiss') {
+      // Just close the notification
+      return;
+    }
+    
+    // For branding kit notifications, always go to dashboard
+    event.waitUntil(
+      clients.openWindow("/dashboard")
+    );
+  } else {
+    // Default behavior for other notifications
+    event.waitUntil(
+      clients.openWindow(clickedUrl)
+    );
+  }
 });
 
 // console.log('Service worker setup complete');

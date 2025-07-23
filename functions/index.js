@@ -1,5 +1,6 @@
 const {onDocumentCreated} = require("firebase-functions/v2/firestore");
 const {onCall} = require("firebase-functions/v2/https");
+const {onDocumentUpdated} = require("firebase-functions/v2/firestore");
 const admin = require("firebase-admin");
 const {GoogleGenerativeAI} = require("@google/generative-ai");
 
@@ -194,6 +195,42 @@ exports.submitAIPrompt = onCall(async (request) => {
   } catch (error) {
     console.error("Error in submitAIPrompt:", error);
     throw new Error(`Failed to submit AI prompt: ${error.message}`);
+  }
+});
+
+// Callable function for testing branding kit notifications
+exports.testBrandingKitReady = onCall(async (request) => {
+  const {kitId, email} = request.data;
+
+  if (!kitId || !email) {
+    throw new Error("Kit ID and email are required for testing");
+  }
+
+  try {
+    // Update or create a test branding kit document
+    const kitRef = db.collection("brandkits").doc(kitId);
+
+    // Set the document with ready: true to trigger the notification
+    await kitRef.set({
+      id: kitId,
+      email: email,
+      name: `Test Kit - ${kitId}`,
+      ready: true,
+      paid: false,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    }, {merge: true});
+
+    return {
+      success: true,
+      message: `Test branding kit ${kitId} marked as ready for ${email}`,
+      kitId: kitId,
+    };
+  } catch (error) {
+    console.error("Error in testBrandingKitReady:", error);
+    const errorMessage = `Failed to test branding kit notification: ` +
+      `${error.message}`;
+    throw new Error(errorMessage);
   }
 });
 
@@ -582,7 +619,6 @@ When starting conversations: "Hi! 👋 Welcome to RapidWorks — your ` +
 IMPORTANT: Always respond in ${language === "de" ? "German" : "English"} ` +
       `language. User interface language is ${language}.`;
 
-
     const prompt = `${systemContext}\n\nUser Question: ${message}`;
 
     const result = await model.generateContent(prompt);
@@ -598,3 +634,112 @@ IMPORTANT: Always respond in ${language === "de" ? "German" : "English"} ` +
     throw new Error("Failed to process AI request");
   }
 });
+
+// New function for branding kit ready notifications
+exports.onBrandingKitUpdated = onDocumentUpdated(
+    "brandkits/{kitId}",
+    async (event) => {
+      const beforeData = event.data.before.data();
+      const afterData = event.data.after.data();
+
+      // Check if the ready field changed from false/undefined to true
+      const wasReady = beforeData.ready === true;
+      const isNowReady = afterData.ready === true;
+
+      if (!wasReady && isNowReady) {
+        console.log("Branding kit is ready, sending notification");
+
+        try {
+          // Get user email(s) - can be string or array
+          let userEmails = [];
+          if (typeof afterData.email === "string") {
+            userEmails = [afterData.email];
+          } else if (Array.isArray(afterData.email)) {
+            userEmails = afterData.email;
+          }
+
+          if (userEmails.length === 0) {
+            console.log("No email found in branding kit document");
+            return;
+          }
+
+          // Get FCM tokens for the specific users
+          const tokens = [];
+
+          for (const userEmail of userEmails) {
+            const tokensQuery = db.collection("fcmTokens")
+                .where("email", "==", userEmail);
+            const tokensSnapshot = await tokensQuery.get();
+
+            tokensSnapshot.forEach((doc) => {
+              const tokenData = doc.data();
+              tokens.push(tokenData.token);
+            });
+          }
+
+          if (tokens.length === 0) {
+            const emailList = userEmails.join(", ");
+            console.log(`No FCM tokens found for users: ${emailList}`);
+            return;
+          }
+
+          // Get kit name from afterData or use default
+          const kitName = afterData.name || afterData.id ||
+            "Your branding kit";
+
+          // Send notification to all tokens
+          const message = {
+            notification: {
+              title: "🎉 Your Branding Kit is Ready!",
+              body: `${kitName} has been completed and is ready for download.`,
+            },
+            data: {
+              url: "/dashboard",
+              type: "branding_kit_ready",
+              kitId: event.params.kitId,
+            },
+          };
+
+          // Send to tokens for users whose kit is ready
+          const sendPromises = tokens.map(async (token) => {
+            try {
+              await admin.messaging().send({
+                ...message,
+                token: token,
+              });
+              const tokenPrefix = token.substring(0, 10);
+              const successMsg = `Notification sent successfully to token: ` +
+                `${tokenPrefix}...`;
+              console.log(successMsg);
+            } catch (error) {
+              const tokenPrefix = token.substring(0, 10);
+              const errorMsg = `Failed to send notification to token ` +
+                `${tokenPrefix}...:`;
+              console.error(errorMsg, error);
+              // Optionally remove invalid tokens from database
+              const invalidTokenCode =
+                "messaging/registration-token-not-registered";
+              if (error.code === invalidTokenCode) {
+                // Remove invalid token
+                const tokenQuery = await db.collection("fcmTokens")
+                    .where("token", "==", token).get();
+                tokenQuery.forEach(async (doc) => {
+                  await doc.ref.delete();
+                });
+              }
+            }
+          });
+
+          await Promise.all(sendPromises);
+
+          const kitId = event.params.kitId;
+          const kitNotificationMsg = `Branding kit ready notifications sent ` +
+            `for kit: ${kitId}`;
+          console.log(kitNotificationMsg);
+        } catch (error) {
+          const errorMsg = "Error sending branding kit ready notification:";
+          console.error(errorMsg, error);
+        }
+      }
+    },
+);
