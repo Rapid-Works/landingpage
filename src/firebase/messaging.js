@@ -1,6 +1,6 @@
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { db, auth } from './config';
-import { collection, addDoc, serverTimestamp, query, where, getDocs, deleteDoc, updateDoc } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, query, where, getDocs, deleteDoc } from 'firebase/firestore';
 
 const VAPID_KEY = 'BC9X8U5hWzbbGbbB8x_net_q4eG5RA798jZxKcOPS5e5joRHXN7XcCS2yv-UwCKY0lZZ59mOOspl_aSWEjSV33M';
 
@@ -50,32 +50,24 @@ export const requestNotificationPermission = async () => {
         const currentUser = auth.currentUser;
         const userEmail = currentUser?.email || null;
         
-        // Check if this exact token already exists
-        const tokensCollection = collection(db, 'fcmTokens');
-        const existingTokenQuery = query(tokensCollection, where('token', '==', currentToken));
-        const existingTokenSnapshot = await getDocs(existingTokenQuery);
-        
-        if (existingTokenSnapshot.empty) {
-          // Token doesn't exist, create new one
-          await addDoc(tokensCollection, {
-            token: currentToken,
-            email: userEmail,
-            createdAt: serverTimestamp(),
-            deviceType: 'web',
-          });
-        } else {
-          // Token exists, update it with email if user is now logged in
-          const existingDoc = existingTokenSnapshot.docs[0];
-          const existingData = existingDoc.data();
+        // Remove any existing tokens for this user/device to avoid duplicates
+        if (userEmail) {
+          const tokensCollection = collection(db, 'fcmTokens');
+          const existingTokensQuery = query(tokensCollection, where('email', '==', userEmail));
+          const existingTokensSnapshot = await getDocs(existingTokensQuery);
           
-          if (!existingData.email && userEmail) {
-            // Update existing token with email since user is now logged in
-            await updateDoc(existingDoc.ref, {
-              email: userEmail,
-              updatedAt: serverTimestamp(),
-            });
-          }
+          // Delete existing tokens for this user
+          const deletePromises = existingTokensSnapshot.docs.map(doc => deleteDoc(doc.ref));
+          await Promise.all(deletePromises);
         }
+        
+        // Store the new token with user email
+        const tokensCollection = collection(db, 'fcmTokens');
+        await addDoc(tokensCollection, {
+          token: currentToken,
+          email: userEmail,
+          createdAt: serverTimestamp(),
+        });
         
         alert('You have successfully subscribed to notifications!');
       } else {
@@ -98,60 +90,5 @@ export const onForegroundMessage = (callback) => {
       // console.log('Message received in foreground: ', payload);
       callback(payload);
     });
-  }
-};
-
-// Specific function for branding kit notifications (requires authentication)
-export const requestBrandingKitNotifications = async () => {
-  if (!messaging) {
-    throw new Error('Messaging is not supported in this browser.');
-  }
-
-  // Check if user is authenticated
-  const currentUser = auth.currentUser;
-  if (!currentUser?.email) {
-    throw new Error('You must be logged in to subscribe to branding kit notifications.');
-  }
-
-  try {
-    const permission = await Notification.requestPermission();
-    if (permission !== 'granted') {
-      throw new Error('Notification permission was denied.');
-    }
-
-    const currentToken = await getToken(messaging, { vapidKey: VAPID_KEY });
-    if (!currentToken) {
-      throw new Error('Could not get notification token. Please ensure you have granted permission.');
-    }
-
-    const tokensCollection = collection(db, 'fcmTokens');
-    
-    // Check if this exact token already exists
-    const existingTokenQuery = query(tokensCollection, where('token', '==', currentToken));
-    const existingTokenSnapshot = await getDocs(existingTokenQuery);
-    
-    if (existingTokenSnapshot.empty) {
-      // Token doesn't exist, create new one with email
-      await addDoc(tokensCollection, {
-        token: currentToken,
-        email: currentUser.email,
-        createdAt: serverTimestamp(),
-        deviceType: 'web',
-        subscriptionType: 'branding_kit', // Mark as branding kit subscription
-      });
-    } else {
-      // Token exists, ensure it has the user's email
-      const existingDoc = existingTokenSnapshot.docs[0];
-      await updateDoc(existingDoc.ref, {
-        email: currentUser.email,
-        updatedAt: serverTimestamp(),
-        subscriptionType: 'both', // Both blog and branding kit
-      });
-    }
-
-    return { success: true, message: 'Successfully subscribed to branding kit notifications!' };
-  } catch (error) {
-    console.error('Error subscribing to branding kit notifications:', error);
-    throw error;
   }
 }; 

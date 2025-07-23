@@ -198,6 +198,109 @@ exports.submitAIPrompt = onCall(async (request) => {
   }
 });
 
+// New function for branding kit ready notifications
+exports.onBrandingKitUpdated = onDocumentUpdated(
+    "brandkits/{kitId}",
+    async (event) => {
+      const beforeData = event.data.before.data();
+      const afterData = event.data.after.data();
+
+      // Check if the ready field changed from false/undefined to true
+      const wasReady = beforeData.ready === true;
+      const isNowReady = afterData.ready === true;
+
+      if (!wasReady && isNowReady) {
+        console.log("Branding kit is ready, sending notification");
+
+        try {
+          // Get user email(s) - can be string or array
+          let userEmails = [];
+          if (typeof afterData.email === "string") {
+            userEmails = [afterData.email];
+          } else if (Array.isArray(afterData.email)) {
+            userEmails = afterData.email;
+          }
+
+          if (userEmails.length === 0) {
+            console.log("No email found in branding kit document");
+            return;
+          }
+
+          // Get FCM tokens for the specific users
+          const tokens = [];
+
+          for (const userEmail of userEmails) {
+            const tokensQuery = db.collection("fcmTokens")
+                .where("email", "==", userEmail);
+            const tokensSnapshot = await tokensQuery.get();
+
+            tokensSnapshot.forEach((doc) => {
+              const tokenData = doc.data();
+              tokens.push(tokenData.token);
+            });
+          }
+
+          if (tokens.length === 0) {
+            console.log(`No FCM tokens found for users: ` +
+              `${userEmails.join(", ")}`);
+            return;
+          }
+
+          // Get kit name from afterData or use default
+          const kitName = afterData.name || afterData.id ||
+            "Your branding kit";
+
+          // Send notification to tokens for users whose kit is ready
+          const message = {
+            notification: {
+              title: "🎉 Your Branding Kit is Ready!",
+              body: `${kitName} has been completed and is ready for ` +
+                "download.",
+            },
+            data: {
+              url: "/dashboard",
+              type: "branding_kit_ready",
+              kitId: event.params.kitId,
+            },
+          };
+
+          // Send to tokens for users whose kit is ready
+          const sendPromises = tokens.map(async (token) => {
+            try {
+              await admin.messaging().send({
+                ...message,
+                token: token,
+              });
+              console.log(`Notification sent successfully to token: ` +
+                `${token.substring(0, 10)}...`);
+            } catch (error) {
+              console.error(`Failed to send notification to token ` +
+                `${token.substring(0, 10)}...:`, error);
+              // Optionally remove invalid tokens from database
+              if (error.code ===
+                "messaging/registration-token-not-registered") {
+                // Remove invalid token
+                const tokenQuery = await db.collection("fcmTokens")
+                    .where("token", "==", token).get();
+                tokenQuery.forEach(async (doc) => {
+                  await doc.ref.delete();
+                });
+              }
+            }
+          });
+
+          await Promise.all(sendPromises);
+
+          console.log(`Branding kit ready notifications sent for kit: ` +
+            `${event.params.kitId}`);
+        } catch (error) {
+          console.error("Error sending branding kit ready notification:",
+              error);
+        }
+      }
+    },
+);
+
 // Callable function for testing branding kit notifications
 exports.testBrandingKitReady = onCall(async (request) => {
   const {kitId, email} = request.data;
@@ -228,9 +331,8 @@ exports.testBrandingKitReady = onCall(async (request) => {
     };
   } catch (error) {
     console.error("Error in testBrandingKitReady:", error);
-    const errorMessage = `Failed to test branding kit notification: ` +
-      `${error.message}`;
-    throw new Error(errorMessage);
+    throw new Error(`Failed to test branding kit notification: ` +
+      `${error.message}`);
   }
 });
 
@@ -433,77 +535,71 @@ exports.sendNewBlogNotification = onDocumentCreated(
       if (!snapshot) {
         return;
       }
+
       const blogData = snapshot.data();
 
-      const title = blogData.title || "New Post!";
-      const content = blogData.excerpt || "Check out our latest article.";
-      const blogSlug = blogData.slug || event.params.blogId;
-      const blogUrl = `https://www.rapid-works.io/blogs/${blogSlug}`;
-
-      const tokensSnapshot = await db.collection("fcmTokens").get();
-      const tokens = tokensSnapshot.docs.map((doc) => doc.data().token);
-
-      if (tokens.length === 0) {
+      // Only send notifications for published blogs
+      if (!blogData.published) {
         return;
       }
 
       try {
-        const messages = tokens.map((token) => ({
-          token,
-          notification: {
-            title,
-            body: content,
-          },
-          webpush: {
-            notification: {
-              title,
-              body: content,
-              icon: "https://www.rapid-works.io/opengraphimage.png",
-              badge: "https://www.rapid-works.io/logo192.png",
-              actions: [
-                {action: "open_blog", title: "Read Now"},
-              ],
-            },
-            fcmOptions: {
-              link: blogUrl,
-            },
-          },
-          data: {
-            url: blogUrl,
-            title: title,
-            excerpt: content,
-            slug: blogSlug,
-          },
-        }));
+        // Get all FCM tokens
+        const tokensSnapshot = await db.collection("fcmTokens").get();
+        const tokens = [];
 
-        const response = await admin.messaging().sendEach(messages);
+        tokensSnapshot.forEach((doc) => {
+          const tokenData = doc.data();
+          tokens.push(tokenData.token);
+        });
 
-        const tokensToRemove = [];
-        response.responses.forEach((result, index) => {
-          if (!result.success) {
-            const error = result.error;
-            console.error("Error sending to token:", tokens[index], error);
-            const invalidTokenCodes = [
-              "messaging/invalid-registration-token",
-              "messaging/registration-token-not-registered",
-            ];
-            if (invalidTokenCodes.includes(error.code)) {
-              tokensToRemove.push(
-                  db.collection("fcmTokens")
-                      .where("token", "==", tokens[index])
-                      .get()
-                      .then((snapshot) => {
-                        snapshot.docs.forEach((doc) => doc.ref.delete());
-                      }),
-              );
+        if (tokens.length === 0) {
+          console.log("No FCM tokens found for blog notification");
+          return;
+        }
+
+        // Create the notification
+        const notificationTitle = `📝 New Blog Post: ${blogData.title}`;
+        const notificationBody = blogData.excerpt ||
+          "A new blog post has been published!";
+
+        // Send notifications to all tokens
+        const sendPromises = tokens.map(async (token) => {
+          try {
+            await admin.messaging().send({
+              notification: {
+                title: notificationTitle,
+                body: notificationBody,
+              },
+              data: {
+                url: `/blog/${snapshot.id}`,
+                type: "new_blog_post",
+                blogId: snapshot.id,
+              },
+              token: token,
+            });
+            console.log(`Blog notification sent to: ` +
+              `${token.substring(0, 10)}...`);
+          } catch (error) {
+            console.error(`Failed to send blog notification to ` +
+              `${token.substring(0, 10)}...:`, error);
+
+            // Remove invalid tokens
+            if (error.code ===
+              "messaging/registration-token-not-registered") {
+              const tokenQuery = await db.collection("fcmTokens")
+                  .where("token", "==", token).get();
+              tokenQuery.forEach(async (doc) => {
+                await doc.ref.delete();
+              });
             }
           }
         });
 
-        return Promise.all(tokensToRemove);
+        await Promise.all(sendPromises);
+        console.log(`Blog notifications sent for: ${blogData.title}`);
       } catch (error) {
-        console.error("Error sending notifications:", error);
-        throw error;
+        console.error("Error sending blog notification:", error);
       }
     },
 );
@@ -619,6 +715,7 @@ When starting conversations: "Hi! 👋 Welcome to RapidWorks — your ` +
 IMPORTANT: Always respond in ${language === "de" ? "German" : "English"} ` +
       `language. User interface language is ${language}.`;
 
+
     const prompt = `${systemContext}\n\nUser Question: ${message}`;
 
     const result = await model.generateContent(prompt);
@@ -632,182 +729,5 @@ IMPORTANT: Always respond in ${language === "de" ? "German" : "English"} ` +
   } catch (error) {
     console.error("Error with Gemini AI:", error);
     throw new Error("Failed to process AI request");
-  }
-});
-
-// New function for branding kit ready notifications
-exports.onBrandingKitUpdated = onDocumentUpdated(
-    "brandkits/{kitId}",
-    async (event) => {
-      const beforeData = event.data.before.data();
-      const afterData = event.data.after.data();
-
-      // Check if the ready field changed from false/undefined to true
-      const wasReady = beforeData.ready === true;
-      const isNowReady = afterData.ready === true;
-
-      if (!wasReady && isNowReady) {
-        console.log("Branding kit is ready, sending notification");
-
-        try {
-          // Get user email(s) - can be string or array
-          let userEmails = [];
-          if (typeof afterData.email === "string") {
-            userEmails = [afterData.email];
-          } else if (Array.isArray(afterData.email)) {
-            userEmails = afterData.email;
-          }
-
-          if (userEmails.length === 0) {
-            console.log("No email found in branding kit document");
-            return;
-          }
-
-          // Get FCM tokens for the specific users
-          const tokens = [];
-
-          for (const userEmail of userEmails) {
-            const tokensQuery = db.collection("fcmTokens")
-                .where("email", "==", userEmail);
-            const tokensSnapshot = await tokensQuery.get();
-
-            tokensSnapshot.forEach((doc) => {
-              const tokenData = doc.data();
-              tokens.push(tokenData.token);
-            });
-          }
-
-          if (tokens.length === 0) {
-            const emailList = userEmails.join(", ");
-            console.log(`No FCM tokens found for users: ${emailList}`);
-            const subscribeNote = "Note: Users need to subscribe to " +
-              "branding kit notifications while logged in.";
-            console.log(subscribeNote);
-            return;
-          }
-
-          // Get kit name from afterData or use default
-          const kitName = afterData.name || afterData.id ||
-            "Your branding kit";
-
-          // Send notification to all tokens
-          const message = {
-            notification: {
-              title: "🎉 Your Branding Kit is Ready!",
-              body: `${kitName} has been completed and is ready for download.`,
-            },
-            data: {
-              url: "/dashboard",
-              type: "branding_kit_ready",
-              kitId: event.params.kitId,
-            },
-          };
-
-          // Send to tokens for users whose kit is ready
-          const sendPromises = tokens.map(async (token) => {
-            try {
-              await admin.messaging().send({
-                ...message,
-                token: token,
-              });
-              const tokenPrefix = token.substring(0, 10);
-              const successMsg = `Notification sent successfully to token: ` +
-                `${tokenPrefix}...`;
-              console.log(successMsg);
-            } catch (error) {
-              const tokenPrefix = token.substring(0, 10);
-              const errorMsg = `Failed to send notification to token ` +
-                `${tokenPrefix}...:`;
-              console.error(errorMsg, error);
-              // Optionally remove invalid tokens from database
-              const invalidTokenCode =
-                "messaging/registration-token-not-registered";
-              if (error.code === invalidTokenCode) {
-                // Remove invalid token
-                const tokenQuery = await db.collection("fcmTokens")
-                    .where("token", "==", token).get();
-                tokenQuery.forEach(async (doc) => {
-                  await doc.ref.delete();
-                });
-              }
-            }
-          });
-
-          await Promise.all(sendPromises);
-
-          const kitId = event.params.kitId;
-          const kitNotificationMsg = `Branding kit ready notifications sent ` +
-            `for kit: ${kitId}`;
-          console.log(kitNotificationMsg);
-        } catch (error) {
-          const errorMsg = "Error sending branding kit ready notification:";
-          console.error(errorMsg, error);
-        }
-      }
-    },
-);
-
-// Callable function to clean up invalid FCM tokens
-exports.cleanupInvalidTokens = onCall(async (request) => {
-  try {
-    // Get all FCM tokens
-    const tokensSnapshot = await db.collection("fcmTokens").get();
-    let totalTokens = 0;
-    let invalidTokens = 0;
-    let cleanedTokens = 0;
-
-    console.log(`Starting cleanup of ${tokensSnapshot.size} tokens`);
-
-    // Test each token by trying to send a test message
-    const cleanupPromises = tokensSnapshot.docs.map(async (doc) => {
-      totalTokens++;
-      const tokenData = doc.data();
-      const token = tokenData.token;
-
-      try {
-        // Try to validate the token by sending a dry-run message
-        await admin.messaging().send({
-          token: token,
-          notification: {
-            title: "Test",
-            body: "Test",
-          },
-        }, true); // dry-run mode
-
-        console.log(`Token valid: ${token.substring(0, 10)}...`);
-      } catch (error) {
-        invalidTokens++;
-        const tokenPrefix = token.substring(0, 10);
-
-        if (error.code === "messaging/registration-token-not-registered" ||
-            error.code === "messaging/invalid-registration-token") {
-          // Delete invalid token
-          await doc.ref.delete();
-          cleanedTokens++;
-          console.log(`Removed invalid token: ${tokenPrefix}...`);
-        } else {
-          const errorMsg = `Token error (not removed): ${tokenPrefix}... - ` +
-            `${error.code}`;
-          console.log(errorMsg);
-        }
-      }
-    });
-
-    await Promise.all(cleanupPromises);
-
-    const result = {
-      totalTokens,
-      invalidTokens,
-      cleanedTokens,
-      message: `Cleanup complete. Removed ${cleanedTokens} invalid ` +
-        `tokens out of ${invalidTokens} invalid tokens found from ` +
-        `${totalTokens} total tokens.`,
-    };
-
-    console.log(result.message);
-    return result;
-  } catch (error) {
-    console.error("Error cleaning up tokens:", error);
-    throw new Error(`Failed to cleanup tokens: ${error.message}`);
   }
 });
