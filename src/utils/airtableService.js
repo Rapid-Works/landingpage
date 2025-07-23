@@ -135,6 +135,19 @@ export const testBrandingKitNotification = async ({ kitId, email }) => {
   }
 };
 
+// Function to clean up invalid FCM tokens
+export const cleanupInvalidTokens = async () => {
+  try {
+    const cleanupTokens = httpsCallable(functions, 'cleanupInvalidTokens');
+    const result = await cleanupTokens();
+    
+    return result.data;
+  } catch (error) {
+    console.error("Error cleaning up invalid tokens:", error);
+    throw error;
+  }
+};
+
 
 // Alternative approach: Store in Firestore first (for better reliability)
 export const submitToFirestore = {

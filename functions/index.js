@@ -336,6 +336,68 @@ exports.testBrandingKitReady = onCall(async (request) => {
   }
 });
 
+// Callable function for cleaning up invalid FCM tokens
+exports.cleanupInvalidTokens = onCall(async (request) => {
+  try {
+    console.log("Starting FCM token cleanup...");
+
+    // Get all FCM tokens
+    const tokensSnapshot = await db.collection("fcmTokens").get();
+    const tokens = [];
+    const tokenDocs = [];
+
+    tokensSnapshot.forEach((doc) => {
+      const tokenData = doc.data();
+      tokens.push(tokenData.token);
+      tokenDocs.push(doc);
+    });
+
+    if (tokens.length === 0) {
+      return {success: true, message: "No tokens to clean up"};
+    }
+
+    console.log(`Testing ${tokens.length} tokens...`);
+
+    // Test each token by trying to send a dry-run message
+    const invalidTokens = [];
+
+    for (let i = 0; i < tokens.length; i++) {
+      try {
+        await admin.messaging().send({
+          token: tokens[i],
+          data: {test: "dry-run"},
+        }, true); // dry-run mode
+      } catch (error) {
+        if (error.code === "messaging/registration-token-not-registered" ||
+            error.code === "messaging/invalid-registration-token") {
+          invalidTokens.push(i);
+        }
+      }
+    }
+
+    // Delete invalid tokens
+    const deletePromises = invalidTokens.map(async (index) => {
+      await tokenDocs[index].ref.delete();
+    });
+
+    await Promise.all(deletePromises);
+
+    console.log(`Cleaned up ${invalidTokens.length} invalid tokens`);
+
+    return {
+      success: true,
+      message: `Cleaned up ${invalidTokens.length} invalid tokens out ` +
+        `of ${tokens.length}`,
+      totalTokens: tokens.length,
+      invalidTokens: invalidTokens.length,
+      validTokens: tokens.length - invalidTokens.length,
+    };
+  } catch (error) {
+    console.error("Error cleaning up tokens:", error);
+    throw new Error(`Failed to cleanup tokens: ${error.message}`);
+  }
+});
+
 // Alternative: Firestore-triggered functions
 exports.onServiceRequestCreated = onDocumentCreated(
     "serviceRequests/{requestId}",
