@@ -398,6 +398,86 @@ exports.cleanupInvalidTokens = onCall(async (request) => {
   }
 });
 
+// Test function for blog notifications
+exports.testBlogNotification = onCall(async (request) => {
+  try {
+    console.log("Testing blog notification system...");
+
+    // 1. Check FCM tokens
+    const tokensSnapshot = await db.collection("fcmTokens").get();
+    const tokens = [];
+    const validTokens = [];
+
+    console.log(`Found ${tokensSnapshot.size} FCM tokens in database`);
+
+    tokensSnapshot.forEach((doc) => {
+      const tokenData = doc.data();
+      tokens.push({
+        token: tokenData.token,
+        email: tokenData.email,
+        createdAt: tokenData.createdAt,
+      });
+    });
+
+    if (tokens.length === 0) {
+      return {
+        success: false,
+        message: "No FCM tokens found. Users need to subscribe to " +
+          "notifications first.",
+        tokens: 0,
+        validTokens: 0,
+      };
+    }
+
+    // 2. Test token validity (sample a few)
+    const testTokens = tokens.slice(0, 3); // Test first 3 tokens
+    for (const tokenData of testTokens) {
+      try {
+        await admin.messaging().send({
+          token: tokenData.token,
+          data: {test: "validity-check"},
+        }, true); // dry-run mode
+        validTokens.push(tokenData);
+      } catch (error) {
+        console.log(`Invalid token found: ` +
+          `${tokenData.token.substring(0, 10)}...`);
+      }
+    }
+
+    // 3. Create a test blog post to trigger notifications
+    const testBlogRef = await db.collection("blogs").add({
+      title: "🧪 Test Blog Post - Notification Check",
+      excerpt: "This is a test post to verify blog notifications " +
+        "are working.",
+      content: "Test content for notification verification.",
+      published: true,
+      date: admin.firestore.FieldValue.serverTimestamp(),
+      author: "System Test",
+      tags: ["test", "notifications"],
+    });
+
+    console.log(`Test blog post created with ID: ${testBlogRef.id}`);
+
+    return {
+      success: true,
+      message: `Blog notification test completed. Created test blog ` +
+        `post: ${testBlogRef.id}`,
+      totalTokens: tokens.length,
+      testedTokens: testTokens.length,
+      validTokens: validTokens.length,
+      testBlogId: testBlogRef.id,
+      tokenDetails: tokens.map((t) => ({
+        email: t.email,
+        tokenPreview: t.token.substring(0, 10) + "...",
+        createdAt: t.createdAt,
+      })),
+    };
+  } catch (error) {
+    console.error("Error testing blog notifications:", error);
+    throw new Error(`Blog notification test failed: ${error.message}`);
+  }
+});
+
 // Alternative: Firestore-triggered functions
 exports.onServiceRequestCreated = onDocumentCreated(
     "serviceRequests/{requestId}",

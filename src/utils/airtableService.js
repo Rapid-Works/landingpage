@@ -148,6 +148,19 @@ export const cleanupInvalidTokens = async () => {
   }
 };
 
+// Function to test blog notifications
+export const testBlogNotification = async () => {
+  try {
+    const testBlogNotif = httpsCallable(functions, 'testBlogNotification');
+    const result = await testBlogNotif();
+    
+    return result.data;
+  } catch (error) {
+    console.error("Error testing blog notification:", error);
+    throw error;
+  }
+};
+
 
 // Alternative approach: Store in Firestore first (for better reliability)
 export const submitToFirestore = {
