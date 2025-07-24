@@ -12,14 +12,15 @@ const getInitials = (name) => {
 const UserAvatar = ({ user, size = 8 }) => {
   const [imgError, setImgError] = useState(false);
   const hasPhoto = user && user.photoURL && user.photoURL.trim() !== '' && !imgError;
-  const sizeClass = `w-${size} h-${size}`;
+  const sizeClass = `w-${size} h-${size} min-w-${size} min-h-${size}`;
   return (
-    <div className={`bg-[#7C3BEC] rounded-full flex items-center justify-center overflow-hidden ${sizeClass}`}>
+    <div className={`bg-[#7C3BEC] rounded-full flex items-center justify-center overflow-hidden flex-shrink-0 ${sizeClass}`} style={{ aspectRatio: '1 / 1' }}>
       {hasPhoto ? (
         <img
           src={user.photoURL}
           alt={user.displayName || 'User'}
           className="w-full h-full object-cover"
+          style={{ aspectRatio: '1 / 1' }}
           onError={() => setImgError(true)}
         />
       ) : (
