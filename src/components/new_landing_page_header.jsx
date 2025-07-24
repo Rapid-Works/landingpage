@@ -17,7 +17,8 @@ import {
   Settings,
   Calendar,
   Bell,
-  ChevronDown
+  ChevronDown,
+  Edit
 } from "lucide-react"
 import { LanguageContext as AppLanguageContext } from "../App"
 import { useAuth } from "../contexts/AuthContext"
@@ -26,12 +27,14 @@ import logo from "../images/logo.png"
 import { auth, db } from '../firebase/config'
 import { collection, getDocs, orderBy, query } from 'firebase/firestore'
 import { signOut } from 'firebase/auth'
+import ProfileEditModal from './ProfileEditModal'
 
 export default function RapidWorksHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const [imgError, setImgError] = useState(false)
   const [notificationPanelOpen, setNotificationPanelOpen] = useState(false)
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
   const notificationRef = useRef(null)
   const userMenuRef = useRef(null)
   const location = useLocation()
@@ -98,6 +101,11 @@ export default function RapidWorksHeader() {
     setIsUserMenuOpen(false)
   }
 
+  const handleEditProfile = () => {
+    setIsProfileModalOpen(true)
+    setIsUserMenuOpen(false)
+  }
+
   const isActive = (path) => {
     if (path === "/" && location.pathname === "/") return false;
     const currentPath = location.pathname.endsWith('/') ? location.pathname.slice(0, -1) : location.pathname;
@@ -138,12 +146,13 @@ export default function RapidWorksHeader() {
   const renderUserAvatar = (isMobile = false) => {
     const hasPhoto = currentUser && currentUser.photoURL && currentUser.photoURL.trim() !== '' && !imgError;
     return (
-      <div className={`bg-[#7C3BEC] rounded-full flex items-center justify-center overflow-hidden ${isMobile ? 'w-7 h-7' : 'w-8 h-8'}`}>
+      <div className={`bg-[#7C3BEC] rounded-full flex items-center justify-center overflow-hidden flex-shrink-0 ${isMobile ? 'w-7 h-7 min-w-7 min-h-7' : 'w-8 h-8 min-w-8 min-h-8'}`} style={{ aspectRatio: '1 / 1' }}>
         {hasPhoto ? (
           <img
             src={currentUser.photoURL}
             alt={currentUser.displayName || 'User'}
             className="w-full h-full object-cover"
+            style={{ aspectRatio: '1 / 1' }}
             onError={() => setImgError(true)}
           />
         ) : (
@@ -289,7 +298,7 @@ export default function RapidWorksHeader() {
                 <div className="relative user-menu-container" ref={userMenuRef}>
                <button
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                    className="flex items-center"
+                    className="flex items-center flex-shrink-0"
                   >
                     {renderUserAvatar()}
                   </button>
@@ -301,6 +310,10 @@ export default function RapidWorksHeader() {
                           <p className="text-xs text-gray-500 truncate">{currentUser.email}</p>
                         </div>
                         <div className="border-t border-gray-100 my-1"></div>
+                        <button onClick={handleEditProfile} className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+                          <Edit className="h-4 w-4 mr-2" />
+                          Edit Profile
+                        </button>
                         <button onClick={handleDashboardRedirect} className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
                           <Settings className="h-4 w-4 mr-2" />
                           Dashboard
@@ -356,6 +369,10 @@ export default function RapidWorksHeader() {
                     {currentUser.displayName || currentUser.email}
                   </span>
                 </div>
+                <button onClick={() => { handleEditProfile(); setMobileMenuOpen(false); }} className="flex items-center w-full px-4 py-3 rounded-lg transition-all duration-300" style={{ color: accentColor }}>
+                  <Edit className="h-4 w-4 mr-3" />
+                  Edit Profile
+                </button>
                 <button onClick={() => { handleDashboardRedirect(); setMobileMenuOpen(false); }} className="flex items-center w-full px-4 py-3 rounded-lg transition-all duration-300" style={{ color: accentColor }}>
                   <Settings className="h-4 w-4 mr-3" />
                   Dashboard
@@ -408,6 +425,12 @@ export default function RapidWorksHeader() {
           </div>
         </div>
       )}
+
+      {/* Profile Edit Modal */}
+      <ProfileEditModal 
+        isOpen={isProfileModalOpen} 
+        onClose={() => setIsProfileModalOpen(false)} 
+      />
     </header>
   )
 } 

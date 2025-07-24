@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, User, LogOut, Settings } from 'lucide-react'
+import { Menu, X, User, LogOut, Settings, Edit } from 'lucide-react'
 import { LanguageContext } from '../App'
 import { useAuth } from '../contexts/AuthContext'
 import RapidWorksLogo from '../images/logo512.png'
+import ProfileEditModal from './ProfileEditModal'
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
   const { language, setLanguage } = React.useContext(LanguageContext)
@@ -50,6 +52,11 @@ const Navbar = () => {
     } catch (error) {
       console.error('Failed to log out:', error)
     }
+  }
+
+  const handleEditProfile = () => {
+    setIsProfileModalOpen(true)
+    setIsUserMenuOpen(false)
   }
 
   const isActive = (path) => location.pathname === path
@@ -118,6 +125,13 @@ const Navbar = () => {
                 {isUserMenuOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 z-50">
                     <div className="py-2">
+                      <button
+                        onClick={handleEditProfile}
+                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        <Edit className="h-4 w-4 mr-2" />
+                        Edit Profile
+                      </button>
                       <Link
                         to="/dashboard"
                         onClick={() => setIsUserMenuOpen(false)}
@@ -227,6 +241,16 @@ const Navbar = () => {
                     <User className="h-4 w-4 mr-2" />
                     {currentUser.displayName || currentUser.email}
                   </div>
+                  <button
+                    onClick={() => {
+                      handleEditProfile()
+                      setIsMenuOpen(false)
+                    }}
+                    className="flex items-center w-full px-4 py-2 text-sm text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100"
+                  >
+                    <Edit className="h-4 w-4 mr-2" />
+                    Edit Profile
+                  </button>
                   <Link
                     to="/dashboard"
                     onClick={() => setIsMenuOpen(false)}
@@ -286,6 +310,12 @@ const Navbar = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Profile Edit Modal */}
+      <ProfileEditModal 
+        isOpen={isProfileModalOpen} 
+        onClose={() => setIsProfileModalOpen(false)} 
+      />
     </nav>
   )
 }
