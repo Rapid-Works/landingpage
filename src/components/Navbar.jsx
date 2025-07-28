@@ -1,20 +1,24 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, User, LogOut, Settings, Edit } from 'lucide-react'
+import { Menu, X, User, LogOut, Settings, Edit, Bell } from 'lucide-react'
 import { LanguageContext } from '../App'
 import { useAuth } from '../contexts/AuthContext'
 import RapidWorksLogo from '../images/logo512.png'
 import ProfileEditModal from './ProfileEditModal'
+import NotificationSettingsModal from './NotificationSettingsModal'
+import { useSmartNotificationStatus } from '../hooks/useSmartNotificationStatus'
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
   const { language, setLanguage } = React.useContext(LanguageContext)
   const { currentUser, logout } = useAuth()
+  const { forceRefresh } = useSmartNotificationStatus()
 
   // Retrieve language from localStorage on component mount
   useEffect(() => {
@@ -56,6 +60,11 @@ const Navbar = () => {
 
   const handleEditProfile = () => {
     setIsProfileModalOpen(true)
+    setIsUserMenuOpen(false)
+  }
+
+  const handleNotificationSettings = () => {
+    setIsSettingsModalOpen(true)
     setIsUserMenuOpen(false)
   }
 
@@ -131,6 +140,13 @@ const Navbar = () => {
                       >
                         <Edit className="h-4 w-4 mr-2" />
                         Edit Profile
+                      </button>
+                      <button
+                        onClick={handleNotificationSettings}
+                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        <Bell className="h-4 w-4 mr-2" />
+                        Notification Settings
                       </button>
                       <Link
                         to="/dashboard"
@@ -251,6 +267,16 @@ const Navbar = () => {
                     <Edit className="h-4 w-4 mr-2" />
                     Edit Profile
                   </button>
+                  <button
+                    onClick={() => {
+                      handleNotificationSettings()
+                      setIsMenuOpen(false)
+                    }}
+                    className="flex items-center w-full px-4 py-2 text-sm text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100"
+                  >
+                    <Bell className="h-4 w-4 mr-2" />
+                    Notification Settings
+                  </button>
                   <Link
                     to="/dashboard"
                     onClick={() => setIsMenuOpen(false)}
@@ -315,6 +341,13 @@ const Navbar = () => {
       <ProfileEditModal 
         isOpen={isProfileModalOpen} 
         onClose={() => setIsProfileModalOpen(false)} 
+      />
+
+      {/* Notification Settings Modal */}
+      <NotificationSettingsModal 
+        isOpen={isSettingsModalOpen} 
+        onClose={() => setIsSettingsModalOpen(false)}
+        onPreferencesSaved={forceRefresh}
       />
     </nav>
   )

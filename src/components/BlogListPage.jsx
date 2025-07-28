@@ -2,15 +2,101 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllBlogPosts } from '../utils/blogService';
 import RapidWorksHeader from "./new_landing_page_header";
-import { requestNotificationPermission } from '../firebase/messaging';
+import { getMessaging, getToken } from 'firebase/messaging';
+import { db, auth } from '../firebase/config';
+import { collection, addDoc, serverTimestamp, query, where, getDocs, deleteDoc } from 'firebase/firestore';
+import { useSmartNotificationStatus } from '../hooks/useSmartNotificationStatus';
 import { Bell, BellRing, Check, X, Loader2 } from 'lucide-react';
+
+const VAPID_KEY = 'BC9X8U5hWzbbGbbB8x_net_q4eG5RA798jZxKcOPS5e5joRHXN7XcCS2yv-UwCKY0lZZ59mOOspl_aSWEjSV33M';
 
 const BlogListPage = () => {
   const [blogPosts, setBlogPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [notificationState, setNotificationState] = useState('default'); // 'default', 'loading', 'success', 'error'
+  const [notificationState, setNotificationState] = useState('default'); // 'default', 'loading', 'error'
   const [notificationMessage, setNotificationMessage] = useState('');
+  const { hasAnyNotificationsEnabled: isSubscribed, loading: subscriptionLoading, forceRefresh: checkSubscriptionStatus } = useSmartNotificationStatus();
+
+  // Better notification permission handler without alerts
+  const requestNotificationPermissionSilent = async () => {
+    try {
+      // Check if notifications are supported
+      if (!('Notification' in window)) {
+        console.log('Notifications not supported');
+        return { success: false, reason: 'not_supported' };
+      }
+
+      // Check current permission state
+      const permission = Notification.permission;
+      
+      // If already granted, try to get token
+      if (permission === 'granted') {
+        return await getNotificationToken();
+      }
+      
+      // If already denied, don't request again
+      if (permission === 'denied') {
+        console.log('Notifications previously denied');
+        return { success: false, reason: 'denied' };
+      }
+
+      // Request permission (permission is 'default')
+      const newPermission = await Notification.requestPermission();
+      
+      if (newPermission === 'granted') {
+        return await getNotificationToken();
+      } else {
+        console.log('User denied notification permission');
+        return { success: false, reason: 'user_denied' };
+      }
+      
+    } catch (error) {
+      console.error('Error requesting notification permission:', error);
+      return { success: false, reason: 'error', error };
+    }
+  };
+
+  const getNotificationToken = async () => {
+    try {
+      const messaging = getMessaging();
+      const currentToken = await getToken(messaging, { vapidKey: VAPID_KEY });
+      
+      if (currentToken) {
+        // Get current user email if available
+        const currentUser = auth.currentUser;
+        const userEmail = currentUser?.email || null;
+        
+        // Remove any existing tokens for this user/device to avoid duplicates
+        if (userEmail) {
+          const tokensCollection = collection(db, 'fcmTokens');
+          const existingTokensQuery = query(tokensCollection, where('email', '==', userEmail));
+          const existingTokensSnapshot = await getDocs(existingTokensQuery);
+          
+          // Delete existing tokens for this user
+          const deletePromises = existingTokensSnapshot.docs.map(doc => deleteDoc(doc.ref));
+          await Promise.all(deletePromises);
+        }
+        
+        // Store the new token with user email
+        const tokensCollection = collection(db, 'fcmTokens');
+        await addDoc(tokensCollection, {
+          token: currentToken,
+          email: userEmail,
+          createdAt: serverTimestamp(),
+        });
+        
+        console.log('Successfully subscribed to notifications');
+        return { success: true, token: currentToken };
+      } else {
+        console.log('No registration token available');
+        return { success: false, reason: 'no_token' };
+      }
+    } catch (error) {
+      console.error('Error getting notification token:', error);
+      return { success: false, reason: 'token_error', error };
+    }
+  };
 
   useEffect(() => {
     const fetchBlogPosts = async () => {
@@ -30,20 +116,38 @@ const BlogListPage = () => {
   }, []);
 
   const handleSubscription = async () => {
+    // If already subscribed, show a friendly message
+    if (isSubscribed) {
+      setNotificationMessage('You are already subscribed to notifications! 🎉');
+      setTimeout(() => {
+        setNotificationMessage('');
+      }, 3000);
+      return;
+    }
+
     setNotificationState('loading');
     setNotificationMessage('');
     
-    try {
-      await requestNotificationPermission();
-      setNotificationState('success');
+    const permissionResult = await requestNotificationPermissionSilent();
+    
+    if (permissionResult.success) {
+      // DEVELOPMENT: Set mock FCM token in localStorage
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        localStorage.setItem(`fcmToken_${currentUser.email}`, 'mock-fcm-token-' + Date.now());
+      }
+      
+      // Refresh subscription status to show updated state
+      checkSubscriptionStatus();
+      
+      setNotificationState('default');
       setNotificationMessage('🎉 You\'re all set! You\'ll get notified about new blog posts.');
       
-      // Reset to default after 5 seconds
+      // Clear success message after 3 seconds
       setTimeout(() => {
-        setNotificationState('default');
         setNotificationMessage('');
-      }, 5000);
-    } catch (err) {
+      }, 3000);
+    } else {
       setNotificationState('error');
       setNotificationMessage('Failed to subscribe. Please try again.');
       
@@ -57,19 +161,34 @@ const BlogListPage = () => {
 
   const NotificationButton = () => {
     const getButtonContent = () => {
+      // Show loading state while checking subscription status
+      if (subscriptionLoading) {
+        return (
+          <>
+            <Loader2 className="h-5 w-5 animate-spin" />
+            <span>Checking...</span>
+          </>
+        );
+      }
+
+      // Show subscribed state if user is already subscribed
+      if (isSubscribed) {
+        return (
+          <>
+            <Check className="h-5 w-5" />
+            <span className="hidden sm:inline">Notifications Enabled</span>
+            <span className="sm:hidden">Enabled</span>
+          </>
+        );
+      }
+
+      // Show appropriate state based on subscription process
       switch (notificationState) {
         case 'loading':
           return (
             <>
               <Loader2 className="h-5 w-5 animate-spin" />
               <span>Subscribing...</span>
-            </>
-          );
-        case 'success':
-          return (
-            <>
-              <Check className="h-5 w-5" />
-              <span>Subscribed!</span>
             </>
           );
         case 'error':
@@ -91,11 +210,20 @@ const BlogListPage = () => {
     };
 
     const getButtonStyles = () => {
+      // If loading subscription status
+      if (subscriptionLoading) {
+        return 'bg-gray-400 cursor-not-allowed';
+      }
+
+      // If already subscribed, show green success state
+      if (isSubscribed) {
+        return 'bg-green-500 hover:bg-green-600 cursor-pointer';
+      }
+
+      // Show appropriate state based on subscription process
       switch (notificationState) {
         case 'loading':
           return 'bg-gray-500 cursor-not-allowed';
-        case 'success':
-          return 'bg-green-500 hover:bg-green-600';
         case 'error':
           return 'bg-red-500 hover:bg-red-600';
         default:
@@ -106,8 +234,8 @@ const BlogListPage = () => {
     return (
       <button 
         onClick={handleSubscription}
-        disabled={notificationState === 'loading'}
-        className={`${getButtonStyles()} text-white font-semibold py-3 px-4 sm:px-6 rounded-full transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0`}
+        disabled={subscriptionLoading || notificationState === 'loading'}
+        className={`${getButtonStyles()} text-white font-semibold py-3 px-4 sm:px-6 rounded-full transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0 disabled:hover:-translate-y-0`}
       >
         {getButtonContent()}
       </button>
@@ -187,8 +315,7 @@ const BlogListPage = () => {
         ) : (
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {blogPosts.map((post) => (
-            // Use flex column layout for the card
-            <div key={post.slug} className="flex flex-col border rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden"> {/* Added overflow-hidden */}
+              <div key={post.slug} className="flex flex-col border rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden"> {/* Added overflow-hidden */}
               {/* +++ Add Image Section +++ */}
               {post.imageUrl && (
                 <Link to={`/blogs/${post.slug}`} className="block aspect-video overflow-hidden"> {/* Aspect ratio container */}

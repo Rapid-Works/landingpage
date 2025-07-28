@@ -22,26 +22,32 @@ import {
 } from "lucide-react"
 import { LanguageContext as AppLanguageContext } from "../App"
 import { useAuth } from "../contexts/AuthContext"
-import { useNotifications } from '../contexts/NotificationContext'
 import logo from "../images/logo.png"
 import { auth, db } from '../firebase/config'
 import { collection, getDocs, orderBy, query } from 'firebase/firestore'
 import { signOut } from 'firebase/auth'
 import ProfileEditModal from './ProfileEditModal'
+import NotificationSettingsModal from './NotificationSettingsModal'
+import NotificationHistory from './NotificationHistory'
+import { useNotificationHistory } from '../hooks/useNotificationHistory'
+import { useSmartNotificationStatus } from '../hooks/useSmartNotificationStatus'
 
 export default function RapidWorksHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const [imgError, setImgError] = useState(false)
-  const [notificationPanelOpen, setNotificationPanelOpen] = useState(false)
+
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
-  const notificationRef = useRef(null)
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
+  const [isNotificationHistoryOpen, setIsNotificationHistoryOpen] = useState(false)
+  const { unreadCount } = useNotificationHistory()
+  const { forceRefresh } = useSmartNotificationStatus()
   const userMenuRef = useRef(null)
   const location = useLocation()
   const navigate = useNavigate()
   const context = useContext(AppLanguageContext)
   const { currentUser, logout } = useAuth()
-  const { notifications, notificationCount, markAsRead } = useNotifications()
+
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -55,9 +61,6 @@ export default function RapidWorksHeader() {
 
   useEffect(() => {
     function handleClickOutside(event) {
-      if (notificationRef.current && !notificationRef.current.contains(event.target)) {
-        setNotificationPanelOpen(false)
-      }
       if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
         setIsUserMenuOpen(false)
     }
@@ -66,7 +69,7 @@ export default function RapidWorksHeader() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
-  }, [notificationRef, userMenuRef])
+  }, [userMenuRef])
 
   if (!context) {
     console.error("LanguageContext not found in RapidWorksHeader")
@@ -103,6 +106,11 @@ export default function RapidWorksHeader() {
 
   const handleEditProfile = () => {
     setIsProfileModalOpen(true)
+    setIsUserMenuOpen(false)
+  }
+
+  const handleNotificationSettings = () => {
+    setIsSettingsModalOpen(true)
     setIsUserMenuOpen(false)
   }
 
@@ -165,10 +173,7 @@ export default function RapidWorksHeader() {
   }
 
   const handleNotificationClick = () => {
-    setNotificationPanelOpen(!notificationPanelOpen)
-    if (!notificationPanelOpen && notificationCount > 0) {
-      markAsRead()
-    }
+    setIsNotificationHistoryOpen(true)
   }
 
   return (
@@ -260,39 +265,21 @@ export default function RapidWorksHeader() {
 
             {/* Right-aligned Auth */}
             <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-4">
-              {/* Notification Bell - Commented out for now
-              <div className="relative" ref={notificationRef}>
-                  <button onClick={handleNotificationClick} className="relative text-gray-600 hover:text-purple-600 focus:outline-none">
-                      <Bell size={24} />
-                      {notificationCount > 0 && (
-                          <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">
-                              {notificationCount}
-                          </span>
-                      )}
-                  </button>
-                  {notificationPanelOpen && (
-                      <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl overflow-hidden border border-gray-100">
-                          <div className="p-4 border-b">
-                              <h3 className="font-semibold text-gray-800">New Notifications</h3>
-                          </div>
-                          {notifications.length > 0 ? (
-                              <ul className="divide-y max-h-96 overflow-y-auto">
-                                  {notifications.map(blog => (
-                                      <li key={blog.id}>
-                                          <Link to={blog.url} onClick={() => setNotificationPanelOpen(false)} className="block p-4 hover:bg-gray-50">
-                                              <p className="font-semibold text-sm text-gray-800">{blog.title}</p>
-                                              <p className="text-xs text-gray-500">{blog.body}</p>
-                                          </Link>
-                                      </li>
-                                  ))}
-                              </ul>
-                          ) : (
-                              <p className="p-4 text-sm text-gray-500">No new notifications.</p>
-                          )}
-                      </div>
-                  )}
-              </div>
-              */}
+              {/* Notification Bell */}
+            <div className="relative">
+              <button 
+                onClick={handleNotificationClick} 
+                className="relative text-gray-600 hover:text-purple-600 focus:outline-none p-2 rounded-full hover:bg-gray-100 transition-colors"
+                title="View notifications"
+              >
+                <Bell size={24} />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">
+                    {unreadCount > 99 ? '99+' : unreadCount}
+                  </span>
+                )}
+              </button>
+            </div>
 
               {currentUser ? (
                 <div className="relative user-menu-container" ref={userMenuRef}>
@@ -313,6 +300,10 @@ export default function RapidWorksHeader() {
                         <button onClick={handleEditProfile} className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
                           <Edit className="h-4 w-4 mr-2" />
                           Edit Profile
+                        </button>
+                        <button onClick={handleNotificationSettings} className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+                          <Bell className="h-4 w-4 mr-2" />
+                          Notification Settings
                         </button>
                         <button onClick={handleDashboardRedirect} className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
                           <Settings className="h-4 w-4 mr-2" />
@@ -373,6 +364,10 @@ export default function RapidWorksHeader() {
                   <Edit className="h-4 w-4 mr-3" />
                   Edit Profile
                 </button>
+                <button onClick={() => { handleNotificationSettings(); setMobileMenuOpen(false); }} className="flex items-center w-full px-4 py-3 rounded-lg transition-all duration-300" style={{ color: accentColor }}>
+                  <Bell className="h-4 w-4 mr-3" />
+                  Notification Settings
+                </button>
                 <button onClick={() => { handleDashboardRedirect(); setMobileMenuOpen(false); }} className="flex items-center w-full px-4 py-3 rounded-lg transition-all duration-300" style={{ color: accentColor }}>
                   <Settings className="h-4 w-4 mr-3" />
                   Dashboard
@@ -430,6 +425,19 @@ export default function RapidWorksHeader() {
       <ProfileEditModal 
         isOpen={isProfileModalOpen} 
         onClose={() => setIsProfileModalOpen(false)} 
+      />
+
+      {/* Notification Settings Modal */}
+      <NotificationSettingsModal 
+        isOpen={isSettingsModalOpen} 
+        onClose={() => setIsSettingsModalOpen(false)}
+        onPreferencesSaved={forceRefresh}
+      />
+
+      {/* Notification History Modal */}
+      <NotificationHistory 
+        isOpen={isNotificationHistoryOpen} 
+        onClose={() => setIsNotificationHistoryOpen(false)} 
       />
     </header>
   )

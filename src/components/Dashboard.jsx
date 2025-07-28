@@ -1,38 +1,140 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { motion } from 'framer-motion';
-import { Calendar, Layers, Bell, BellRing, Check, X, Loader2, Edit } from 'lucide-react';
+import { Calendar, Layers, Bell, BellRing, Check, X, Loader2, Edit, History } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import RapidWorksHeader from './new_landing_page_header';
 import BrandingKits from './BrandingKits';
 import UserAvatar from './UserAvatar';
 import ProfileEditModal from './ProfileEditModal';
-import { requestNotificationPermission } from '../firebase/messaging';
+import NotificationHistory from './NotificationHistory';
+import { getMessaging, getToken } from 'firebase/messaging';
+import { db, auth } from '../firebase/config';
+import { collection, addDoc, serverTimestamp, query, where, getDocs, deleteDoc } from 'firebase/firestore';
+import { useSmartNotificationStatus } from '../hooks/useSmartNotificationStatus';
 
 const accent = "#7C3BEC";
+const VAPID_KEY = 'BC9X8U5hWzbbGbbB8x_net_q4eG5RA798jZxKcOPS5e5joRHXN7XcCS2yv-UwCKY0lZZ59mOOspl_aSWEjSV33M';
 
 const Dashboard = () => {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
-  const [notificationState, setNotificationState] = useState('default'); // 'default', 'loading', 'success', 'error'
+  const [notificationState, setNotificationState] = useState('default'); // 'default', 'loading', 'error'
   const [notificationMessage, setNotificationMessage] = useState('');
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isNotificationHistoryOpen, setIsNotificationHistoryOpen] = useState(false);
+  const { hasAnyNotificationsEnabled: isSubscribed, loading: subscriptionLoading, forceRefresh: checkSubscriptionStatus } = useSmartNotificationStatus();
+
+  // Better notification permission handler without alerts
+  const requestNotificationPermissionSilent = async () => {
+    try {
+      // Check if notifications are supported
+      if (!('Notification' in window)) {
+        console.log('Notifications not supported');
+        return { success: false, reason: 'not_supported' };
+      }
+
+      // Check current permission state
+      const permission = Notification.permission;
+      
+      // If already granted, try to get token
+      if (permission === 'granted') {
+        return await getNotificationToken();
+      }
+      
+      // If already denied, don't request again
+      if (permission === 'denied') {
+        console.log('Notifications previously denied');
+        return { success: false, reason: 'denied' };
+      }
+
+      // Request permission (permission is 'default')
+      const newPermission = await Notification.requestPermission();
+      
+      if (newPermission === 'granted') {
+        return await getNotificationToken();
+      } else {
+        console.log('User denied notification permission');
+        return { success: false, reason: 'user_denied' };
+      }
+      
+    } catch (error) {
+      console.error('Error requesting notification permission:', error);
+      return { success: false, reason: 'error', error };
+    }
+  };
+
+  const getNotificationToken = async () => {
+    try {
+      const messaging = getMessaging();
+      const currentToken = await getToken(messaging, { vapidKey: VAPID_KEY });
+      
+      if (currentToken) {
+        // Get current user email if available
+        const currentUser = auth.currentUser;
+        const userEmail = currentUser?.email || null;
+        
+        // Remove any existing tokens for this user/device to avoid duplicates
+        if (userEmail) {
+          const tokensCollection = collection(db, 'fcmTokens');
+          const existingTokensQuery = query(tokensCollection, where('email', '==', userEmail));
+          const existingTokensSnapshot = await getDocs(existingTokensQuery);
+          
+          // Delete existing tokens for this user
+          const deletePromises = existingTokensSnapshot.docs.map(doc => deleteDoc(doc.ref));
+          await Promise.all(deletePromises);
+        }
+        
+        // Store the new token with user email
+        const tokensCollection = collection(db, 'fcmTokens');
+        await addDoc(tokensCollection, {
+          token: currentToken,
+          email: userEmail,
+          createdAt: serverTimestamp(),
+        });
+        
+        console.log('Successfully subscribed to notifications');
+        return { success: true, token: currentToken };
+      } else {
+        console.log('No registration token available');
+        return { success: false, reason: 'no_token' };
+      }
+    } catch (error) {
+      console.error('Error getting notification token:', error);
+      return { success: false, reason: 'token_error', error };
+    }
+  };
 
   const handleSubscribeToNotifications = async () => {
+    // If already subscribed, show a friendly message
+    if (isSubscribed) {
+      setNotificationMessage('You are already subscribed to notifications! 🎉');
+      setTimeout(() => {
+        setNotificationMessage('');
+      }, 3000);
+      return;
+    }
+    
     setNotificationState('loading');
     setNotificationMessage('');
     
-    try {
-      await requestNotificationPermission();
-      setNotificationState('success');
+    const permissionResult = await requestNotificationPermissionSilent();
+    
+    if (permissionResult.success) {
+      // DEVELOPMENT: Set mock FCM token in localStorage
+      localStorage.setItem(`fcmToken_${currentUser.email}`, 'mock-fcm-token-' + Date.now());
+      
+      // Refresh subscription status to show updated state
+      checkSubscriptionStatus();
+      
+      setNotificationState('default');
       setNotificationMessage('🎉 Perfect! You\'ll get notified when your branding kits are ready.');
       
-      // Reset to default after 5 seconds
+      // Clear success message after 3 seconds
       setTimeout(() => {
-        setNotificationState('default');
         setNotificationMessage('');
-      }, 5000);
-    } catch (err) {
+      }, 3000);
+    } else {
       setNotificationState('error');
       setNotificationMessage('Failed to subscribe. Please try again.');
       
@@ -45,19 +147,33 @@ const Dashboard = () => {
   };
 
   const getNotificationButtonContent = () => {
+    // Show loading state while checking subscription status
+    if (subscriptionLoading) {
+      return (
+        <>
+          <Loader2 className="h-5 w-5 animate-spin" />
+          <span>Checking...</span>
+        </>
+      );
+    }
+
+    // Show subscribed state if user is already subscribed
+    if (isSubscribed) {
+      return (
+        <>
+          <Check className="h-5 w-5" />
+          <span>Notifications Enabled</span>
+        </>
+      );
+    }
+
+    // Show appropriate state based on subscription process
     switch (notificationState) {
       case 'loading':
         return (
           <>
             <Loader2 className="h-5 w-5 animate-spin" />
             <span>Subscribing...</span>
-          </>
-        );
-      case 'success':
-        return (
-          <>
-            <Check className="h-5 w-5" />
-            <span>Subscribed!</span>
           </>
         );
       case 'error':
@@ -78,11 +194,20 @@ const Dashboard = () => {
   };
 
   const getNotificationButtonStyles = () => {
+    // If loading subscription status
+    if (subscriptionLoading) {
+      return 'bg-gray-400 cursor-not-allowed';
+    }
+
+    // If already subscribed, show green success state
+    if (isSubscribed) {
+      return 'bg-green-500 hover:bg-green-600 cursor-pointer';
+    }
+
+    // Show appropriate state based on subscription process
     switch (notificationState) {
       case 'loading':
         return 'bg-gray-500 cursor-not-allowed';
-      case 'success':
-        return 'bg-green-500 hover:bg-green-600';
       case 'error':
         return 'bg-red-500 hover:bg-red-600';
       default:
@@ -153,10 +278,17 @@ const Dashboard = () => {
               
               <button 
                 onClick={handleSubscribeToNotifications}
-                disabled={notificationState === 'loading'}
+                disabled={subscriptionLoading || notificationState === 'loading'}
                 className={`${getNotificationButtonStyles()} text-white font-semibold py-3 px-6 rounded-full transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:hover:scale-100`}
               >
                 {getNotificationButtonContent()}
+              </button>
+              
+              <button 
+                onClick={() => setIsNotificationHistoryOpen(true)} 
+                className="flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-gray-600 to-gray-700 text-white font-semibold shadow-lg hover:scale-105 transition-transform"
+              >
+                <History className="h-5 w-5" /> Notifications
               </button>
               
               <a href="https://calendly.com/yannick-familie-heeren/30min" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold shadow-lg hover:scale-105 transition-transform">
@@ -198,6 +330,12 @@ const Dashboard = () => {
       <ProfileEditModal 
         isOpen={isProfileModalOpen} 
         onClose={() => setIsProfileModalOpen(false)} 
+      />
+
+      {/* Notification History Modal */}
+      <NotificationHistory 
+        isOpen={isNotificationHistoryOpen} 
+        onClose={() => setIsNotificationHistoryOpen(false)} 
       />
     </div>
   );
