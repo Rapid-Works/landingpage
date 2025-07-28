@@ -8,6 +8,64 @@ admin.initializeApp();
 
 const db = admin.firestore();
 
+// Default notification preferences
+const DEFAULT_PREFERENCES = {
+  blogNotifications: {
+    mobile: true,
+    email: true,
+  },
+  brandingKitReady: {
+    mobile: true,
+    email: true,
+  },
+};
+
+// Helper function to get user notification preferences
+const getUserNotificationPreferences = async (userId) => {
+  try {
+    const doc = await db.collection("userNotificationPreferences")
+        .doc(userId).get();
+    if (doc.exists) {
+      const data = doc.data();
+      return data.preferences || DEFAULT_PREFERENCES;
+    }
+    return DEFAULT_PREFERENCES;
+  } catch (error) {
+    console.error("Error fetching notification preferences:", error);
+    return DEFAULT_PREFERENCES;
+  }
+};
+
+// Helper function to get user ID from email
+const getUserIdFromEmail = async (email) => {
+  try {
+    const userRecord = await admin.auth().getUserByEmail(email);
+    return userRecord.uid;
+  } catch (error) {
+    console.error(`Error getting user ID for email ${email}:`, error);
+    return null;
+  }
+};
+
+// Helper function to save notification to history
+const saveNotificationToHistory = async (userId, notificationData) => {
+  try {
+    await db.collection("notificationHistory").add({
+      userId: userId,
+      title: notificationData.title,
+      body: notificationData.body,
+      type: notificationData.type,
+      url: notificationData.url,
+      read: false,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      metadata: notificationData.metadata || {},
+    });
+    console.log(`💾 Notification saved to history for user: ${userId}`);
+  } catch (error) {
+    console.error("Error saving notification to history:", error);
+  }
+};
+
 // Helper function to submit data to Airtable
 const submitToAirtableTable = async (tableName, fields) => {
   const apiKey = process.env.AIRTABLE_API_KEY;
@@ -237,38 +295,9 @@ exports.onBrandingKitUpdated = onDocumentUpdated(
 
           console.log("📧 Branding kit ready for emails:", userEmails);
 
-          // Get FCM tokens for the specific users
-          const tokens = [];
-
-          for (const userEmail of userEmails) {
-            const tokensQuery = db.collection("fcmTokens")
-                .where("email", "==", userEmail);
-            const tokensSnapshot = await tokensQuery.get();
-
-            tokensSnapshot.forEach((doc) => {
-              const tokenData = doc.data();
-              tokens.push(tokenData.token);
-            });
-          }
-
-          console.log(`📱 Found ${tokens.length} FCM tokens for ` +
-            "branding kit notification");
-
-          if (tokens.length === 0) {
-            console.log(`❌ No FCM tokens found for users: ` +
-              `${userEmails.join(", ")}`);
-            return;
-          }
-
           // Get kit name from afterData or use default
           const kitName = afterData.name || afterData.id ||
             "Your branding kit";
-
-          console.log("📬 Sending branding kit notifications:", {
-            kitName: kitName,
-            recipientCount: tokens.length,
-            kitId: event.params.kitId,
-          });
 
           // Send notification to tokens for users whose kit is ready
           const message = {
@@ -284,31 +313,76 @@ exports.onBrandingKitUpdated = onDocumentUpdated(
             },
           };
 
-          // Send to tokens for users whose kit is ready
-          const sendPromises = tokens.map(async (token) => {
-            try {
-              await admin.messaging().send({
-                ...message,
-                token: token,
-              });
-              console.log(`✅ Branding kit notification sent to token: ` +
-                `${token.substring(0, 10)}...`);
-            } catch (error) {
-              console.error(`❌ Failed to send branding kit notification ` +
-                `to token ${token.substring(0, 10)}...:`, error);
-              // Optionally remove invalid tokens from database
-              if (error.code ===
-                "messaging/registration-token-not-registered") {
-                // Remove invalid token
-                const tokenQuery = await db.collection("fcmTokens")
-                    .where("token", "==", token).get();
-                tokenQuery.forEach(async (doc) => {
-                  await doc.ref.delete();
-                });
-                console.log(`🗑️ Removed invalid token: ` +
-                  token.substring(0, 10) + "...");
-              }
+          // Send notifications and save to history
+          const sendPromises = userEmails.map(async (userEmail) => {
+            // Get user ID for history saving
+            const userId = await getUserIdFromEmail(userEmail);
+            if (!userId) {
+              console.log(`⚠️ Could not find user ID for email: ${userEmail}`);
+              return;
             }
+
+            // Save notification to history first
+            await saveNotificationToHistory(userId, {
+              title: message.notification.title,
+              body: message.notification.body,
+              type: "branding_kit_ready",
+              url: message.data.url,
+              metadata: {
+                kitId: event.params.kitId,
+                kitName: kitName,
+              },
+            });
+
+            // Check if user wants mobile notifications
+            const preferences = await getUserNotificationPreferences(userId);
+            const wantsMobileNotifications = preferences
+                .brandingKitReady?.mobile === true;
+
+            if (!wantsMobileNotifications) {
+              console.log(`📵 User ${userEmail} has disabled mobile ` +
+                "notifications for branding kits");
+              return;
+            }
+
+            // Get FCM tokens for this user
+            const tokensQuery = db.collection("fcmTokens")
+                .where("email", "==", userEmail);
+            const tokensSnapshot = await tokensQuery.get();
+
+            // Send to each token for this user
+            const tokenPromises = [];
+            tokensSnapshot.forEach((doc) => {
+              const tokenData = doc.data();
+              const token = tokenData.token;
+
+              tokenPromises.push((async () => {
+                try {
+                  await admin.messaging().send({
+                    ...message,
+                    token: token,
+                  });
+                  console.log(`✅ Branding kit notification sent to token: ` +
+                    `${token.substring(0, 10)}...`);
+                } catch (error) {
+                  console.error(`❌ Failed to send branding kit notification ` +
+                    `to token ${token.substring(0, 10)}...:`, error);
+                  // Remove invalid tokens from database
+                  if (error.code ===
+                    "messaging/registration-token-not-registered") {
+                    const tokenQuery = await db.collection("fcmTokens")
+                        .where("token", "==", token).get();
+                    tokenQuery.forEach(async (doc) => {
+                      await doc.ref.delete();
+                    });
+                    console.log(`🗑️ Removed invalid token: ` +
+                      token.substring(0, 10) + "...");
+                  }
+                }
+              })());
+            });
+
+            await Promise.all(tokenPromises);
           });
 
           await Promise.all(sendPromises);
@@ -725,20 +799,6 @@ exports.sendNewBlogNotification = onDocumentCreated(
 
         // Get all FCM tokens
         const tokensSnapshot = await db.collection("fcmTokens").get();
-        const tokens = [];
-
-        tokensSnapshot.forEach((doc) => {
-          const tokenData = doc.data();
-          tokens.push(tokenData.token);
-        });
-
-        console.log(`📱 Found ${tokens.length} FCM tokens ` +
-          "for blog notification");
-
-        if (tokens.length === 0) {
-          console.log("❌ No FCM tokens found for blog notification");
-          return;
-        }
 
         // Create the notification
         const notificationTitle = `📝 New Blog Post: ${blogData.title}`;
@@ -748,43 +808,97 @@ exports.sendNewBlogNotification = onDocumentCreated(
         console.log("📬 Sending blog notifications:", {
           title: notificationTitle,
           body: notificationBody,
-          recipientCount: tokens.length,
+          recipientCount: tokensSnapshot.docs.length,
         });
 
-        // Send notifications to all tokens
-        const sendPromises = tokens.map(async (token) => {
-          try {
-            await admin.messaging().send({
-              notification: {
-                title: notificationTitle,
-                body: notificationBody,
-              },
-              data: {
-                url: `/blog/${snapshot.id}`,
-                type: "new_blog_post",
-                blogId: snapshot.id,
-              },
-              token: token,
-            });
-            console.log(`✅ Blog notification sent to: ` +
-              `${token.substring(0, 10)}...`);
-          } catch (error) {
-            console.error(`❌ Failed to send blog notification to ` +
-              `${token.substring(0, 10)}...:`, error);
+        // Send notifications to users and save to history
+        const sendPromises = [];
+        const processedUsers = new Set(); // Track users to avoid duplicates
 
-            // Remove invalid tokens
-            if (error.code ===
-              "messaging/registration-token-not-registered") {
-              const tokenQuery = await db.collection("fcmTokens")
-                  .where("token", "==", token).get();
-              tokenQuery.forEach(async (doc) => {
-                await doc.ref.delete();
-              });
-              console.log(`🗑️ Removed invalid token: ` +
-                token.substring(0, 10) + "...");
-            }
+        for (const doc of tokensSnapshot.docs) {
+          const tokenData = doc.data();
+
+          // Get user email and ID
+          const userEmail = tokenData.email;
+          if (!userEmail) continue; // Skip tokens without email
+
+          // Avoid processing the same user multiple times
+          if (processedUsers.has(userEmail)) continue;
+          processedUsers.add(userEmail);
+
+          const userId = await getUserIdFromEmail(userEmail);
+          if (!userId) {
+            console.log(`⚠️ Could not find user ID for email: ${userEmail}`);
+            continue;
           }
-        });
+
+          // Save notification to history for this user
+          await saveNotificationToHistory(userId, {
+            title: notificationTitle,
+            body: notificationBody,
+            type: "new_blog_post",
+            url: `/blog/${snapshot.id}`,
+            metadata: {
+              blogId: snapshot.id,
+              blogTitle: blogData.title,
+            },
+          });
+
+          // Check if user wants mobile notifications for blog posts
+          const preferences = await getUserNotificationPreferences(userId);
+          const wantsMobileNotifications = preferences
+              .blogNotifications?.mobile === true;
+
+          if (!wantsMobileNotifications) {
+            console.log(`📵 User ${userEmail} has disabled mobile ` +
+              "notifications for blog posts");
+            continue;
+          }
+
+          // Get all tokens for this user and send notifications
+          const userTokensQuery = db.collection("fcmTokens")
+              .where("email", "==", userEmail);
+          const userTokensSnapshot = await userTokensQuery.get();
+
+          userTokensSnapshot.forEach((tokenDoc) => {
+            const userTokenData = tokenDoc.data();
+            const token = userTokenData.token;
+
+            sendPromises.push((async () => {
+              try {
+                await admin.messaging().send({
+                  notification: {
+                    title: notificationTitle,
+                    body: notificationBody,
+                  },
+                  data: {
+                    url: `/blog/${snapshot.id}`,
+                    type: "new_blog_post",
+                    blogId: snapshot.id,
+                  },
+                  token: token,
+                });
+                console.log(`✅ Blog notification sent to: ` +
+                  `${token.substring(0, 10)}...`);
+              } catch (error) {
+                console.error(`❌ Failed to send blog notification to ` +
+                  `${token.substring(0, 10)}...:`, error);
+
+                // Remove invalid tokens
+                if (error.code ===
+                  "messaging/registration-token-not-registered") {
+                  const tokenQuery = await db.collection("fcmTokens")
+                      .where("token", "==", token).get();
+                  tokenQuery.forEach(async (doc) => {
+                    await doc.ref.delete();
+                  });
+                  console.log(`🗑️ Removed invalid token: ` +
+                    token.substring(0, 10) + "...");
+                }
+              }
+            })());
+          });
+        }
 
         await Promise.all(sendPromises);
         console.log(`🎉 Blog notifications completed for: ${blogData.title}`);

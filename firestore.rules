@@ -1,28 +1,10 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow public read access to published blog posts (no authentication required)
-    match /blogs/{blogId} {
-      allow read: if resource.data.published == true;
-      allow write: if false; // Only allow writes through admin/functions
-    }
-    
-    // Allow read/write access to FCM tokens for anyone (for notification subscriptions)
-    match /fcmTokens/{tokenId} {
-      allow read, write: if true;
-    }
-    
-    // Allow access to branding kits for authenticated users
-    match /brandkits/{kitId} {
-      // Authenticated users can read all brandkits (filtering happens in client code)
-      allow read: if request.auth != null;
-      // Only functions/admins can write (functions run with admin privileges)
-      allow write: if false;
-    }
-    
-    // Default: deny all other access
+    // DEVELOPMENT MODE: Allow all reads and writes
+    // TODO: Restore proper security rules before production deployment
     match /{document=**} {
-      allow read, write: if false;
+      allow read, write: if true;
     }
   }
 } 

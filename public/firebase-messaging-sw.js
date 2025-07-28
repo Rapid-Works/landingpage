@@ -90,9 +90,9 @@ self.addEventListener("notificationclick", (event) => {
     );
   } else {
     // Default behavior for other notifications
-    event.waitUntil(
-      clients.openWindow(clickedUrl)
-    );
+  event.waitUntil(
+    clients.openWindow(clickedUrl)
+  );
   }
 });
 

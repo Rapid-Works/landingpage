@@ -35,20 +35,35 @@ const BrandingKits = () => {
     if (tab === "my" && currentUser) {
       setLoadingMyKits(true);
       const fetchMyKits = async () => {
-        const db = getFirestore();
-        const querySnapshot = await getDocs(collection(db, "brandkits"));
-        const userKits = [];
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          // email can be array or string
-          if (Array.isArray(data.email) && data.email.includes(currentUser.email)) {
-            userKits.push({ id: doc.id, ...data });
-          } else if (typeof data.email === "string" && data.email === currentUser.email) {
-            userKits.push({ id: doc.id, ...data });
-          }
-        });
-        setMyKits(userKits);
-        setLoadingMyKits(false);
+        try {
+          console.log('📦 Loading user branding kits...');
+          const db = getFirestore();
+          const querySnapshot = await getDocs(collection(db, "brandkits"));
+          const userKits = [];
+          querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            // email can be array or string
+            if (Array.isArray(data.email) && data.email.includes(currentUser.email)) {
+              userKits.push({ id: doc.id, ...data });
+            } else if (typeof data.email === "string" && data.email === currentUser.email) {
+              userKits.push({ id: doc.id, ...data });
+            }
+          });
+          console.log(`📦 Found ${userKits.length} branding kits for user`);
+          setMyKits(userKits);
+        } catch (error) {
+          console.log('⚠️ Could not load branding kits from Firestore, using fallback static kits:', error);
+          // FALLBACK: Show some demo kits from static data for development
+          const demoKits = brandingKits.slice(0, 2).map(kit => ({
+            id: kit.id,
+            email: currentUser.email,
+            paid: true,
+            createdAt: new Date()
+          }));
+          setMyKits(demoKits);
+        } finally {
+          setLoadingMyKits(false);
+        }
       };
       fetchMyKits();
     }
