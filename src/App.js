@@ -46,6 +46,7 @@ import AGBPage from './components/AGBPage'
 import PrivacyPage from './components/PrivacyPage'
 import ImpressumPage from './components/ImpressumPage'
 import CookieConsent from './components/CookieConsent'
+import PublicBrandingKits from './components/PublicBrandingKits'
 
 // Authentication imports
 import { AuthProvider } from './contexts/AuthContext'
@@ -1326,6 +1327,7 @@ function App() {
             <Route path="/mvp" element={<MVPpage />} />
             <Route path="/bundle" element={<BundlePage />} />
             <Route path="/partners" element={<PartnersPage />} />
+            <Route path="/kits" element={<PublicBrandingKits />} />
             <Route path="/blogs" element={<BlogListPage />} />
             <Route path="/blogs/:slug" element={<BlogPostPage />} />
             <Route path="/agb" element={<AGBPage />} />
