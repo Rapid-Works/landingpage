@@ -7,15 +7,15 @@ import { getAnalytics } from "firebase/analytics";
 import { getMessaging } from "firebase/messaging";
 
 // Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// Using environment variables for better security practices
 const firebaseConfig = {
-  apiKey: "AIzaSyDoIexsBB5I8ylX2t2N4fxVjVcsst71c5Y",
-  authDomain: "landingpage-606e9.firebaseapp.com",
-  projectId: "landingpage-606e9",
-  storageBucket: "landingpage-606e9.firebasestorage.app",
-  messagingSenderId: "449487247565",
-  appId: "1:449487247565:web:7bf02a5898cb57a13cb184",
-  measurementId: "G-7SZ0GLF9L1"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "AIzaSyDoIexsBB5I8ylX2t2N4fxVjVcsst71c5Y",
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "landingpage-606e9.firebaseapp.com",
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || "landingpage-606e9",
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "landingpage-606e9.firebasestorage.app",
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || "449487247565",
+  appId: process.env.REACT_APP_FIREBASE_APP_ID || "1:449487247565:web:7bf02a5898cb57a13cb184",
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID || "G-7SZ0GLF9L1"
 };
 
 // Initialize Firebase
