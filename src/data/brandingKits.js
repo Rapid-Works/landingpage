@@ -9,6 +9,7 @@ export const brandingKits = [
       { id: "tax-purpose-logo-icon", name: "Logo (Icon)", type: "logo-icon", preview: "/tax-purpose/logo-2.png", downloadUrl: "/tax-purpose/logo-2.png" },
       { id: "tax-purpose-website", name: "Website", type: "website", preview: "/tax-purpose/taxpurpose-website.png", downloadUrl: "https://www.taxandpurpose.com/" },
       { id: "tax-purpose-social-banner", name: "Social Media Banner", type: "social-media-banner", preview: "/tax-purpose/social.png", downloadUrl: "/tax-purpose/social.png" },
+      { id: "tax-purpose-email-signature", name: "Email Signature", type: "email-signature", preview: "/tax-purpose/email-signature.png", downloadUrl: "/tax-purpose/email_signature.html" },
       { id: "tax-purpose-banner", name: "RollUp", type: "banner", preview: "/tax-purpose/banner.png", downloadUrl: "/tax-purpose/banner.png" },
       { id: "tax-purpose-card", name: "Business Card", type: "business-card", preview: "/tax-purpose/business-card-front.png", downloadUrl: "/tax-purpose/business-card-front.png", backDownloadUrl: "/tax-purpose/business-card.jpg" },
       { id: "tax-purpose-qrcode", name: "QR Code", type: "qrcode", preview: "/tax-purpose/taxpurpose-qrcode.png", downloadUrl: "/tax-purpose/taxpurpose-qrcode.png" },

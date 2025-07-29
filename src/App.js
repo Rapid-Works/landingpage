@@ -1327,7 +1327,7 @@ function App() {
             <Route path="/bundle" element={<BundlePage />} />
             <Route path="/partners" element={<PartnersPage />} />
             <Route path="/blogs" element={<BlogListPage />} />
-            <Route path="/blog/:id" element={<BlogPostPage />} />
+            <Route path="/blogs/:slug" element={<BlogPostPage />} />
             <Route path="/agb" element={<AGBPage />} />
             <Route path="/datenschutz" element={<PrivacyPage />} />
             <Route path="/impressum" element={<ImpressumPage />} />
