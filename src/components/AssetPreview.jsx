@@ -26,6 +26,45 @@ const AssetPreview = ({ asset, paid = true }) => {
     }
   };
 
+  const getPhoneBgDownloadUrl = () => {
+    if (asset.type !== "phone-bg") return asset.downloadUrl;
+    
+    // For phone-bg assets, try to get the -orig version
+    const originalUrl = asset.downloadUrl.replace("phone-bg.png", "phone-bg-orig.png");
+    return originalUrl;
+  };
+
+  const handlePhoneBgDownload = async () => {
+    if (!paid || asset.type !== "phone-bg") return;
+    
+    const originalUrl = getPhoneBgDownloadUrl();
+    
+    // Try to download the -orig version first
+    try {
+      const response = await fetch(originalUrl, { method: 'HEAD' });
+      if (response.ok) {
+        // Original version exists, download it
+        const link = document.createElement("a");
+        link.href = originalUrl;
+        link.download = asset.name.toLowerCase().replace(/\s+/g, "-") + "-orig.png";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        return;
+      }
+    } catch (error) {
+      console.log("Original version not found, falling back to regular version");
+    }
+    
+    // Fallback to regular version
+    const link = document.createElement("a");
+    link.href = asset.downloadUrl;
+    link.download = asset.name.toLowerCase().replace(/\s+/g, "-") + ".png";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const renderDownloadButton = (isModal = false) => {
     if (!paid) return null;
     if (asset.type === "website") {
@@ -51,6 +90,14 @@ const AssetPreview = ({ asset, paid = true }) => {
       );
     }
 
+    if (asset.type === "phone-bg") {
+      return (
+        <Button onClick={handlePhoneBgDownload} className="flex-1 min-w-[110px] flex items-center justify-center gap-2 whitespace-nowrap">
+          <Download className="h-5 w-5" /> Download
+        </Button>
+      );
+    }
+
     return (
       <Button asChild className="flex-1 min-w-[110px] flex items-center justify-center gap-2 whitespace-nowrap">
         <a href={asset.downloadUrl} download className="flex items-center gap-2 justify-center whitespace-nowrap">
@@ -61,7 +108,18 @@ const AssetPreview = ({ asset, paid = true }) => {
   };
 
   // Both buttons for card/modal
-  const previewButton = (
+  const previewButton = asset.type === "website" ? (
+    <Button asChild variant="outline" className="flex-1 min-w-[110px]">
+      <a
+        href={asset.downloadUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-2 justify-center whitespace-nowrap"
+      >
+        <Eye className="h-4 w-4" /> Website
+      </a>
+    </Button>
+  ) : (
     <Button 
       variant="outline"
       onClick={() => setIsPreviewOpen(true)}
