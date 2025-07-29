@@ -63,7 +63,7 @@ const PublicBrandingKits = () => {
     <div className="min-h-screen bg-gray-50">
       <RapidWorksHeader />
       
-      <div className="pt-20">
+      <div className="pt-10">
         {/* Hero Section */}
         <section className="relative bg-gradient-to-br from-purple-600 to-purple-800 text-white py-16 overflow-hidden">
           {/* Background Image */}
