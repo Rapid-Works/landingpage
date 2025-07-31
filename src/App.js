@@ -1304,6 +1304,11 @@ function App() {
                 <Dashboard />
               </ProtectedRoute>
             } />
+            <Route path="/dashboard/:kitId" element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
             
             {/* QR Code Routes */}
             <Route path="/qrcodebranding" element={<QRCodeRedirect />} />

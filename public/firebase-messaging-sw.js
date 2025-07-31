@@ -39,7 +39,7 @@ messaging.onBackgroundMessage((payload) => {
     badge: payload.webpush?.notification?.badge || "https://www.rapid-works.io/logo192.png",
     actions: payload.webpush?.notification?.actions,
     data: {
-      url: payload.data.url || "/blog", // Default fallback
+      url: payload.data.url || "/blogs", // Default fallback
       type: payload.data.type || "general",
       kitId: payload.data.kitId || null
     },

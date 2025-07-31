@@ -19,7 +19,7 @@ export const NotificationProvider = ({ children }) => {
         id: payload.messageId || new Date().getTime(),
         title: payload.notification.title,
         body: payload.notification.body,
-        url: payload.data?.url || '/blog',
+        url: payload.data?.url || '/blogs',
         timestamp: new Date().toISOString(),
       };
       

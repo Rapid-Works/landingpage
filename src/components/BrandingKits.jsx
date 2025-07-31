@@ -24,12 +24,17 @@ const SkeletonCard = () => (
   </div>
 );
 
-const BrandingKits = () => {
-  const [selectedKit, setSelectedKit] = useState(null);
+const BrandingKits = ({ initialKitId }) => {
+  const [selectedKit, setSelectedKit] = useState(initialKitId || null);
   const [tab, setTab] = useState("my"); // Default to My Kits
   const [myKits, setMyKits] = useState([]);
   const [loadingMyKits, setLoadingMyKits] = useState(false);
   const { currentUser } = useAuth();
+
+  // Update selectedKit when initialKitId prop changes
+  useEffect(() => {
+    setSelectedKit(initialKitId || null);
+  }, [initialKitId]);
 
   useEffect(() => {
     if (tab === "my" && currentUser) {
