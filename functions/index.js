@@ -307,7 +307,7 @@ exports.onBrandingKitUpdated = onDocumentUpdated(
                 "download.",
             },
             data: {
-              url: "/dashboard",
+              url: `/dashboard/${event.params.kitId}`,
               type: "branding_kit_ready",
               kitId: event.params.kitId,
             },
@@ -327,7 +327,7 @@ exports.onBrandingKitUpdated = onDocumentUpdated(
               title: message.notification.title,
               body: message.notification.body,
               type: "branding_kit_ready",
-              url: message.data.url,
+              url: `/dashboard/${event.params.kitId}`,
               metadata: {
                 kitId: event.params.kitId,
                 kitName: kitName,
@@ -837,7 +837,7 @@ exports.sendNewBlogNotification = onDocumentCreated(
             title: notificationTitle,
             body: notificationBody,
             type: "new_blog_post",
-            url: `/blog/${snapshot.id}`,
+            url: `/blogs/${snapshot.id}`,
             metadata: {
               blogId: snapshot.id,
               blogTitle: blogData.title,
@@ -872,7 +872,7 @@ exports.sendNewBlogNotification = onDocumentCreated(
                     body: notificationBody,
                   },
                   data: {
-                    url: `/blog/${snapshot.id}`,
+                    url: `/blogs/${snapshot.id}`,
                     type: "new_blog_post",
                     blogId: snapshot.id,
                   },

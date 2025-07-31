@@ -8,6 +8,7 @@ import { getMessaging } from "firebase/messaging";
 
 // Your web app's Firebase configuration
 // Using environment variables for better security practices
+
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,

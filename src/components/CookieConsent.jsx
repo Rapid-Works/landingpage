@@ -152,8 +152,8 @@ const CookieConsent = () => {
           description: "These cookies are used by third parties to display personalized advertising that is relevant to your interests."
         },
         notifications: {
-          title: "Push Notifications",
-          description: "Get notified when your branding kits are ready, new blog posts are published, or important updates are available."
+          title: "Allow Notification Requests",
+          description: "Allow us to request browser permission for push notifications about branding kits, blog posts, and important updates."
         },
         savePreferences: "Save Preferences",
         decline: "Decline All"
@@ -184,8 +184,8 @@ const CookieConsent = () => {
           description: "Diese Cookies werden von Dritten verwendet, um personalisierte Werbung anzuzeigen, die für deine Interessen relevant ist."
         },
         notifications: {
-          title: "Push-Benachrichtigungen",
-          description: "Erhalte Benachrichtigungen, wenn deine Branding-Kits fertig sind, neue Blog-Posts veröffentlicht werden oder wichtige Updates verfügbar sind."
+          title: "Benachrichtigungs-Anfragen erlauben",
+          description: "Erlaube uns, die Browser-Berechtigung für Push-Benachrichtigungen über Branding-Kits, Blog-Posts und wichtige Updates anzufragen."
         },
         savePreferences: "Präferenzen speichern",
         decline: "Alle ablehnen"

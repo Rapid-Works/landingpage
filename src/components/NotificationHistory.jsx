@@ -87,6 +87,19 @@ const NotificationHistory = ({ isOpen, onClose }) => {
     }
   };
 
+  // Mark notification as unread
+  const markAsUnread = async (notificationId) => {
+    try {
+      const notificationRef = doc(db, 'notificationHistory', notificationId);
+      await updateDoc(notificationRef, {
+        read: false,
+        readAt: null
+      });
+    } catch (error) {
+      console.error('Error marking notification as unread:', error);
+    }
+  };
+
   // Mark all notifications as read
   const markAllAsRead = async () => {
     try {
@@ -104,6 +117,26 @@ const NotificationHistory = ({ isOpen, onClose }) => {
       await batch.commit();
     } catch (error) {
       console.error('Error marking all notifications as read:', error);
+    }
+  };
+
+  // Mark all notifications as unread
+  const markAllAsUnread = async () => {
+    try {
+      const batch = writeBatch(db);
+      const readNotifications = notifications.filter(n => n.read);
+      
+      readNotifications.forEach((notification) => {
+        const notificationRef = doc(db, 'notificationHistory', notification.id);
+        batch.update(notificationRef, {
+          read: false,
+          readAt: null
+        });
+      });
+
+      await batch.commit();
+    } catch (error) {
+      console.error('Error marking all notifications as unread:', error);
     }
   };
 
@@ -166,6 +199,7 @@ const NotificationHistory = ({ isOpen, onClose }) => {
   };
 
   const unreadCount = notifications.filter(n => !n.read).length;
+  const readCount = notifications.filter(n => n.read).length;
 
   if (!isOpen) return null;
 
@@ -210,6 +244,15 @@ const NotificationHistory = ({ isOpen, onClose }) => {
                   >
                     <CheckCheck className="h-4 w-4" />
                     Mark all read
+                  </button>
+                )}
+                {readCount > 0 && (
+                  <button
+                    onClick={markAllAsUnread}
+                    className="flex items-center gap-2 px-3 py-2 text-sm bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                  >
+                    <Bell className="h-4 w-4" />
+                    Mark all unread
                   </button>
                 )}
                 <button
@@ -291,6 +334,29 @@ const NotificationHistory = ({ isOpen, onClose }) => {
                                     title="Open"
                                   >
                                     <ExternalLink className="h-4 w-4" />
+                                  </button>
+                                )}
+                                {notification.read ? (
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      markAsUnread(notification.id);
+                                    }}
+                                    className="p-1 text-gray-400 hover:text-blue-500 rounded"
+                                    title="Mark as unread"
+                                  >
+                                    <Bell className="h-4 w-4" />
+                                  </button>
+                                ) : (
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      markAsRead(notification.id);
+                                    }}
+                                    className="p-1 text-gray-400 hover:text-green-500 rounded"
+                                    title="Mark as read"
+                                  >
+                                    <Check className="h-4 w-4" />
                                   </button>
                                 )}
                                 <button

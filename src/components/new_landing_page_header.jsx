@@ -265,23 +265,23 @@ export default function RapidWorksHeader() {
 
             {/* Right-aligned Auth */}
             <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-4">
-              {/* Notification Bell */}
-            <div className="relative">
-              <button 
-                onClick={handleNotificationClick} 
-                className="relative text-gray-600 hover:text-purple-600 focus:outline-none p-2 rounded-full hover:bg-gray-100 transition-colors"
-                title="View notifications"
-              >
-                <Bell size={24} />
-                {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">
-                    {unreadCount > 99 ? '99+' : unreadCount}
-                  </span>
-                )}
-              </button>
-            </div>
-
               {currentUser ? (
+                <>
+                  {/* Notification Bell - Only for logged in users */}
+                  <div className="relative">
+                    <button 
+                      onClick={handleNotificationClick} 
+                      className="relative text-gray-600 hover:text-purple-600 focus:outline-none p-2 rounded-full hover:bg-gray-100 transition-colors"
+                      title="View notifications"
+                    >
+                      <Bell size={24} />
+                      {unreadCount > 0 && (
+                        <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">
+                          {unreadCount > 99 ? '99+' : unreadCount}
+                        </span>
+                      )}
+                    </button>
+                  </div>
                 <div className="relative user-menu-container" ref={userMenuRef}>
                <button
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
@@ -317,6 +317,7 @@ export default function RapidWorksHeader() {
                     </div>
                   )}
                 </div>
+                </>
               ) : (
             <button
                   onClick={handleLoginRedirect}
