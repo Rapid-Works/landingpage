@@ -1250,20 +1250,21 @@ function App() {
     localStorage.setItem('language', language)
   }, [language])
 
-  useEffect(() => {
-    const lastShown = localStorage.getItem('webinarModalLastShown');
-    const oneDayInMs = 24 * 60 * 60 * 1000; // 24 hours
+  // Temporarily disabled webinar modal popup
+  // useEffect(() => {
+  //   const lastShown = localStorage.getItem('webinarModalLastShown');
+  //   const oneDayInMs = 24 * 60 * 60 * 1000; // 24 hours
 
-    if (!lastShown || Date.now() - parseInt(lastShown) > oneDayInMs) {
-      const timer = setTimeout(() => {
-        console.log("Showing timed webinar modal");
-        setShowTimedWebinarModal(true);
-        localStorage.setItem('webinarModalLastShown', Date.now().toString());
-      }, 30000); // 30 seconds timeout
+  //   if (!lastShown || Date.now() - parseInt(lastShown) > oneDayInMs) {
+  //     const timer = setTimeout(() => {
+  //       console.log("Showing timed webinar modal");
+  //       setShowTimedWebinarModal(true);
+  //       localStorage.setItem('webinarModalLastShown', Date.now().toString());
+  //     }, 30000); // 30 seconds timeout
 
-      return () => clearTimeout(timer); // Cleanup timer on unmount
-    }
-  }, []);
+  //     return () => clearTimeout(timer); // Cleanup timer on unmount
+  //   }
+  // }, []);
 
   const nextWebinarDateForPopup = useMemo(() => getNextWebinarDates(1), []);
 
@@ -1341,11 +1342,12 @@ function App() {
           </Routes>
           {/* <WebinarFAB /> */}
           <AIAssistantChatbot />
-          <WebinarModal
+          {/* Temporarily disabled timed webinar modal */}
+          {/* <WebinarModal
             isOpen={showTimedWebinarModal}
             onClose={() => setShowTimedWebinarModal(false)}
             webinarDates={nextWebinarDateForPopup}
-          />
+          /> */}
           <Footer />
           <CookieConsent />
     </LanguageContext.Provider>

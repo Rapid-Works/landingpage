@@ -1,14 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { X, Bell } from 'lucide-react';
+import { X } from 'lucide-react';
 import { LanguageContext } from '../App';
 import Cookies from 'js-cookie';
-import { useSmartNotificationStatus } from '../hooks/useSmartNotificationStatus';
-import { getMessaging, getToken } from 'firebase/messaging';
-import { db, auth } from '../firebase/config';
-import { collection, addDoc, serverTimestamp, query, where, getDocs, deleteDoc } from 'firebase/firestore';
 
-const VAPID_KEY = 'BC9X8U5hWzbbGbbB8x_net_q4eG5RA798jZxKcOPS5e5joRHXN7XcCS2yv-UwCKY0lZZ59mOOspl_aSWEjSV33M';
 
 const CookieConsent = () => {
   const { language } = useContext(LanguageContext);
@@ -17,90 +12,11 @@ const CookieConsent = () => {
   const [cookieSettings, setCookieSettings] = useState({
     necessary: true, // Always true, cannot be disabled
     analytics: false,
-    marketing: false,
-    notifications: true // Default to enabled
+    marketing: false
   });
-  const { hasAnyNotificationsEnabled: isSubscribed, forceRefresh: checkSubscriptionStatus } = useSmartNotificationStatus();
 
-  // Better notification permission handler without alerts
-  const requestNotificationPermissionSilent = async () => {
-    try {
-      // Check if notifications are supported
-      if (!('Notification' in window)) {
-        console.log('Notifications not supported');
-        return { success: false, reason: 'not_supported' };
-      }
 
-      // Check current permission state
-      const permission = Notification.permission;
-      
-      // If already granted, try to get token
-      if (permission === 'granted') {
-        return await getNotificationToken();
-      }
-      
-      // If already denied, don't request again
-      if (permission === 'denied') {
-        console.log('Notifications previously denied');
-        return { success: false, reason: 'denied' };
-      }
 
-      // Request permission (permission is 'default')
-      const newPermission = await Notification.requestPermission();
-      
-      if (newPermission === 'granted') {
-        return await getNotificationToken();
-      } else {
-        console.log('User denied notification permission');
-        return { success: false, reason: 'user_denied' };
-      }
-      
-    } catch (error) {
-      console.error('Error requesting notification permission:', error);
-      return { success: false, reason: 'error', error };
-    }
-  };
-
-  const getNotificationToken = async () => {
-    try {
-      const messaging = getMessaging();
-      const currentToken = await getToken(messaging, { vapidKey: VAPID_KEY });
-      
-      if (currentToken) {
-        // Get current user email if available
-        const currentUser = auth.currentUser;
-        const userEmail = currentUser?.email || null;
-        
-        // Remove any existing tokens for this user/device to avoid duplicates
-        if (userEmail) {
-          const tokensCollection = collection(db, 'fcmTokens');
-          const existingTokensQuery = query(tokensCollection, where('email', '==', userEmail));
-          const existingTokensSnapshot = await getDocs(existingTokensQuery);
-          
-          // Delete existing tokens for this user
-          const deletePromises = existingTokensSnapshot.docs.map(doc => deleteDoc(doc.ref));
-          await Promise.all(deletePromises);
-        }
-        
-        // Store the new token with user email
-        const tokensCollection = collection(db, 'fcmTokens');
-        await addDoc(tokensCollection, {
-          token: currentToken,
-          email: userEmail,
-          createdAt: serverTimestamp(),
-        });
-        
-        console.log('Successfully subscribed to notifications');
-        return { success: true, token: currentToken };
-      } else {
-        console.log('No registration token available');
-        return { success: false, reason: 'no_token' };
-      }
-    } catch (error) {
-      console.error('Error getting notification token:', error);
-      return { success: false, reason: 'token_error', error };
-    }
-  };
 
   useEffect(() => {
     // Check if user has already made a choice
@@ -112,19 +28,10 @@ const CookieConsent = () => {
       const savedSettings = Cookies.get('cookie-preferences');
       if (savedSettings) {
         const parsedSettings = JSON.parse(savedSettings);
-        setCookieSettings({
-          ...parsedSettings,
-          notifications: !!isSubscribed // Sync with smart notification status
-        });
-      } else {
-        // If no saved settings, sync notifications with current status
-        setCookieSettings(prev => ({
-          ...prev,
-          notifications: !!isSubscribed // Sync with smart notification status
-        }));
+        setCookieSettings(parsedSettings);
       }
     }
-  }, [!!isSubscribed]); // Ensure stable boolean dependency
+  }, []);
 
   const content = {
     en: {
@@ -151,10 +58,7 @@ const CookieConsent = () => {
           title: "Marketing Cookies",
           description: "These cookies are used by third parties to display personalized advertising that is relevant to your interests."
         },
-        notifications: {
-          title: "Allow Notification Requests",
-          description: "Allow us to request browser permission for push notifications about branding kits, blog posts, and important updates."
-        },
+
         savePreferences: "Save Preferences",
         decline: "Decline All"
       }
@@ -183,10 +87,7 @@ const CookieConsent = () => {
           title: "Marketing-Cookies",
           description: "Diese Cookies werden von Dritten verwendet, um personalisierte Werbung anzuzeigen, die für deine Interessen relevant ist."
         },
-        notifications: {
-          title: "Benachrichtigungs-Anfragen erlauben",
-          description: "Erlaube uns, die Browser-Berechtigung für Push-Benachrichtigungen über Branding-Kits, Blog-Posts und wichtige Updates anzufragen."
-        },
+
         savePreferences: "Präferenzen speichern",
         decline: "Alle ablehnen"
       }
@@ -196,28 +97,12 @@ const CookieConsent = () => {
   const currentContent = content[language] || content.en;
   const privacyUrl = language === 'en' ? '/privacy' : '/datenschutz';
 
-  const handleAcceptAll = async () => {
+  const handleAcceptAll = () => {
     const settings = {
       necessary: true,
       analytics: true,
-      marketing: true,
-      notifications: true
+      marketing: true
     };
-    
-    // Handle notification subscription
-    const permissionResult = await requestNotificationPermissionSilent();
-    if (!permissionResult.success) {
-      console.log('Notification subscription failed:', permissionResult.reason);
-      settings.notifications = false;
-    } else {
-      console.log('Successfully subscribed to notifications');
-      // DEVELOPMENT: Set mock FCM token in localStorage
-      const currentUser = auth.currentUser;
-      if (currentUser) {
-        localStorage.setItem(`fcmToken_${currentUser.email}`, 'mock-fcm-token-' + Date.now());
-      }
-      checkSubscriptionStatus();
-    }
     
     setCookieSettings(settings);
     Cookies.set('cookie-consent', 'accepted', { expires: 365 });
@@ -226,29 +111,9 @@ const CookieConsent = () => {
     setShowCookieSettings(false);
   };
 
-  const handleSavePreferences = async () => {
-    let finalSettings = { ...cookieSettings };
-    
-    // Handle notification subscription based on user choice
-    if (cookieSettings.notifications && !isSubscribed) {
-      const permissionResult = await requestNotificationPermissionSilent();
-      if (!permissionResult.success) {
-        console.log('Notification subscription failed:', permissionResult.reason);
-        finalSettings.notifications = false;
-      } else {
-        console.log('Successfully subscribed to notifications');
-        // DEVELOPMENT: Set mock FCM token in localStorage
-        const currentUser = auth.currentUser;
-        if (currentUser) {
-          localStorage.setItem(`fcmToken_${currentUser.email}`, 'mock-fcm-token-' + Date.now());
-        }
-        checkSubscriptionStatus();
-      }
-    }
-    
+  const handleSavePreferences = () => {
     Cookies.set('cookie-consent', 'customized', { expires: 365 });
-    Cookies.set('cookie-preferences', JSON.stringify(finalSettings), { expires: 365 });
-    setCookieSettings(finalSettings);
+    Cookies.set('cookie-preferences', JSON.stringify(cookieSettings), { expires: 365 });
     setShowCookieConsent(false);
     setShowCookieSettings(false);
   };
@@ -257,8 +122,7 @@ const CookieConsent = () => {
     const settings = {
       necessary: true,
       analytics: false,
-      marketing: false,
-      notifications: false
+      marketing: false
     };
     setCookieSettings(settings);
     Cookies.set('cookie-consent', 'declined', { expires: 365 });
@@ -365,38 +229,7 @@ const CookieConsent = () => {
                 </p>
               </div>
 
-              {/* Push Notifications */}
-              <div className="border border-gray-200 rounded-lg p-4 bg-gradient-to-r from-purple-50 to-indigo-50">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <Bell className="h-4 w-4 text-purple-600" />
-                    <h3 className="font-semibold text-gray-900">
-                      {currentContent.modal.notifications.title}
-                    </h3>
-                  </div>
-                  <button
-                    onClick={() => handleToggleSetting('notifications')}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      cookieSettings.notifications ? 'bg-[#7C3BEC]' : 'bg-gray-200'
-                    }`}
-                  >
-                    <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                        cookieSettings.notifications ? 'translate-x-6' : 'translate-x-1'
-                      }`}
-                    />
-                  </button>
-                </div>
-                <p className="text-sm text-gray-600">
-                  {currentContent.modal.notifications.description}
-                </p>
-                {isSubscribed && (
-                  <div className="mt-2 flex items-center gap-1 text-xs text-green-600">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    Currently subscribed
-                  </div>
-                )}
-              </div>
+
             </div>
 
             <div className="flex gap-4 mt-8">

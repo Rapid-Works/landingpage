@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage"; // Add Firebase Storage
 import { getFunctions } from "firebase/functions"; // Add this line
 import { getAnalytics } from "firebase/analytics";
 import { getMessaging } from "firebase/messaging";
@@ -26,6 +27,7 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 export const db = getFirestore(app);
+export const storage = getStorage(app); // Add Firebase Storage
 export const functions = getFunctions(app); // Add this line
 export const analytics = getAnalytics(app);
 export const messaging = getMessaging(app);
