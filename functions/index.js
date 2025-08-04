@@ -119,6 +119,54 @@ exports.submitServiceRequest = onCall(async (request) => {
       "Notes": notes,
     });
 
+    // Track activity in notification history for specific services
+    try {
+      const userId = await getUserIdFromEmail(email);
+      if (userId) {
+        let activityData = null;
+
+        // Handle newsletter opt-ins from webinar registration
+        if (service.includes("Newsletter")) {
+          activityData = {
+            title: "📧 Newsletter Subscription Successful",
+            body: service.includes("Webinar") ?
+              "You subscribed to our newsletter during webinar registration" :
+              "You successfully subscribed to our newsletter",
+            type: "newsletter_subscription",
+            url: "/dashboard",
+            metadata: {
+              email: email,
+              source: service.includes("Webinar") ?
+                "webinar_optin" : "service_request",
+              service: service,
+              notes: notes,
+            },
+          };
+        } else if (service) {
+          // Handle other service requests (coaching, consulting, etc.)
+          activityData = {
+            title: "📝 Service Request Submitted",
+            body: `You submitted a request for: ${service}`,
+            type: "service_request",
+            url: "/dashboard",
+            metadata: {
+              email: email,
+              service: service,
+              notes: notes,
+            },
+          };
+        }
+
+        if (activityData) {
+          await saveNotificationToHistory(userId, activityData);
+          console.log(`📝 Service request tracked for user: ${email}`);
+        }
+      }
+    } catch (historyError) {
+      console.log(`⚠️ Could not track activity for ${email}:`, historyError);
+      // Don't fail the main request if history saving fails
+    }
+
     return {success: true, data: result};
   } catch (error) {
     console.error("Error in submitServiceRequest:", error);
@@ -151,6 +199,30 @@ exports.submitWebinarRegistration = onCall(async (request) => {
       "Selected Display Time": selectedDateString,
     });
 
+    // Track activity in notification history (for logged-in users)
+    try {
+      const userId = await getUserIdFromEmail(email);
+      if (userId) {
+        await saveNotificationToHistory(userId, {
+          title: "🎯 Webinar Registration Successful",
+          body: `You registered for the webinar on ${selectedDateString}`,
+          type: "webinar_registration",
+          url: "/dashboard", // or wherever webinars are managed
+          metadata: {
+            webinarDate: selectedDate,
+            webinarDateString: selectedDateString,
+            name: name,
+            phone: phone || "",
+            questions: questions || "",
+          },
+        });
+        console.log(`📅 Webinar registration tracked for user: ${email}`);
+      }
+    } catch (historyError) {
+      console.log(`⚠️ Could not track activity for ${email}:`, historyError);
+      // Don't fail the main request if history saving fails
+    }
+
     return {success: true, data: result};
   } catch (error) {
     console.error("Error in submitWebinarRegistration:", error);
@@ -173,6 +245,27 @@ exports.submitPartnerInterest = onCall(async (request) => {
       "Email": email,
       "Partner Needs": partnerNeedsString,
     });
+
+    // Track activity in notification history (for logged-in users)
+    try {
+      const userId = await getUserIdFromEmail(email);
+      if (userId) {
+        await saveNotificationToHistory(userId, {
+          title: "🤝 Partner Interest Submitted",
+          body: "Your partnership inquiry has been submitted successfully",
+          type: "partner_interest",
+          url: "/partners", // or wherever partner info is displayed
+          metadata: {
+            email: email,
+            partnerNeeds: partnerNeedsString,
+          },
+        });
+        console.log(`🤝 Partner interest tracked for user: ${email}`);
+      }
+    } catch (historyError) {
+      console.log(`⚠️ Could not track activity for ${email}:`, historyError);
+      // Don't fail the main request if history saving fails
+    }
 
     return {success: true, data: result};
   } catch (error) {
@@ -214,6 +307,27 @@ exports.submitNewsletterSubscription = onCall(async (request) => {
     const result = await submitToAirtableTable("Newsletter", {
       "Email": email,
     });
+
+    // Track activity in notification history (for logged-in users)
+    try {
+      const userId = await getUserIdFromEmail(email);
+      if (userId) {
+        await saveNotificationToHistory(userId, {
+          title: "📧 Newsletter Subscription Successful",
+          body: "You successfully subscribed to our newsletter",
+          type: "newsletter_subscription",
+          url: "/dashboard", // or wherever newsletter settings are managed
+          metadata: {
+            email: email,
+            source: "direct_subscription",
+          },
+        });
+        console.log(`📧 Newsletter subscription tracked for user: ${email}`);
+      }
+    } catch (historyError) {
+      console.log(`⚠️ Could not track activity for ${email}:`, historyError);
+      // Don't fail the main request if history saving fails
+    }
 
     return {success: true, data: result};
   } catch (error) {
@@ -786,6 +900,7 @@ exports.sendNewBlogNotification = onDocumentCreated(
         title: blogData.title,
         published: blogData.published,
         hasExcerpt: !!blogData.excerpt,
+        slug: blogData.slug,
       });
 
       // Only send notifications for published blogs
@@ -833,13 +948,16 @@ exports.sendNewBlogNotification = onDocumentCreated(
           }
 
           // Save notification to history for this user
+          // Use slug if available, fallback to ID
+          const blogSlug = blogData.slug || snapshot.id;
           await saveNotificationToHistory(userId, {
             title: notificationTitle,
             body: notificationBody,
             type: "new_blog_post",
-            url: `/blogs/${snapshot.id}`,
+            url: `/blogs/${blogSlug}`,
             metadata: {
               blogId: snapshot.id,
+              blogSlug: blogSlug,
               blogTitle: blogData.title,
             },
           });
@@ -872,9 +990,10 @@ exports.sendNewBlogNotification = onDocumentCreated(
                     body: notificationBody,
                   },
                   data: {
-                    url: `/blogs/${snapshot.id}`,
+                    url: `/blogs/${blogSlug}`,
                     type: "new_blog_post",
                     blogId: snapshot.id,
+                    blogSlug: blogSlug,
                   },
                   token: token,
                 });

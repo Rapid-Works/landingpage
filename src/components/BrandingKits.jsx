@@ -217,7 +217,28 @@ const BrandingKits = ({ initialKitId }) => {
             <span className="text-blue-600 cursor-pointer underline" onClick={() => setTab("all")}>Explore kits</span> or contact admin to get started!
           </div>
         ) : selectedKit ? (
-          renderKit(myKits.find(k => k.id === selectedKit), true)
+          // Show loading for specific kit while myKits loads, or render kit if found
+          (() => {
+            const foundKit = myKits.find(k => k.id === selectedKit);
+            if (foundKit) {
+              return renderKit(foundKit, true);
+            } else if (loadingMyKits) {
+              // Still loading kits, show loading state for selected kit
+              return (
+                <div className="flex items-center justify-center py-12">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+                    <p className="text-gray-600">Loading your branding kit...</p>
+                  </div>
+                </div>
+              );
+            } else {
+              // Kits loaded but selected kit not found, fall back to grid
+              console.log(`⚠️ Selected kit "${selectedKit}" not found in user's kits. Available kits:`, myKits.map(k => k.id));
+              setSelectedKit(null); // Reset selection
+              return null; // Will re-render and show grid
+            }
+          })()
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {myKits.map((kit) => {

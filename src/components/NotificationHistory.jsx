@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, Check, Clock, ExternalLink, X, Trash2, CheckCheck } from 'lucide-react';
+import { Bell, Check, Clock, X, Trash2, CheckCheck } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../firebase/config';
 import { 
@@ -292,7 +292,7 @@ const NotificationHistory = ({ isOpen, onClose }) => {
                         key={notification.id}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className={`p-4 hover:bg-gray-50 transition-colors cursor-pointer relative ${
+                        className={`group p-4 hover:bg-gray-50 transition-colors cursor-pointer relative ${
                           !notification.read ? 'bg-blue-50/30' : ''
                         }`}
                         onClick={() => handleNotificationClick(notification)}
@@ -324,18 +324,6 @@ const NotificationHistory = ({ isOpen, onClose }) => {
                               
                               {/* Actions */}
                               <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                {notification.url && (
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleNotificationClick(notification);
-                                    }}
-                                    className="p-1 text-gray-400 hover:text-[#7C3BEC] rounded"
-                                    title="Open"
-                                  >
-                                    <ExternalLink className="h-4 w-4" />
-                                  </button>
-                                )}
                                 {notification.read ? (
                                   <button
                                     onClick={(e) => {

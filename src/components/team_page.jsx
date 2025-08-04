@@ -36,10 +36,15 @@ import {
 } from "lucide-react"
 import RapidWorksHeader from "./new_landing_page_header" 
 import { LanguageContext as AppLanguageContext } from "../App"
+import { useAuth } from '../contexts/AuthContext'
+import { checkFrameworkAgreementStatus } from '../utils/frameworkAgreementService'
 import ExploreMoreSection from "./ExploreMoreSection" // Import the new component
 import { testimonials } from "../testimonialsData"
 import TestimonialCard from "./TestimonialCard"
 import ExpertRequestModal from "./ExpertRequestModal" // <-- Import the new modal
+import NewTaskModal from "./NewTaskModal" // <-- Import the task request modal
+import LoginModal from "./LoginModal" // <-- Import the login modal
+import FrameworkAgreementModal from "./FrameworkAgreementModal" // <-- Import the framework agreement modal
 import { submitExpertRequestToAirtable } from '../utils/airtableService' // <-- Import the Airtable function
 
 // Import team profile images
@@ -267,10 +272,16 @@ const ExpertsTestimonialsSection = ({ content }) => {
 
 const TeamPage = () => {
   const context = useContext(AppLanguageContext)
+  const { currentUser } = useAuth()
   const [isLoading, setIsLoading] = useState(true)
   const benefitsRef = useRef(null)
-  const [isModalOpen, setIsModalOpen] = useState(false); // <-- State for modal visibility
+  const [isModalOpen, setIsModalOpen] = useState(false); // <-- State for expert request modal visibility
   const [selectedExpertType, setSelectedExpertType] = useState(''); // <-- State for expert type
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false); // <-- State for task request modal visibility
+  const [selectedExpertName, setSelectedExpertName] = useState(''); // <-- State for selected expert name
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); // <-- State for login modal visibility
+  const [isFrameworkModalOpen, setIsFrameworkModalOpen] = useState(false); // <-- State for framework agreement modal visibility
+  const [hasSignedFramework, setHasSignedFramework] = useState(false); // <-- Track if user has signed framework agreement
 
   useEffect(() => {
     if (context) {
@@ -307,8 +318,8 @@ const TeamPage = () => {
       },
       cta: {
         title: "Ready to get started?",
-        description: "Book a free consultation and experience our expertise firsthand.",
-        buttonText: "Get your first hour free",
+        description: "Request a fixed price offer and get help from our experts.",
+        buttonText: "Request Fixed Price Task",
       },
       team: {
         expertiseTitle: "Expertise",
@@ -318,7 +329,7 @@ const TeamPage = () => {
         getNotified: "Get notified when new experts join",
         comingSoon: "Coming Soon",
         requestExpertButton: "Request this Expert",
-        bookNowButton: "Book Now"
+        bookNowButton: "Request Fixed Price Task"
       },
       modalContent: {
         title: "Request Expert Access",
@@ -393,8 +404,8 @@ const TeamPage = () => {
       },
       cta: {
         title: "Bereit loszulegen?",
-        description: "Buche eine kostenlose Beratung und erlebe unsere Expertise aus erster Hand.",
-        buttonText: "Sichere dir deine erste Stunde kostenlos",
+        description: "Fordere ein Fixpreis-Angebot an und erhalte Hilfe von unseren Experten.",
+        buttonText: "Fixpreis-Aufgabe anfordern",
       },
       team: {
         expertiseTitle: "Expertise",
@@ -404,7 +415,7 @@ const TeamPage = () => {
         getNotified: "Benachrichtigt werden, wenn neue Experten beitreten",
         comingSoon: "Demnächst verfügbar",
         requestExpertButton: "Diesen Experten anfragen",
-        bookNowButton: "Jetzt buchen"
+        bookNowButton: "Fixpreis-Aufgabe anfordern"
       },
       modalContent: {
         title: "Expertenzugang anfordern",
@@ -477,6 +488,100 @@ const TeamPage = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedExpertType(''); // Clear selected type on close
+  };
+
+  // Function to handle task request with authentication and framework agreement flow
+  const handleRequestTask = async (expertRole, expertName = '') => {
+    const translatedRole = content.memberRoles[expertRole] || expertRole;
+    setSelectedExpertType(translatedRole);
+    
+    // Store expert name for the modal
+    const expertInfo = teamMembers.find(member => member.role === expertRole);
+    const actualExpertName = expertInfo?.name && expertInfo.name !== "Coming Soon" ? expertInfo.name : '';
+    setSelectedExpertName(actualExpertName);
+    
+    // Check if user is logged in
+    if (!currentUser) {
+      setIsLoginModalOpen(true);
+      return;
+    }
+    
+    try {
+      // Check if user has signed framework agreement using Firebase
+      const frameworkStatus = await checkFrameworkAgreementStatus(currentUser.uid);
+      console.log('Framework status:', frameworkStatus);
+      
+      if (!frameworkStatus.signed) {
+        setIsFrameworkModalOpen(true);
+        return;
+      }
+      
+      // User is logged in and has signed framework, show task modal
+      setIsTaskModalOpen(true);
+    } catch (error) {
+      console.error('Error checking framework status:', error);
+      // If there's an error checking, assume they haven't signed and show framework modal
+      setIsFrameworkModalOpen(true);
+    }
+  };
+
+  // Function to close the task modal
+  const handleCloseTaskModal = () => {
+    setIsTaskModalOpen(false);
+    setSelectedExpertType(''); // Clear selected type on close
+    setSelectedExpertName(''); // Clear selected expert name on close
+  };
+
+  // Function to handle successful login
+  const handleLoginSuccess = async (user) => {
+    setIsLoginModalOpen(false);
+    
+    // Use the user parameter if currentUser is not immediately available
+    const userId = user?.uid || currentUser?.uid;
+    
+    if (!userId) {
+      // If no user ID available, show framework modal as default for new users
+      setIsFrameworkModalOpen(true);
+      return;
+    }
+    
+    try {
+      // After login, check framework agreement using Firebase
+      const frameworkStatus = await checkFrameworkAgreementStatus(userId);
+      console.log('Framework status after login:', frameworkStatus);
+      
+      if (!frameworkStatus.signed) {
+        setIsFrameworkModalOpen(true);
+      } else {
+        setIsTaskModalOpen(true);
+      }
+    } catch (error) {
+      console.error('Error checking framework status after login:', error);
+      // If there's an error checking, assume they haven't signed and show framework modal
+      setIsFrameworkModalOpen(true);
+    }
+  };
+
+  // Function to handle framework agreement completion
+  const handleFrameworkSigned = () => {
+    // Firebase tracking is now handled in the FrameworkAgreementModal
+    setHasSignedFramework(true);
+    setIsFrameworkModalOpen(false);
+    setIsTaskModalOpen(true);
+  };
+
+  // Function to close login modal
+  const handleCloseLoginModal = () => {
+    setIsLoginModalOpen(false);
+    setSelectedExpertType(''); // Clear selections on close
+    setSelectedExpertName('');
+  };
+
+  // Function to close framework modal
+  const handleCloseFrameworkModal = () => {
+    setIsFrameworkModalOpen(false);
+    setSelectedExpertType(''); // Clear selections on close
+    setSelectedExpertName('');
   };
 
   return (
@@ -602,29 +707,15 @@ const TeamPage = () => {
                   </p>
 
                 <div className="relative inline-block w-full sm:w-auto">
-                  <select
-                    className="appearance-none bg-white text-blue-800 font-bold py-4 pl-6 pr-12 rounded-full shadow-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600 cursor-pointer w-full sm:min-w-[400px] md:min-w-[500px] lg:min-w-[600px]"
-                    defaultValue=""
-                    onChange={e => {
-                      if (e.target.value) window.open(e.target.value, '_blank');
-                    }}
-                    style={{ 
-                      WebkitAppearance: 'none', 
-                      MozAppearance: 'none', 
-                      backgroundImage: 'none' 
+                  <button
+                    className="appearance-none bg-white text-blue-800 font-bold py-4 pl-6 pr-12 rounded-full shadow-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600 cursor-pointer w-full sm:min-w-[400px] md:min-w-[500px] lg:min-w-[600px] text-left"
+                    onClick={() => {
+                      setSelectedExpertName(''); // No specific expert for general CTA
+                      setIsTaskModalOpen(true);
                     }}
                   >
-                    <option value="" disabled>
-                      {content.cta.buttonText}
-                    </option>
-                    {teamMembers
-                      .filter(m => m.calendlyLink)
-                      .map(m => (
-                        <option key={m.id} value={m.calendlyLink}>
-                          {m.name} – {m.role}
-                        </option>
-                      ))}
-                  </select>
+                    {content.cta.buttonText}
+                  </button>
                   <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
                     <ChevronDown className="h-5 w-5 text-blue-800" />
                   </div>
@@ -701,9 +792,9 @@ const TeamPage = () => {
                           {content.team.moreSkills}
                         </span>
                         {member.calendlyLink ? (
-                          <a href={member.calendlyLink} target="_blank" rel="noopener noreferrer" className="bg-[#FF6B6B] hover:bg-red-500 text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors">
+                          <button onClick={() => handleRequestTask(member.role, member.name)} className="bg-[#FF6B6B] hover:bg-red-500 text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors">
                             {content.team.bookNowButton}
-                          </a>
+                          </button>
                         ) : (
                           <button onClick={() => handleRequestExpert(member.role)} className="bg-[#FF6B6B] hover:bg-red-500 text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors">
                             {content.team.requestExpertButton}
@@ -732,13 +823,37 @@ const TeamPage = () => {
 
       <ExploreMoreSection excludeService="Experts" />
 
-      {/* Add the modal component here */}
+      {/* Add the modal components here */}
       <ExpertRequestModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         expertType={selectedExpertType}
         content={content.modalContent}
         language={language}
+      />
+
+      {/* Login Modal */}
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={handleCloseLoginModal}
+        onLoginSuccess={handleLoginSuccess}
+        context="task"
+      />
+
+      {/* Framework Agreement Modal */}
+      <FrameworkAgreementModal
+        isOpen={isFrameworkModalOpen}
+        onClose={handleCloseFrameworkModal}
+        onAgreementSigned={handleFrameworkSigned}
+        userName={currentUser?.displayName || currentUser?.email}
+      />
+
+      {/* Task Request Modal */}
+      <NewTaskModal
+        isOpen={isTaskModalOpen}
+        onClose={handleCloseTaskModal}
+        selectedExpertType={selectedExpertType}
+        expertName={selectedExpertName}
       />
 
     </div>

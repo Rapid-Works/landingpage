@@ -27,3 +27,48 @@ body {
 .animate-fade-in {
   animation: fadeIn 0.3s ease-out;
 }
+
+/* Custom date input styling */
+.date-input::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.date-input::-webkit-inner-spin-button,
+.date-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.date-input[type="date"] {
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+}
+
+.date-input::-webkit-datetime-edit {
+  color: transparent;
+}
+
+.date-input:focus::-webkit-datetime-edit,
+.date-input:not(:placeholder-shown)::-webkit-datetime-edit {
+  color: rgb(55, 65, 81); /* text-gray-700 */
+}
+
+.date-input::-webkit-datetime-edit-fields-wrapper {
+  padding: 0;
+}
+
+.date-input::-webkit-datetime-edit-text {
+  color: rgb(55, 65, 81);
+  padding: 0 2px;
+}
+
+.date-input::-webkit-datetime-edit-month-field,
+.date-input::-webkit-datetime-edit-day-field,
+.date-input::-webkit-datetime-edit-year-field {
+  color: rgb(55, 65, 81);
+}
