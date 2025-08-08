@@ -87,11 +87,14 @@ const TaskList = ({ userRole, expertInfo, initialSelectedTaskId, onTaskSelected,
     };
 
     try {
-      if (userRole === 'expert' && expertInfo?.email) {
+        if (userRole === 'expert') {
         if (isRapidWorksAdmin) {
           unsubscribe = subscribeAllTaskRequests(onData);
         } else {
-          unsubscribe = subscribeExpertTaskRequestsByEmail(expertInfo.email, onData);
+          const email = expertInfo?.email || currentUser?.email;
+          if (email) {
+            unsubscribe = subscribeExpertTaskRequestsByEmail(email, onData);
+          }
         }
       } else {
         unsubscribe = subscribeUserTaskRequests(currentUser.uid, onData);
