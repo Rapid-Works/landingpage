@@ -154,7 +154,9 @@ export const getExpertDashboardTitle = (role) => {
 export const isAdmin = (email) => {
   if (!email) return false;
   const expert = getExpertByEmail(email);
-  return expert?.isAdmin === true;
+  if (expert?.isAdmin === true) return true;
+  // Treat RapidWorks staff as admins for dashboard access
+  return email.toLowerCase().endsWith('@rapid-works.io');
 };
 
 /**
