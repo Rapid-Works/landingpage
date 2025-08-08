@@ -220,17 +220,6 @@ const CustomerTaskView = ({ taskData, onBack, viewOnly = false }) => {
       // Get the current estimate data from the task
       const estimateData = currentTaskData.estimateData;
       
-      // Send acceptance message
-      const acceptMessage = {
-        sender: 'customer',
-        content: 'Order confirmed! I accept your offer. Please proceed with the project.',
-        read: false,
-        senderName: currentUser?.displayName || currentUser?.email || 'Customer',
-        senderEmail: currentUser?.email
-      };
-
-      await addTaskMessage(taskData.id, acceptMessage);
-
       // Update task status to accepted and save order information for invoicing
       await updateTaskStatus(taskData.id, 'accepted', {
         estimateAccepted: true,
@@ -250,26 +239,19 @@ const CustomerTaskView = ({ taskData, onBack, viewOnly = false }) => {
         }
       });
 
-      // Send system message to expert
-      const expertMessage = {
+      // Create a single unified status message visible to both parties
+      const unifiedAcceptanceMessage = {
         sender: 'system',
-        content: `✅ ${currentUser?.displayName || 'Customer'} accepted your fixed price offer!\n\n📋 Next steps:\n• Begin work immediately\n• Keep client updated on progress\n• Upload final deliverables when complete\n• Send completion message`,
+        type: 'status_update',
+        content: `✅ Estimate accepted by ${currentUser?.displayName || currentUser?.email || 'Customer'}.`,
         read: false,
         senderName: 'System',
         senderEmail: 'system@rapidworks.de'
       };
 
-      await addTaskMessage(taskData.id, expertMessage);
+      await addTaskMessage(taskData.id, unifiedAcceptanceMessage);
 
-      // Update local state
-      const messageWithId = {
-        ...acceptMessage,
-        id: Date.now().toString(),
-        timestamp: new Date().toISOString(),
-        createdAt: new Date().toISOString()
-      };
-
-      setMessages(prev => [...prev, messageWithId]);
+      // Do not append locally to avoid duplicates; the realtime data will update messages
       setShowPriceOffer(false);
       setCurrentTaskData(prev => ({ ...prev, status: 'accepted' }));
 
@@ -281,21 +263,6 @@ const CustomerTaskView = ({ taskData, onBack, viewOnly = false }) => {
 
   const handleDeclineOffer = async () => {
     try {
-      // Send decline message with feedback if provided
-      const declineContent = declineFeedback 
-        ? `I need to decline this offer. Feedback: ${declineFeedback}`
-        : 'Thank you for the offer, but I need to decline at this time.';
-
-      const declineMessage = {
-        sender: 'customer',
-        content: declineContent,
-        read: false,
-        senderName: currentUser?.displayName || currentUser?.email || 'Customer',
-        senderEmail: currentUser?.email
-      };
-
-      await addTaskMessage(taskData.id, declineMessage);
-
       // Update task status to declined
       await updateTaskStatus(taskData.id, 'declined', {
         estimateAccepted: false,
@@ -303,26 +270,19 @@ const CustomerTaskView = ({ taskData, onBack, viewOnly = false }) => {
         declineFeedback: declineFeedback || ''
       });
 
-      // Send system message to expert
-      const expertMessage = {
+      // Create a single unified status message visible to both parties
+      const unifiedDeclineMessage = {
         sender: 'system',
-        content: `The Request ${currentTaskData.taskName} was cancelled.`,
+        type: 'status_update',
+        content: `❌ Estimate declined by ${currentUser?.displayName || currentUser?.email || 'Customer'}.${declineFeedback ? `\nFeedback: ${declineFeedback}` : ''}`,
         read: false,
         senderName: 'System',
         senderEmail: 'system@rapidworks.de'
       };
 
-      await addTaskMessage(taskData.id, expertMessage);
+      await addTaskMessage(taskData.id, unifiedDeclineMessage);
 
-      // Update local state
-      const messageWithId = {
-        ...declineMessage,
-        id: Date.now().toString(),
-        timestamp: new Date().toISOString(),
-        createdAt: new Date().toISOString()
-      };
-
-      setMessages(prev => [...prev, messageWithId]);
+      // Do not append locally to avoid duplicates; the realtime data will update messages
       setShowPriceOffer(false);
       setShowDeclineModal(false);
       setDeclineFeedback('');
@@ -705,11 +665,11 @@ const CustomerTaskView = ({ taskData, onBack, viewOnly = false }) => {
         <div className="space-y-1">
           {messages
             .filter(msg => {
-              // Filter out system messages meant only for experts
+              // Hide legacy system-only messages that previously showed different content per role
               if (msg.sender === 'system' && typeof msg.content === 'string' && (
                 msg.content.includes('Please begin work immediately') ||
                 msg.content.includes('was cancelled') ||
-                msg.content.includes('CUSTOMER accepted the fixed price offer')
+                msg.content.includes('accepted your fixed price offer')
               )) {
                 return false;
               }

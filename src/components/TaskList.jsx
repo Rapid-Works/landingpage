@@ -74,10 +74,11 @@ const TaskList = ({ userRole, expertInfo, initialSelectedTaskId, onTaskSelected,
         }
       }
       setTasks(taskData);
-      if (userRole === 'expert' && typeof onUnreadTotalChange === 'function') {
+      if (typeof onUnreadTotalChange === 'function') {
         const totalUnread = taskData.reduce((sum, t) => {
+          const oppositeSender = userRole === 'expert' ? 'customer' : 'expert';
           const unread = Array.isArray(t.messages)
-            ? t.messages.filter(m => m.sender === 'customer' && m.read === false).length
+            ? t.messages.filter(m => m.sender === oppositeSender && m.sender !== 'system' && (m.read === false || m.read === undefined)).length
             : 0;
           return sum + unread;
         }, 0);
@@ -112,8 +113,9 @@ const TaskList = ({ userRole, expertInfo, initialSelectedTaskId, onTaskSelected,
 
   // Compute unread counts per task from messages
   const tasksWithUnread = tasks.map(t => {
+    const oppositeSender = userRole === 'expert' ? 'customer' : 'expert';
     const unread = Array.isArray(t.messages)
-      ? t.messages.filter(m => m.sender === 'customer' && m.read === false).length
+      ? t.messages.filter(m => m.sender === oppositeSender && m.sender !== 'system' && (m.read === false || m.read === undefined)).length
       : 0;
     return { ...t, unreadCount: unread };
   });
@@ -398,7 +400,7 @@ const TaskList = ({ userRole, expertInfo, initialSelectedTaskId, onTaskSelected,
                     {/* Task Name with unread dot */}
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-2">
-                        {(task.unreadCount && task.unreadCount > 0) && (
+                        {task.unreadCount > 0 && (
                           <span className="inline-block w-2 h-2 rounded-full bg-red-500" aria-label="unread" />
                         )}
                         <div className="text-sm font-medium text-gray-900 truncate hover:text-[#7C3BEC] transition-colors cursor-pointer">

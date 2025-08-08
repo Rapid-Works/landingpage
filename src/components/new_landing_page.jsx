@@ -213,8 +213,7 @@ export default function RapidWorksPage() {
           category: "Experts",
           title: "Rapid Experts",
           description: "Find your expert the same day cheaper than own employees!",
-          learnMore: "Learn more",
-          freeHour: "Get 1 hour free"
+          learnMore: "Learn more"
         },
         partners: {
           category: "Network",
@@ -627,12 +626,7 @@ export default function RapidWorksPage() {
                           {content.services.experts.learnMore} <ArrowRight className="h-4 w-4" />
                         </Link>
                         
-                        <Link
-                          to="/experts"
-                          className="inline-flex items-center gap-2 text-blue-600 font-medium bg-white px-4 py-2 rounded-lg hover:bg-blue-50 transition-all text-sm sm:text-base"
-                        >
-                          {content.services.experts.freeHour} <ArrowRight className="h-4 w-4" />
-                        </Link>
+                        {/* Removed free hour button as per request */}
                       </div>
                     </div>
                   </div>

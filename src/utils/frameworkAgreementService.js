@@ -36,7 +36,10 @@ export const checkFrameworkAgreementStatus = async (userId) => {
         signed: data.signed || false,
         documentUrl: data.documentUrl,
         signedAt: data.signedAt?.toDate(),
-        version: data.version
+        version: data.version,
+        signatureValidated: data.signatureValidated || false,
+        validatedAt: data.validatedAt?.toDate(),
+        validatedBy: data.validatedBy || null
       };
     } else {
       return { signed: false };
@@ -107,6 +110,7 @@ export const saveFrameworkAgreement = async (userId, userEmail, documentUrl) => 
       documentUrl,
       signedAt: serverTimestamp(),
       version: 'v1.0', // Can be updated when agreement changes
+      signatureValidated: false,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()
     });
@@ -185,10 +189,62 @@ export const deleteFrameworkAgreement = async (userId) => {
   }
 };
 
-export default {
+export const frameworkAgreementApi = {
   checkFrameworkAgreementStatus,
   uploadFrameworkDocument,
   saveFrameworkAgreement,
   getAllSignedAgreements,
   deleteFrameworkAgreement
-}; 
+};
+
+export default frameworkAgreementApi;
+
+/**
+ * Mark a customer's framework agreement signature as validated by an expert
+ * @param {string} userId - Customer's UID
+ * @param {{validatedByEmail?: string, validatedByName?: string}} validator - Info about the validator
+ */
+export const markFrameworkSignatureValidated = async (userId, validator = {}) => {
+  if (!userId) throw new Error('User ID is required');
+  try {
+    const docRef = doc(db, 'frameworkAgreements', userId);
+    await setDoc(docRef, {
+      signatureValidated: true,
+      validatedAt: serverTimestamp(),
+      validatedBy: {
+        email: validator.validatedByEmail || null,
+        name: validator.validatedByName || null
+      },
+      updatedAt: serverTimestamp()
+    }, { merge: true });
+  } catch (error) {
+    console.error('Error marking signature validated:', error);
+    throw new Error('Failed to mark signature validated');
+  }
+};
+
+/**
+ * Flag a customer's framework agreement signature as incorrect
+ * (does not reset signed; only adds a note for follow-up communication)
+ * @param {string} userId - Customer's UID
+ * @param {string} note - Optional note
+ */
+export const flagFrameworkSignatureIncorrect = async (userId, note = '') => {
+  if (!userId) throw new Error('User ID is required');
+  try {
+    const docRef = doc(db, 'frameworkAgreements', userId);
+    await setDoc(docRef, {
+      signatureValidated: false,
+      validationIssue: {
+        notedAt: serverTimestamp(),
+        note
+      },
+      updatedAt: serverTimestamp()
+    }, { merge: true });
+  } catch (error) {
+    console.error('Error flagging signature incorrect:', error);
+    throw new Error('Failed to flag signature as incorrect');
+  }
+};
+
+// Named exports already declared above for validation helpers
