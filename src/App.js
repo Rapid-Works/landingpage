@@ -20,7 +20,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card"
 import HeroImage1 from "./images/heroimage2.jpg"
 import HeroImage2 from "./images/heroimage3.jpg"
 import NRWLogo from "./images/nwrlogo.png"
-import { Link, Routes, Route } from "react-router-dom"
+import { Link, Routes, Route, useLocation } from "react-router-dom"
 import { ArrowRight } from "lucide-react"
 import VisibiltyBundle from "./components/visibilitypage"
 import platformBg from "./images/platform-bg.png"
@@ -50,8 +50,6 @@ import PublicBrandingKits from './components/PublicBrandingKits'
 
 // Authentication imports
 import { AuthProvider } from './contexts/AuthContext'
-import LoginPage from './components/LoginPage'
-import SignupPage from './components/SignupPage'
 import Dashboard from './components/Dashboard'
 import ForgotPassword from './components/ForgotPassword'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -1245,6 +1243,10 @@ function App() {
     return localStorage.getItem('language') || 'de'
   })
   const [showTimedWebinarModal, setShowTimedWebinarModal] = useState(false);
+  const location = useLocation();
+  
+  // Check if we're on a dashboard page
+  const isDashboardPage = location.pathname.startsWith('/dashboard');
 
   useEffect(() => {
     localStorage.setItem('language', language)
@@ -1297,8 +1299,6 @@ function App() {
           <Analytics />
           <Routes>
             {/* Authentication Routes */}
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/dashboard" element={
               <ProtectedRoute>
@@ -1341,14 +1341,14 @@ function App() {
             <Route path="/impressum" element={<ImpressumPage />} />
           </Routes>
           {/* <WebinarFAB /> */}
-          <AIAssistantChatbot />
+          {!isDashboardPage && <AIAssistantChatbot />}
           {/* Temporarily disabled timed webinar modal */}
           {/* <WebinarModal
             isOpen={showTimedWebinarModal}
             onClose={() => setShowTimedWebinarModal(false)}
             webinarDates={nextWebinarDateForPopup}
           /> */}
-          <Footer />
+          {!isDashboardPage && <Footer />}
           <CookieConsent />
     </LanguageContext.Provider>
       </NotificationProvider>

@@ -1,5 +1,5 @@
 // Scripts for firebase and firebase messaging
-// Version: 1.4 - Added branding kit ready notifications
+// Version: 1.5 - Add skipWaiting and clientsClaim
 importScripts("https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js");
 importScripts("https://www.gstatic.com/firebasejs/9.15.0/firebase-messaging-compat.js");
 
@@ -93,6 +93,25 @@ self.addEventListener("notificationclick", (event) => {
   event.waitUntil(
     clients.openWindow(clickedUrl)
   );
+  }
+});
+
+// Activate immediately when updated
+self.addEventListener('install', (event) => {
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(self.clients.claim());
+});
+
+// Optional: respond to pings from the page
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'PING') {
+    // console.log('Service worker alive');
+  }
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
   }
 });
 

@@ -35,8 +35,8 @@ const LoginModal = ({
       signupSubtitle: "Create your RapidWorks account to request Rapid Branding services."
     },
     general: {
-      title: "Welcome Back",
-      subtitle: "Sign in to your account",
+      title: "Sign into your account",
+      subtitle: "Access your RapidWorks dashboard and services",
       signupTitle: "Create Account", 
       signupSubtitle: "Join RapidWorks to access our services."
     }

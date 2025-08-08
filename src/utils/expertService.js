@@ -1,4 +1,6 @@
 // Expert service for managing expert-related functionality
+import SamuelAvatar from '../images/SamuelProfile.jpg';
+import PrinceAvatar from '../images/princeardiabah.png';
 
 /**
  * Expert database mapping roles to emails and information
@@ -8,23 +10,15 @@ export const EXPERTS = {
     email: 'samuel.donkor@rapid-works.io',
     role: 'Software Expert',
     name: 'Samuel Donkor',
-    avatar: '/images/SamuelProfile.jpg',
+    avatar: SamuelAvatar,
     skills: ['Backend Development', 'Frontend Development', 'API Integration']
   },
   'Prince Ardiabah': {
     email: 'prince.ardiabah@rapid-works.io',
     role: 'Marketing Expert', 
     name: 'Prince Ardiabah',
-    avatar: '/images/princeardiabah.png',
+    avatar: PrinceAvatar,
     skills: ['Digital Marketing', 'SEO', 'Content Strategy']
-  },
-  'Yannick Heeren': {
-    email: 'yannick.heeren@rapid-works.io',
-    role: 'Admin/Manager',
-    name: 'Yannick Heeren',
-    avatar: '/images/yannick_plain_bg.png',
-    skills: ['Project Management', 'Business Strategy', 'Team Leadership'],
-    isAdmin: true
   }
 };
 
@@ -33,8 +27,7 @@ export const EXPERTS = {
  */
 export const EXPERT_EMAIL_MAP = {
   'samuel.donkor@rapid-works.io': 'Samuel Donkor',
-  'prince.ardiabah@rapid-works.io': 'Prince Ardiabah',
-  'yannick.heeren@rapid-works.io': 'Yannick Heeren'
+  'prince.ardiabah@rapid-works.io': 'Prince Ardiabah'
 };
 
 /**

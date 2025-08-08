@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { X, Download, Upload, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { LanguageContext as AppLanguageContext } from '../App';
 import { 
   uploadFrameworkDocument, 
   saveFrameworkAgreement 
@@ -8,24 +9,73 @@ import {
 
 const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName = '' }) => {
   const { currentUser } = useAuth();
+  const context = useContext(AppLanguageContext);
   const [hasUploadedAgreement, setHasUploadedAgreement] = useState(false);
   const [uploadedFile, setUploadedFile] = useState(null);
   const [status, setStatus] = useState('idle'); // idle, loading, success, error
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
+  // Translation content
+  const translations = {
+    en: {
+      title: "Rapid Experts Framework Agreement",
+      greeting: "Hello",
+      description: "It seems like you are trying to request a fixed price offer for the first time. In order to do so you first need to sign our",
+      frameworkAgreement: "Rapid Experts Framework Agreement",
+      explanation: "All further Requests of Rapid Experts will from then on rely on the terms agreed upon in this Framework Agreement. Once signed you can then always request fixed price offers with no further barriers.",
+      downloadButton: "Download Framework Agreement PDF",
+      downloadFilename: "Rapid Experts Framework Agreement.pdf",
+      uploadTitle: "Upload signed Framework Agreement",
+      uploadDescription: "Click to select your signed PDF file or drag and drop here",
+      confirmButton: "Confirm Agreement Upload",
+      uploading: "Uploading...",
+      successTitle: "Agreement Uploaded!",
+      successMessage: "Your signed Framework Agreement has been received.",
+      successSubtext: "You can now request fixed price tasks from our experts.",
+      nextButton: "Next",
+      errorPdfOnly: "Please upload a PDF file.",
+      errorFileSize: "File size must be less than 10MB.",
+      errorUploadFirst: "Please upload the signed Framework Agreement first.",
+      errorLoginRequired: "You must be logged in to upload the agreement."
+    },
+    de: {
+      title: "Rapid Experts Rahmenvertrag",
+      greeting: "Hallo",
+      description: "Es scheint, als würdest du zum ersten Mal versuchen, ein Fixpreis-Angebot anzufordern. Dafür musst du zuerst unseren",
+      frameworkAgreement: "Rapid Experts Rahmenvertrag",
+      explanation: "unterzeichnen. Alle weiteren Anfragen bei Rapid Experts basieren dann auf den in diesem Rahmenvertrag vereinbarten Bedingungen. Nach der Unterzeichnung kannst du jederzeit Fixpreis-Angebote ohne weitere Hürden anfordern.",
+      downloadButton: "Rahmenvertrag PDF herunterladen",
+      downloadFilename: "Rapid_Experts_Rahmenvertrag.pdf",
+      uploadTitle: "Unterzeichneten Rahmenvertrag hochladen",
+      uploadDescription: "Klicken Sie hier oder ziehen Sie Ihre unterzeichnete PDF-Datei hierher",
+      confirmButton: "Upload des Vertrags bestätigen",
+      uploading: "Wird hochgeladen...",
+      successTitle: "Vertrag hochgeladen!",
+      successMessage: "Ihr unterzeichneter Rahmenvertrag wurde empfangen.",
+      successSubtext: "Sie können nun Fixpreis-Aufgaben von unseren Experten anfordern.",
+      nextButton: "Weiter",
+      errorPdfOnly: "Bitte laden Sie eine PDF-Datei hoch.",
+      errorFileSize: "Die Dateigröße muss unter 10MB liegen.",
+      errorUploadFirst: "Bitte laden Sie zuerst den unterzeichneten Rahmenvertrag hoch.",
+      errorLoginRequired: "Sie müssen angemeldet sein, um den Vertrag hochzuladen."
+    }
+  };
+
+  const { language } = context || { language: 'en' };
+  const t = translations[language] || translations.en;
+
+  const handleFileUpload = (file) => {
     setErrorMessage('');
     
     if (!file) return;
     
     if (file.type !== 'application/pdf') {
-      setErrorMessage('Please upload a PDF file.');
+      setErrorMessage(t.errorPdfOnly);
       return;
     }
     
     if (file.size > 10 * 1024 * 1024) { // 10MB limit
-      setErrorMessage('File size must be less than 10MB.');
+      setErrorMessage(t.errorFileSize);
       return;
     }
     
@@ -33,14 +83,44 @@ const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName 
     setHasUploadedAgreement(true);
   };
 
+  const handleFileInputChange = (e) => {
+    const file = e.target.files[0];
+    handleFileUpload(file);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      handleFileUpload(files[0]);
+    }
+  };
+
   const handleSubmit = async () => {
     if (!hasUploadedAgreement) {
-      setErrorMessage('Please upload the signed Framework Agreement first.');
+      setErrorMessage(t.errorUploadFirst);
       return;
     }
 
     if (!currentUser) {
-      setErrorMessage('You must be logged in to upload the agreement.');
+      setErrorMessage(t.errorLoginRequired);
       return;
     }
 
@@ -64,15 +144,7 @@ const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName 
       
       setStatus('success');
       
-      // Call the callback to indicate agreement is signed
-      setTimeout(() => {
-        onAgreementSigned();
-        onClose();
-        setStatus('idle');
-        setUploadedFile(null);
-        setHasUploadedAgreement(false);
-        setErrorMessage('');
-      }, 1500);
+      // Don't auto-close anymore, let user click "Next" button
       
     } catch (error) {
       setStatus('error');
@@ -105,29 +177,37 @@ const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName 
         </button>
 
         <div className="p-8">
-          <h2 className="text-3xl font-bold mb-6 text-gray-900 text-center">Rapid Experts Framework Agreement</h2>
+          <h2 className="text-3xl font-bold mb-6 text-gray-900 text-center">{t.title}</h2>
           
           {status === 'success' ? (
             <div className="text-center py-12">
               <CheckCircle className="h-20 w-20 text-green-500 mx-auto mb-6" />
-              <h3 className="text-2xl font-bold text-gray-800 mb-4">Agreement Uploaded!</h3>
+              <h3 className="text-2xl font-bold text-gray-800 mb-4">{t.successTitle}</h3>
               <p className="text-gray-600 mb-2">
-                Your signed Framework Agreement has been received.
+                {t.successMessage}
               </p>
-              <p className="text-sm text-gray-500">
-                You can now request fixed price tasks from our experts.
+              <p className="text-sm text-gray-500 mb-6">
+                {t.successSubtext}
               </p>
+              <button
+                onClick={() => {
+                  onAgreementSigned();
+                  onClose();
+                  setStatus('idle');
+                  setUploadedFile(null);
+                  setHasUploadedAgreement(false);
+                  setErrorMessage('');
+                }}
+                className="px-8 py-3 bg-[#7C3BEC] hover:bg-[#6B32D6] text-white rounded-lg font-medium transition-colors shadow-sm"
+              >
+                {t.nextButton}
+              </button>
             </div>
           ) : (
             <>
               <div className="text-center mb-8">
                 <p className="text-gray-600 leading-relaxed">
-                  Hello <span className="font-semibold text-[#7C3BEC]">{userName || 'FIRST-NAME'}</span>. It seems like you are trying to request a fixed 
-                  price offer for the first time. In order to do so you first need to sign 
-                  our <span className="font-semibold">Rapid Experts Framework Agreement</span>. All further Requests of 
-                  Rapid Experts will from then on rely on the terms agreed upon in this 
-                  Framework Agreement. Once signed you can then always request 
-                  fixed price offers with no further barriers.
+                  {t.greeting} <span className="font-semibold text-[#7C3BEC]">{userName || 'FIRST-NAME'}</span>. {t.description} <span className="font-semibold">{t.frameworkAgreement}</span>. {t.explanation}
                 </p>
               </div>
 
@@ -139,27 +219,33 @@ const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName 
                     className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
                   >
                     <Download className="h-5 w-5" />
-                    Download Framework Agreement PDF
+                    {t.downloadButton}
                   </button>
                   <p className="text-sm text-gray-500 mt-2">
-                    Rapid Experts Framework Agreement.pdf
+                    {t.downloadFilename}
                   </p>
                 </div>
 
                 {/* Upload Signed Agreement */}
-                <div className="border-2 border-gray-400 rounded-lg p-8 text-center">
+                <div 
+                  className="border-2 border-dashed border-gray-400 rounded-lg p-8 text-center hover:border-[#7C3BEC] transition-colors duration-200"
+                  onDragOver={handleDragOver}
+                  onDragEnter={handleDragEnter}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                >
                   <input
                     type="file"
                     accept=".pdf"
-                    onChange={handleFileUpload}
+                    onChange={handleFileInputChange}
                     className="hidden"
                     id="agreement-upload"
                   />
                   <label htmlFor="agreement-upload" className="cursor-pointer">
                     <div className="text-gray-600">
                       <Upload className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-                      <h3 className="text-lg font-semibold mb-2">Upload signed Framework Agreement</h3>
-                      <p className="text-sm">Click to select your signed PDF file</p>
+                      <h3 className="text-lg font-semibold mb-2">{t.uploadTitle}</h3>
+                      <p className="text-sm">{t.uploadDescription}</p>
                     </div>
                   </label>
                   
@@ -194,10 +280,10 @@ const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName 
                     {status === 'loading' ? (
                       <>
                         <Loader2 className="animate-spin -ml-1 mr-3 h-5 w-5 inline" />
-                        Uploading...
+                        {t.uploading}
                       </>
                     ) : (
-                      'Confirm Agreement Upload'
+                      t.confirmButton
                     )}
                   </button>
                 </div>

@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { X, Loader2, CheckCircle, AlertCircle, Clock, Upload, Calendar, FileText, Image, Archive } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { LanguageContext as AppLanguageContext } from '../App';
 import { uploadTaskFiles, formatFileSize, getFileCategory } from '../utils/taskFileService';
 import { saveTaskRequest } from '../utils/taskRequestService';
 import { getExpertEmailByRole } from '../utils/expertService';
+import { sendNewTaskNotification, sendSimpleTaskNotification, sendPowerAutomateTaskNotification, testTeamsWebhook } from '../utils/teamsWebhookService';
 
 const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '' }) => {
   const { currentUser } = useAuth();
+  const context = useContext(AppLanguageContext);
   const [formData, setFormData] = useState({
     taskName: '',
     taskDescription: '',
@@ -18,6 +21,81 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
   const [uploadingFiles, setUploadingFiles] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({});
 
+  // Translation content
+  const translations = {
+    en: {
+      title: "Describe your Task",
+      description1: "Describe the task (In German or English).",
+      description2: "will then directly review it and make sure everything is understood perfectly. He might reach out to you via push notification to make sure the task is understood correct. Once all is clear",
+      description3: "will make a work time estimate and send you a fixed price offer. You can then accept or reject this offer. When accepted",
+      description4: "will fulfill the task and send you the result once finished. Regardless of how long",
+      description5: "took, we will charge you the agreed fixed price in the next monthly invoice.",
+      ourExpert: "Our expert",
+      taskNameLabel: "Task Name *",
+      taskNamePlaceholder: "e.g., Build responsive landing page",
+      taskDescriptionLabel: "Task Description *",
+      taskDescriptionPlaceholder: "Please provide detailed requirements, specifications, and any specific needs...",
+      taskDescriptionHelp: "The more details you provide, the more accurate the estimate will be.",
+      dueDateLabel: "Due Date (Optional)",
+      dueDatePrefix: "Due:",
+      filesLabel: "Additional Files (Optional)",
+      filesUploadText: "Click to upload files or drag and drop",
+      filesAccepted: "PDF, DOC, Images, ZIP, TXT, CSV files up to 10MB each",
+      filesUploading: "Uploading files...",
+      filesUploadingWait: "Please wait while your files are being uploaded",
+      uploadedFiles: "Uploaded Files:",
+      uploaded: "✓ Uploaded",
+      viewFile: "View",
+      submitButton: "Request Fixed Price Offer",
+      submittingButton: "Submitting Request...",
+      successTitle: "Task Request Submitted!",
+      successMessage: "Your task has been sent to our expert for review.",
+      successSubtext: "You'll receive a fixed price offer soon via push notification.",
+      closeButton: "Close",
+      errorRequired: "Please fill in all required fields",
+      errorLogin: "You must be logged in to submit a task request.",
+      errorLoginFiles: "You must be logged in to upload files.",
+      errorFileSize: "File size must be less than 10MB"
+    },
+    de: {
+      title: "Beschreibe deine Aufgabe",
+      description1: "Beschreibe die Aufgabe (auf Deutsch oder Englisch).",
+      description2: "wird sie dann direkt überprüfen und sicherstellen, dass alles perfekt verstanden wird. Er könnte dich über Push-Benachrichtigung kontaktieren, um sicherzustellen, dass die Aufgabe richtig verstanden wurde. Sobald alles klar ist, wird",
+      description3: "eine Arbeitszeitschätzung vornehmen und dir ein Fixpreis-Angebot senden. Du kannst dieses Angebot dann annehmen oder ablehnen. Bei Annahme wird",
+      description4: "die Aufgabe erfüllen und dir das Ergebnis nach Abschluss senden. Unabhängig davon, wie lange",
+      description5: "gebraucht hat, berechnen wir dir den vereinbarten Fixpreis in der nächsten monatlichen Rechnung.",
+      ourExpert: "Unser Experte",
+      taskNameLabel: "Aufgabenname *",
+      taskNamePlaceholder: "z.B., Responsive Landing Page erstellen",
+      taskDescriptionLabel: "Aufgabenbeschreibung *",
+      taskDescriptionPlaceholder: "Bitte geben Sie detaillierte Anforderungen, Spezifikationen und alle besonderen Bedürfnisse an...",
+      taskDescriptionHelp: "Je mehr Details Sie angeben, desto genauer wird die Schätzung.",
+      dueDateLabel: "Fälligkeitsdatum (Optional)",
+      dueDatePrefix: "Fällig:",
+      filesLabel: "Zusätzliche Dateien (Optional)",
+      filesUploadText: "Klicken zum Hochladen oder per Drag & Drop",
+      filesAccepted: "PDF, DOC, Bilder, ZIP, TXT, CSV Dateien bis zu 10MB je Datei",
+      filesUploading: "Dateien werden hochgeladen...",
+      filesUploadingWait: "Bitte warten Sie, während Ihre Dateien hochgeladen werden",
+      uploadedFiles: "Hochgeladene Dateien:",
+      uploaded: "✓ Hochgeladen",
+      viewFile: "Ansehen",
+      submitButton: "Fixpreis-Angebot anfordern",
+      submittingButton: "Anfrage wird gesendet...",
+      successTitle: "Aufgabe erfolgreich übermittelt!",
+      successMessage: "Ihre Aufgabe wurde zur Überprüfung an unseren Experten gesendet.",
+      successSubtext: "Sie erhalten bald ein Fixpreis-Angebot per Push-Benachrichtigung.",
+      closeButton: "Schließen",
+      errorRequired: "Bitte füllen Sie alle Pflichtfelder aus",
+      errorLogin: "Sie müssen angemeldet sein, um eine Aufgabe zu übermitteln.",
+      errorLoginFiles: "Sie müssen angemeldet sein, um Dateien hochzuladen.",
+      errorFileSize: "Die Dateigröße muss unter 10MB liegen"
+    }
+  };
+
+  const { language } = context || { language: 'en' };
+  const t = translations[language] || translations.en;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus('loading');
@@ -26,13 +104,13 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
     // Validation
     if (!formData.taskName.trim() || !formData.taskDescription.trim()) {
       setStatus('error');
-      setErrorMessage('Please fill in all required fields');
+      setErrorMessage(t.errorRequired);
       return;
     }
 
     if (!currentUser) {
       setStatus('error');
-      setErrorMessage('You must be logged in to submit a task request.');
+      setErrorMessage(t.errorLogin);
       return;
     }
 
@@ -54,6 +132,7 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
         userName: currentUser.displayName || currentUser.email,
         status: 'pending',
         createdAt: new Date().toISOString(),
+        exactTimestamp: Date.now(), // Exact millisecond timestamp
         updatedAt: new Date().toISOString()
       };
 
@@ -63,23 +142,58 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
       const taskId = await saveTaskRequest(taskData);
       console.log('Task request saved with ID:', taskId);
       
+      // Send Teams notification (don't wait for it, run in background)
+      try {
+        const teamsNotificationData = {
+          taskName: taskData.taskName,
+          expertType: taskData.expertType,
+          expertName: taskData.expertName,
+          customerName: taskData.userName,
+          customerEmail: taskData.userEmail,
+          description: taskData.taskDescription,
+          dueDate: taskData.dueDate,
+          files: taskData.files,
+          taskId: taskId
+        };
+        
+        console.log('📤 Sending Teams notification with data:', teamsNotificationData);
+        
+        // Try different formats in order of likelihood to work with Power Automate
+        sendPowerAutomateTaskNotification(teamsNotificationData)
+          .then(success => {
+            if (!success) {
+              console.log('🔄 Power Automate format failed, trying simple text...');
+              return sendSimpleTaskNotification(teamsNotificationData);
+            }
+            return success;
+          })
+          .then(success => {
+            if (!success) {
+              console.log('🔄 Simple format failed, trying rich format...');
+              return sendNewTaskNotification(teamsNotificationData);
+            }
+            return success;
+          })
+          .catch(error => {
+            console.error('Teams notification failed (non-critical):', error);
+          });
+      } catch (error) {
+        console.error('Teams notification setup failed (non-critical):', error);
+      }
+      
       setStatus('success');
       
-      // Reset form and close modal after delay
-      setTimeout(() => {
-        setFormData({
-          taskName: '',
-          taskDescription: '', 
-          dueDate: '',
-          files: []
-        });
-        setStatus('idle');
-        onClose();
-      }, 2000);
+      // Reset form data immediately but don't close modal
+      setFormData({
+        taskName: '',
+        taskDescription: '', 
+        dueDate: '',
+        files: []
+      });
       
     } catch (error) {
       setStatus('error');
-      setErrorMessage(error.message || 'Failed to submit request. Please try again.');
+      setErrorMessage(error.message || (language === 'de' ? 'Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es erneut.' : 'Failed to submit request. Please try again.'));
       console.error("Submission failed:", error);
     }
   };
@@ -91,12 +205,11 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
     }));
   };
 
-  const handleFileUpload = async (e) => {
-    const files = Array.from(e.target.files);
+  const handleFileUpload = async (files) => {
     if (files.length === 0) return;
 
     if (!currentUser) {
-      setErrorMessage('You must be logged in to upload files.');
+      setErrorMessage(t.errorLoginFiles);
       return;
     }
 
@@ -114,13 +227,43 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
 
     } catch (error) {
       console.error('File upload failed:', error);
-      setErrorMessage(error.message || 'Failed to upload files. Please try again.');
+      setErrorMessage(error.message || (language === 'de' ? 'Fehler beim Hochladen der Dateien. Bitte versuchen Sie es erneut.' : 'Failed to upload files. Please try again.'));
     } finally {
       setUploadingFiles(false);
       setUploadProgress({});
-      // Reset file input
-      e.target.value = '';
     }
+  };
+
+  const handleFileInputChange = async (e) => {
+    const files = Array.from(e.target.files);
+    await handleFileUpload(files);
+    // Reset file input
+    e.target.value = '';
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (uploadingFiles || status === 'loading') return;
+    
+    const files = Array.from(e.dataTransfer.files);
+    await handleFileUpload(files);
   };
 
   const removeFile = (index) => {
@@ -184,17 +327,10 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#7C3BEC] to-[#9F7AEA] rounded-full mb-6">
               <Clock className="h-8 w-8 text-white" />
             </div>
-            <h2 className="text-4xl font-bold mb-4 text-gray-900">Describe your Task</h2>
+            <h2 className="text-4xl font-bold mb-4 text-gray-900">{t.title}</h2>
                          <div className="max-w-2xl mx-auto">
                <p className="text-gray-600 leading-relaxed text-lg">
-                 Describe the task (In German or English). <span className="text-[#7C3BEC] font-semibold">{expertName || 'Our expert'}</span> will then directly 
-                 review it and make sure everything is understood perfectly. He 
-                 might reach out to you via push notification to make sure the task is 
-                 understood correct. Once all is clear <span className="text-[#7C3BEC] font-semibold">{expertName || 'our expert'}</span> will make a work time 
-                 estimate and send you a fixed price offer. You can then accept or 
-                 reject this offer. When accepted <span className="text-[#7C3BEC] font-semibold">{expertName || 'our expert'}</span> will fulfill the task and send 
-                 you the result once finished. Regardless of how long <span className="text-[#7C3BEC] font-semibold">{expertName || 'our expert'}</span> took, we 
-                 will charge you the agreed fixed price in the next monthly invoice.
+                 {t.description1} {expertName || t.ourExpert} {t.description2} {expertName || t.ourExpert} {t.description3} {expertName || t.ourExpert} {t.description4} {expertName || t.ourExpert} {t.description5}
                </p>
              </div>
           </div>
@@ -204,26 +340,35 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
               <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-6">
                 <CheckCircle className="h-12 w-12 text-green-600" />
               </div>
-              <h3 className="text-3xl font-bold text-gray-900 mb-4">Task Request Submitted!</h3>
+              <h3 className="text-3xl font-bold text-gray-900 mb-4">{t.successTitle}</h3>
               <p className="text-gray-600 mb-2 text-lg">
-                Your task has been sent to our expert for review.
+                {t.successMessage}
               </p>
-              <p className="text-gray-500">
-                You'll receive a fixed price offer soon via push notification.
+              <p className="text-gray-500 mb-6">
+                {t.successSubtext}
               </p>
+              <button
+                onClick={() => {
+                  setStatus('idle');
+                  onClose();
+                }}
+                className="px-8 py-3 bg-[#7C3BEC] hover:bg-[#6B32D6] text-white rounded-lg font-medium transition-colors shadow-sm"
+              >
+                {t.closeButton}
+              </button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-8">
               {/* Task Name */}
               <div className="space-y-2">
                 <label className="block text-sm font-semibold text-gray-700 mb-3">
-                  Task Name *
+                  {t.taskNameLabel}
                 </label>
                 <input
                   type="text"
                   value={formData.taskName}
                   onChange={(e) => handleInputChange('taskName', e.target.value)}
-                  placeholder="e.g., Build responsive landing page"
+                  placeholder={t.taskNamePlaceholder}
                   className="w-full h-16 px-6 text-lg border-2 border-gray-300 rounded-xl focus:border-[#7C3BEC] focus:outline-none transition-colors duration-200 placeholder-gray-400"
                   disabled={status === 'loading'}
                   required
@@ -233,26 +378,26 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
               {/* Task Description */}
               <div className="space-y-2">
                 <label className="block text-sm font-semibold text-gray-700 mb-3">
-                  Task Description *
+                  {t.taskDescriptionLabel}
                 </label>
                 <textarea
                   value={formData.taskDescription}
                   onChange={(e) => handleInputChange('taskDescription', e.target.value)}
-                  placeholder="Please provide detailed requirements, specifications, and any specific needs..."
+                  placeholder={t.taskDescriptionPlaceholder}
                   rows={6}
                   className="w-full px-6 py-4 text-lg border-2 border-gray-300 rounded-xl focus:border-[#7C3BEC] focus:outline-none transition-colors duration-200 resize-none placeholder-gray-400"
                   disabled={status === 'loading'}
                   required
                 />
                 <p className="text-sm text-gray-500 mt-2">
-                  The more details you provide, the more accurate the estimate will be.
+                  {t.taskDescriptionHelp}
                 </p>
               </div>
 
               {/* Due Date */}
                              <div className="space-y-2">
                  <label className="block text-sm font-semibold text-gray-700 mb-3">
-                   Due Date (Optional)
+                   {t.dueDateLabel}
                  </label>
                  <div className="relative">
                    <input
@@ -271,7 +416,7 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
                  </div>
                  {formData.dueDate && (
                    <p className="text-sm text-gray-600 mt-2">
-                     Due: {formatDateDisplay(formData.dueDate)}
+                     {t.dueDatePrefix} {formatDateDisplay(formData.dueDate)}
                    </p>
                  )}
                </div>
@@ -279,15 +424,21 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
               {/* File Upload */}
               <div className="space-y-2">
                 <label className="block text-sm font-semibold text-gray-700 mb-3">
-                  Additional Files (Optional)
+                  {t.filesLabel}
                 </label>
-                                 <div className={`border-2 border-dashed rounded-xl p-8 text-center transition-colors duration-200 ${
-                   uploadingFiles ? 'border-[#7C3BEC] bg-purple-50' : 'border-gray-300 hover:border-[#7C3BEC]'
-                 }`}>
+                                 <div 
+                   className={`border-2 border-dashed rounded-xl p-8 text-center transition-colors duration-200 ${
+                     uploadingFiles ? 'border-[#7C3BEC] bg-purple-50' : 'border-gray-300 hover:border-[#7C3BEC]'
+                   }`}
+                   onDragOver={handleDragOver}
+                   onDragEnter={handleDragEnter}
+                   onDragLeave={handleDragLeave}
+                   onDrop={handleDrop}
+                 >
                    <input
                      type="file"
                      multiple
-                     onChange={handleFileUpload}
+                     onChange={handleFileInputChange}
                      className="hidden"
                      id="file-upload"
                      accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.gif,.webp,.zip,.txt,.csv"
@@ -298,14 +449,14 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
                        {uploadingFiles ? (
                          <>
                            <Loader2 className="h-12 w-12 mx-auto mb-4 text-[#7C3BEC] animate-spin" />
-                           <p className="text-lg font-medium text-[#7C3BEC] mb-2">Uploading files...</p>
-                           <p className="text-sm text-gray-500">Please wait while your files are being uploaded</p>
+                           <p className="text-lg font-medium text-[#7C3BEC] mb-2">{t.filesUploading}</p>
+                           <p className="text-sm text-gray-500">{t.filesUploadingWait}</p>
                          </>
                        ) : (
                          <>
                            <Upload className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-                           <p className="text-lg font-medium text-gray-700 mb-2">Click to upload files or drag and drop</p>
-                           <p className="text-sm text-gray-500">PDF, DOC, Images, ZIP, TXT, CSV files up to 10MB each</p>
+                           <p className="text-lg font-medium text-gray-700 mb-2">{t.filesUploadText}</p>
+                           <p className="text-sm text-gray-500">{t.filesAccepted}</p>
                          </>
                        )}
                      </div>
@@ -314,7 +465,7 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
                 
                                  {formData.files.length > 0 && (
                    <div className="mt-4 space-y-3">
-                     <p className="text-sm font-semibold text-gray-700">Uploaded Files:</p>
+                     <p className="text-sm font-semibold text-gray-700">{t.uploadedFiles}</p>
                      {formData.files.map((file, index) => (
                        <div key={index} className="flex items-center justify-between bg-gray-50 rounded-lg p-4 border border-gray-200">
                          <div className="flex items-center space-x-3">
@@ -326,7 +477,7 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
                              <div className="flex items-center space-x-2 text-xs text-gray-500">
                                <span>{formatFileSize(file.size)}</span>
                                <span>•</span>
-                               <span className="text-green-600 font-medium">✓ Uploaded</span>
+                               <span className="text-green-600 font-medium">{t.uploaded}</span>
                              </div>
                            </div>
                          </div>
@@ -337,7 +488,7 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
                              rel="noopener noreferrer"
                              className="text-[#7C3BEC] hover:text-[#6B32D6] text-xs font-medium"
                            >
-                             View
+                             {t.viewFile}
                            </a>
                            <button
                              type="button"
@@ -374,10 +525,10 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
                   {status === 'loading' ? (
                     <>
                       <Loader2 className="animate-spin -ml-1 mr-3 h-6 w-6" />
-                      Submitting Request...
+                      {t.submittingButton}
                     </>
                   ) : (
-                    'Request Fixed Price Offer'
+                    t.submitButton
                   )}
                 </button>
               </div>
