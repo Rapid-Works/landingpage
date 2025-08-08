@@ -16,6 +16,13 @@ const registerServiceWorker = async () => {
   if ('serviceWorker' in navigator) {
     try {
       const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+      // Take control of existing clients asap
+      if (registration.waiting) {
+        registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+      }
+      if (navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({ type: 'PING' });
+      }
       console.log('Firebase messaging service worker registered:', registration);
       return registration;
     } catch (error) {
@@ -39,7 +46,12 @@ export const initializeMessaging = async () => {
 
 // Auto-initialize when module loads
 if (typeof window !== 'undefined') {
-  initializeMessaging();
+  // Wait for window load to avoid race conditions with CRA assets
+  if (document.readyState === 'complete') {
+    initializeMessaging();
+  } else {
+    window.addEventListener('load', () => initializeMessaging());
+  }
 }
 
 // Function to unregister problematic service workers (but keep Firebase messaging)

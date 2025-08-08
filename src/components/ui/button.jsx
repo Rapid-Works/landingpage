@@ -2,7 +2,7 @@ import React, { forwardRef } from "react";
 import { cn } from "./utils";
 
 const buttonVariants = {
-  default: "bg-blue-600 text-white hover:bg-blue-700",
+  default: "bg-[#7C3BEC] text-white hover:bg-[#6B32D6]",
   outline: "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50",
   secondary: "bg-gray-200 text-gray-900 hover:bg-gray-300",
   ghost: "text-gray-700 hover:bg-gray-100",

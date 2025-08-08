@@ -714,7 +714,7 @@ const TeamPage = () => {
                       setIsTaskModalOpen(true);
                     }}
                   >
-                    {content.cta.buttonText}
+                      {content.cta.buttonText}
                   </button>
                   <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
                     <ChevronDown className="h-5 w-5 text-blue-800" />

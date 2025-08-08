@@ -29,6 +29,7 @@ import { signOut } from 'firebase/auth'
 import ProfileEditModal from './ProfileEditModal'
 import NotificationSettingsModal from './NotificationSettingsModal'
 import NotificationHistory from './NotificationHistory'
+import LoginModal from './LoginModal'
 import { useNotificationHistory } from '../hooks/useNotificationHistory'
 import { useSmartNotificationStatus } from '../hooks/useSmartNotificationStatus'
 
@@ -40,6 +41,7 @@ export default function RapidWorksHeader() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
   const [isNotificationHistoryOpen, setIsNotificationHistoryOpen] = useState(false)
+  const [showLoginModal, setShowLoginModal] = useState(false)
   const { unreadCount } = useNotificationHistory()
   const { forceRefresh } = useSmartNotificationStatus()
   const userMenuRef = useRef(null)
@@ -95,8 +97,7 @@ export default function RapidWorksHeader() {
   }
 
   const handleLoginRedirect = () => {
-    const currentPath = location.pathname + location.search
-    navigate(`/login?redirect=${encodeURIComponent(currentPath)}`)
+    setShowLoginModal(true)
   }
 
   const handleDashboardRedirect = () => {
@@ -384,10 +385,10 @@ export default function RapidWorksHeader() {
                   <User className="h-4 w-4 mr-3" />
                   Sign In
                 </button>
-                <Link to="/signup" onClick={() => setMobileMenuOpen(false)} className="flex items-center w-full px-4 py-3 rounded-lg transition-all duration-300" style={{ color: accentColor, border: `1px solid ${accentColor}` }}>
+                <button onClick={() => { setShowLoginModal(true); setMobileMenuOpen(false); }} className="flex items-center w-full px-4 py-3 rounded-lg transition-all duration-300" style={{ color: accentColor, border: `1px solid ${accentColor}` }}>
                   <User className="h-4 w-4 mr-3" />
                   Sign Up
-                </Link>
+                </button>
               </>
             )}
             <a href="https://calendly.com/yannick-familie-heeren/30min" target="_blank" rel="noopener noreferrer" className="flex items-center w-full px-4 py-3 rounded-lg transition-all duration-300" style={{ background: accentColor, color: '#fff' }} onClick={() => setMobileMenuOpen(false)}>
@@ -439,6 +440,16 @@ export default function RapidWorksHeader() {
       <NotificationHistory 
         isOpen={isNotificationHistoryOpen} 
         onClose={() => setIsNotificationHistoryOpen(false)} 
+      />
+
+      {/* Login Modal */}
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        onLoginSuccess={(user) => {
+          setShowLoginModal(false);
+        }}
+        context="header"
       />
     </header>
   )

@@ -2,42 +2,43 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, MessageCircle, Loader2, AlertCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { getTaskRequest } from '../utils/taskRequestService';
+import { getTaskRequest, markMessagesAsRead, subscribeTaskRequest } from '../utils/taskRequestService';
 import CustomerTaskView from './CustomerTaskView';
 import ExpertTaskView from './ExpertTaskView';
 
-const TaskChatSystem = ({ taskId, userRole = "customer", onBack }) => {
+const TaskChatSystem = ({ taskId, userRole = "customer", onBack, viewOnly = false }) => {
   const { currentUser } = useAuth();
   const [taskData, setTaskData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Load task data from Firebase
+  // Load task data from Firebase whenever taskId changes
   useEffect(() => {
-    const loadTask = async () => {
-      if (!taskId) return;
-
-      setLoading(true);
-      setError('');
-
-      try {
-        const task = await getTaskRequest(taskId);
-        setTaskData(task);
-      } catch (err) {
-        console.error('Error loading task:', err);
-        setError(err.message || 'Failed to load task');
-      } finally {
+    if (!taskId) return;
+    setLoading(true);
+    setError('');
+    let first = true;
+    const unsub = subscribeTaskRequest(taskId, async (task) => {
+      if (!task) {
+        setError('Task not found');
         setLoading(false);
+        return;
       }
-    };
-
-    loadTask();
-  }, [taskId]);
+      setTaskData(task);
+      setLoading(false);
+      // Mark messages read on initial load and when new messages arrive
+      try {
+        await markMessagesAsRead(taskId, userRole === 'expert' ? 'expert' : 'customer');
+      } catch {}
+      first = false;
+    });
+    return () => unsub && unsub();
+  }, [taskId, userRole]);
 
   // Loading state
   if (loading) {
     return (
-      <div className="bg-white rounded-2xl shadow-xl p-8 flex flex-col items-center justify-center min-h-[400px]">
+      <div className="bg-white p-8 flex flex-col items-center justify-center min-h-[400px]">
         <Loader2 className="h-8 w-8 animate-spin text-[#7C3BEC] mb-4" />
         <p className="text-gray-600">Loading chat...</p>
       </div>
@@ -47,7 +48,7 @@ const TaskChatSystem = ({ taskId, userRole = "customer", onBack }) => {
   // Error state
   if (error) {
     return (
-      <div className="bg-white rounded-2xl shadow-xl p-8 flex flex-col items-center justify-center min-h-[400px]">
+      <div className="bg-white p-8 flex flex-col items-center justify-center min-h-[400px]">
         <AlertCircle className="h-8 w-8 text-red-500 mb-4" />
         <p className="text-red-600 mb-4">{error}</p>
         {onBack && (
@@ -65,7 +66,7 @@ const TaskChatSystem = ({ taskId, userRole = "customer", onBack }) => {
   // No task data
   if (!taskData) {
     return (
-      <div className="bg-white rounded-2xl shadow-xl p-8 flex flex-col items-center justify-center min-h-[400px]">
+      <div className="bg-white p-8 flex flex-col items-center justify-center min-h-[400px]">
         <AlertCircle className="h-8 w-8 text-gray-500 mb-4" />
         <p className="text-gray-600 mb-4">Task not found</p>
         {onBack && (
@@ -81,52 +82,12 @@ const TaskChatSystem = ({ taskId, userRole = "customer", onBack }) => {
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-[#7C3BEC] to-[#9F7AEA] px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            {onBack && (
-              <button 
-                onClick={onBack} 
-                className="bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 transition-colors"
-              >
-                <ArrowLeft className="h-4 w-4 text-white" />
-              </button>
-            )}
-            <div className="bg-white/20 backdrop-blur-sm rounded-full p-2">
-              <MessageCircle className="h-5 w-5 text-white" />
-            </div>
-            <div>
-              <h2 className="text-white font-semibold text-lg">{taskData.taskName}</h2>
-              <p className="text-white/80 text-sm">
-                {userRole === "expert" 
-                  ? `Chat with ${taskData.userName || taskData.userEmail}` 
-                  : `Chat with ${taskData.expertName || 'Expert'}`}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="text-right">
-              <div className="text-white text-sm font-medium">
-                Status: {taskData.status?.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-              </div>
-              <div className="text-white/80 text-xs">
-                Created: {taskData.createdAt?.toLocaleDateString()}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Chat Content */}
-      <div className="p-6">
-        {userRole === "customer" ? (
-          <CustomerTaskView taskData={taskData} onBack={onBack} />
-        ) : (
-          <ExpertTaskView taskData={taskData} onBack={onBack} />
-        )}
-      </div>
+    <div className="h-full min-h-[70vh] flex flex-col">
+      {userRole === "customer" ? (
+        <CustomerTaskView taskData={taskData} onBack={onBack} viewOnly={viewOnly} />
+      ) : (
+        <ExpertTaskView taskData={taskData} onBack={onBack} viewOnly={viewOnly} />
+      )}
     </div>
   );
 };

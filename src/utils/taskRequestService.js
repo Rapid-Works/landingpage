@@ -10,7 +10,8 @@ import {
   where, 
   orderBy, 
   serverTimestamp,
-  limit
+  limit,
+  onSnapshot
 } from 'firebase/firestore';
 
 /**
@@ -80,6 +81,28 @@ export const getUserTaskRequests = async (userId, limitCount = 50) => {
 };
 
 /**
+ * Subscribe to a user's task requests in realtime
+ */
+export const subscribeUserTaskRequests = (userId, callback, limitCount = 50) => {
+  const q = query(
+    collection(db, 'taskRequests'),
+    where('userId', '==', userId),
+    orderBy('createdAt', 'desc'),
+    limit(limitCount)
+  );
+  return onSnapshot(q, (snapshot) => {
+    const tasks = snapshot.docs.map(d => ({
+      id: d.id,
+      ...d.data(),
+      createdAt: d.data().createdAt?.toDate(),
+      updatedAt: d.data().updatedAt?.toDate(),
+      completedAt: d.data().completedAt?.toDate()
+    }));
+    callback(tasks);
+  });
+};
+
+/**
  * Get task requests assigned to a specific expert by email
  * @param {string} expertEmail - Expert's email address
  * @param {number} limitCount - Maximum number of tasks to return
@@ -112,6 +135,28 @@ export const getExpertTaskRequestsByEmail = async (expertEmail, limitCount = 50)
     console.error('Error getting expert task requests by email:', error);
     throw new Error('Failed to load expert tasks.');
   }
+};
+
+/**
+ * Subscribe to expert tasks by email in realtime
+ */
+export const subscribeExpertTaskRequestsByEmail = (expertEmail, callback, limitCount = 50) => {
+  const q = query(
+    collection(db, 'taskRequests'),
+    where('expertEmail', '==', expertEmail),
+    orderBy('createdAt', 'desc'),
+    limit(limitCount)
+  );
+  return onSnapshot(q, (snapshot) => {
+    const tasks = snapshot.docs.map(d => ({
+      id: d.id,
+      ...d.data(),
+      createdAt: d.data().createdAt?.toDate(),
+      updatedAt: d.data().updatedAt?.toDate(),
+      completedAt: d.data().completedAt?.toDate()
+    }));
+    callback(tasks);
+  });
 };
 
 /**
@@ -252,6 +297,30 @@ export const getTaskRequest = async (taskId) => {
 };
 
 /**
+ * Subscribe to a single task by ID (realtime)
+ * @param {string} taskId
+ * @param {(task: object|null) => void} callback
+ * @returns {() => void} unsubscribe
+ */
+export const subscribeTaskRequest = (taskId, callback) => {
+  const taskRef = doc(db, 'taskRequests', taskId);
+  return onSnapshot(taskRef, (taskDoc) => {
+    if (!taskDoc.exists()) {
+      callback(null);
+      return;
+    }
+    const data = taskDoc.data();
+    callback({
+      id: taskDoc.id,
+      ...data,
+      createdAt: data.createdAt?.toDate(),
+      updatedAt: data.updatedAt?.toDate(),
+      completedAt: data.completedAt?.toDate()
+    });
+  });
+};
+
+/**
  * Mark task as viewed by expert
  * @param {string} taskId - Task document ID
  * @returns {Promise<void>}
@@ -336,6 +405,27 @@ export const getAllTaskRequests = async (limitCount = 100) => {
   }
 };
 
+/**
+ * Subscribe to all tasks (admin) in realtime
+ */
+export const subscribeAllTaskRequests = (callback, limitCount = 100) => {
+  const q = query(
+    collection(db, 'taskRequests'),
+    orderBy('createdAt', 'desc'),
+    limit(limitCount)
+  );
+  return onSnapshot(q, (snapshot) => {
+    const tasks = snapshot.docs.map(d => ({
+      id: d.id,
+      ...d.data(),
+      createdAt: d.data().createdAt?.toDate(),
+      updatedAt: d.data().updatedAt?.toDate(),
+      completedAt: d.data().completedAt?.toDate()
+    }));
+    callback(tasks);
+  });
+};
+
 export default {
   saveTaskRequest,
   getUserTaskRequests,
@@ -348,3 +438,35 @@ export default {
   addTaskEstimate,
   getAllTaskRequests
 }; 
+
+/**
+ * Mark messages as read in a task for a given reader role.
+ * This will set read=true for messages sent by the opposite role.
+ * @param {string} taskId
+ * @param {('expert'|'customer')} readerRole
+ */
+export const markMessagesAsRead = async (taskId, readerRole) => {
+  try {
+    const taskRef = doc(db, 'taskRequests', taskId);
+    const taskDoc = await getDoc(taskRef);
+    if (!taskDoc.exists()) return;
+
+    const data = taskDoc.data();
+    const messages = Array.isArray(data.messages) ? data.messages : [];
+    const updated = messages.map(m => {
+      const isFromOpposite = readerRole === 'expert' ? m.sender === 'customer' : m.sender === 'expert';
+      if (isFromOpposite && m.read === false) {
+        return { ...m, read: true };
+      }
+      return m;
+    });
+
+    // Only write if something changed
+    const changed = updated.some((m, i) => m !== messages[i]);
+    if (!changed) return;
+
+    await updateDoc(taskRef, { messages: updated, updatedAt: serverTimestamp() });
+  } catch (error) {
+    console.error('Failed to mark messages read:', error);
+  }
+};

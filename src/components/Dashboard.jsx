@@ -1,35 +1,95 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { motion } from 'framer-motion';
-import { Edit, Package, MessageSquare, Users } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Edit, Package, MessageSquare, FileText, Calculator, ChevronDown, ChevronRight, BellRing, Loader2 } from 'lucide-react';
+import { useParams } from 'react-router-dom';
 import RapidWorksHeader from './new_landing_page_header';
 import BrandingKits from './BrandingKits';
-import UserAvatar from './UserAvatar';
 import ProfileEditModal from './ProfileEditModal';
 import TaskList from './TaskList';
-import { isExpert, getExpertByEmail, isAdmin } from '../utils/expertService';
+import SignedAgreements from './SignedAgreements';
+import Invoicing from './Invoicing';
+import { isExpert, getExpertByEmail, isAdmin, getAllExperts } from '../utils/expertService';
+import { functions } from '../firebase/config';
+import { httpsCallable } from 'firebase/functions';
+import { requestNotificationPermission } from '../firebase/messaging';
 
 
 
-const accent = "#7C3BEC";
+// const accent = "#7C3BEC";
 
 const Dashboard = () => {
   const { currentUser } = useAuth();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { kitId } = useParams();
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('branding');
+  const [selectedTaskId, setSelectedTaskId] = useState(null);
+  const [expertTasksExpanded, setExpertTasksExpanded] = useState(false);
+  const [selectedExpert, setSelectedExpert] = useState(null);
+  const [unreadTotal, setUnreadTotal] = useState(0);
+  const [testingPush, setTestingPush] = useState(false);
+  const [subscribing, setSubscribing] = useState(false);
   
   // Check if current user is an expert or admin
   const userIsExpert = currentUser ? isExpert(currentUser.email) : false;
   const userIsAdmin = currentUser ? isAdmin(currentUser.email) : false;
   const expertInfo = userIsExpert ? getExpertByEmail(currentUser.email) : null;
+  
+  // Check if user can access signed agreements (rapid-works.io emails or experts)
+  const canAccessSignedAgreements = currentUser && (
+    currentUser.email?.endsWith('@rapid-works.io') || 
+    userIsExpert || 
+    userIsAdmin
+  );
+  
+  // Check if user can access invoicing (rapid-works.io emails only)
+  const canAccessInvoicing = currentUser && currentUser.email?.endsWith('@rapid-works.io');
+
+  // Handle navigation from invoicing to task chat
+  const handleNavigateToTask = (taskId) => {
+    setSelectedTaskId(taskId);
+    setActiveTab('tasks');
+  };
+
+  const handleSendTestNotifications = async () => {
+    if (!currentUser?.email) {
+      alert('You need to be logged in to test notifications.');
+      return;
+    }
+    try {
+      setTestingPush(true);
+      const triggerBlog = httpsCallable(functions, 'testBlogNotification');
+      const triggerKit = httpsCallable(functions, 'testBrandingKitReady');
+      const kitId = `test-kit-${Date.now()}`;
+      await Promise.all([
+        triggerBlog({}),
+        triggerKit({ kitId, email: currentUser.email })
+      ]);
+      alert('Test notifications triggered (blog + kit). If you do not receive them, verify your browser token under fcmTokens.');
+    } catch (e) {
+      console.error('Failed to trigger test notifications', e);
+      alert(`Failed to trigger notifications: ${e.message || e}`);
+    } finally {
+      setTestingPush(false);
+    }
+  };
+
+  const handleSubscribeThisDevice = async () => {
+    try {
+      setSubscribing(true);
+      await requestNotificationPermission();
+    } catch (e) {
+      console.error('Notification subscription failed', e);
+    } finally {
+      setSubscribing(false);
+    }
+  };
 
 
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="h-screen bg-gray-100 overflow-hidden flex flex-col">
       <RapidWorksHeader />
 
       {/* Sidebar Dashboard Layout - Full width like Slack/Gmail */}
@@ -37,7 +97,7 @@ const Dashboard = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="bg-white shadow-sm overflow-hidden h-[calc(100vh-5rem)] mt-20"
+        className="bg-white overflow-hidden h-[calc(100vh-3rem)] mt-12"
       >
           <div className="flex h-full">
             {/* Left Sidebar */}
@@ -78,11 +138,8 @@ const Dashboard = () => {
                   
                   <div className="flex-1 min-w-0">
                     <h3 className="text-sm font-semibold text-gray-900 truncate">
-                      Welcome back, {currentUser?.displayName?.split(' ')[0] || currentUser?.email?.split('@')[0]}
+                      {currentUser?.displayName?.split(' ')[0] || currentUser?.email?.split('@')[0]}
                     </h3>
-                    <p className="text-xs text-gray-600">
-                      Dashboard
-                    </p>
                   </div>
                 </div>
               </div>
@@ -100,90 +157,185 @@ const Dashboard = () => {
                   <Package className="h-5 w-5" />
                   <div className="flex-1">
                     <div className="font-medium">Branding Kits</div>
-                    <div className={`text-xs ${activeTab === 'branding' ? 'text-purple-100' : 'text-gray-500'}`}>
-                      Create and manage your brand assets
-                    </div>
                   </div>
                 </button>
                 
-                <button
-                  onClick={() => setActiveTab('tasks')}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
-                    activeTab === 'tasks'
-                      ? 'bg-[#7C3BEC] text-white shadow-lg'
-                      : 'text-gray-700 hover:bg-white hover:shadow-md'
-                  }`}
-                >
-                  <MessageSquare className="h-5 w-5" />
-                  <div className="flex-1">
-                    <div className="font-medium flex items-center gap-2">
-                      {userIsExpert ? (userIsAdmin ? 'All Tasks' : 'Expert Tasks') : 'My Requests'}
-                      {userIsExpert && (
-                        <span className={`text-xs px-2 py-0.5 rounded-full ${
-                          activeTab === 'tasks' 
-                            ? 'bg-white/20 text-white' 
-                            : 'bg-[#7C3BEC] text-white'
-                        }`}>
-                          {userIsAdmin ? 'Admin' : 'Expert'}
+                {/* Tasks - Expandable for rapid-works.io users */}
+                 {userIsExpert && currentUser?.email?.endsWith('@rapid-works.io') ? (
+                  <>
+                    <button
+                      onClick={() => {
+                        setExpertTasksExpanded(!expertTasksExpanded);
+                        if (!expertTasksExpanded) {
+                          setActiveTab('tasks');
+                          setSelectedExpert(null);
+                        }
+                      }}
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
+                        activeTab === 'tasks' && !selectedExpert
+                          ? 'bg-[#7C3BEC] text-white shadow-lg'
+                          : 'text-gray-700 hover:bg-white hover:shadow-md'
+                      }`}
+                    >
+                      {expertTasksExpanded ? (
+                        <ChevronDown className="h-4 w-4" />
+                      ) : (
+                        <ChevronRight className="h-4 w-4" />
+                      )}
+                      <MessageSquare className="h-5 w-5" />
+                      <div className="flex-1">
+                        <div className="font-medium">Expert Tasks</div>
+                      </div>
+                      {unreadTotal > 0 && (
+                        <span className="ml-auto inline-flex items-center justify-center text-[10px] font-semibold bg-red-500 text-white rounded-full h-5 px-2">
+                          {unreadTotal}
                         </span>
                       )}
+                    </button>
+                    
+                    {/* Expert Sub-items */}
+                    {expertTasksExpanded && (
+                      <div className="ml-4 mt-2 space-y-1">
+                        {/* All Tasks Option */}
+                        <button
+                          onClick={() => {
+                            setActiveTab('tasks');
+                            setSelectedExpert(null);
+                          }}
+                          className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg text-left transition-all duration-200 text-sm ${
+                            activeTab === 'tasks' && !selectedExpert
+                              ? 'bg-[#7C3BEC] text-white shadow-lg'
+                              : 'text-gray-600 hover:bg-gray-100'
+                          }`}
+                        >
+                          <div className="w-6 h-6 bg-gradient-to-br from-gray-400 to-gray-600 rounded-full flex items-center justify-center">
+                            <MessageSquare className="h-3 w-3 text-white" />
+                          </div>
+                          <span>All Tasks</span>
+                        </button>
+                        
+                        {/* Individual Experts */}
+                        {getAllExperts().map((expert) => (
+                          <button
+                            key={expert.email}
+                            onClick={() => {
+                              setActiveTab('tasks');
+                              setSelectedExpert(expert);
+                            }}
+                            className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg text-left transition-all duration-200 text-sm ${
+                              activeTab === 'tasks' && selectedExpert?.email === expert.email
+                                ? 'bg-[#7C3BEC] text-white shadow-lg'
+                                : 'text-gray-600 hover:bg-gray-100'
+                            }`}
+                          >
+                            <div className="w-6 h-6 bg-gradient-to-br from-[#7C3BEC] to-[#9F7AEA] rounded-full flex items-center justify-center overflow-hidden">
+                              {expert.avatar ? (
+                                <img
+                                  src={expert.avatar}
+                                  alt={expert.name}
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <span className="text-white font-semibold text-xs">
+                                  {expert.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                                </span>
+                              )}
+                            </div>
+                            <span>{expert.name}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <button
+                    onClick={() => setActiveTab('tasks')}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
+                      activeTab === 'tasks'
+                        ? 'bg-[#7C3BEC] text-white shadow-lg'
+                        : 'text-gray-700 hover:bg-white hover:shadow-md'
+                    }`}
+                  >
+                    <MessageSquare className="h-5 w-5" />
+                    <div className="flex-1">
+                      <div className="font-medium">
+                        {userIsExpert ? 'Expert Tasks' : 'My Requests'}
+                      </div>
                     </div>
-                    <div className={`text-xs ${activeTab === 'tasks' ? 'text-purple-100' : 'text-gray-500'}`}>
-                      {userIsExpert 
-                        ? (userIsAdmin 
-                          ? 'Manage all expert tasks and team communications' 
-                          : 'Manage assigned tasks and communicate with clients')
-                        : 'Track requests and chat with experts'}
+                    {userIsExpert && unreadTotal > 0 && (
+                      <span className="ml-auto inline-flex items-center justify-center text-[10px] font-semibold bg-red-500 text-white rounded-full h-5 px-2">
+                        {unreadTotal}
+                      </span>
+                    )}
+                  </button>
+                )}
+
+                {canAccessSignedAgreements && (
+                  <button
+                    onClick={() => setActiveTab('agreements')}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
+                      activeTab === 'agreements'
+                        ? 'bg-[#7C3BEC] text-white shadow-lg'
+                        : 'text-gray-700 hover:bg-white hover:shadow-md'
+                    }`}
+                  >
+                    <FileText className="h-5 w-5" />
+                    <div className="flex-1">
+                      <div className="font-medium">Agreements</div>
                     </div>
-                  </div>
-                </button>
+                  </button>
+                )}
+
+                {canAccessInvoicing && (
+                  <button
+                    onClick={() => setActiveTab('invoicing')}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
+                      activeTab === 'invoicing'
+                        ? 'bg-[#7C3BEC] text-white shadow-lg'
+                        : 'text-gray-700 hover:bg-white hover:shadow-md'
+                    }`}
+                  >
+                    <Calculator className="h-5 w-5" />
+                    <div className="flex-1">
+                      <div className="font-medium">Invoicing</div>
+                    </div>
+                  </button>
+                )}
 
               </nav>
             </div>
 
             {/* Right Content Area */}
             <div className="flex-1 flex flex-col">
-              {/* Content Header */}
-              <div className="px-8 py-6 border-b border-gray-200 bg-white">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-900">
-                      {activeTab === 'branding' ? 'Branding Kits' : userIsExpert ? (userIsAdmin ? 'All Tasks' : 'Expert Tasks') : 'My Requests'}
-                    </h2>
-                    <p className="text-gray-600 mt-1">
-                      {activeTab === 'branding' 
-                        ? 'Design and customize your brand identity'
-                        : userIsExpert
-                          ? (userIsAdmin 
-                            ? 'Manage all expert tasks and team communications' 
-                            : 'Manage your assigned tasks and client communications')
-                          : 'Track your task requests and communicate with experts'
-                      }
-                    </p>
-                  </div>
 
-                  {/* Quick Actions */}
-                  <div className="flex items-center gap-3">
-                    {activeTab === 'tasks' && userIsExpert && (
-                      <div className="text-right">
-                        <div className="text-sm font-medium text-gray-900">
-                          {userIsAdmin ? 'Admin Mode' : 'Expert Mode'}
-                        </div>
-                        <div className="text-xs text-gray-500">{expertInfo?.role}</div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
 
               {/* Content Area */}
-              <div className="flex-1 p-8 bg-gray-50 overflow-y-auto">
+              <div className="flex-1 p-3 bg-gray-50 overflow-y-auto h-full">
+                <div className="flex items-center justify-end gap-2 mb-3">
+                  <button
+                    onClick={handleSubscribeThisDevice}
+                    disabled={subscribing}
+                    className={`inline-flex items-center gap-2 px-3 py-2 rounded-md text-white ${subscribing ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'}`}
+                    title="Enable/refresh notifications on this device"
+                  >
+                    {subscribing ? <Loader2 className="h-4 w-4 animate-spin" /> : <BellRing className="h-4 w-4" />}
+                    <span>Enable Notifications</span>
+                  </button>
+                  <button
+                    onClick={handleSendTestNotifications}
+                    disabled={testingPush}
+                    className={`inline-flex items-center gap-2 px-3 py-2 rounded-md text-white ${testingPush ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}
+                    title="Send test notifications to your device (blog + kit)"
+                  >
+                    {testingPush ? <Loader2 className="h-4 w-4 animate-spin" /> : <BellRing className="h-4 w-4" />}
+                    <span>Send Test Notifications</span>
+                  </button>
+                </div>
                 {activeTab === 'branding' && (
                   <motion.div
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="bg-white rounded-lg shadow-sm border border-gray-200"
                   >
                     <BrandingKits initialKitId={kitId} />
                   </motion.div>
@@ -191,15 +343,43 @@ const Dashboard = () => {
 
                 {activeTab === 'tasks' && (
                   <motion.div
+                    key="tasks-tab"
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+                    className="bg-white rounded-lg border border-gray-200 h-full p-0 flex flex-col"
                   >
                     <TaskList 
+                      key={`task-list-${currentUser?.uid}-${selectedExpert?.email || 'all'}`}
                       userRole={userIsExpert ? 'expert' : 'customer'}
                       expertInfo={expertInfo}
+                      initialSelectedTaskId={selectedTaskId}
+                      onTaskSelected={() => setSelectedTaskId(null)}
+                      selectedExpert={selectedExpert}
+                      onUnreadTotalChange={setUnreadTotal}
                     />
+                  </motion.div>
+                )}
+
+                {activeTab === 'agreements' && canAccessSignedAgreements && (
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="bg-white rounded-lg border border-gray-200 p-6"
+                  >
+                    <SignedAgreements />
+                  </motion.div>
+                )}
+
+                {activeTab === 'invoicing' && canAccessInvoicing && (
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="bg-white rounded-lg border border-gray-200 p-6"
+                  >
+                    <Invoicing onNavigateToTask={handleNavigateToTask} />
                   </motion.div>
                 )}
               </div>

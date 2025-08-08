@@ -6,11 +6,13 @@ import AssetPreview from "./AssetPreview";
 import { brandingKits } from "../data/brandingKits";
 import RapidWorksHeader from "./new_landing_page_header";
 import { Link, useSearchParams } from "react-router-dom";
+import LoginModal from "./LoginModal";
 
 const PublicBrandingKits = () => {
   const [selectedKit, setSelectedKit] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [copied, setCopied] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   // Check URL parameter on component mount and update page title
   useEffect(() => {
@@ -88,8 +90,12 @@ const PublicBrandingKits = () => {
               <Button asChild size="lg" className="bg-white text-purple-600 hover:bg-gray-100 font-semibold">
                 <Link to="/branding">Get Your Branding Kit</Link>
               </Button>
-              <Button asChild size="lg" className="bg-purple-500 text-white hover:bg-purple-400 border-0 font-semibold">
-                <Link to="/signup">Sign Up to Access</Link>
+              <Button 
+                size="lg" 
+                className="bg-purple-500 text-white hover:bg-purple-400 border-0 font-semibold"
+                onClick={() => setShowLoginModal(true)}
+              >
+                Sign Up to Access
               </Button>
             </div>
           </div>
@@ -194,8 +200,12 @@ const PublicBrandingKits = () => {
                   <Button asChild size="lg" className="bg-purple-600 hover:bg-purple-700 text-white font-semibold">
                     <Link to="/branding">Order Your Branding Kit</Link>
                   </Button>
-                  <Button asChild size="lg" className="bg-purple-500 hover:bg-purple-400 text-white font-semibold">
-                    <Link to="/signup">Sign Up for Access</Link>
+                  <Button 
+                    size="lg" 
+                    className="bg-purple-500 hover:bg-purple-400 text-white font-semibold"
+                    onClick={() => setShowLoginModal(true)}
+                  >
+                    Sign Up for Access
                   </Button>
                 </div>
               </div>
@@ -203,6 +213,15 @@ const PublicBrandingKits = () => {
           )}
         </div>
       </div>
+      
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        onLoginSuccess={(user) => {
+          setShowLoginModal(false);
+        }}
+        context="branding-kits"
+      />
     </div>
   );
 };

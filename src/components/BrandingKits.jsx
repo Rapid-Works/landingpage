@@ -193,8 +193,8 @@ const BrandingKits = ({ initialKitId }) => {
   // Main render
   return (
     <div className="space-y-8">
-      {/* Tab Switcher */}
-      <div className="flex gap-4 mb-8">
+      {/* Tab Switcher aligned with avatar */}
+      <div className="flex gap-4 mb-8 pt-6 px-6">
         <Button variant={tab === "my" ? "default" : "outline"} onClick={() => { setTab("my"); setSelectedKit(null); }}>
           My Kits
         </Button>
@@ -205,46 +205,84 @@ const BrandingKits = ({ initialKitId }) => {
 
       {/* My Kits Tab */}
       {tab === "my" && (
-        loadingMyKits ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-12">
-            <SkeletonCard />
-            <SkeletonCard />
-            <SkeletonCard />
-          </div>
-        ) : myKits.length === 0 ? (
-          <div className="text-center text-gray-500 py-12">
-            You don't have any kits yet.<br />
-            <span className="text-blue-600 cursor-pointer underline" onClick={() => setTab("all")}>Explore kits</span> or contact admin to get started!
-          </div>
-        ) : selectedKit ? (
-          // Show loading for specific kit while myKits loads, or render kit if found
-          (() => {
-            const foundKit = myKits.find(k => k.id === selectedKit);
-            if (foundKit) {
-              return renderKit(foundKit, true);
-            } else if (loadingMyKits) {
-              // Still loading kits, show loading state for selected kit
-              return (
-                <div className="flex items-center justify-center py-12">
-                  <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-                    <p className="text-gray-600">Loading your branding kit...</p>
+        <div className="px-6">
+          {loadingMyKits ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-12">
+              <SkeletonCard />
+              <SkeletonCard />
+              <SkeletonCard />
+            </div>
+          ) : myKits.length === 0 ? (
+            <div className="text-center text-gray-500 py-12">
+              You don't have any kits yet.<br />
+              <span className="text-blue-600 cursor-pointer underline" onClick={() => setTab("all")}>Explore kits</span> or contact admin to get started!
+            </div>
+          ) : selectedKit ? (
+            // Show loading for specific kit while myKits loads, or render kit if found
+            (() => {
+              const foundKit = myKits.find(k => k.id === selectedKit);
+              if (foundKit) {
+                return renderKit(foundKit, true);
+              } else if (loadingMyKits) {
+                // Still loading kits, show loading state for selected kit
+                return (
+                  <div className="flex items-center justify-center py-12">
+                    <div className="text-center">
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+                      <p className="text-gray-600">Loading your branding kit...</p>
+                    </div>
                   </div>
-                </div>
-              );
-            } else {
-              // Kits loaded but selected kit not found, fall back to grid
-              console.log(`⚠️ Selected kit "${selectedKit}" not found in user's kits. Available kits:`, myKits.map(k => k.id));
-              setSelectedKit(null); // Reset selection
-              return null; // Will re-render and show grid
-            }
-          })()
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {myKits.map((kit) => {
-              const kitData = brandingKits.find(k => k.id.toLowerCase() === kit.id.toLowerCase());
-              if (!kitData) return null;
-              return (
+                );
+              } else {
+                // Kits loaded but selected kit not found, fall back to grid
+                console.log(`⚠️ Selected kit "${selectedKit}" not found in user's kits. Available kits:`, myKits.map(k => k.id));
+                setSelectedKit(null); // Reset selection
+                return null; // Will re-render and show grid
+              }
+            })()
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {myKits.map((kit) => {
+                const kitData = brandingKits.find(k => k.id.toLowerCase() === kit.id.toLowerCase());
+                if (!kitData) return null;
+                return (
+                  <div
+                    key={kit.id}
+                    onClick={() => setSelectedKit(kit.id)}
+                    className="group block overflow-hidden rounded-lg border bg-white shadow-sm transition-all hover:shadow-md cursor-pointer"
+                  >
+                    <div className="aspect-video overflow-hidden bg-gray-100">
+                      <img
+                        src={kitData.thumbnail || "/placeholder.svg"}
+                        alt={kitData.name}
+                        className="h-full w-full object-contain transition-transform group-hover:scale-105"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-semibold text-lg text-gray-900 group-hover:text-blue-600 transition-colors">
+                        {kitData.name}
+                      </h3>
+                      <div className="mt-4 flex items-center text-sm text-gray-500">
+                        <span>{kitData.assets.length} assets</span>
+                        <ArrowRight className="ml-auto h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Explore Kits Tab */}
+      {tab === "all" && !selectedKit && (
+        <div className="px-6">
+          {brandingKits.length === 0 ? (
+            <div className="text-center text-gray-500 py-12">No kits available to explore at the moment.</div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {brandingKits.map((kit) => (
                 <div
                   key={kit.id}
                   onClick={() => setSelectedKit(kit.id)}
@@ -252,61 +290,31 @@ const BrandingKits = ({ initialKitId }) => {
                 >
                   <div className="aspect-video overflow-hidden bg-gray-100">
                     <img
-                      src={kitData.thumbnail || "/placeholder.svg"}
-                      alt={kitData.name}
+                      src={kit.thumbnail || "/placeholder.svg"}
+                      alt={kit.name}
                       className="h-full w-full object-contain transition-transform group-hover:scale-105"
                     />
                   </div>
                   <div className="p-4">
                     <h3 className="font-semibold text-lg text-gray-900 group-hover:text-blue-600 transition-colors">
-                      {kitData.name}
+                      {kit.name}
                     </h3>
                     <div className="mt-4 flex items-center text-sm text-gray-500">
-                      <span>{kitData.assets.length} assets</span>
+                      <span>{kit.assets.length} assets</span>
                       <ArrowRight className="ml-auto h-4 w-4 group-hover:translate-x-1 transition-transform" />
                     </div>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        )
+              ))}
+            </div>
+          )}
+        </div>
       )}
-
-      {/* Explore Kits Tab */}
-      {tab === "all" && !selectedKit && (
-        brandingKits.length === 0 ? (
-          <div className="text-center text-gray-500 py-12">No kits available to explore at the moment.</div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {brandingKits.map((kit) => (
-              <div
-                key={kit.id}
-                onClick={() => setSelectedKit(kit.id)}
-                className="group block overflow-hidden rounded-lg border bg-white shadow-sm transition-all hover:shadow-md cursor-pointer"
-              >
-                <div className="aspect-video overflow-hidden bg-gray-100">
-                  <img
-                    src={kit.thumbnail || "/placeholder.svg"}
-                    alt={kit.name}
-                    className="h-full w-full object-contain transition-transform group-hover:scale-105"
-                  />
-                </div>
-                <div className="p-4">
-                  <h3 className="font-semibold text-lg text-gray-900 group-hover:text-blue-600 transition-colors">
-                    {kit.name}
-                  </h3>
-                  <div className="mt-4 flex items-center text-sm text-gray-500">
-                    <span>{kit.assets.length} assets</span>
-                    <ArrowRight className="ml-auto h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )
+      {tab === "all" && selectedKit && (
+        <div className="px-6">
+          {renderKit(brandingKits.find(k => k.id === selectedKit))}
+        </div>
       )}
-      {tab === "all" && selectedKit && renderKit(brandingKits.find(k => k.id === selectedKit))}
     </div>
   );
 };
