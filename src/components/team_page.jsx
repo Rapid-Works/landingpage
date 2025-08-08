@@ -4,20 +4,13 @@
 import React from "react"
 import { useState, useEffect, useContext, useRef } from "react"
 import {
-  Rocket,
   ArrowRight,
   ChevronDown,
   Calendar,
   Users,
   DollarSign,
   Clock,
-  Check,
-  ChevronRight,
-  Menu,
-  X,
   Star,
-  Shield,
-  Zap,
   Code,
   Megaphone,
   Palette,
@@ -29,7 +22,6 @@ import {
   Info,
   BarChart,
   Bot,
-  GitMerge,
   Bug,
   Database,
   Infinity
@@ -45,7 +37,7 @@ import ExpertRequestModal from "./ExpertRequestModal" // <-- Import the new moda
 import NewTaskModal from "./NewTaskModal" // <-- Import the task request modal
 import LoginModal from "./LoginModal" // <-- Import the login modal
 import FrameworkAgreementModal from "./FrameworkAgreementModal" // <-- Import the framework agreement modal
-import { submitExpertRequestToAirtable } from '../utils/airtableService' // <-- Import the Airtable function
+// import { submitExpertRequestToAirtable } from '../utils/airtableService' // <-- Import the Airtable function
 
 // Import team profile images
 import SamuelProfile from "../images/SamuelProfile.jpg"
@@ -281,7 +273,7 @@ const TeamPage = () => {
   const [selectedExpertName, setSelectedExpertName] = useState(''); // <-- State for selected expert name
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); // <-- State for login modal visibility
   const [isFrameworkModalOpen, setIsFrameworkModalOpen] = useState(false); // <-- State for framework agreement modal visibility
-  const [hasSignedFramework, setHasSignedFramework] = useState(false); // <-- Track if user has signed framework agreement
+  // const [hasSignedFramework, setHasSignedFramework] = useState(false); // <-- Track if user has signed framework agreement
 
   useEffect(() => {
     if (context) {
@@ -394,10 +386,10 @@ const TeamPage = () => {
         subtitle: "Dein Vorteil mit Rapid Experts – Flexibilität, Effizienz und null Risiko",
         items: [
           { text: "Keine Vorauskosten", description: "Beginne die Zusammenarbeit mit unseren Experten ohne anfängliche Investition" },
-          { text: "Bis zu 70% günstiger mit Förderungen", description: "Spare erheblich mit unseren Rapid Financing Förderlösungen", linkText: "Erfahre mehr über Förderungen" },
-          { text: "Erste Stunde kostenlos", description: "Teste unsere Dienstleistungen ohne Risiko oder Verpflichtung" },
-          { text: "Transparente Kommunikation", description: "Sie erhalten klare Informationen über den Projektstatus und direkte Kommunikation mit Ihrem persönlichen Experten." },
-          { text: "Stundenweise bezahlen", description: "Flexibles Zahlungsmodell - bezahle nur für die Zeit, die du benötigst" },
+          { text: "Bis zu 80% günstiger mit Förderungen", description: "Spare erheblich mit unseren Rapid Financing Förderlösungen", linkText: "Erfahre mehr über Förderungen" },
+          { text: "Kostenlose Fixpreisanfrage", description: "Lass uns einfach deine Aufgabe wissen, wir erstellen dir ein kostenfreies Fixpreisangebot." },
+          { text: "Transparente Kommunikation", description: "Du erhältst klare Informationen über den Projektstatus und direkte Kommunikation mit deinen Experten." },
+          { text: "Stundenweise bezahlen", description: "Du erhältst von uns für jede Aufgabe immer ein Fixpreisangebot und zahlst erst nach Durchführung." },
           { text: "Immer verfügbar", description: "Unsere Experten sind bereit, innerhalb eines Tages zu starten" },
         ],
         discoverMore: "Entdecke weitere Vorteile",
@@ -565,7 +557,6 @@ const TeamPage = () => {
   // Function to handle framework agreement completion
   const handleFrameworkSigned = () => {
     // Firebase tracking is now handled in the FrameworkAgreementModal
-    setHasSignedFramework(true);
     setIsFrameworkModalOpen(false);
     setIsTaskModalOpen(true);
   };

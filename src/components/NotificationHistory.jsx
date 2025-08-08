@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, Check, Clock, X, Trash2, CheckCheck } from 'lucide-react';
+import { Bell, Check, Clock, X, CheckCheck } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../firebase/config';
 import { 
@@ -11,7 +11,6 @@ import {
   onSnapshot, 
   doc, 
   updateDoc, 
-  deleteDoc,
   writeBatch 
 } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
@@ -120,34 +119,7 @@ const NotificationHistory = ({ isOpen, onClose }) => {
     }
   };
 
-  // Mark all notifications as unread
-  const markAllAsUnread = async () => {
-    try {
-      const batch = writeBatch(db);
-      const readNotifications = notifications.filter(n => n.read);
-      
-      readNotifications.forEach((notification) => {
-        const notificationRef = doc(db, 'notificationHistory', notification.id);
-        batch.update(notificationRef, {
-          read: false,
-          readAt: null
-        });
-      });
-
-      await batch.commit();
-    } catch (error) {
-      console.error('Error marking all notifications as unread:', error);
-    }
-  };
-
-  // Delete notification
-  const deleteNotification = async (notificationId) => {
-    try {
-      await deleteDoc(doc(db, 'notificationHistory', notificationId));
-    } catch (error) {
-      console.error('Error deleting notification:', error);
-    }
-  };
+  // Removed bulk mark-unread and deletion functionality per requirements
 
   // Handle notification click
   const handleNotificationClick = async (notification) => {
@@ -246,15 +218,7 @@ const NotificationHistory = ({ isOpen, onClose }) => {
                     Mark all read
                   </button>
                 )}
-                {readCount > 0 && (
-                  <button
-                    onClick={markAllAsUnread}
-                    className="flex items-center gap-2 px-3 py-2 text-sm bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-                  >
-                    <Bell className="h-4 w-4" />
-                    Mark all unread
-                  </button>
-                )}
+                {/* Removed 'Mark all unread' button */}
                 <button
                   onClick={onClose}
                   className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
@@ -347,16 +311,7 @@ const NotificationHistory = ({ isOpen, onClose }) => {
                                     <Check className="h-4 w-4" />
                                   </button>
                                 )}
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    deleteNotification(notification.id);
-                                  }}
-                                  className="p-1 text-gray-400 hover:text-red-500 rounded"
-                                  title="Delete"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </button>
+                                {/* Delete disabled per requirements */}
                               </div>
                             </div>
                             

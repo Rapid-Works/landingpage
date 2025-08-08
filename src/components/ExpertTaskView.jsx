@@ -24,6 +24,96 @@ import { addTaskMessage, updateTaskStatus, getTaskRequest, markMessagesAsRead } 
 import { formatFileSize } from '../utils/taskFileService';
 import { storage } from '../firebase/config';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+import FrameworkAgreementModal from './FrameworkAgreementModal';
+import { checkFrameworkAgreementStatus, markFrameworkSignatureValidated, flagFrameworkSignatureIncorrect } from '../utils/frameworkAgreementService';
+
+function EstimateModalContent({ estimate, setEstimate, currentTaskData, onClose, onSubmit }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
+        <div className="bg-gradient-to-r from-[#7C3BEC] to-[#9F7AEA] text-white p-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <h3 className="text-2xl font-bold mb-1">
+                {currentTaskData?.estimateData ? 'Edit Price Estimate' : 'Create Price Estimate'}
+              </h3>
+              <p className="text-purple-100">
+                {currentTaskData?.estimateData ? 'Update your estimate' : `Detailed breakdown for ${currentTaskData?.userName || currentTaskData?.userEmail || ''}`}
+              </p>
+            </div>
+            <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-lg transition-colors">
+              <X className="h-6 w-6 text-white" />
+            </button>
+          </div>
+        </div>
+        <div className="p-8">
+          <div className="max-w-lg mx-auto space-y-8">
+            <div className="text-center space-y-6">
+              <div className="flex items-center justify-center gap-8">
+                <div className="text-center">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Hours</label>
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    pattern="[0-9]*[.,]?[0-9]*"
+                    value={estimate.hours}
+                    onChange={(e) => setEstimate(prev => ({ ...prev, hours: e.target.value }))}
+                    className="w-24 md:w-28 text-4xl leading-tight font-bold text-center border-0 border-b-2 border-gray-300 focus:border-[#7C3BEC] focus:outline-none bg-transparent py-2"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">hours</p>
+                </div>
+                <div className="text-3xl font-bold text-gray-400">-</div>
+                <div className="text-center">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Price</label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      value={estimate.price}
+                      onChange={(e) => setEstimate(prev => ({ ...prev, price: e.target.value }))}
+                      className="w-32 md:w-36 text-4xl leading-tight font-bold text-center border-0 border-b-2 border-gray-300 focus:border-[#7C3BEC] focus:outline-none bg-transparent py-2 pl-8"
+                    />
+                    <span className="absolute left-0 top-1/2 -translate-y-1/2 text-4xl font-bold text-gray-600">€</span>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">total</p>
+                </div>
+              </div>
+              <div className="text-center mt-2">
+                <span className="inline-flex items-center px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-sm font-medium">
+                  Rate: €{parseFloat(estimate.hours) > 0 ? Math.round(parseFloat(estimate.price || '0') / parseFloat(estimate.hours || '0')) : 0}/hour
+                </span>
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-3 text-center">Delivery Time</label>
+              <select
+                value={estimate.deadline}
+                onChange={(e) => setEstimate(prev => ({ ...prev, deadline: e.target.value }))}
+                className="w-full max-w-sm mx-auto px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7C3BEC]/50 focus:border-[#7C3BEC] text-center font-medium bg-white block"
+              >
+                <option value="1 business day">1 business day</option>
+                <option value="2 business days">2 business days</option>
+                <option value="3 business days">3 business days</option>
+                <option value="1 week">1 week</option>
+                <option value="2 weeks">2 weeks</option>
+                <option value="1 month">1 month</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div className="bg-gray-50 border-t border-gray-200 px-6 py-4 rounded-b-2xl">
+          <div className="flex gap-3">
+            <button onClick={onClose} className="flex-1 px-6 py-3 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 rounded-xl font-medium transition-colors">Cancel</button>
+            <button onClick={onSubmit} className="flex-1 px-6 py-3 bg-gradient-to-r from-[#7C3BEC] to-[#9F7AEA] hover:shadow-lg text-white rounded-xl font-medium transition-all duration-200 transform hover:scale-[1.02]">
+              {currentTaskData?.estimateData ? 'Update Estimate' : 'Send Estimate to Client'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 const ExpertTaskView = ({ taskData, onBack, viewOnly = false }) => {
   const { currentUser } = useAuth();
@@ -35,9 +125,16 @@ const ExpertTaskView = ({ taskData, onBack, viewOnly = false }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [showFileModal, setShowFileModal] = useState(false);
   const [uploadingFile, setUploadingFile] = useState(false);
+  const [expertAgreementRequired, setExpertAgreementRequired] = useState(false);
+  const [expertAgreementModalOpen, setExpertAgreementModalOpen] = useState(false);
+  const [customerSignatureGate, setCustomerSignatureGate] = useState({
+    needsValidation: false,
+    documentUrl: null,
+    infoText: ''
+  });
   const [estimate, setEstimate] = useState({
-    hours: 8,
-    price: 320,
+    hours: '8',
+    price: '320',
     deadline: '3 business days'
   });
   const fileInputRef = useRef(null);
@@ -77,15 +174,51 @@ const ExpertTaskView = ({ taskData, onBack, viewOnly = false }) => {
       markMessagesAsRead(taskData.id, 'expert');
     }
     
-    // If there's existing estimate data, populate the estimate form
-    if (taskData?.estimateData) {
+    // Initialize estimate only when modal is not open, to avoid input focus loss on live updates
+    if (taskData?.estimateData && !showEstimateModal) {
       setEstimate({
-        hours: taskData.estimateData.hours || 8,
-        price: taskData.estimateData.price || 320,
+        hours: String(taskData.estimateData.hours || 8),
+        price: String(taskData.estimateData.price || 320),
         deadline: taskData.estimateData.deadline || '3 business days'
       });
     }
-  }, [taskData]);
+
+    // Gate checks
+    (async () => {
+      // Expert must have accepted framework agreement
+      if (currentUser?.uid) {
+        try {
+          const expertStatus = await checkFrameworkAgreementStatus(currentUser.uid);
+          if (!expertStatus.signed) {
+            setExpertAgreementRequired(true);
+            setExpertAgreementModalOpen(true);
+          } else {
+            setExpertAgreementRequired(false);
+          }
+        } catch (e) {
+          // Fail closed: require agreement
+          setExpertAgreementRequired(true);
+        }
+      }
+      // Customer signed but not validated yet
+      if (taskData?.userId) {
+        try {
+          const customerStatus = await checkFrameworkAgreementStatus(taskData.userId);
+          if (customerStatus.signed && !customerStatus.signatureValidated) {
+            setCustomerSignatureGate({
+              needsValidation: true,
+              documentUrl: customerStatus.documentUrl || null,
+              infoText: 'This is the first Request of this customer after signing his Framework Agreement. You must now manually check his signature in the document.'
+            });
+          } else {
+            setCustomerSignatureGate(prev => ({ ...prev, needsValidation: false }));
+          }
+        } catch (e) {
+          // Ignore
+        }
+      }
+    })();
+  }, [taskData, showEstimateModal]);
 
   // Only auto-scroll when new messages are added, not on initial load
   const [initialLoad, setInitialLoad] = useState(true);
@@ -439,113 +572,14 @@ const ExpertTaskView = ({ taskData, onBack, viewOnly = false }) => {
 
   const EstimateModal = React.memo(() => {
     if (!showEstimateModal) return null;
-
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm p-4">
-        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
-          {/* Header */}
-          <div className="bg-gradient-to-r from-[#7C3BEC] to-[#9F7AEA] text-white p-6">
-            <div className="flex justify-between items-center">
-              <div>
-                <h3 className="text-2xl font-bold mb-1">
-                  {currentTaskData?.estimateData ? 'Edit Price Estimate' : 'Create Price Estimate'}
-                </h3>
-                <p className="text-purple-100">
-                  {currentTaskData?.estimateData ? 'Update your ' : 'Detailed breakdown for '}
-                  {currentTaskData?.estimateData ? 'estimate' : (currentTaskData.userName || currentTaskData.userEmail)}
-                </p>
-              </div>
-              <button
-                onClick={() => setShowEstimateModal(false)}
-                className="p-2 hover:bg-white/20 rounded-lg transition-colors"
-              >
-                <X className="h-6 w-6 text-white" />
-              </button>
-            </div>
-          </div>
-
-          <div className="p-8">
-            {/* Simple Time and Price Form */}
-            <div className="max-w-lg mx-auto space-y-8">
-              {/* Hours and Price */}
-              <div className="text-center space-y-6">
-                <div className="flex items-center justify-center gap-6">
-                  {/* Hours Input */}
-                  <div className="text-center">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Hours</label>
-                    <input
-                      type="number"
-                      value={estimate.hours}
-                      onChange={(e) => setEstimate(prev => ({ ...prev, hours: parseFloat(e.target.value) || 0 }))}
-                      className="w-20 text-3xl font-bold text-center border-0 border-b-2 border-gray-300 focus:border-[#7C3BEC] focus:outline-none bg-transparent"
-                    />
-                    <p className="text-xs text-gray-500 mt-1">hours</p>
-                  </div>
-
-                  <div className="text-3xl font-bold text-gray-400">-</div>
-
-                  {/* Price Input */}
-                  <div className="text-center">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Price</label>
-                    <div className="relative">
-                      <input
-                        type="number"
-                        value={estimate.price}
-                        onChange={(e) => setEstimate(prev => ({ ...prev, price: parseFloat(e.target.value) || 0 }))}
-                        className="w-28 text-3xl font-bold text-center border-0 border-b-2 border-gray-300 focus:border-[#7C3BEC] focus:outline-none bg-transparent pl-6"
-                      />
-                      <span className="absolute left-0 top-0 text-3xl font-bold text-gray-600">€</span>
-                    </div>
-                    <p className="text-xs text-gray-500 mt-1">total</p>
-                  </div>
-                </div>
-
-                {/* Rate Calculation Display */}
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <p className="text-sm text-gray-600">
-                    Rate: <span className="font-semibold">€{estimate.hours > 0 ? Math.round(estimate.price / estimate.hours) : 0}/hour</span>
-                  </p>
-                </div>
-              </div>
-
-              {/* Timeline */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3 text-center">Delivery Time</label>
-                <select
-                  value={estimate.deadline}
-                  onChange={(e) => setEstimate(prev => ({ ...prev, deadline: e.target.value }))}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7C3BEC]/50 focus:border-[#7C3BEC] text-center font-medium bg-white"
-                >
-                  <option value="1 business day">1 business day</option>
-                  <option value="2 business days">2 business days</option>
-                  <option value="3 business days">3 business days</option>
-                  <option value="1 week">1 week</option>
-                  <option value="2 weeks">2 weeks</option>
-                  <option value="1 month">1 month</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          {/* Footer */}
-          <div className="bg-gray-50 border-t border-gray-200 px-6 py-4 rounded-b-2xl">
-            <div className="flex gap-3">
-              <button
-                onClick={() => setShowEstimateModal(false)}
-                className="flex-1 px-6 py-3 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 rounded-xl font-medium transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={sendEstimate}
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-[#7C3BEC] to-[#9F7AEA] hover:shadow-lg text-white rounded-xl font-medium transition-all duration-200 transform hover:scale-[1.02]"
-              >
-                {currentTaskData?.estimateData ? 'Update Estimate' : 'Send Estimate to Client'}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <EstimateModalContent
+        estimate={estimate}
+        setEstimate={setEstimate}
+        currentTaskData={currentTaskData}
+        onClose={() => setShowEstimateModal(false)}
+        onSubmit={sendEstimate}
+      />
     );
   });
 
@@ -732,6 +766,64 @@ const ExpertTaskView = ({ taskData, onBack, viewOnly = false }) => {
 
       {/* Messages */}
       <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-6 pb-24 relative">
+        {(expertAgreementRequired || customerSignatureGate.needsValidation) && (
+          <div className="absolute inset-0 z-20 bg-white/70 backdrop-blur-sm flex items-center justify-center p-6">
+            <div className="max-w-xl w-full bg-white border border-gray-200 rounded-2xl shadow-xl p-6">
+              {expertAgreementRequired ? (
+                <div className="space-y-4">
+                  <h3 className="text-xl font-bold text-gray-900">Accept Expert Agreement</h3>
+                  <p className="text-gray-600">Before interacting with tasks, you need to accept your framework agreement.</p>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => setExpertAgreementModalOpen(true)}
+                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+                    >
+                      Open Agreement
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <h3 className="text-xl font-bold text-gray-900">Validate Customer Signature</h3>
+                  <p className="text-gray-700">{customerSignatureGate.infoText}</p>
+                  {customerSignatureGate.documentUrl && (
+                    <a
+                      href={customerSignatureGate.documentUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg"
+                    >
+                      Download Framework Agreement
+                    </a>
+                  )}
+                  <div className="flex gap-3 pt-2">
+                    <button
+                      onClick={async () => {
+                        await markFrameworkSignatureValidated(currentTaskData?.userId, {
+                          validatedByEmail: currentUser?.email,
+                          validatedByName: currentUser?.displayName
+                        });
+                        setCustomerSignatureGate(prev => ({ ...prev, needsValidation: false }));
+                      }}
+                      className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg"
+                    >
+                      Mark as validated
+                    </button>
+                    <button
+                      onClick={async () => {
+                        await flagFrameworkSignatureIncorrect(currentTaskData?.userId);
+                        setCustomerSignatureGate(prev => ({ ...prev, infoText: 'Thanks for checking! Please communicate to the customer and to a responsible coach (if there is none then to Yannick) what is wrong with the signature.' }));
+                      }}
+                      className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg"
+                    >
+                      Something is incorrect
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
         <TaskDetailsSection />
         <div className="space-y-1">
           {messages.map((msg) => (
@@ -755,7 +847,7 @@ const ExpertTaskView = ({ taskData, onBack, viewOnly = false }) => {
         <div className="sticky bottom-0 bg-white border-t border-gray-200 px-6 pt-6 pb-16 backdrop-blur-sm bg-white/95">
           <div className="flex gap-3 mb-4">
             {/* Only show estimate button if task is not accepted/completed */}
-            {!['accepted', 'completed', 'declined'].includes(currentTaskData?.status) && (
+            {!['accepted', 'completed', 'declined'].includes(currentTaskData?.status) && !expertAgreementRequired && !customerSignatureGate.needsValidation && (
               <button
               onClick={() => setShowEstimateModal(true)}
               className="flex items-center gap-2 px-4 py-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg font-medium transition-colors"
@@ -768,8 +860,9 @@ const ExpertTaskView = ({ taskData, onBack, viewOnly = false }) => {
         
         <div className="flex items-end gap-3">
           <button 
-            onClick={triggerFileUpload}
+             onClick={triggerFileUpload}
             className="p-3 hover:bg-gray-100 rounded-xl transition-colors flex-shrink-0 mb-1"
+            disabled={expertAgreementRequired || customerSignatureGate.needsValidation}
           >
             <Paperclip className="h-5 w-5 text-gray-600" />
           </button>
@@ -791,12 +884,12 @@ const ExpertTaskView = ({ taskData, onBack, viewOnly = false }) => {
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
                 placeholder="Type your message..."
-                disabled={sending}
+                disabled={sending || expertAgreementRequired || customerSignatureGate.needsValidation}
                 className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 disabled:opacity-50 bg-gray-50 focus:bg-white transition-colors resize-none"
               />
               <button
                 onClick={handleSendMessage}
-                disabled={!message.trim() || sending}
+                disabled={!message.trim() || sending || expertAgreementRequired || customerSignatureGate.needsValidation}
                 className={`absolute right-2 top-1/2 transform -translate-y-1/2 p-2 rounded-xl font-medium transition-all duration-200 ${
                   message.trim() && !sending
                     ? 'bg-gradient-to-r from-blue-600 to-blue-500 hover:shadow-lg hover:scale-105 text-white'
@@ -870,6 +963,22 @@ const ExpertTaskView = ({ taskData, onBack, viewOnly = false }) => {
       )}
 
       <EstimateModal />
+      {/* Expert Agreement Modal (reuse) */}
+      <FrameworkAgreementModal
+        isOpen={expertAgreementModalOpen}
+        onClose={async () => {
+          setExpertAgreementModalOpen(false);
+          if (currentUser?.uid) {
+            const expertStatus = await checkFrameworkAgreementStatus(currentUser.uid);
+            setExpertAgreementRequired(!expertStatus.signed);
+          }
+        }}
+        onAgreementSigned={async () => {
+          setExpertAgreementRequired(false);
+          setExpertAgreementModalOpen(false);
+        }}
+        userName={currentUser?.displayName || currentUser?.email}
+      />
     </div>
   );
 };
