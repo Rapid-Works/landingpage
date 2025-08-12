@@ -2,13 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   FileText, 
-  Download, 
-  Calendar, 
   CheckCircle, 
   Loader2, 
-  AlertCircle,
-  Eye,
-  ExternalLink
+  AlertCircle
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { getAllSignedAgreements } from '../utils/frameworkAgreementService';
@@ -20,27 +16,7 @@ const SignedAgreements = () => {
   const [error, setError] = useState('');
 
   // Helper function to format dates in a readable format
-  const formatReadableDate = (date) => {
-    if (!date) return '';
-    const d = new Date(date);
-    const options = { 
-      day: 'numeric', 
-      month: 'long', 
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    };
-    const formatted = d.toLocaleDateString('en-GB', options);
-    
-    // Add ordinal suffix (1st, 2nd, 3rd, etc.)
-    const day = d.getDate();
-    let suffix = 'th';
-    if (day % 10 === 1 && day !== 11) suffix = 'st';
-    else if (day % 10 === 2 && day !== 12) suffix = 'nd';
-    else if (day % 10 === 3 && day !== 13) suffix = 'rd';
-    
-    return formatted.replace(/^\d+/, `${day}${suffix}`);
-  };
+  // readable date helper was unused; removed
 
   useEffect(() => {
     const loadAgreements = async () => {
@@ -77,20 +53,7 @@ const SignedAgreements = () => {
     loadAgreements();
   }, []);
 
-  const handleDownload = (documentUrl, fileName) => {
-    if (documentUrl && documentUrl !== '#') {
-      // Create a temporary link to trigger download
-      const link = document.createElement('a');
-      link.href = documentUrl;
-      link.download = fileName || 'framework_agreement.pdf';
-      link.target = '_blank';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } else {
-      console.log('Document URL not available');
-    }
-  };
+  // Download removed per requirements
 
   const handleView = (documentUrl) => {
     if (documentUrl && documentUrl !== '#') {
@@ -214,12 +177,6 @@ const SignedAgreements = () => {
                       className="text-[#7C3BEC] hover:text-[#6B32D6] transition-colors"
                     >
                       View
-                    </button>
-                    <button
-                      onClick={() => handleDownload(agreement.documentUrl, `Agreement_${agreement.userName.replace(/\s+/g, '_')}.pdf`)}
-                      className="text-gray-600 hover:text-gray-900 transition-colors"
-                    >
-                      Download
                     </button>
                   </div>
                 </td>

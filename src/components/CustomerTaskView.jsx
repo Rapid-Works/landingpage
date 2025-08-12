@@ -20,6 +20,7 @@ import { addTaskMessage, updateTaskStatus, markMessagesAsRead } from '../utils/t
 import { storage } from '../firebase/config';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { formatFileSize } from '../utils/taskFileService';
+import { sendGenericTeamsNotification } from '../utils/teamsWebhookService';
 
 const CustomerTaskView = ({ taskData, onBack, viewOnly = false }) => {
   const { currentUser } = useAuth();
@@ -134,15 +135,7 @@ const CustomerTaskView = ({ taskData, onBack, viewOnly = false }) => {
       // Add message to Firebase
       await addTaskMessage(taskData.id, newMessage);
 
-      // Update local messages immediately for better UX
-      const messageWithId = {
-        ...newMessage,
-        id: Date.now().toString(),
-        timestamp: new Date().toISOString(),
-        createdAt: new Date().toISOString()
-      };
-
-      setMessages(prev => [...prev, messageWithId]);
+      // Do not append locally – rely on realtime update to avoid duplicate
 
     } catch (error) {
       console.error('Error sending message:', error);
@@ -189,15 +182,7 @@ const CustomerTaskView = ({ taskData, onBack, viewOnly = false }) => {
 
       await addTaskMessage(taskData.id, fileMessage);
 
-      // Update local messages immediately for better UX
-      const messageWithId = {
-        ...fileMessage,
-        id: Date.now().toString(),
-        timestamp: new Date().toISOString(),
-        createdAt: new Date().toISOString()
-      };
-
-      setMessages(prev => [...prev, messageWithId]);
+      // Do not append locally – rely on realtime update to avoid duplicate
       
     } catch (error) {
       console.error('Error uploading file:', error);
@@ -243,13 +228,29 @@ const CustomerTaskView = ({ taskData, onBack, viewOnly = false }) => {
       const unifiedAcceptanceMessage = {
         sender: 'system',
         type: 'status_update',
-        content: `✅ Estimate accepted by ${currentUser?.displayName || currentUser?.email || 'Customer'}.`,
+        content: `✅ Fixed Price Offer accepted by ${currentUser?.displayName || currentUser?.email || 'Customer'}.`,
         read: false,
         senderName: 'System',
         senderEmail: 'system@rapidworks.de'
       };
 
       await addTaskMessage(taskData.id, unifiedAcceptanceMessage);
+
+      // Send Teams notification (non-blocking)
+      try {
+        const title = '✅ Fixed Price Offer Accepted';
+        const msg = `${currentUser?.displayName || currentUser?.email || 'Customer'} accepted the fixed price offer for "${currentTaskData.taskName}"`;
+        await sendGenericTeamsNotification(title, msg, {
+          taskId: taskData.id,
+          taskName: currentTaskData.taskName,
+          customer: currentUser?.email,
+          price: estimateData?.price,
+          hours: estimateData?.hours,
+          deadline: estimateData?.deadline
+        }, currentTaskData.expertName || null);
+      } catch (e) {
+        console.log('Teams notification not critical:', e);
+      }
 
       // Do not append locally to avoid duplicates; the realtime data will update messages
       setShowPriceOffer(false);
@@ -274,7 +275,7 @@ const CustomerTaskView = ({ taskData, onBack, viewOnly = false }) => {
       const unifiedDeclineMessage = {
         sender: 'system',
         type: 'status_update',
-        content: `❌ Estimate declined by ${currentUser?.displayName || currentUser?.email || 'Customer'}.${declineFeedback ? `\nFeedback: ${declineFeedback}` : ''}`,
+        content: `❌ Fixed Price Offer declined by ${currentUser?.displayName || currentUser?.email || 'Customer'}.${declineFeedback ? `\nFeedback: ${declineFeedback}` : ''}`,
         read: false,
         senderName: 'System',
         senderEmail: 'system@rapidworks.de'
@@ -631,9 +632,9 @@ const CustomerTaskView = ({ taskData, onBack, viewOnly = false }) => {
               <button
                 onClick={scrollToTop}
                 className="px-3 py-1.5 text-xs border border-gray-200 rounded-lg hover:bg-gray-50"
-                title="View task details"
+                title="View details"
               >
-                View task
+                View details
               </button>
               
               <div className={`text-xs px-2 py-1 rounded-full font-medium ${
@@ -653,6 +654,7 @@ const CustomerTaskView = ({ taskData, onBack, viewOnly = false }) => {
             {currentTaskData.createdAt && (
               <p className="text-xs text-gray-500">
                 {formatReadableDate(currentTaskData.createdAt)}
+                {` • Created by ${currentTaskData.userName || currentTaskData.userEmail || 'Customer'}`}
               </p>
             )}
           </div>

@@ -234,6 +234,28 @@ export const updateTaskStatus = async (taskId, status, additionalData = {}) => {
 };
 
 /**
+ * Update invoice payment status for a task
+ * @param {string} taskId
+ * @param {('Pending'|'Due'|'Paid'|'Overdue')} paymentStatus
+ */
+export const updateInvoicePaymentStatus = async (taskId, paymentStatus) => {
+  try {
+    const taskRef = doc(db, 'taskRequests', taskId);
+    const updateData = {
+      'invoiceData.paymentStatus': paymentStatus,
+      updatedAt: serverTimestamp()
+    };
+    if (paymentStatus === 'Paid') {
+      updateData['invoiceData.paidAt'] = serverTimestamp();
+    }
+    await updateDoc(taskRef, updateData);
+  } catch (error) {
+    console.error('Error updating invoice payment status:', error);
+    throw new Error('Failed to update invoice payment status.');
+  }
+};
+
+/**
  * Add a message to a task request
  * @param {string} taskId - Task document ID
  * @param {Object} message - Message object

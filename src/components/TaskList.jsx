@@ -6,25 +6,16 @@ import {
   Clock, 
   CheckCircle, 
   AlertCircle, 
-  User, 
-  Calendar,
-  FileText,
   Euro,
-  Eye,
-  Plus,
   Search,
   Filter
 } from 'lucide-react';
 import { 
-  getUserTaskRequests, 
-  getExpertTaskRequestsByEmail, 
-  getAllTaskRequests,
   subscribeAllTaskRequests,
   subscribeExpertTaskRequestsByEmail,
   subscribeUserTaskRequests
 } from '../utils/taskRequestService';
-import { formatFileSize } from '../utils/taskFileService';
-import { isAdmin, getAllExperts } from '../utils/expertService';
+// import { getAllExperts } from '../utils/expertService';
 import TaskChatSystem from './TaskChatSystem';
 
 const TaskList = ({ userRole, expertInfo, initialSelectedTaskId, onTaskSelected, selectedExpert, onUnreadTotalChange }) => {
@@ -109,7 +100,7 @@ const TaskList = ({ userRole, expertInfo, initialSelectedTaskId, onTaskSelected,
     return () => {
       if (typeof unsubscribe === 'function') unsubscribe();
     };
-  }, [currentUser, userRole, expertInfo?.email, isRapidWorksAdmin, selectedExpert]);
+  }, [currentUser, userRole, expertInfo?.email, isRapidWorksAdmin, selectedExpert, onUnreadTotalChange]);
 
   // Compute unread counts per task from messages
   const tasksWithUnread = tasks.map(t => {
@@ -414,7 +405,7 @@ const TaskList = ({ userRole, expertInfo, initialSelectedTaskId, onTaskSelected,
                       <div className="text-sm text-gray-900">
                         {userRole === 'expert' 
                           ? (task.userName || task.userEmail?.split('@')[0] || 'Unknown')
-                          : (task.expertName || task.expertEmail?.split('@')[0] || 'Pending')
+                          : (task.expertName || task.expertEmail?.split('@')[0] || 'Unassigned')
                         }
                       </div>
                     </td>

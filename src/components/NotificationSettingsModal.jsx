@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Settings, Bell, Mail, Smartphone, Save, Loader2, Check } from 'lucide-react';
+import { X, Settings, Bell, Mail, Smartphone, Save, Loader2, Check, Send } from 'lucide-react';
+import { httpsCallable } from 'firebase/functions';
+import { functions } from '../firebase/config';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../firebase/config';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
@@ -11,6 +13,8 @@ const NotificationSettingsModal = ({ isOpen, onClose, onPreferencesSaved }) => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [subscribing, setSubscribing] = useState(false);
+  const [testing, setTesting] = useState(false);
 
   // Default settings - both mobile and email enabled for all notification types
   const [settings, setSettings] = useState({
@@ -135,6 +139,40 @@ const NotificationSettingsModal = ({ isOpen, onClose, onPreferencesSaved }) => {
     }, 3000);
     
     setSaving(false);
+  };
+
+  const enableNotifications = async () => {
+    try {
+      setSubscribing(true);
+      // reuse request from messaging module via browser permission
+      const { requestNotificationPermission } = await import('../firebase/messaging');
+      await requestNotificationPermission();
+      setSuccess('✅ Notifications enabled on this device');
+    } catch (e) {
+      setError('Failed to enable notifications.');
+    } finally {
+      setSubscribing(false);
+      setTimeout(() => setSuccess(''), 3000);
+    }
+  };
+
+  const sendTestNotifications = async () => {
+    try {
+      setTesting(true);
+      const triggerBlog = httpsCallable(functions, 'testBlogNotification');
+      const triggerKit = httpsCallable(functions, 'testBrandingKitReady');
+      const kitId = `test-kit-${Date.now()}`;
+      await Promise.all([
+        triggerBlog({}),
+        triggerKit({ kitId, email: currentUser?.email })
+      ]);
+      setSuccess('✅ Test notifications sent');
+    } catch (e) {
+      setError('Failed to send test notifications.');
+    } finally {
+      setTesting(false);
+      setTimeout(() => setSuccess(''), 3000);
+    }
   };
 
   const handleToggle = (notificationType, method) => {
@@ -277,7 +315,26 @@ const NotificationSettingsModal = ({ isOpen, onClose, onPreferencesSaved }) => {
                   )}
 
                   {/* Action Buttons */}
-                  <div className="flex gap-3 pt-4">
+                  <div className="flex flex-col gap-3 pt-4">
+                    <div className="flex gap-3">
+                      <button
+                        onClick={enableNotifications}
+                        disabled={subscribing}
+                        className="flex-1 px-5 py-2.5 rounded-lg border border-green-200 bg-green-50 text-green-700 hover:bg-green-100 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                      >
+                        {subscribing ? <Loader2 className="h-4 w-4 animate-spin inline-block" /> : <Bell className="h-4 w-4" />}
+                        <span>{subscribing ? 'Enabling…' : 'Enable Notifications'}</span>
+                      </button>
+                      <button
+                        onClick={sendTestNotifications}
+                        disabled={testing}
+                        className="flex-1 px-5 py-2.5 rounded-lg border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                      >
+                        {testing ? <Loader2 className="h-4 w-4 animate-spin inline-block" /> : <Send className="h-4 w-4" />}
+                        <span>{testing ? 'Sending…' : 'Send Test Notifications'}</span>
+                      </button>
+                    </div>
+                    <div className="flex gap-3">
                     <button
                       type="button"
                       onClick={onClose}
@@ -302,6 +359,7 @@ const NotificationSettingsModal = ({ isOpen, onClose, onPreferencesSaved }) => {
                         </>
                       )}
                     </button>
+                    </div>
                   </div>
                 </>
               )}

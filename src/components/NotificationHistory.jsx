@@ -193,7 +193,7 @@ const NotificationHistory = ({ isOpen, onClose }) => {
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative bg-white rounded-2xl w-full max-w-2xl mx-auto shadow-2xl max-h-[80vh] flex flex-col"
+            className="relative bg-white rounded-2xl w-full max-w-3xl mx-auto shadow-2xl max-h-[80vh] flex flex-col"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-100">
@@ -218,7 +218,19 @@ const NotificationHistory = ({ isOpen, onClose }) => {
                     Mark all read
                   </button>
                 )}
-                {/* Removed 'Mark all unread' button */}
+                {/* Quick link to Notification Settings in Dashboard */}
+                <button
+                  onClick={() => {
+                    try { localStorage.setItem('openNotificationSettings', '1'); } catch (e) {}
+                    onClose();
+                    navigate('/dashboard');
+                  }}
+                  className="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700"
+                  title="Open Notification Settings"
+                >
+                  <Bell className="h-4 w-4" />
+                  Notification Settings
+                </button>
                 <button
                   onClick={onClose}
                   className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
