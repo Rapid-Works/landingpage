@@ -736,9 +736,9 @@ const ExpertTaskView = ({ taskData, onBack, viewOnly = false }) => {
               <button
                 onClick={scrollToTop}
                 className="px-3 py-1.5 text-xs border border-gray-200 rounded-lg hover:bg-gray-50"
-                title="View task details"
+                title="View details"
               >
-                View task
+                View details
               </button>
               {currentTaskData.status !== 'pending' && (
                 <div className={`text-xs px-2 py-1 rounded-full font-medium ${
@@ -758,6 +758,7 @@ const ExpertTaskView = ({ taskData, onBack, viewOnly = false }) => {
             {currentTaskData.createdAt && (
               <p className="text-xs text-gray-500">
                 {formatReadableDate(currentTaskData.createdAt)}
+                {` • Created by ${currentTaskData.userName || currentTaskData.userEmail || 'Customer'}`}
               </p>
             )}
           </div>
@@ -860,7 +861,7 @@ const ExpertTaskView = ({ taskData, onBack, viewOnly = false }) => {
         
         <div className="flex items-end gap-3">
           <button 
-             onClick={triggerFileUpload}
+            onClick={triggerFileUpload}
             className="p-3 hover:bg-gray-100 rounded-xl transition-colors flex-shrink-0 mb-1"
             disabled={expertAgreementRequired || customerSignatureGate.needsValidation}
           >

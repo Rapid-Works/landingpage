@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { motion } from 'framer-motion';
-import { Edit, Package, MessageSquare, FileText, Calculator, ChevronDown, ChevronRight, BellRing, Loader2 } from 'lucide-react';
+import { Edit, Package, MessageSquare, FileText, Calculator, ChevronDown, ChevronRight, BellRing } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import RapidWorksHeader from './new_landing_page_header';
 import BrandingKits from './BrandingKits';
 import ProfileEditModal from './ProfileEditModal';
+import NotificationSettingsModal from './NotificationSettingsModal';
 import TaskList from './TaskList';
 import SignedAgreements from './SignedAgreements';
 import Invoicing from './Invoicing';
 import { isExpert, getExpertByEmail, isAdmin, getAllExperts } from '../utils/expertService';
-import { functions } from '../firebase/config';
-import { httpsCallable } from 'firebase/functions';
-import { requestNotificationPermission } from '../firebase/messaging';
+// notification helpers handled inside NotificationSettingsModal
 
 
 
@@ -23,13 +22,19 @@ const Dashboard = () => {
   // const navigate = useNavigate();
   const { kitId } = useParams();
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  // Open Notification Settings if history link set the flag
+  const initialOpenNotif = typeof window !== 'undefined' && localStorage.getItem('openNotificationSettings') === '1';
   const [activeTab, setActiveTab] = useState('branding');
   const [selectedTaskId, setSelectedTaskId] = useState(null);
   const [expertTasksExpanded, setExpertTasksExpanded] = useState(false);
   const [selectedExpert, setSelectedExpert] = useState(null);
   const [unreadTotal, setUnreadTotal] = useState(0);
-  const [testingPush, setTestingPush] = useState(false);
-  const [subscribing, setSubscribing] = useState(false);
+  // moved to Notification Settings modal
+  const [isNotifSettingsOpen, setIsNotifSettingsOpen] = useState(initialOpenNotif);
+
+  if (initialOpenNotif) {
+    try { localStorage.removeItem('openNotificationSettings'); } catch (e) {}
+  }
   
   // Check if current user is an expert or admin
   const userIsExpert = currentUser ? isExpert(currentUser.email) : false;
@@ -52,39 +57,7 @@ const Dashboard = () => {
     setActiveTab('tasks');
   };
 
-  const handleSendTestNotifications = async () => {
-    if (!currentUser?.email) {
-      alert('You need to be logged in to test notifications.');
-      return;
-    }
-    try {
-      setTestingPush(true);
-      const triggerBlog = httpsCallable(functions, 'testBlogNotification');
-      const triggerKit = httpsCallable(functions, 'testBrandingKitReady');
-      const kitId = `test-kit-${Date.now()}`;
-      await Promise.all([
-        triggerBlog({}),
-        triggerKit({ kitId, email: currentUser.email })
-      ]);
-      alert('Test notifications triggered (blog + kit). If you do not receive them, verify your browser token under fcmTokens.');
-    } catch (e) {
-      console.error('Failed to trigger test notifications', e);
-      alert(`Failed to trigger notifications: ${e.message || e}`);
-    } finally {
-      setTestingPush(false);
-    }
-  };
-
-  const handleSubscribeThisDevice = async () => {
-    try {
-      setSubscribing(true);
-      await requestNotificationPermission();
-    } catch (e) {
-      console.error('Notification subscription failed', e);
-    } finally {
-      setSubscribing(false);
-    }
-  };
+  // moved enable/test notifications into Notification Settings modal
 
 
 
@@ -302,6 +275,27 @@ const Dashboard = () => {
                   </button>
                 )}
 
+                {/* Profile and Notification Settings moved into sidebar */}
+                <button
+                  onClick={() => setIsProfileModalOpen(true)}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 text-gray-700 hover:bg-white hover:shadow-md"
+                >
+                  <Edit className="h-5 w-5" />
+                  <div className="flex-1">
+                    <div className="font-medium">Profile</div>
+                  </div>
+                </button>
+
+                <button
+                  onClick={() => setIsNotifSettingsOpen(true)}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 text-gray-700 hover:bg-white hover:shadow-md"
+                >
+                  <BellRing className="h-5 w-5" />
+                  <div className="flex-1">
+                    <div className="font-medium">Notification Settings</div>
+                  </div>
+                </button>
+
               </nav>
             </div>
 
@@ -311,26 +305,7 @@ const Dashboard = () => {
 
               {/* Content Area */}
               <div className="flex-1 p-3 bg-gray-50 overflow-y-auto h-full">
-                <div className="flex items-center justify-end gap-2 mb-3">
-                  <button
-                    onClick={handleSubscribeThisDevice}
-                    disabled={subscribing}
-                    className={`inline-flex items-center gap-2 px-3 py-2 rounded-md text-white ${subscribing ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'}`}
-                    title="Enable/refresh notifications on this device"
-                  >
-                    {subscribing ? <Loader2 className="h-4 w-4 animate-spin" /> : <BellRing className="h-4 w-4" />}
-                    <span>Enable Notifications</span>
-                  </button>
-                  <button
-                    onClick={handleSendTestNotifications}
-                    disabled={testingPush}
-                    className={`inline-flex items-center gap-2 px-3 py-2 rounded-md text-white ${testingPush ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}
-                    title="Send test notifications to your device (blog + kit)"
-                  >
-                    {testingPush ? <Loader2 className="h-4 w-4 animate-spin" /> : <BellRing className="h-4 w-4" />}
-                    <span>Send Test Notifications</span>
-                  </button>
-                </div>
+                <div className="flex items-center justify-end gap-2 mb-3"></div>
                 {activeTab === 'branding' && (
                   <motion.div
                     initial={{ opacity: 0, x: 20 }}
@@ -391,6 +366,12 @@ const Dashboard = () => {
         <ProfileEditModal 
           isOpen={isProfileModalOpen} 
           onClose={() => setIsProfileModalOpen(false)} 
+        />
+
+        {/* Notification Settings Modal */}
+        <NotificationSettingsModal
+          isOpen={isNotifSettingsOpen}
+          onClose={() => setIsNotifSettingsOpen(false)}
         />
 
       </div>

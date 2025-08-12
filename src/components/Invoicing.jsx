@@ -1,31 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  Euro, 
-  Calendar, 
-  User, 
-  CheckCircle, 
-  Clock, 
   AlertCircle, 
   FileText,
-  Download,
   Search,
-  Filter,
-  Eye,
   ExternalLink
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { getAllTaskRequests } from '../utils/taskRequestService';
+import { getAllTaskRequests, updateInvoicePaymentStatus } from '../utils/taskRequestService';
 import AdminTaskDetailsModal from './AdminTaskDetailsModal';
 
 const Invoicing = ({ onNavigateToTask }) => {
-  const { currentUser } = useAuth();
+  useAuth(); // initialize auth context if needed (no direct usage here)
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [monthFilter, setMonthFilter] = useState('all');
+  const [monthFilter] = useState('all');
   
   // Modal state
   const [selectedTaskId, setSelectedTaskId] = useState(null);
@@ -33,24 +25,7 @@ const Invoicing = ({ onNavigateToTask }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Helper function to format dates
-  const formatReadableDate = (date) => {
-    if (!date) return '';
-    const d = new Date(date);
-    const options = { 
-      day: 'numeric', 
-      month: 'long', 
-      year: 'numeric' 
-    };
-    const formatted = d.toLocaleDateString('en-GB', options);
-    
-    const day = d.getDate();
-    let suffix = 'th';
-    if (day % 10 === 1 && day !== 11) suffix = 'st';
-    else if (day % 10 === 2 && day !== 12) suffix = 'nd';
-    else if (day % 10 === 3 && day !== 13) suffix = 'rd';
-    
-    return formatted.replace(/^\d+/, `${day}${suffix}`);
-  };
+  // pretty date helper was unused
 
   // Load all accepted/completed tasks with invoice data
   useEffect(() => {
@@ -208,7 +183,7 @@ const Invoicing = ({ onNavigateToTask }) => {
           onChange={(e) => setStatusFilter(e.target.value)}
           className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7C3BEC] focus:border-transparent bg-white"
         >
-          <option value="all">All Payments</option>
+          <option value="all">All</option>
           <option value="pending">Pending</option>
           <option value="due">Due</option>
           <option value="paid">Paid</option>
@@ -216,34 +191,33 @@ const Invoicing = ({ onNavigateToTask }) => {
       </div>
 
       {/* Invoice Table */}
-      {filteredInvoices.length > 0 ? (
-        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              {/* Table Header */}
-              <thead className="bg-gray-50">
-                <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Task
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Customer
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Amount
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Date
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Payment
-                  </th>
-                </tr>
-              </thead>
-              
-              {/* Table Body */}
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredInvoices.map((invoice, index) => (
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            {/* Table Header */}
+            <thead className="bg-gray-50">
+              <tr>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Task
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Customer
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Amount
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Date
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment</th>
+                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+
+            {/* Table Body */}
+            <tbody className="bg-white divide-y divide-gray-200">
+              {filteredInvoices.length > 0 ? (
+                filteredInvoices.map((invoice, index) => (
                   <motion.tr
                     key={invoice.id}
                     initial={{ opacity: 0 }}
@@ -299,23 +273,42 @@ const Invoicing = ({ onNavigateToTask }) => {
                         {invoice.paymentStatus}
                       </span>
                     </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                      {invoice.paymentStatus !== 'Paid' && (
+                        <button
+                          onClick={async () => {
+                            await updateInvoicePaymentStatus(invoice.id, 'Paid');
+                            // reflect change locally
+                            setInvoices(prev => prev.map(inv => inv.id === invoice.id ? { ...inv, paymentStatus: 'Paid' } : inv));
+                          }}
+                          className="px-3 py-1.5 rounded-md text-sm bg-green-600 hover:bg-green-700 text-white"
+                          title="Mark as paid"
+                        >
+                          Mark paid
+                        </button>
+                      )}
+                    </td>
                   </motion.tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5" className="px-6 py-12">
+                    <div className="text-center">
+                      <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">No Invoices Found</h3>
+                      <p className="text-gray-600">
+                        {searchTerm || statusFilter !== 'all' || monthFilter !== 'all'
+                          ? 'No invoices match your current filters'
+                          : 'No accepted orders with invoice data available yet'}
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
-      ) : (
-        <div className="text-center py-12">
-          <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No Invoices Found</h3>
-          <p className="text-gray-600">
-            {searchTerm || statusFilter !== 'all' || monthFilter !== 'all'
-              ? 'No invoices match your current filters'
-              : 'No accepted orders with invoice data available yet'}
-          </p>
-        </div>
-      )}
+      </div>
 
       {/* Summary Footer */}
       {filteredInvoices.length > 0 && (

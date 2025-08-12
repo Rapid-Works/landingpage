@@ -1,31 +1,23 @@
 import { useState, useEffect, useContext, useRef } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import {
-  Rocket,
   Users,
-  FileText,
   Menu,
   X,
   Euro,
   Megaphone,
   Compass,
-  Globe,
   Handshake,
-  Newspaper,
   User,
   LogOut,
   Settings,
   Calendar,
-  Bell,
-  ChevronDown,
-  Edit
+  Bell
 } from "lucide-react"
 import { LanguageContext as AppLanguageContext } from "../App"
 import { useAuth } from "../contexts/AuthContext"
 import logo from "../images/logo.png"
-import { auth, db } from '../firebase/config'
-import { collection, getDocs, orderBy, query } from 'firebase/firestore'
-import { signOut } from 'firebase/auth'
+// removed unused firebase imports
 import ProfileEditModal from './ProfileEditModal'
 import NotificationSettingsModal from './NotificationSettingsModal'
 import NotificationHistory from './NotificationHistory'
@@ -105,15 +97,7 @@ export default function RapidWorksHeader() {
     setIsUserMenuOpen(false)
   }
 
-  const handleEditProfile = () => {
-    setIsProfileModalOpen(true)
-    setIsUserMenuOpen(false)
-  }
-
-  const handleNotificationSettings = () => {
-    setIsSettingsModalOpen(true)
-    setIsUserMenuOpen(false)
-  }
+  // actions moved to dashboard sidebar
 
   const isActive = (path) => {
     if (path === "/" && location.pathname === "/") return false;
@@ -298,14 +282,7 @@ export default function RapidWorksHeader() {
                           <p className="text-xs text-gray-500 truncate">{currentUser.email}</p>
                         </div>
                         <div className="border-t border-gray-100 my-1"></div>
-                        <button onClick={handleEditProfile} className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
-                          <Edit className="h-4 w-4 mr-2" />
-                          Edit Profile
-                        </button>
-                        <button onClick={handleNotificationSettings} className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
-                          <Bell className="h-4 w-4 mr-2" />
-                          Notification Settings
-                        </button>
+                        {/* Moved to Dashboard sidebar: Edit Profile and Notification Settings */}
                         <button onClick={handleDashboardRedirect} className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
                           <Settings className="h-4 w-4 mr-2" />
                           Dashboard
@@ -362,14 +339,7 @@ export default function RapidWorksHeader() {
                     {currentUser.displayName || currentUser.email}
                   </span>
                 </div>
-                <button onClick={() => { handleEditProfile(); setMobileMenuOpen(false); }} className="flex items-center w-full px-4 py-3 rounded-lg transition-all duration-300" style={{ color: accentColor }}>
-                  <Edit className="h-4 w-4 mr-3" />
-                  Edit Profile
-                </button>
-                <button onClick={() => { handleNotificationSettings(); setMobileMenuOpen(false); }} className="flex items-center w-full px-4 py-3 rounded-lg transition-all duration-300" style={{ color: accentColor }}>
-                  <Bell className="h-4 w-4 mr-3" />
-                  Notification Settings
-                </button>
+                {/* Edit Profile and Notification Settings moved into Dashboard sidebar */}
                 <button onClick={() => { handleDashboardRedirect(); setMobileMenuOpen(false); }} className="flex items-center w-full px-4 py-3 rounded-lg transition-all duration-300" style={{ color: accentColor }}>
                   <Settings className="h-4 w-4 mr-3" />
                   Dashboard
