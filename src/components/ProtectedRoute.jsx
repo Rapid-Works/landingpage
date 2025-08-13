@@ -1,41 +1,31 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import LoginModal from './LoginModal';
+import { useNavigate } from 'react-router-dom';
 
 const ProtectedRoute = ({ children }) => {
   const { currentUser } = useAuth();
-  const [showLoginModal, setShowLoginModal] = useState(!currentUser);
+  const navigate = useNavigate();
+
+  // Redirect to homepage if user is not authenticated
+  useEffect(() => {
+    if (!currentUser) {
+      navigate('/', { replace: true });
+    }
+  }, [currentUser, navigate]);
 
   // If user is logged in, show the protected content
   if (currentUser) {
     return children;
   }
 
-  // If user is not logged in, show login modal
+  // If user is not logged in, show loading or redirect (handled by useEffect)
   return (
-    <>
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Sign into your account</h2>
-          <p className="text-gray-600 mb-6">Please sign in to access this page.</p>
-          <button
-            onClick={() => setShowLoginModal(true)}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Sign In
-          </button>
-        </div>
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#7C3BEC] mx-auto mb-4"></div>
+        <p className="text-gray-600">Redirecting...</p>
       </div>
-      
-      <LoginModal
-        isOpen={showLoginModal}
-        onClose={() => setShowLoginModal(false)}
-        onLoginSuccess={(user) => {
-          setShowLoginModal(false);
-        }}
-        context="protected-route"
-      />
-    </>
+    </div>
   );
 };
 

@@ -54,6 +54,7 @@ import Dashboard from './components/Dashboard'
 import ForgotPassword from './components/ForgotPassword'
 import ProtectedRoute from './components/ProtectedRoute'
 import { NotificationProvider } from './contexts/NotificationContext'
+import OrganizationInvite from './components/OrganizationInvite'
 
 // Initialize Firebase messaging and service worker
 import './firebase/messaging'
@@ -1310,6 +1311,9 @@ function App() {
                 <Dashboard />
               </ProtectedRoute>
             } />
+            
+            {/* Organization Invite Route */}
+            <Route path="/organization/invite/:token" element={<OrganizationInvite />} />
             
             {/* QR Code Routes */}
             <Route path="/qrcodebranding" element={<QRCodeRedirect />} />

@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { ArrowRight, Download } from "lucide-react";
+import { ArrowRight, Download, Plus, List } from "lucide-react";
 import { Button } from "./ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/Tabs";
 import AssetPreview from "./AssetPreview";
 import { brandingKits } from "../data/brandingKits";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 import { useAuth } from "../contexts/AuthContext";
+import { getCurrentUserContext } from '../utils/organizationService';
 import JSZip from 'jszip';
+import ListedKitsModal from './ListedKitsModal';
+import CreateKitModal from './CreateKitModal';
 
 const SkeletonCard = () => (
   <div className="animate-pulse bg-white rounded-lg border shadow-sm flex flex-col h-full">
@@ -29,15 +32,40 @@ const BrandingKits = ({ initialKitId }) => {
   const [tab, setTab] = useState("my"); // Default to My Kits
   const [myKits, setMyKits] = useState([]);
   const [loadingMyKits, setLoadingMyKits] = useState(false);
+  const [currentContext, setCurrentContext] = useState(null);
+  const [showListedKitsModal, setShowListedKitsModal] = useState(false);
+  const [showCreateKitModal, setShowCreateKitModal] = useState(false);
   const { currentUser } = useAuth();
+
+  // Check if user is admin
+  const isAdmin = currentUser && currentUser.email?.endsWith('@rapid-works.io');
 
   // Update selectedKit when initialKitId prop changes
   useEffect(() => {
     setSelectedKit(initialKitId || null);
   }, [initialKitId]);
 
+  // Load organization context
   useEffect(() => {
-    if (tab === "my" && currentUser) {
+    const loadContext = async () => {
+      if (!currentUser) {
+        setCurrentContext(null);
+        return;
+      }
+      
+      try {
+        const context = await getCurrentUserContext(currentUser.uid);
+        setCurrentContext(context);
+      } catch (error) {
+        console.error('Error loading user context in branding kits:', error);
+      }
+    };
+
+    loadContext();
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (tab === "my" && currentUser && currentContext) {
       setLoadingMyKits(true);
       const fetchMyKits = async () => {
         try {
@@ -45,16 +73,31 @@ const BrandingKits = ({ initialKitId }) => {
           const db = getFirestore();
           const querySnapshot = await getDocs(collection(db, "brandkits"));
           const userKits = [];
+          
           querySnapshot.forEach((doc) => {
             const data = doc.data();
-            // email can be array or string
-            if (Array.isArray(data.email) && data.email.includes(currentUser.email)) {
-              userKits.push({ id: doc.id, ...data });
-            } else if (typeof data.email === "string" && data.email === currentUser.email) {
-              userKits.push({ id: doc.id, ...data });
+            const isUserInEmailList = Array.isArray(data.email) 
+              ? data.email.includes(currentUser.email)
+              : data.email === currentUser.email;
+            
+            if (isUserInEmailList) {
+              // If user is in organization context, only show kits that belong to that organization
+              if (currentContext.type === 'organization') {
+                // Check if kit has organizationName field and matches current organization
+                if (data.organizationName === currentContext.organization.name) {
+                  userKits.push({ id: doc.id, ...data });
+                }
+                // If kit doesn't have organizationName, it's a personal kit - don't show in org context
+              } else {
+                // Personal context - only show kits without organizationName (personal kits)
+                if (!data.organizationName) {
+                  userKits.push({ id: doc.id, ...data });
+                }
+              }
             }
           });
-          console.log(`📦 Found ${userKits.length} branding kits for user`);
+          
+          console.log(`📦 Found ${userKits.length} branding kits for ${currentContext.type === 'organization' ? 'organization' : 'personal'} context`);
           setMyKits(userKits);
         } catch (error) {
           console.log('⚠️ Could not load branding kits from Firestore, using fallback static kits:', error);
@@ -72,7 +115,7 @@ const BrandingKits = ({ initialKitId }) => {
       };
       fetchMyKits();
     }
-  }, [tab, currentUser]);
+  }, [tab, currentUser, currentContext]);
 
   // Helper to render a kit (for both tabs)
   const renderKit = (kit, isMyKit = false) => {
@@ -314,6 +357,42 @@ const BrandingKits = ({ initialKitId }) => {
         <div className="px-6">
           {renderKit(brandingKits.find(k => k.id === selectedKit))}
         </div>
+      )}
+
+      {/* Admin Floating Button */}
+      {isAdmin && (
+        <div className="fixed bottom-6 right-6 z-50">
+          <button
+            onClick={() => setShowListedKitsModal(true)}
+            className="bg-[#7C3BEC] hover:bg-[#6B32D6] text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 font-medium"
+          >
+            <List className="h-5 w-5" />
+            Listed Kits
+          </button>
+        </div>
+      )}
+
+      {/* Modals */}
+      {showListedKitsModal && (
+        <ListedKitsModal 
+          isOpen={showListedKitsModal}
+          onClose={() => setShowListedKitsModal(false)}
+          onCreateNew={() => {
+            setShowListedKitsModal(false);
+            setShowCreateKitModal(true);
+          }}
+        />
+      )}
+
+      {showCreateKitModal && (
+        <CreateKitModal 
+          isOpen={showCreateKitModal}
+          onClose={() => setShowCreateKitModal(false)}
+          onSuccess={() => {
+            setShowCreateKitModal(false);
+            // Optionally refresh kits list
+          }}
+        />
       )}
     </div>
   );

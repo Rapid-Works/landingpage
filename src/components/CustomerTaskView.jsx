@@ -239,14 +239,21 @@ const CustomerTaskView = ({ taskData, onBack, viewOnly = false }) => {
       // Send Teams notification (non-blocking)
       try {
         const title = '✅ Fixed Price Offer Accepted';
-        const msg = `${currentUser?.displayName || currentUser?.email || 'Customer'} accepted the fixed price offer for "${currentTaskData.taskName}"`;
+        const lastOffer = Array.isArray(messages)
+          ? [...messages].reverse().find(m => m?.type === 'price_offer')
+          : null;
+        const derivedPrice = estimateData?.price ?? lastOffer?.content?.price ?? null;
+        const derivedHours = estimateData?.hours ?? lastOffer?.content?.hours ?? null;
+        const derivedDeadline = estimateData?.deadline ?? lastOffer?.content?.deadline ?? null;
+        const priceText = derivedPrice != null ? ` for €${Number(derivedPrice).toLocaleString()}` : '';
+        const msg = `${currentUser?.displayName || currentUser?.email || 'Customer'} accepted the fixed price offer${priceText} for "${currentTaskData.taskName}"`;
         await sendGenericTeamsNotification(title, msg, {
           taskId: taskData.id,
           taskName: currentTaskData.taskName,
           customer: currentUser?.email,
-          price: estimateData?.price,
-          hours: estimateData?.hours,
-          deadline: estimateData?.deadline
+          price: derivedPrice,
+          hours: derivedHours,
+          deadline: derivedDeadline
         }, currentTaskData.expertName || null);
       } catch (e) {
         console.log('Teams notification not critical:', e);

@@ -24,6 +24,7 @@ import NotificationHistory from './NotificationHistory'
 import LoginModal from './LoginModal'
 import { useNotificationHistory } from '../hooks/useNotificationHistory'
 import { useSmartNotificationStatus } from '../hooks/useSmartNotificationStatus'
+import { getCurrentUserContext } from '../utils/organizationService'
 
 export default function RapidWorksHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -34,6 +35,7 @@ export default function RapidWorksHeader() {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
   const [isNotificationHistoryOpen, setIsNotificationHistoryOpen] = useState(false)
   const [showLoginModal, setShowLoginModal] = useState(false)
+  const [currentContext, setCurrentContext] = useState(null)
   const { unreadCount } = useNotificationHistory()
   const { forceRefresh } = useSmartNotificationStatus()
   const userMenuRef = useRef(null)
@@ -42,6 +44,56 @@ export default function RapidWorksHeader() {
   const context = useContext(AppLanguageContext)
   const { currentUser, logout } = useAuth()
 
+  // Load organization context
+  useEffect(() => {
+    const loadContext = async () => {
+      if (!currentUser) {
+        setCurrentContext(null);
+        return;
+      }
+      
+      try {
+        const context = await getCurrentUserContext(currentUser.uid);
+        setCurrentContext(context);
+      } catch (error) {
+        console.error('Error loading user context in header:', error);
+      }
+    };
+
+    loadContext();
+  }, [currentUser]);
+
+  // Listen for organization context changes (e.g., when user switches orgs in Dashboard)
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === 'organizationContextChanged') {
+        // Reload context when organization changes
+        if (currentUser) {
+          getCurrentUserContext(currentUser.uid)
+            .then(context => setCurrentContext(context))
+            .catch(error => console.error('Error reloading context:', error));
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also listen for custom events from same window
+    const handleContextChange = () => {
+      if (currentUser) {
+        getCurrentUserContext(currentUser.uid)
+          .then(context => setCurrentContext(context))
+          .catch(error => console.error('Error reloading context:', error));
+      }
+    };
+
+    window.addEventListener('organizationContextChanged', handleContextChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('organizationContextChanged', handleContextChange);
+    };
+  }, [currentUser]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -83,6 +135,8 @@ export default function RapidWorksHeader() {
     try {
       await logout()
       setIsUserMenuOpen(false)
+      // Redirect to homepage after logout
+      navigate('/')
     } catch (error) {
       console.error("Failed to log out:", error)
     }
@@ -138,9 +192,16 @@ export default function RapidWorksHeader() {
 
   const renderUserAvatar = (isMobile = false) => {
     const hasPhoto = currentUser && currentUser.photoURL && currentUser.photoURL.trim() !== '' && !imgError;
+    const isOrgContext = currentContext?.type === 'organization';
+    const bgColor = isOrgContext ? 'bg-blue-600' : 'bg-[#7C3BEC]';
+    
     return (
-      <div className={`bg-[#7C3BEC] rounded-full flex items-center justify-center overflow-hidden flex-shrink-0 ${isMobile ? 'w-7 h-7 min-w-7 min-h-7' : 'w-8 h-8 min-w-8 min-h-8'}`} style={{ aspectRatio: '1 / 1' }}>
-        {hasPhoto ? (
+      <div className={`${bgColor} rounded-full flex items-center justify-center overflow-hidden flex-shrink-0 ${isMobile ? 'w-7 h-7 min-w-7 min-h-7' : 'w-8 h-8 min-w-8 min-h-8'}`} style={{ aspectRatio: '1 / 1' }}>
+        {isOrgContext ? (
+          <span className={`font-bold text-white ${isMobile ? 'text-xs' : 'text-sm'}`}>
+            {currentContext.organization.name.substring(0, 2).toUpperCase()}
+          </span>
+        ) : hasPhoto ? (
           <img
             src={currentUser.photoURL}
             alt={currentUser.displayName || 'User'}
@@ -278,8 +339,18 @@ export default function RapidWorksHeader() {
                     <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-100 z-50">
                       <div className="p-2">
                         <div className="ml-1 mb-1">
-                          <p className="font-medium text-sm text-gray-800 truncate">{currentUser.displayName}</p>
-                          <p className="text-xs text-gray-500 truncate">{currentUser.email}</p>
+                          <p className="font-medium text-sm text-gray-800 truncate">
+                            {currentContext?.type === 'organization' 
+                              ? currentContext.organization.name
+                              : currentUser.displayName
+                            }
+                          </p>
+                          <p className="text-xs text-gray-500 truncate">
+                            {currentContext?.type === 'organization' 
+                              ? `${currentContext.permissions?.role === 'admin' ? 'Administrator' : 'Member'} • ${currentUser.email}`
+                              : currentUser.email
+                            }
+                          </p>
                         </div>
                         <div className="border-t border-gray-100 my-1"></div>
                         {/* Moved to Dashboard sidebar: Edit Profile and Notification Settings */}
@@ -335,16 +406,29 @@ export default function RapidWorksHeader() {
               <>
                 <div className="flex items-center px-4 py-2 text-sm text-gray-700">
                   {renderUserAvatar(true)}
-                  <span className="truncate ml-3 font-medium">
-                    {currentUser.displayName || currentUser.email}
-                  </span>
+                  <div className="truncate ml-3">
+                    <div className="font-medium">
+                      {currentContext?.type === 'organization' 
+                        ? currentContext.organization.name
+                        : (currentUser.displayName || currentUser.email)
+                      }
+                    </div>
+                    {currentContext?.type === 'organization' && (
+                      <div className="text-xs text-gray-500">
+                        {currentContext.permissions?.role === 'admin' ? 'Administrator' : 'Member'}
+                      </div>
+                    )}
+                  </div>
                 </div>
                 {/* Edit Profile and Notification Settings moved into Dashboard sidebar */}
                 <button onClick={() => { handleDashboardRedirect(); setMobileMenuOpen(false); }} className="flex items-center w-full px-4 py-3 rounded-lg transition-all duration-300" style={{ color: accentColor }}>
                   <Settings className="h-4 w-4 mr-3" />
                   Dashboard
                 </button>
-                <button onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="flex items-center w-full px-4 py-3 rounded-lg transition-all duration-300" style={{ color: accentColor }}>
+                <button onClick={() => { 
+                  handleLogout(); 
+                  setMobileMenuOpen(false); 
+                }} className="flex items-center w-full px-4 py-3 rounded-lg transition-all duration-300" style={{ color: accentColor }}>
                   <LogOut className="h-4 w-4 mr-3" />
                   Sign Out
                 </button>

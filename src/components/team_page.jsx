@@ -30,6 +30,7 @@ import RapidWorksHeader from "./new_landing_page_header"
 import { LanguageContext as AppLanguageContext } from "../App"
 import { useAuth } from '../contexts/AuthContext'
 import { checkFrameworkAgreementStatus } from '../utils/frameworkAgreementService'
+import { getCurrentUserContext } from '../utils/organizationService'
 import ExploreMoreSection from "./ExploreMoreSection" // Import the new component
 import { testimonials } from "../testimonialsData"
 import TestimonialCard from "./TestimonialCard"
@@ -499,6 +500,20 @@ const TeamPage = () => {
     }
     
     try {
+      // Check user's current context (personal vs organization)
+      const userContext = await getCurrentUserContext(currentUser.uid);
+      
+      // If user is in organization context, check if they have permission to request experts
+      if (userContext.type === 'organization') {
+        const canRequestExperts = userContext.permissions?.role === 'admin' || 
+                                  userContext.permissions?.permissions?.canRequestExperts;
+        
+        if (!canRequestExperts) {
+          alert('You do not have permission to request experts in this organization. Please contact your administrator.');
+          return;
+        }
+      }
+      
       // Check if user has signed framework agreement using Firebase
       const frameworkStatus = await checkFrameworkAgreementStatus(currentUser.uid);
       console.log('Framework status:', frameworkStatus);
@@ -508,10 +523,10 @@ const TeamPage = () => {
         return;
       }
       
-      // User is logged in and has signed framework, show task modal
+      // User is logged in, has framework signed, and has permissions - show task modal
       setIsTaskModalOpen(true);
     } catch (error) {
-      console.error('Error checking framework status:', error);
+      console.error('Error checking framework status or organization permissions:', error);
       // If there's an error checking, assume they haven't signed and show framework modal
       setIsFrameworkModalOpen(true);
     }
@@ -538,6 +553,20 @@ const TeamPage = () => {
     }
     
     try {
+      // Check user's current context (personal vs organization)
+      const userContext = await getCurrentUserContext(userId);
+      
+      // If user is in organization context, check if they have permission to request experts
+      if (userContext.type === 'organization') {
+        const canRequestExperts = userContext.permissions?.role === 'admin' || 
+                                  userContext.permissions?.permissions?.canRequestExperts;
+        
+        if (!canRequestExperts) {
+          alert('You do not have permission to request experts in this organization. Please contact your administrator.');
+          return;
+        }
+      }
+      
       // After login, check framework agreement using Firebase
       const frameworkStatus = await checkFrameworkAgreementStatus(userId);
       console.log('Framework status after login:', frameworkStatus);
@@ -548,7 +577,7 @@ const TeamPage = () => {
         setIsTaskModalOpen(true);
       }
     } catch (error) {
-      console.error('Error checking framework status after login:', error);
+      console.error('Error checking framework status or organization permissions after login:', error);
       // If there's an error checking, assume they haven't signed and show framework modal
       setIsFrameworkModalOpen(true);
     }
@@ -702,7 +731,7 @@ const TeamPage = () => {
                     className="appearance-none bg-white text-blue-800 font-bold py-4 pl-6 pr-12 rounded-full shadow-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600 cursor-pointer w-full sm:min-w-[400px] md:min-w-[500px] lg:min-w-[600px] text-left"
                     onClick={() => {
                       setSelectedExpertName(''); // No specific expert for general CTA
-                      setIsTaskModalOpen(true);
+                      handleRequestTask('General', ''); // Use the same flow with permissions checking
                     }}
                   >
                       {content.cta.buttonText}
