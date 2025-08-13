@@ -354,52 +354,8 @@ export const acceptInvitation = async (token, userId, userEmail) => {
       updatedAt: serverTimestamp()
     }, { merge: true });
     
-    // Add user to organization branding kits
-    try {
-      console.log('🔍 Adding user to organization branding kits...');
-      const brandingKitsRef = collection(db, 'brandkits');
-      const brandingKitsSnapshot = await getDocs(brandingKitsRef);
-      
-      let kitsUpdated = 0;
-      brandingKitsSnapshot.forEach((kitDoc) => {
-        const kitData = kitDoc.data();
-        
-        // Check if this kit belongs to the organization
-        if (kitData.organizationName === invitation.organization.name) {
-          console.log(`📦 Found organization kit: ${kitDoc.id}`);
-          
-          // Get current email list (handle both array and single email formats)
-          let currentEmails = [];
-          if (Array.isArray(kitData.email)) {
-            currentEmails = [...kitData.email];
-          } else if (kitData.email) {
-            currentEmails = [kitData.email];
-          }
-          
-          // Add user email if not already present
-          if (!currentEmails.includes(userEmail.toLowerCase())) {
-            currentEmails.push(userEmail.toLowerCase());
-            
-            // Update the kit in the batch
-            const kitRef = firestoreDoc(db, 'brandkits', kitDoc.id);
-            batch.update(kitRef, {
-              email: currentEmails,
-              updatedAt: serverTimestamp()
-            });
-            
-            kitsUpdated++;
-            console.log(`✅ Added ${userEmail} to kit: ${kitDoc.id}`);
-          } else {
-            console.log(`ℹ️ User ${userEmail} already in kit: ${kitDoc.id}`);
-          }
-        }
-      });
-      
-      console.log(`📊 Updated ${kitsUpdated} organization branding kits`);
-    } catch (error) {
-      console.error('⚠️ Error adding user to organization branding kits:', error);
-      // Don't fail the entire invitation process if branding kit update fails
-    }
+    // Note: With simplified branding kit logic, organization members automatically see
+    // organization kits based on organizationName match, no need to add emails individually
     
     await batch.commit();
     
@@ -425,7 +381,7 @@ export const updateMemberPermissions = async (membershipId, permissions) => {
 
 export const removeMember = async (membershipId) => {
   try {
-    // Get member info first to remove from branding kits
+    // Get member reference and verify it exists
     const memberRef = firestoreDoc(db, 'organizationMembers', membershipId);
     const memberDoc = await getDoc(memberRef);
     
@@ -433,25 +389,7 @@ export const removeMember = async (membershipId) => {
       throw new Error('Member not found');
     }
     
-    const memberData = memberDoc.data();
-    
-    // Get user email for branding kit removal
-    let userEmail = null;
-    if (memberData.userId) {
-      const userDoc = await getDoc(firestoreDoc(db, 'users', memberData.userId));
-      if (userDoc.exists()) {
-        userEmail = userDoc.data().email;
-      }
-    }
-    
-    // Get organization info
-    let organizationName = null;
-    if (memberData.organizationId) {
-      const orgDoc = await getDoc(firestoreDoc(db, 'organizations', memberData.organizationId));
-      if (orgDoc.exists()) {
-        organizationName = orgDoc.data().name;
-      }
-    }
+    // Note: With simplified branding kit logic, no need to update kit emails individually
     
     const batch = writeBatch(db);
     
@@ -461,58 +399,8 @@ export const removeMember = async (membershipId) => {
       removedAt: serverTimestamp()
     });
     
-    // Remove user from organization branding kits
-    if (userEmail && organizationName) {
-      try {
-        console.log('🔍 Removing user from organization branding kits...');
-        const brandingKitsRef = collection(db, 'brandkits');
-        const brandingKitsSnapshot = await getDocs(brandingKitsRef);
-        
-        let kitsUpdated = 0;
-        brandingKitsSnapshot.forEach((kitDoc) => {
-          const kitData = kitDoc.data();
-          
-          // Check if this kit belongs to the organization
-          if (kitData.organizationName === organizationName) {
-            console.log(`📦 Found organization kit: ${kitDoc.id}`);
-            
-            // Get current email list (handle both array and single email formats)
-            let currentEmails = [];
-            if (Array.isArray(kitData.email)) {
-              currentEmails = [...kitData.email];
-            } else if (kitData.email) {
-              currentEmails = [kitData.email];
-            }
-            
-            // Remove user email if present
-            const emailIndex = currentEmails.findIndex(email => 
-              email.toLowerCase() === userEmail.toLowerCase()
-            );
-            
-            if (emailIndex !== -1) {
-              currentEmails.splice(emailIndex, 1);
-              
-              // Update the kit in the batch
-              const kitRef = firestoreDoc(db, 'brandkits', kitDoc.id);
-              batch.update(kitRef, {
-                email: currentEmails,
-                updatedAt: serverTimestamp()
-              });
-              
-              kitsUpdated++;
-              console.log(`✅ Removed ${userEmail} from kit: ${kitDoc.id}`);
-            } else {
-              console.log(`ℹ️ User ${userEmail} not in kit: ${kitDoc.id}`);
-            }
-          }
-        });
-        
-        console.log(`📊 Updated ${kitsUpdated} organization branding kits`);
-      } catch (error) {
-        console.error('⚠️ Error removing user from organization branding kits:', error);
-        // Don't fail the entire removal process if branding kit update fails
-      }
-    }
+    // Note: With simplified branding kit logic, organization members automatically see
+    // organization kits based on organizationName match, no need to remove emails individually
     
     await batch.commit();
   } catch (error) {
