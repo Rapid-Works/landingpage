@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
@@ -9,6 +9,7 @@ import {
   updateProfile
 } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase/config';
+import { getFirestore, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 const AuthContext = createContext();
 
@@ -19,20 +20,46 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const db = getFirestore();
+
+  // Create or update user document in Firestore
+  const ensureUserDocument = useCallback(async (user) => {
+    if (!user) return;
+    
+    try {
+      const userRef = doc(db, 'users', user.uid);
+      await setDoc(userRef, {
+        email: user.email,
+        displayName: user.displayName || user.email?.split('@')[0] || 'User',
+        photoURL: user.photoURL || null,
+        updatedAt: serverTimestamp()
+      }, { merge: true }); // merge: true preserves existing fields like currentOrganizationId
+      
+      console.log('✅ User document created/updated for:', user.email);
+    } catch (error) {
+      console.error('❌ Error creating/updating user document:', error);
+    }
+  }, [db]);
 
   // Sign up with email and password
-  function signup(email, password) {
-    return createUserWithEmailAndPassword(auth, email, password);
+  async function signup(email, password) {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    await ensureUserDocument(userCredential.user);
+    return userCredential;
   }
 
   // Sign in with email and password
-  function login(email, password) {
-    return signInWithEmailAndPassword(auth, email, password);
+  async function login(email, password) {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    await ensureUserDocument(userCredential.user);
+    return userCredential;
   }
 
   // Sign in with Google
-  function loginWithGoogle() {
-    return signInWithPopup(auth, googleProvider);
+  async function loginWithGoogle() {
+    const userCredential = await signInWithPopup(auth, googleProvider);
+    await ensureUserDocument(userCredential.user);
+    return userCredential;
   }
 
   // Logout
@@ -51,13 +78,19 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
+      
+      // Ensure user document exists whenever auth state changes
+      if (user) {
+        await ensureUserDocument(user);
+      }
+      
       setLoading(false);
     });
 
     return unsubscribe;
-  }, []);
+  }, [ensureUserDocument]);
 
   const value = {
     currentUser,

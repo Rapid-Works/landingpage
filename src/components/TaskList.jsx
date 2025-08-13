@@ -13,9 +13,11 @@ import {
 import { 
   subscribeAllTaskRequests,
   subscribeExpertTaskRequestsByEmail,
-  subscribeUserTaskRequests
+  subscribeUserTaskRequests,
+  subscribeOrganizationTaskRequests
 } from '../utils/taskRequestService';
 // import { getAllExperts } from '../utils/expertService';
+import { getCurrentUserContext } from '../utils/organizationService';
 import TaskChatSystem from './TaskChatSystem';
 
 const TaskList = ({ userRole, expertInfo, initialSelectedTaskId, onTaskSelected, selectedExpert, onUnreadTotalChange }) => {
@@ -26,9 +28,26 @@ const TaskList = ({ userRole, expertInfo, initialSelectedTaskId, onTaskSelected,
   const [selectedTaskId, setSelectedTaskId] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [userContext, setUserContext] = useState(null);
   
   // Check if current user is from rapid-works.io (admin access to all experts)
   const isRapidWorksAdmin = currentUser?.email?.endsWith('@rapid-works.io');
+
+  // Load user context
+  useEffect(() => {
+    const loadUserContext = async () => {
+      if (!currentUser) return;
+      
+      try {
+        const context = await getCurrentUserContext(currentUser.uid);
+        setUserContext(context);
+      } catch (error) {
+        console.error('Error loading user context:', error);
+      }
+    };
+    
+    loadUserContext();
+  }, [currentUser]);
 
   // Handle initial selected task from external navigation
   useEffect(() => {
@@ -37,6 +56,9 @@ const TaskList = ({ userRole, expertInfo, initialSelectedTaskId, onTaskSelected,
       if (onTaskSelected) {
         onTaskSelected();
       }
+    } else {
+      // Clear selected task when initialSelectedTaskId is null
+      setSelectedTaskId(null);
     }
   }, [initialSelectedTaskId, onTaskSelected]);
 
@@ -52,7 +74,7 @@ const TaskList = ({ userRole, expertInfo, initialSelectedTaskId, onTaskSelected,
 
   // Load tasks based on user role (realtime subscriptions)
   useEffect(() => {
-    if (!currentUser) return;
+    if (!currentUser || !userContext) return;
     setLoading(true);
     setError('');
 
@@ -79,7 +101,7 @@ const TaskList = ({ userRole, expertInfo, initialSelectedTaskId, onTaskSelected,
     };
 
     try {
-        if (userRole === 'expert') {
+      if (userRole === 'expert') {
         if (isRapidWorksAdmin) {
           unsubscribe = subscribeAllTaskRequests(onData);
         } else {
@@ -89,7 +111,22 @@ const TaskList = ({ userRole, expertInfo, initialSelectedTaskId, onTaskSelected,
           }
         }
       } else {
-        unsubscribe = subscribeUserTaskRequests(currentUser.uid, onData);
+        // Customer role - check if in organization context
+        if (userContext?.type === 'organization') {
+          const canSeeAllRequests = userContext.permissions?.role === 'admin' || 
+                                    userContext.permissions?.permissions?.canSeeAllRequests;
+          
+          if (canSeeAllRequests) {
+            // Admin can see all organization tasks
+            unsubscribe = subscribeOrganizationTaskRequests(userContext.organization.id, onData);
+          } else {
+            // Regular member can only see their own tasks within the organization
+            unsubscribe = subscribeUserTaskRequests(currentUser.uid, onData, userContext.organization.id);
+          }
+        } else {
+          // Personal account - see only own tasks
+          unsubscribe = subscribeUserTaskRequests(currentUser.uid, onData);
+        }
       }
     } catch (err) {
       console.error('Error subscribing to tasks:', err);
@@ -100,7 +137,7 @@ const TaskList = ({ userRole, expertInfo, initialSelectedTaskId, onTaskSelected,
     return () => {
       if (typeof unsubscribe === 'function') unsubscribe();
     };
-  }, [currentUser, userRole, expertInfo?.email, isRapidWorksAdmin, selectedExpert, onUnreadTotalChange]);
+  }, [currentUser, userRole, expertInfo?.email, isRapidWorksAdmin, selectedExpert, onUnreadTotalChange, userContext]);
 
   // Compute unread counts per task from messages
   const tasksWithUnread = tasks.map(t => {
@@ -360,6 +397,9 @@ const TaskList = ({ userRole, expertInfo, initialSelectedTaskId, onTaskSelected,
                     {userRole === 'expert' ? 'Customer' : 'Expert'}
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Created By
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Created
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -407,6 +447,17 @@ const TaskList = ({ userRole, expertInfo, initialSelectedTaskId, onTaskSelected,
                           ? (task.userName || task.userEmail?.split('@')[0] || 'Unknown')
                           : (task.expertName || task.expertEmail?.split('@')[0] || 'Unassigned')
                         }
+                      </div>
+                    </td>
+
+                    {/* Created By */}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-600">
+                        {task.createdBy ? (
+                          <span>{task.createdBy.split('@')[0]}</span>
+                        ) : (
+                          <span className="text-gray-400">-</span>
+                        )}
                       </div>
                     </td>
 

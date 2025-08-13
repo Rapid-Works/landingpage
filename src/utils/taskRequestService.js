@@ -83,10 +83,52 @@ export const getUserTaskRequests = async (userId, limitCount = 50) => {
 /**
  * Subscribe to a user's task requests in realtime
  */
-export const subscribeUserTaskRequests = (userId, callback, limitCount = 50) => {
+export const subscribeUserTaskRequests = (userId, callback, organizationId = null, limitCount = 50) => {
+  let q;
+  
+  if (organizationId) {
+    // Filter by user and organization
+    q = query(
+      collection(db, 'taskRequests'),
+      where('userId', '==', userId),
+      where('organizationId', '==', organizationId),
+      orderBy('createdAt', 'desc'),
+      limit(limitCount)
+    );
+  } else {
+    // Personal tasks only (no organization)
+    q = query(
+      collection(db, 'taskRequests'),
+      where('userId', '==', userId),
+      where('organizationId', '==', null),
+      orderBy('createdAt', 'desc'),
+      limit(limitCount)
+    );
+  }
+  
+  return onSnapshot(q, (snapshot) => {
+    const tasks = snapshot.docs.map(d => ({
+      id: d.id,
+      ...d.data(),
+      createdAt: d.data().createdAt?.toDate(),
+      updatedAt: d.data().updatedAt?.toDate(),
+      completedAt: d.data().completedAt?.toDate()
+    }));
+    callback(tasks);
+  });
+};
+
+/**
+ * Subscribe to all task requests for a specific organization
+ * @param {string} organizationId - Organization ID
+ * @param {function} callback - Callback function to handle task updates
+ * @param {number} limitCount - Maximum number of tasks to return
+ * @returns {function} - Unsubscribe function
+ */
+export const subscribeOrganizationTaskRequests = (organizationId, callback, limitCount = 50) => {
   const q = query(
     collection(db, 'taskRequests'),
-    where('userId', '==', userId),
+    where('organizationId', '==', organizationId),
     orderBy('createdAt', 'desc'),
     limit(limitCount)
   );
@@ -448,7 +490,7 @@ export const subscribeAllTaskRequests = (callback, limitCount = 100) => {
   });
 };
 
-export default {
+const taskRequestService = {
   saveTaskRequest,
   getUserTaskRequests,
   getExpertTaskRequests,
@@ -492,3 +534,5 @@ export const markMessagesAsRead = async (taskId, readerRole) => {
     console.error('Failed to mark messages read:', error);
   }
 };
+
+export default taskRequestService;

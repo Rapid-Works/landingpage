@@ -6,6 +6,7 @@ import { uploadTaskFiles, formatFileSize, getFileCategory } from '../utils/taskF
 import { saveTaskRequest } from '../utils/taskRequestService';
 import { getExpertEmailByRole } from '../utils/expertService';
 import { sendNewTaskNotification, sendSimpleTaskNotification, sendPowerAutomateTaskNotification, testTeamsWebhook } from '../utils/teamsWebhookService';
+import { getCurrentUserContext } from '../utils/organizationService';
 
 const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '' }) => {
   const { currentUser } = useAuth();
@@ -115,6 +116,9 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
     }
 
     try {
+      // Get user context (personal vs organization)
+      const userContext = await getCurrentUserContext(currentUser.uid);
+      
       // Get expert email for the selected expert type
       const expertEmail = getExpertEmailByRole(selectedExpertType);
       
@@ -133,7 +137,11 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
         status: 'pending',
         createdAt: new Date().toISOString(),
         exactTimestamp: Date.now(), // Exact millisecond timestamp
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
+        // Organization context
+        organizationId: userContext.type === 'organization' ? userContext.organization.id : null,
+        organizationName: userContext.type === 'organization' ? userContext.organization.name : null,
+        createdBy: currentUser.email // Track who created the task
       };
 
       console.log('Submitting task request:', taskData);
@@ -153,7 +161,9 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
           description: taskData.taskDescription,
           dueDate: taskData.dueDate,
           files: taskData.files,
-          taskId: taskId
+          taskId: taskId,
+          organizationName: taskData.organizationName,
+          createdBy: taskData.createdBy
         };
         
         console.log('📤 Sending Teams notification with data:', teamsNotificationData);
