@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ArrowRight, Download, Plus, List } from "lucide-react";
+import { ArrowRight, Download, List } from "lucide-react";
 import { Button } from "./ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/Tabs";
 import AssetPreview from "./AssetPreview";
@@ -76,23 +76,20 @@ const BrandingKits = ({ initialKitId }) => {
           
           querySnapshot.forEach((doc) => {
             const data = doc.data();
-            const isUserInEmailList = Array.isArray(data.email) 
-              ? data.email.includes(currentUser.email)
-              : data.email === currentUser.email;
             
-            if (isUserInEmailList) {
-              // If user is in organization context, only show kits that belong to that organization
-              if (currentContext.type === 'organization') {
-                // Check if kit has organizationName field and matches current organization
-                if (data.organizationName === currentContext.organization.name) {
-                  userKits.push({ id: doc.id, ...data });
-                }
-                // If kit doesn't have organizationName, it's a personal kit - don't show in org context
-              } else {
-                // Personal context - only show kits without organizationName (personal kits)
-                if (!data.organizationName) {
-                  userKits.push({ id: doc.id, ...data });
-                }
+            if (currentContext.type === 'organization') {
+              // Organization context - show kits that match the organization name
+              if (data.organizationName === currentContext.organization.name) {
+                userKits.push({ id: doc.id, ...data });
+              }
+            } else {
+              // Personal context - show kits without organizationName (personal kits) that belong to the user
+              const isUserInEmailList = Array.isArray(data.email) 
+                ? data.email.includes(currentUser.email)
+                : data.email === currentUser.email;
+              
+              if (isUserInEmailList && !data.organizationName) {
+                userKits.push({ id: doc.id, ...data });
               }
             }
           });
