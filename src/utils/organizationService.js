@@ -14,6 +14,22 @@ import {
 } from 'firebase/firestore';
 import { db } from '../firebase/config';
 
+// Check if user has already created an organization
+export const hasUserCreatedOrganization = async (userId) => {
+  try {
+    const organizationsQuery = query(
+      collection(db, 'organizations'),
+      where('createdBy', '==', userId)
+    );
+    
+    const querySnapshot = await getDocs(organizationsQuery);
+    return !querySnapshot.empty; // Returns true if user has created at least one organization
+  } catch (error) {
+    console.error('Error checking if user has created organization:', error);
+    throw new Error('Failed to check organization creation status');
+  }
+};
+
 // Organization CRUD operations
 export const createOrganization = async (userId, orgData) => {
   try {

@@ -76,8 +76,11 @@ export const unregisterServiceWorkers = async () => {
 
 export const requestNotificationPermission = async () => {
   if (!messaging) {
-    alert('Messaging is not supported in this browser.');
-    return;
+    return {
+      success: false,
+      reason: 'Messaging is not supported in this browser.',
+      token: null
+    };
   }
 
   try {
@@ -115,18 +118,34 @@ export const requestNotificationPermission = async () => {
           createdAt: serverTimestamp(),
         });
         
-        alert('You have successfully subscribed to notifications!');
+        return {
+          success: true,
+          reason: 'Notifications enabled successfully!',
+          token: currentToken
+        };
       } else {
         // console.log('No registration token available. Request permission to generate one.');
-        alert('Could not get notification token. Please ensure you have granted permission.');
+        return {
+          success: false,
+          reason: 'Could not get notification token. Please ensure you have granted permission.',
+          token: null
+        };
       }
     } else {
       // console.log('Unable to get permission to notify.');
-      alert('You have denied notification permissions.');
+      return {
+        success: false,
+        reason: 'You have denied notification permissions.',
+        token: null
+      };
     }
   } catch (error) {
     console.error('An error occurred while subscribing to notifications:', error);
-    alert('An error occurred while subscribing. Please try again.');
+    return {
+      success: false,
+      reason: `An error occurred while subscribing: ${error.message}`,
+      token: null
+    };
   }
 };
 

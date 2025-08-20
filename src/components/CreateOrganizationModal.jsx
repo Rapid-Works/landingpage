@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { X, Building2, MapPin, Calendar, Loader2 } from 'lucide-react';
-import { createOrganization } from '../utils/organizationService';
+import React, { useState, useEffect } from 'react';
+import { X, Building2, MapPin, Calendar, Loader2, AlertTriangle } from 'lucide-react';
+import { createOrganization, hasUserCreatedOrganization } from '../utils/organizationService';
 import { useAuth } from '../contexts/AuthContext';
 
 const CreateOrganizationModal = ({ isOpen, onClose, onOrganizationCreated }) => {
@@ -14,6 +14,31 @@ const CreateOrganizationModal = ({ isOpen, onClose, onOrganizationCreated }) => 
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [hasCreatedOrg, setHasCreatedOrg] = useState(false);
+  const [checkingRestriction, setCheckingRestriction] = useState(true);
+
+  // Check if user has already created an organization
+  useEffect(() => {
+    const checkUserRestriction = async () => {
+      if (!currentUser || !isOpen) {
+        setCheckingRestriction(false);
+        return;
+      }
+
+      try {
+        setCheckingRestriction(true);
+        const hasCreated = await hasUserCreatedOrganization(currentUser.uid);
+        setHasCreatedOrg(hasCreated);
+      } catch (error) {
+        console.error('Error checking organization creation restriction:', error);
+        setError('Failed to check organization creation status');
+      } finally {
+        setCheckingRestriction(false);
+      }
+    };
+
+    checkUserRestriction();
+  }, [currentUser, isOpen]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -92,13 +117,36 @@ const CreateOrganizationModal = ({ isOpen, onClose, onOrganizationCreated }) => 
           </button>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-              {error}
+        {/* Content */}
+        <div className="p-6">
+          {checkingRestriction ? (
+            // Loading state
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-8 w-8 animate-spin text-[#7C3BEC]" />
+              <span className="ml-3 text-gray-600">Checking permissions...</span>
             </div>
-          )}
+          ) : hasCreatedOrg ? (
+            // Restriction message
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <AlertTriangle className="h-8 w-8 text-orange-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Organization Limit Reached</h3>
+              <p className="text-gray-600 mb-4">
+                You can currently create only one organization. However, you can still be invited to and join multiple organizations.
+              </p>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-blue-800">
+                <strong>Good news:</strong> You can still be a member of unlimited organizations when others invite you!
+              </div>
+            </div>
+          ) : (
+            // Form for creating organization
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {error && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                  {error}
+                </div>
+              )}
 
           {/* Organization Name */}
           <div>
@@ -229,6 +277,8 @@ const CreateOrganizationModal = ({ isOpen, onClose, onOrganizationCreated }) => 
             </button>
           </div>
         </form>
+          )}
+        </div>
       </div>
     </div>
   );
