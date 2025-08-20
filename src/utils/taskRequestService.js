@@ -17,9 +17,10 @@ import {
 /**
  * Save a new task request to Firestore
  * @param {Object} taskData - Task request data
+ * @param {boolean} sendNotification - Whether to send notification to expert (default: true)
  * @returns {Promise<string>} - Document ID of created task
  */
-export const saveTaskRequest = async (taskData) => {
+export const saveTaskRequest = async (taskData, sendNotification = true) => {
   try {
     const taskRequest = {
       ...taskData,
@@ -37,6 +38,28 @@ export const saveTaskRequest = async (taskData) => {
 
     const docRef = await addDoc(collection(db, 'taskRequests'), taskRequest);
     console.log('Task request saved with ID:', docRef.id);
+    
+    // Send notification to expert about new task
+    if (sendNotification && taskData.expertEmail && taskData.userEmail) {
+      try {
+        // Import notification service dynamically
+        const { sendTaskCreatedNotification } = await import('./taskNotificationService.js');
+        
+        await sendTaskCreatedNotification({
+          taskId: docRef.id,
+          customerEmail: taskData.userEmail,
+          expertEmail: taskData.expertEmail,
+          taskData: {
+            id: docRef.id,
+            title: taskData.title || taskData.service || taskData.expertType,
+            status: 'pending'
+          }
+        });
+      } catch (notificationError) {
+        console.error('Failed to send task creation notification:', notificationError);
+        // Don't fail the task creation if notification fails
+      }
+    }
     
     return docRef.id;
   } catch (error) {
@@ -301,9 +324,10 @@ export const updateInvoicePaymentStatus = async (taskId, paymentStatus) => {
  * Add a message to a task request
  * @param {string} taskId - Task document ID
  * @param {Object} message - Message object
+ * @param {boolean} sendNotification - Whether to send notification (default: true)
  * @returns {Promise<void>}
  */
-export const addTaskMessage = async (taskId, message) => {
+export const addTaskMessage = async (taskId, message, sendNotification = true) => {
   try {
     const taskRef = doc(db, 'taskRequests', taskId);
     const taskDoc = await getDoc(taskRef);
@@ -312,12 +336,14 @@ export const addTaskMessage = async (taskId, message) => {
       throw new Error('Task not found');
     }
 
-    const currentMessages = taskDoc.data().messages || [];
+    const taskData = taskDoc.data();
+    const currentMessages = taskData.messages || [];
     const newMessage = {
       ...message,
       id: Date.now().toString(),
       timestamp: new Date().toISOString(),
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      read: false // Mark as unread initially
     };
 
     await updateDoc(taskRef, {
@@ -326,6 +352,46 @@ export const addTaskMessage = async (taskId, message) => {
     });
 
     console.log('Message added to task:', taskId);
+
+    // Send notification if enabled and we have recipient information
+    if (sendNotification && message.sender && taskData.userEmail && taskData.expertEmail) {
+      try {
+        // Import notification service dynamically to avoid circular dependencies
+        const { sendTaskMessageNotification } = await import('./taskNotificationService.js');
+        
+        // Determine sender and recipient
+        const senderRole = message.sender;
+        const senderEmail = senderRole === 'expert' ? taskData.expertEmail : taskData.userEmail;
+        const recipientRole = senderRole === 'expert' ? 'customer' : 'expert';
+        const recipientEmail = senderRole === 'expert' ? taskData.userEmail : taskData.expertEmail;
+
+        // Determine message type
+        let messageType = 'message';
+        if (message.type === 'estimate') {
+          messageType = 'estimate';
+        } else if (message.content && message.content.includes('€')) {
+          messageType = 'estimate';
+        }
+
+        await sendTaskMessageNotification({
+          taskId,
+          senderEmail,
+          senderRole,
+          recipientEmail,
+          recipientRole,
+          messageContent: message.content || message.text || '',
+          messageType,
+          taskData: {
+            id: taskId,
+            title: taskData.title || taskData.service || taskData.expertType,
+            status: taskData.status
+          }
+        });
+      } catch (notificationError) {
+        console.error('Failed to send task message notification:', notificationError);
+        // Don't fail the message sending if notification fails
+      }
+    }
   } catch (error) {
     console.error('Error adding task message:', error);
     throw new Error('Failed to add message.');

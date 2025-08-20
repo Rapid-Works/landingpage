@@ -47,6 +47,7 @@ import PrivacyPage from './components/PrivacyPage'
 import ImpressumPage from './components/ImpressumPage'
 import CookieConsent from './components/CookieConsent'
 import PublicBrandingKits from './components/PublicBrandingKits'
+import TrackingRedirect from './components/TrackingRedirect'
 
 // Authentication imports
 import { AuthProvider } from './contexts/AuthContext'
@@ -1314,6 +1315,9 @@ function App() {
             
             {/* Organization Invite Route */}
             <Route path="/organization/invite/:token" element={<OrganizationInvite />} />
+            
+            {/* Tracking Redirect Route */}
+            <Route path="/t/:trackingCode" element={<TrackingRedirect />} />
             
             {/* QR Code Routes */}
             <Route path="/qrcodebranding" element={<QRCodeRedirect />} />

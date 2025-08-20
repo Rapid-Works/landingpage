@@ -18,6 +18,10 @@ const DEFAULT_PREFERENCES = {
     mobile: true,
     email: true,
   },
+  taskMessages: {
+    mobile: true,
+    email: true,
+  },
 };
 
 // Helper function to get user notification preferences
@@ -1152,5 +1156,180 @@ IMPORTANT: Always respond in ${language === "de" ? "German" : "English"} ` +
   } catch (error) {
     console.error("Error with Gemini AI:", error);
     throw new Error("Failed to process AI request");
+  }
+});
+
+// Callable function for sending task message notifications
+exports.sendTaskMessageNotification = onCall(async (request) => {
+  const {
+    taskId,
+    senderEmail,
+    senderRole,
+    recipientEmail,
+    recipientRole,
+    messageContent,
+    messageType,
+    taskData,
+  } = request.data;
+
+  if (!taskId || !senderEmail || !recipientEmail || !messageContent) {
+    throw new Error("Missing required notification parameters");
+  }
+
+  try {
+    console.log(`📬 Sending task notification: ${messageType} ` +
+      `from ${senderRole} to ${recipientRole}`);
+
+    // Get recipient's user ID and notification preferences
+    console.log(`🔍 Looking up user for email: ${recipientEmail}`);
+    const recipientUserId = await getUserIdFromEmail(recipientEmail);
+    if (!recipientUserId) {
+      console.log(`⚠️ Recipient user not found for email: ${recipientEmail}`);
+      console.log(`💡 Make sure ${recipientEmail} exists in Firebase Auth`);
+      return {
+        success: false,
+        reason: "recipient_not_found",
+        email: recipientEmail,
+      };
+    }
+    console.log(`✅ Found user ID: ${recipientUserId} ` +
+      `for email: ${recipientEmail}`);
+
+    const preferences = await getUserNotificationPreferences(recipientUserId);
+
+    // Create notification content based on message type
+    let title;
+    let body;
+    const taskTitle = taskData?.title || "Task";
+
+    switch (messageType) {
+      case "task_created":
+        title = "🆕 New Task Assignment";
+        body = `You have a new task: "${taskTitle}"`;
+        break;
+      case "estimate":
+        title = "💰 Estimate Received";
+        body = `Estimate for "${taskTitle}": ${messageContent}`;
+        break;
+      case "message":
+      default:
+        if (senderRole === "expert") {
+          title = "👨‍💼 Message from Expert";
+          const preview = messageContent.substring(0, 50);
+          const ellipsis = messageContent.length > 50 ? "..." : "";
+          body = `Expert replied to "${taskTitle}": ${preview}${ellipsis}`;
+        } else {
+          title = "👤 Message from Client";
+          const preview = messageContent.substring(0, 50);
+          const ellipsis = messageContent.length > 50 ? "..." : "";
+          body = `Client message for "${taskTitle}": ${preview}${ellipsis}`;
+        }
+        break;
+    }
+
+    const url = `/dashboard?task=${taskId}`;
+
+    // Check if user wants task message notifications
+    const shouldSendMobile = preferences.taskMessages?.mobile !== false;
+
+    let notificationsSent = 0;
+
+    // Send mobile push notification
+    if (shouldSendMobile) {
+      try {
+        console.log(`📱 Looking for FCM tokens for: ${recipientEmail}`);
+        const tokensSnapshot = await db.collection("fcmTokens")
+            .where("email", "==", recipientEmail)
+            .get();
+
+        console.log(`📊 Found ${tokensSnapshot.size} FCM token(s) ` +
+          `for ${recipientEmail}`);
+
+        if (!tokensSnapshot.empty) {
+          const tokens = tokensSnapshot.docs.map((doc) => doc.data().token);
+          console.log(`🎯 Sending to ${tokens.length} device(s)`);
+
+          const message = {
+            notification: {
+              title: title,
+              body: body,
+            },
+            data: {
+              url: url,
+              type: "task_message",
+              taskId: taskId,
+              senderRole: senderRole,
+            },
+          };
+
+          // Send to all user's devices
+          for (const token of tokens) {
+            try {
+              await admin.messaging().send({
+                ...message,
+                token: token,
+              });
+              notificationsSent++;
+              console.log(`📱 Mobile notification sent to: ${recipientEmail}`);
+            } catch (tokenError) {
+              console.error(`Failed to send to token ${token}:`, tokenError);
+              // Remove invalid token
+              try {
+                const invalidTokenDocs = await db.collection("fcmTokens")
+                    .where("token", "==", token)
+                    .get();
+                invalidTokenDocs.forEach((doc) => doc.ref.delete());
+              } catch (cleanupError) {
+                console.error("Error cleaning up invalid token:", cleanupError);
+              }
+            }
+          }
+        } else {
+          console.log(`📱 No FCM tokens found for: ${recipientEmail}`);
+          console.log(`💡 User needs to enable notifications to receive ` +
+            `push notifications`);
+
+          // We could potentially trigger a notification registration here,
+          // but it requires user interaction due to browser security policies
+        }
+      } catch (error) {
+        console.error("Error sending mobile notification:", error);
+      }
+    }
+
+    // Save notification to history for in-app notifications
+    try {
+      await saveNotificationToHistory(recipientUserId, {
+        title: title,
+        body: body,
+        type: "task_message",
+        url: url,
+        metadata: {
+          taskId: taskId,
+          senderEmail: senderEmail,
+          senderRole: senderRole,
+          messageType: messageType,
+          taskTitle: taskTitle,
+        },
+      });
+      console.log(`📝 Notification saved to history for: ${recipientEmail}`);
+    } catch (historyError) {
+      console.error("Error saving notification to history:", historyError);
+    }
+
+    return {
+      success: true,
+      notificationsSent: notificationsSent,
+      recipientEmail: recipientEmail,
+      messageType: messageType,
+      hasTokens: notificationsSent > 0,
+      message: notificationsSent > 0 ?
+        `Sent ${notificationsSent} push notification(s)` :
+        "Notification saved to history. " +
+        "User needs to enable notifications for push notifications.",
+    };
+  } catch (error) {
+    console.error("Error sending task message notification:", error);
+    throw new Error(`Failed to send task notification: ${error.message}`);
   }
 });

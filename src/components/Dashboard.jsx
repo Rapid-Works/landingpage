@@ -14,6 +14,8 @@ import OrganizationSwitcher from './OrganizationSwitcher';
 import CreateOrganizationModal from './CreateOrganizationModal';
 import OrganizationUsers from './OrganizationUsers';
 import OrganizationsList from './OrganizationsList';
+import Analytics from './Analytics';
+
 import { isExpert, getExpertByEmail, isAdmin, getAllExperts } from '../utils/expertService';
 import { getCurrentUserContext } from '../utils/organizationService';
 // notification helpers handled inside NotificationSettingsModal
@@ -85,6 +87,9 @@ const Dashboard = () => {
   
   // Check if user can access organizations admin panel (rapid-works.io emails only)
   const canAccessOrganizations = currentUser && currentUser.email?.endsWith('@rapid-works.io');
+  
+  // Check if user can access analytics (available to all authenticated users)
+  const canAccessAnalytics = currentUser !== null;
 
   // Handle navigation from invoicing to task chat
   const handleNavigateToTask = (taskId) => {
@@ -389,25 +394,29 @@ const Dashboard = () => {
                 )}
 
                 {canAccessOrganizations && (
-                  <button
-                    onClick={() => {
-                      setActiveTab('organizations');
-                      setSelectedTaskId(null); // Clear selected task when switching tabs
-                    }}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
-                      activeTab === 'organizations'
-                        ? 'bg-[#7C3BEC] text-white shadow-lg'
-                        : 'text-gray-700 hover:bg-white hover:shadow-md'
-                    }`}
-                  >
-                    <Building className="h-5 w-5" />
-                    <div className="flex-1">
-                      <div className="font-medium">Organizations</div>
-                    </div>
-                  </button>
+                  <>
+                    <button
+                      onClick={() => {
+                        setActiveTab('organizations');
+                        setSelectedTaskId(null); // Clear selected task when switching tabs
+                      }}
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
+                        activeTab === 'organizations'
+                          ? 'bg-[#7C3BEC] text-white shadow-lg'
+                          : 'text-gray-700 hover:bg-white hover:shadow-md'
+                      }`}
+                    >
+                      <Building className="h-5 w-5" />
+                      <div className="flex-1">
+                        <div className="font-medium">Organizations</div>
+                      </div>
+                    </button>
+
+
+                  </>
                 )}
 
-                {canAccessOrganizations && (
+                {canAccessAnalytics && (
                   <button
                     onClick={() => {
                       setActiveTab('analytics');
@@ -421,7 +430,7 @@ const Dashboard = () => {
                   >
                     <BarChart3 className="h-5 w-5" />
                     <div className="flex-1">
-                      <div className="font-medium">Rapid Analytics</div>
+                      <div className="font-medium">Analytics</div>
                     </div>
                   </button>
                 )}
@@ -541,26 +550,16 @@ const Dashboard = () => {
                   </motion.div>
                 )}
 
-                {activeTab === 'analytics' && canAccessOrganizations && (
+
+
+                {activeTab === 'analytics' && canAccessAnalytics && (
                   <motion.div
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3 }}
                     className="bg-white rounded-lg border border-gray-200 p-6"
                   >
-                    <div className="text-center py-20">
-                      <BarChart3 className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                      <h2 className="text-2xl font-semibold text-gray-900 mb-2">Rapid Analytics</h2>
-                      <p className="text-gray-600 mb-6">Advanced analytics and insights coming soon</p>
-                      <div className="inline-flex items-center px-4 py-2 bg-gray-100 rounded-lg">
-                        <div className="animate-pulse flex space-x-1">
-                          <div className="h-2 w-2 bg-[#7C3BEC] rounded-full"></div>
-                          <div className="h-2 w-2 bg-[#7C3BEC] rounded-full animation-delay-200"></div>
-                          <div className="h-2 w-2 bg-[#7C3BEC] rounded-full animation-delay-400"></div>
-                        </div>
-                        <span className="ml-3 text-sm text-gray-600">Coming Soon</span>
-                      </div>
-                    </div>
+                    <Analytics />
                   </motion.div>
                 )}
 
