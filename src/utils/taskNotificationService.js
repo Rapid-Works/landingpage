@@ -57,9 +57,19 @@ export const sendTaskMessageNotification = async ({
   taskData
 }) => {
   try {
+    console.log('🔔 Attempting to send task notification:', {
+      taskId,
+      senderEmail,
+      senderRole,
+      recipientEmail,
+      recipientRole,
+      messageType,
+      messagePreview: messageContent.substring(0, 50)
+    });
+
     const sendTaskNotification = httpsCallable(functions, 'sendTaskMessageNotification');
     
-    const result = await sendTaskNotification({
+    const notificationData = {
       taskId,
       senderEmail,
       senderRole,
@@ -72,13 +82,17 @@ export const sendTaskMessageNotification = async ({
         title: taskData.title || taskData.service || 'Task',
         status: taskData.status
       }
-    });
+    };
+
+    console.log('📤 Sending notification with data:', notificationData);
     
-    console.log('✅ Task message notification sent:', result.data);
+    const result = await sendTaskNotification(notificationData);
+    
+    console.log('✅ Task message notification sent successfully:', result.data);
     
     // If no FCM tokens were found, try to prompt user to enable notifications
     if (result.data && !result.data.hasTokens) {
-      console.log('💡 No FCM tokens found - user should enable notifications');
+      console.log('💡 No FCM tokens found for recipient - user should enable notifications');
       
       // Try to automatically register for notifications if possible
       try {
@@ -91,6 +105,11 @@ export const sendTaskMessageNotification = async ({
     return result.data;
   } catch (error) {
     console.error('❌ Error sending task message notification:', error);
+    console.error('❌ Error details:', {
+      code: error.code,
+      message: error.message,
+      details: error.details
+    });
     // Don't throw error to prevent message sending from failing
     // Notifications are nice-to-have, not critical
   }

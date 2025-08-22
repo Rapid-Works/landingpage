@@ -18,6 +18,7 @@ import Analytics from './Analytics';
 
 import { isExpert, getExpertByEmail, isAdmin, getAllExperts } from '../utils/expertService';
 import { getCurrentUserContext } from '../utils/organizationService';
+import NotificationTester from './NotificationTester';
 // notification helpers handled inside NotificationSettingsModal
 
 
@@ -27,11 +28,21 @@ import { getCurrentUserContext } from '../utils/organizationService';
 const Dashboard = () => {
   const { currentUser } = useAuth();
   // const navigate = useNavigate();
-  const { kitId } = useParams();
+  const { kitId, taskId } = useParams();
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   // Open Notification Settings if history link set the flag
   const initialOpenNotif = typeof window !== 'undefined' && localStorage.getItem('openNotificationSettings') === '1';
-  const [activeTab, setActiveTab] = useState('branding');
+  
+  // Persist active tab across refreshes
+  const getInitialTab = () => {
+    if (typeof window !== 'undefined') {
+      const savedTab = localStorage.getItem('dashboardActiveTab');
+      return savedTab || 'branding';
+    }
+    return 'branding';
+  };
+  
+  const [activeTab, setActiveTab] = useState(getInitialTab());
   const [selectedTaskId, setSelectedTaskId] = useState(null);
   const [expertTasksExpanded, setExpertTasksExpanded] = useState(false);
   const [selectedExpert, setSelectedExpert] = useState(null);
@@ -43,10 +54,30 @@ const Dashboard = () => {
   const [currentContext, setCurrentContext] = useState(null);
   const [isCreateOrgModalOpen, setIsCreateOrgModalOpen] = useState(false);
   const [contextLoading, setContextLoading] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   if (initialOpenNotif) {
     try { localStorage.removeItem('openNotificationSettings'); } catch (e) {}
   }
+
+  // Save active tab to localStorage when it changes
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('dashboardActiveTab', activeTab);
+    }
+  }, [activeTab]);
+
+  // Close mobile menu on desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) { // lg breakpoint
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Load user context (personal vs organization)
   useEffect(() => {
@@ -69,6 +100,17 @@ const Dashboard = () => {
 
     loadContext();
   }, [currentUser]);
+
+  // Handle deep linking to specific task via URL parameter
+  useEffect(() => {
+    if (taskId && !contextLoading) {
+      console.log('🔗 Deep linking to task:', taskId);
+      // Navigate to tasks tab and select the specific task
+      setActiveTab('tasks');
+      setSelectedTaskId(taskId);
+      // URL will be cleared by handleTaskSelected callback
+    }
+  }, [taskId, contextLoading]);
   
   // Check if current user is an expert or admin
   const userIsExpert = currentUser ? isExpert(currentUser.email) : false;
@@ -97,6 +139,17 @@ const Dashboard = () => {
     setActiveTab('tasks');
   };
 
+  // Handle task successfully selected (callback from TaskList)
+  const handleTaskSelected = () => {
+    // Clear the taskId from URL when task is successfully selected
+    if (taskId) {
+      const currentPath = window.location.pathname;
+      const newPath = currentPath.replace(`/task/${taskId}`, '');
+      window.history.replaceState(null, '', newPath);
+    }
+    // Don't clear selectedTaskId here as we want to keep the task selected
+  };
+
   // moved enable/test notifications into Notification Settings modal
 
   const handleOrganizationCreated = (organization) => {
@@ -119,8 +172,8 @@ const Dashboard = () => {
     setCurrentContext(newContext);
   };
 
-  // Check if user can see Users tab (only in organization context and has appropriate permissions)
-  const canAccessUsers = currentContext?.type === 'organization' && 
+  // Check if user can see Members tab (only in organization context and has appropriate permissions)
+  const canAccessMembers = currentContext?.type === 'organization' && 
     (currentContext.permissions?.role === 'admin' || currentContext.permissions?.permissions?.canManageMembers);
 
   // Check if user can edit profile (personal account or organization admin)
@@ -145,16 +198,26 @@ const Dashboard = () => {
     <div className="h-screen bg-gray-100 overflow-hidden flex flex-col">
       <RapidWorksHeader />
 
-      {/* Sidebar Dashboard Layout - Full width like Slack/Gmail */}
+      {/* Sidebar Dashboard Layout - Responsive like Slack/Gmail */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
         className="bg-white overflow-hidden h-[calc(100vh-3rem)] mt-12"
       >
-          <div className="flex h-full">
+          <div className="flex h-full relative">
+            {/* Mobile Menu Overlay */}
+            {isMobileMenuOpen && (
+              <div 
+                className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+                onClick={() => setIsMobileMenuOpen(false)}
+              />
+            )}
+
             {/* Left Sidebar */}
-            <div className="w-72 bg-gray-50 border-r border-gray-200 flex flex-col flex-shrink-0">
+            <div className={`${
+              isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+            } lg:translate-x-0 fixed lg:relative top-0 left-0 z-50 lg:z-auto w-72 bg-gray-50 border-r border-gray-200 flex flex-col flex-shrink-0 h-full transition-transform duration-300 ease-in-out lg:transition-none`}>
               {/* Sidebar Header */}
               <div className="p-6 border-b border-gray-200">
                 <div className="flex items-center gap-3 mb-3">
@@ -226,6 +289,7 @@ const Dashboard = () => {
                   onClick={() => {
                     setActiveTab('branding');
                     setSelectedTaskId(null); // Clear selected task when switching tabs
+                    setIsMobileMenuOpen(false); // Close mobile menu
                   }}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
                     activeTab === 'branding'
@@ -250,6 +314,7 @@ const Dashboard = () => {
                           setSelectedExpert(null);
                           setSelectedTaskId(null); // Clear selected task when expanding expert tasks
                         }
+                        setIsMobileMenuOpen(false); // Close mobile menu
                       }}
                       className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
                         activeTab === 'tasks' && !selectedExpert
@@ -282,6 +347,7 @@ const Dashboard = () => {
                             setActiveTab('tasks');
                             setSelectedExpert(null);
                             setSelectedTaskId(null); // Clear selected task when switching to All Tasks
+                            setIsMobileMenuOpen(false); // Close mobile menu
                           }}
                           className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg text-left transition-all duration-200 text-sm ${
                             activeTab === 'tasks' && !selectedExpert
@@ -303,6 +369,7 @@ const Dashboard = () => {
                               setActiveTab('tasks');
                               setSelectedExpert(expert);
                               setSelectedTaskId(null); // Clear selected task when switching to specific expert
+                              setIsMobileMenuOpen(false); // Close mobile menu
                             }}
                             className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg text-left transition-all duration-200 text-sm ${
                               activeTab === 'tasks' && selectedExpert?.email === expert.email
@@ -334,6 +401,7 @@ const Dashboard = () => {
                     onClick={() => {
                       setActiveTab('tasks');
                       setSelectedTaskId(null); // Clear selected task when switching to tasks
+                      setIsMobileMenuOpen(false); // Close mobile menu
                     }}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
                       activeTab === 'tasks'
@@ -360,6 +428,7 @@ const Dashboard = () => {
                     onClick={() => {
                       setActiveTab('agreements');
                       setSelectedTaskId(null); // Clear selected task when switching tabs
+                      setIsMobileMenuOpen(false); // Close mobile menu
                     }}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
                       activeTab === 'agreements'
@@ -379,6 +448,7 @@ const Dashboard = () => {
                     onClick={() => {
                       setActiveTab('invoicing');
                       setSelectedTaskId(null); // Clear selected task when switching tabs
+                      setIsMobileMenuOpen(false); // Close mobile menu
                     }}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
                       activeTab === 'invoicing'
@@ -399,6 +469,7 @@ const Dashboard = () => {
                       onClick={() => {
                         setActiveTab('organizations');
                         setSelectedTaskId(null); // Clear selected task when switching tabs
+                        setIsMobileMenuOpen(false); // Close mobile menu
                       }}
                       className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
                         activeTab === 'organizations'
@@ -421,6 +492,7 @@ const Dashboard = () => {
                     onClick={() => {
                       setActiveTab('analytics');
                       setSelectedTaskId(null); // Clear selected task when switching tabs
+                      setIsMobileMenuOpen(false); // Close mobile menu
                     }}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
                       activeTab === 'analytics'
@@ -435,29 +507,53 @@ const Dashboard = () => {
                   </button>
                 )}
 
-                {canAccessUsers && (
+                {canAccessMembers && (
                   <button
                     onClick={() => {
-                      setActiveTab('users');
+                      setActiveTab('members');
                       setSelectedTaskId(null); // Clear selected task when switching tabs
+                      setIsMobileMenuOpen(false); // Close mobile menu
                     }}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
-                      activeTab === 'users'
+                      activeTab === 'members'
                         ? 'bg-[#7C3BEC] text-white shadow-lg'
                         : 'text-gray-700 hover:bg-white hover:shadow-md'
                     }`}
                   >
                     <Users className="h-5 w-5" />
                     <div className="flex-1">
-                      <div className="font-medium">Users</div>
+                      <div className="font-medium">Members</div>
                     </div>
                   </button>
                 )}
 
+                {/* Temporary Notification Test Tab - FOR TESTING ONLY */}
+                <button
+                  onClick={() => {
+                    setActiveTab('notifications-test');
+                    setSelectedTaskId(null);
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
+                    activeTab === 'notifications-test'
+                      ? 'bg-orange-500 text-white shadow-lg'
+                      : 'text-gray-700 hover:bg-white hover:shadow-md'
+                  }`}
+                >
+                  <BellRing className="h-5 w-5" />
+                  <div className="flex-1">
+                    <div className="font-medium">🧪 Test Notifications</div>
+                    <div className="text-xs opacity-75">Dev Testing Only</div>
+                  </div>
+                </button>
+
                 {/* Profile and Notification Settings moved into sidebar */}
                 {canEditProfile && (
                   <button
-                    onClick={() => setIsProfileModalOpen(true)}
+                    onClick={() => {
+                      setIsProfileModalOpen(true);
+                      setIsMobileMenuOpen(false); // Close mobile menu
+                    }}
                     className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 text-gray-700 hover:bg-white hover:shadow-md"
                   >
                     <Edit className="h-5 w-5" />
@@ -468,7 +564,10 @@ const Dashboard = () => {
                 )}
 
                 <button
-                  onClick={() => setIsNotifSettingsOpen(true)}
+                  onClick={() => {
+                    setIsNotifSettingsOpen(true);
+                    setIsMobileMenuOpen(false); // Close mobile menu
+                  }}
                   className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 text-gray-700 hover:bg-white hover:shadow-md"
                 >
                   <BellRing className="h-5 w-5" />
@@ -481,12 +580,32 @@ const Dashboard = () => {
             </div>
 
             {/* Right Content Area */}
-            <div className="flex-1 flex flex-col">
+            <div className="flex-1 flex flex-col min-w-0">
+              {/* Mobile Header */}
+              <div className="lg:hidden bg-white border-b border-gray-200 p-4 flex items-center gap-3">
+                <button
+                  onClick={() => setIsMobileMenuOpen(true)}
+                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                </button>
+                <h1 className="text-lg font-semibold text-gray-900 truncate">
+                  {activeTab === 'branding' && 'Branding Kits'}
+                  {activeTab === 'tasks' && (userIsExpert ? 'Expert Tasks' : 'My Requests')}
+                  {activeTab === 'agreements' && 'Agreements'}
+                  {activeTab === 'invoicing' && 'Invoicing'}
+                  {activeTab === 'organizations' && 'Organizations'}
+                  {activeTab === 'analytics' && 'Analytics'}
+                  {activeTab === 'members' && 'Members'}
+                </h1>
+              </div>
 
 
               {/* Content Area */}
-              <div className="flex-1 p-3 bg-gray-50 overflow-y-auto h-full">
-                <div className="flex items-center justify-end gap-2 mb-3"></div>
+              <div className="flex-1 p-3 lg:p-3 bg-gray-50 overflow-y-auto h-full">
+                <div className="flex items-center justify-end gap-2 mb-3 hidden lg:flex"></div>
                 {activeTab === 'branding' && (
                   <motion.div
                     initial={{ opacity: 0, x: 20 }}
@@ -510,7 +629,7 @@ const Dashboard = () => {
                       userRole={userIsExpert ? 'expert' : 'customer'}
                       expertInfo={expertInfo}
                       initialSelectedTaskId={selectedTaskId}
-                      onTaskSelected={() => setSelectedTaskId(null)}
+                      onTaskSelected={handleTaskSelected}
                       selectedExpert={selectedExpert}
                       onUnreadTotalChange={setUnreadTotal}
                     />
@@ -522,7 +641,7 @@ const Dashboard = () => {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="bg-white rounded-lg border border-gray-200 p-6"
+                    className="bg-white rounded-lg border border-gray-200 p-4 lg:p-6"
                   >
                     <SignedAgreements />
                   </motion.div>
@@ -533,7 +652,7 @@ const Dashboard = () => {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="bg-white rounded-lg border border-gray-200 p-6"
+                    className="bg-white rounded-lg border border-gray-200 p-4 lg:p-6"
                   >
                     <Invoicing onNavigateToTask={handleNavigateToTask} />
                   </motion.div>
@@ -544,7 +663,7 @@ const Dashboard = () => {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="bg-white rounded-lg border border-gray-200 p-6"
+                    className="bg-white rounded-lg border border-gray-200 p-4 lg:p-6"
                   >
                     <OrganizationsList onNavigateToTask={handleNavigateToTask} />
                   </motion.div>
@@ -557,18 +676,40 @@ const Dashboard = () => {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="bg-white rounded-lg border border-gray-200 p-6"
+                    className="bg-white rounded-lg border border-gray-200 p-4 lg:p-6"
                   >
                     <Analytics />
                   </motion.div>
                 )}
 
-                {activeTab === 'users' && canAccessUsers && (
+                {/* Temporary Notification Test Section - FOR TESTING ONLY */}
+                {activeTab === 'notifications-test' && (
                   <motion.div
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="bg-white rounded-lg border border-gray-200 p-6"
+                    className="bg-white rounded-lg border border-gray-200 p-4 lg:p-6"
+                  >
+                    <div className="mb-6">
+                      <h2 className="text-2xl font-bold text-gray-900 mb-2">🧪 Notification Testing</h2>
+                      <p className="text-gray-600">
+                        This is a temporary testing interface for push notifications. 
+                        Remove this tab before production deployment.
+                      </p>
+                    </div>
+                    
+                    <div className="flex justify-center">
+                      <NotificationTester />
+                    </div>
+                  </motion.div>
+                )}
+
+                {activeTab === 'members' && canAccessMembers && (
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="bg-white rounded-lg border border-gray-200 p-4 lg:p-6"
                   >
                     <OrganizationUsers 
                       organization={currentContext.organization}
