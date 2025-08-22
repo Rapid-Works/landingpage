@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { createPortal } from 'react-dom';
 import { ChevronDown, Building2, User, Plus, Check, Loader2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { 
@@ -18,10 +17,7 @@ const OrganizationSwitcher = ({ onCreateOrganization, currentContext, onContextC
   const [organizations, setOrganizations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [switching, setSwitching] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(false);
-  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const dropdownRef = useRef(null);
-  const createOrgButtonRef = useRef(null);
 
   const loadOrganizations = useCallback(async () => {
     if (!currentUser) return;
@@ -85,21 +81,6 @@ const OrganizationSwitcher = ({ onCreateOrganization, currentContext, onContextC
   const handleCreateOrganization = () => {
     setIsOpen(false);
     onCreateOrganization();
-  };
-
-  const handleMouseEnter = () => {
-    if (isRapidWorksAdmin && createOrgButtonRef.current) {
-      const rect = createOrgButtonRef.current.getBoundingClientRect();
-      setTooltipPosition({
-        x: rect.left + rect.width / 2,
-        y: rect.top - 10
-      });
-      setShowTooltip(true);
-    }
-  };
-
-  const handleMouseLeave = () => {
-    setShowTooltip(false);
   };
 
   const getCurrentDisplayName = () => {
@@ -194,41 +175,20 @@ const OrganizationSwitcher = ({ onCreateOrganization, currentContext, onContextC
             ))
           )}
 
-          {/* Create Organization Option */}
-          <div className="border-t border-gray-100 mt-1">
-            <button
-              ref={createOrgButtonRef}
-              onClick={isRapidWorksAdmin ? undefined : handleCreateOrganization}
-              disabled={switching || isRapidWorksAdmin}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors ${
-                isRapidWorksAdmin 
-                  ? 'text-gray-400 cursor-not-allowed' 
-                  : 'hover:bg-gray-50 text-[#7C3BEC]'
-              }`}
-            >
-              <Plus className="h-4 w-4" />
-              <div className="font-medium text-sm">Create Organization</div>
-            </button>
-          </div>
+          {/* Create Organization Option - Only show if user doesn't have any organizations and is not rapid-works admin */}
+          {!isRapidWorksAdmin && organizations.length === 0 && (
+            <div className="border-t border-gray-100 mt-1">
+              <button
+                onClick={handleCreateOrganization}
+                disabled={switching}
+                className="w-full flex items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-gray-50 text-[#7C3BEC]"
+              >
+                <Plus className="h-4 w-4" />
+                <div className="font-medium text-sm">Create Organization</div>
+              </button>
+            </div>
+          )}
         </div>
-      )}
-      
-      {/* Portal tooltip */}
-      {isRapidWorksAdmin && showTooltip && createPortal(
-        <div 
-          className="fixed px-3 py-2 bg-gray-800 text-white text-xs rounded-md whitespace-nowrap pointer-events-none z-[9999]"
-          style={{
-            left: `${tooltipPosition.x}px`,
-            top: `${tooltipPosition.y}px`,
-            transform: 'translate(-50%, -100%)'
-          }}
-        >
-          rapid-works admins cant create an organization
-          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800"></div>
-        </div>,
-        document.body
       )}
     </div>
   );

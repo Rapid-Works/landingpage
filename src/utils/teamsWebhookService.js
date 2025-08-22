@@ -1,4 +1,5 @@
 // Microsoft Teams webhook service for sending notifications
+import { generateTaskDeepLink } from './linkService';
 
 const TEAMS_WEBHOOK_URL = 'https://default1ad4f835a3b1431ea8f2106eb76311.68.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/9c86d50f0f6b4d36ba75f5fd6cfb7658/triggers/manual/paths/invoke/?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=fCgx5EebG_fpAKlypzaMhCH6vgwCEAK8kVTSUBvVeTk';
 
@@ -128,9 +129,29 @@ export const sendNewTaskNotification = async (taskData) => {
           "items": [
             {
               "type": "TextBlock",
-              "text": "**Action Required:** Please login to your [rapid-works.io dashboard](https://rapid-works.io/dashboard) to view and manage this task.",
+              "text": `**Action Required:** Click the button below to view this specific task in your dashboard.`,
               "wrap": true,
               "weight": "Bolder",
+              "color": "Dark"
+            }
+          ]
+        },
+        {
+          "type": "Container",
+          "style": "emphasis",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "**Direct Link (Copyable):**",
+              "weight": "Bolder",
+              "size": "Small"
+            },
+            {
+              "type": "TextBlock",
+              "text": generateTaskDeepLink(taskData.taskId),
+              "wrap": true,
+              "fontType": "Monospace",
+              "size": "Small",
               "color": "Dark"
             }
           ]
@@ -185,6 +206,10 @@ export const sendNewTaskNotification = async (taskData) => {
               "value": taskData.taskId || 'Generated on creation'
             },
             {
+              "title": "Direct Link",
+              "value": generateTaskDeepLink(taskData.taskId)
+            },
+            {
               "title": "Created",
               "value": formatHumanDateTime(new Date())
             }
@@ -194,9 +219,15 @@ export const sendNewTaskNotification = async (taskData) => {
       "actions": [
         {
           "type": "Action.OpenUrl",
+          "title": "View Task",
+          "url": generateTaskDeepLink(taskData.taskId),
+          "style": "positive"
+        },
+        {
+          "type": "Action.OpenUrl",
           "title": "Open Dashboard",
           "url": "https://rapid-works.io/dashboard",
-          "style": "positive"
+          "style": "default"
         },
         {
           "type": "Action.OpenUrl",
@@ -322,6 +353,10 @@ export const sendTaskStatusUpdateNotification = async (updateData) => {
               "value": updateData.taskId || 'N/A'
             },
             {
+              "title": "Direct Link",
+              "value": updateData.taskId ? generateTaskDeepLink(updateData.taskId) : 'N/A'
+            },
+            {
               "title": "Updated",
               "value": formatHumanDateTime(new Date())
             }
@@ -329,11 +364,17 @@ export const sendTaskStatusUpdateNotification = async (updateData) => {
         }
       ],
       "actions": [
+        ...(updateData.taskId ? [{
+          "type": "Action.OpenUrl",
+          "title": "View Task",
+          "url": generateTaskDeepLink(updateData.taskId),
+          "style": "positive"
+        }] : []),
         {
           "type": "Action.OpenUrl",
           "title": "Open Dashboard",
           "url": "https://rapid-works.io/dashboard",
-          "style": "positive"
+          "style": updateData.taskId ? "default" : "positive"
         }
       ]
     };
@@ -582,7 +623,9 @@ export const sendSimpleTaskNotification = async (taskData) => {
             `**Files:** ${taskData.files && taskData.files.length > 0 ? `${taskData.files.length} file(s)` : 'None'}`,
             `**Created:** ${new Date().toLocaleString('en-GB')}`,
             '',
-            '**Please check your [rapid-works.io dashboard](https://rapid-works.io/dashboard)**',
+            `**Direct Link (copy this):** ${generateTaskDeepLink(taskData.taskId)}`,
+            '',
+            `**[Click here to view this task directly](${generateTaskDeepLink(taskData.taskId)})**`,
             ...(expertMention ? ['', `**Assigned Expert:** ${expertMention.text}`] : [])
           ].join('\n\n'),
           "wrap": true
@@ -661,9 +704,29 @@ export const sendPowerAutomateTaskNotification = async (taskData) => {
           "items": [
             {
               "type": "TextBlock",
-              "text": "**Action Required:** Login to [rapid-works.io dashboard](https://rapid-works.io/dashboard)",
+              "text": `**Action Required:** [Click here to view this task directly](${generateTaskDeepLink(taskData.taskId)})`,
               "wrap": true,
               "weight": "Bolder"
+            }
+          ]
+        },
+        {
+          "type": "Container",
+          "style": "emphasis",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "**Direct Link (Copyable):**",
+              "weight": "Bolder",
+              "size": "Small"
+            },
+            {
+              "type": "TextBlock",
+              "text": generateTaskDeepLink(taskData.taskId),
+              "wrap": true,
+              "fontType": "Monospace",
+              "size": "Small",
+              "color": "Dark"
             }
           ]
         },
@@ -685,6 +748,7 @@ export const sendPowerAutomateTaskNotification = async (taskData) => {
             { "title": "Due Date", "value": taskData.dueDate || 'Not specified' },
             { "title": "Files", "value": `${taskData.files?.length || 0} file(s)` },
             { "title": "Task ID", "value": taskData.taskId },
+            { "title": "Direct Link", "value": generateTaskDeepLink(taskData.taskId) },
             { "title": "Created", "value": new Date().toISOString() }
           ]
         }
@@ -692,9 +756,15 @@ export const sendPowerAutomateTaskNotification = async (taskData) => {
       "actions": [
         {
           "type": "Action.OpenUrl",
-          "title": "Open Dashboard",
-          "url": "https://rapid-works.io/dashboard",
+          "title": "View Task",
+          "url": generateTaskDeepLink(taskData.taskId),
           "style": "positive"
+        },
+        {
+          "type": "Action.OpenUrl",
+          "title": "Open Dashboard", 
+          "url": "https://rapid-works.io/dashboard",
+          "style": "default"
         }
       ]
     };

@@ -32,7 +32,33 @@ const LoginPage = () => {
       await login(email, password);
       navigate(redirectTo);
     } catch (error) {
-      setError('Failed to log in. Please check your credentials.');
+      // Handle Firebase authentication errors with descriptive messages
+      let errorMessage;
+      
+      switch (error.code) {
+        case 'auth/user-not-found':
+          errorMessage = 'No account found with this email address';
+          break;
+        case 'auth/wrong-password':
+          errorMessage = 'Incorrect password';
+          break;
+        case 'auth/invalid-email':
+          errorMessage = 'Please enter a valid email address';
+          break;
+        case 'auth/user-disabled':
+          errorMessage = 'This account has been disabled';
+          break;
+        case 'auth/too-many-requests':
+          errorMessage = 'Too many failed attempts. Please try again later';
+          break;
+        case 'auth/network-request-failed':
+          errorMessage = 'Network error. Please check your connection and try again';
+          break;
+        default:
+          errorMessage = 'Failed to log in. Please check your credentials';
+      }
+      
+      setError(errorMessage);
       console.error('Login error:', error);
     }
     setLoading(false);
@@ -45,7 +71,30 @@ const LoginPage = () => {
       await loginWithGoogle();
       navigate(redirectTo);
     } catch (error) {
-      setError('Failed to log in with Google');
+      // Handle Google login errors with descriptive messages
+      let errorMessage;
+      
+      switch (error.code) {
+        case 'auth/cancelled-popup-request':
+          errorMessage = 'Login cancelled';
+          break;
+        case 'auth/popup-blocked':
+          errorMessage = 'Popup blocked. Please allow popups and try again';
+          break;
+        case 'auth/popup-closed-by-user':
+          errorMessage = 'Login cancelled by user';
+          break;
+        case 'auth/network-request-failed':
+          errorMessage = 'Network error. Please check your connection and try again';
+          break;
+        case 'auth/account-exists-with-different-credential':
+          errorMessage = 'An account already exists with this email using a different sign-in method';
+          break;
+        default:
+          errorMessage = 'Failed to log in with Google. Please try again';
+      }
+      
+      setError(errorMessage);
       console.error('Google login error:', error);
     }
     setLoading(false);
