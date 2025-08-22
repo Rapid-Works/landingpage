@@ -17,6 +17,29 @@ import {
 } from 'firebase/storage';
 
 /**
+ * Safely convert various timestamp formats to Date object
+ */
+const safeToDate = (timestamp) => {
+  if (!timestamp) return null;
+  
+  if (typeof timestamp.toDate === 'function') {
+    // Firestore Timestamp
+    return timestamp.toDate();
+  } else if (timestamp instanceof Date) {
+    // Already a Date object
+    return timestamp;
+  } else if (typeof timestamp === 'string') {
+    // String date
+    return new Date(timestamp);
+  } else if (typeof timestamp === 'number') {
+    // Unix timestamp
+    return new Date(timestamp);
+  }
+  
+  return null;
+};
+
+/**
  * Check if a user has signed the framework agreement
  * @param {string} userId - The user's UID
  * @returns {Promise<{signed: boolean, documentUrl?: string, signedAt?: Date}>}
@@ -35,10 +58,10 @@ export const checkFrameworkAgreementStatus = async (userId) => {
       return {
         signed: data.signed || false,
         documentUrl: data.documentUrl,
-        signedAt: data.signedAt?.toDate(),
+        signedAt: safeToDate(data.signedAt),
         version: data.version,
         signatureValidated: data.signatureValidated || false,
-        validatedAt: data.validatedAt?.toDate(),
+        validatedAt: safeToDate(data.validatedAt),
         validatedBy: data.validatedBy || null
       };
     } else {
@@ -89,13 +112,14 @@ export const uploadFrameworkDocument = async (file, userId) => {
 };
 
 /**
- * Save framework agreement status to Firestore
- * @param {string} userId - The user's UID
- * @param {string} userEmail - The user's email
+ * Save framework agreement status for a user
+ * @param {string} userId - User ID
+ * @param {string} userEmail - User email
  * @param {string} documentUrl - URL of the uploaded document
+ * @param {Object} agreementData - Additional agreement data (optional)
  * @returns {Promise<void>}
  */
-export const saveFrameworkAgreement = async (userId, userEmail, documentUrl) => {
+export const saveFrameworkAgreement = async (userId, userEmail, documentUrl, agreementData = {}) => {
   if (!userId || !userEmail || !documentUrl) {
     throw new Error('User ID, email, and document URL are required');
   }
@@ -112,7 +136,9 @@ export const saveFrameworkAgreement = async (userId, userEmail, documentUrl) => 
       version: 'v1.0', // Can be updated when agreement changes
       signatureValidated: false,
       createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
+      updatedAt: serverTimestamp(),
+      // Include additional organization data
+      ...agreementData
     });
 
     console.log('Framework agreement saved successfully');
@@ -134,10 +160,12 @@ export const getAllSignedAgreements = async () => {
     
     const agreements = [];
     querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      
       agreements.push({
         id: doc.id,
-        ...doc.data(),
-        signedAt: doc.data().signedAt?.toDate()
+        ...data,
+        signedAt: safeToDate(data.signedAt)
       });
     });
     

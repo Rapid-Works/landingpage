@@ -1333,3 +1333,213 @@ exports.sendTaskMessageNotification = onCall(async (request) => {
     throw new Error(`Failed to send task notification: ${error.message}`);
   }
 });
+
+// Firestore trigger: Auto send notifications when task documents are updated
+exports.onTaskUpdated = onDocumentUpdated("taskRequests/{taskId}",
+    async (event) => {
+      const beforeData = event.data.before.data();
+      const afterData = event.data.after.data();
+      const taskId = event.params.taskId;
+
+      console.log(`📝 Task ${taskId} was updated`);
+
+      try {
+        // Check if messages were added (length increased)
+        const beforeMessages = beforeData.messages || [];
+        const afterMessages = afterData.messages || [];
+
+        if (afterMessages.length > beforeMessages.length) {
+          // New message(s) were added
+          const newMessages = afterMessages.slice(beforeMessages.length);
+          console.log(`📬 ${newMessages.length} new message(s) detected ` +
+            `in task ${taskId}`);
+
+          for (const message of newMessages) {
+            console.log(`Processing new message from: ${message.sender}`);
+
+            // Skip system messages to avoid duplicate notifications
+            if (message.sender === "system") {
+              console.log("⏭️ Skipping system message");
+              continue;
+            }
+
+            // Determine sender and recipient
+            const senderRole = message.sender; // "expert" or "customer"
+            const senderEmail = senderRole === "expert" ?
+              afterData.expertEmail : afterData.userEmail;
+            const recipientRole = senderRole === "expert" ?
+              "customer" : "expert";
+            const recipientEmail = senderRole === "expert" ?
+              afterData.userEmail : afterData.expertEmail;
+
+            if (!senderEmail || !recipientEmail) {
+              if (!afterData.expertEmail) {
+                console.log(`⚠️ Task ${taskId} has no assigned expert yet ` +
+                  `(expertEmail is null). This is normal for tasks that ` +
+                  `haven't been assigned to a specific expert.`);
+                console.log(`📝 Skipping notification until expert is assigned.`);
+              } else {
+                console.log("⚠️ Missing email addresses, skipping notification");
+                console.log(`   senderEmail: ${senderEmail}`);
+                console.log(`   recipientEmail: ${recipientEmail}`);
+                console.log(`   expertEmail: ${afterData.expertEmail}`);
+                console.log(`   userEmail: ${afterData.userEmail}`);
+              }
+              continue;
+            }
+
+            console.log(`📤 Sending notification: ${senderRole} → ` +
+              `${recipientRole}`);
+
+            // Determine message type
+            let messageType = "message";
+            if (message.type === "estimate" ||
+              message.content?.includes("€") ||
+              message.content?.includes("$")) {
+              messageType = "estimate";
+            }
+
+            // Get recipient's user ID and notification preferences
+            const recipientUserId = await getUserIdFromEmail(recipientEmail);
+            if (!recipientUserId) {
+              console.log(`⚠️ Recipient user not found for email: ` +
+                `${recipientEmail}`);
+              continue;
+            }
+
+            const preferences =
+              await getUserNotificationPreferences(recipientUserId);
+
+            // Create notification content
+            let title;
+            let body;
+            const taskTitle = afterData.taskName || afterData.service || "Task";
+
+            switch (messageType) {
+              case "estimate":
+                title = "💰 Estimate Received";
+                body = `Estimate for "${taskTitle}": ` +
+                  `${message.content.substring(0, 50)}` +
+                  `${message.content.length > 50 ? "..." : ""}`;
+                break;
+              default:
+                if (senderRole === "expert") {
+                  title = "👨‍💼 Message from Expert";
+                  body = `Expert replied to "${taskTitle}": ` +
+                    `${message.content.substring(0, 50)}` +
+                    `${message.content.length > 50 ? "..." : ""}`;
+                } else {
+                  title = "👤 Message from Client";
+                  body = `Client message for "${taskTitle}": ` +
+                    `${message.content.substring(0, 50)}` +
+                    `${message.content.length > 50 ? "..." : ""}`;
+                }
+                break;
+            }
+
+            const url = `/dashboard?task=${taskId}`;
+
+            // Send mobile push notification if user wants them
+            const shouldSendMobile = preferences.taskMessages?.mobile !== false;
+
+            if (shouldSendMobile) {
+              try {
+                console.log(`📱 Looking for FCM tokens for: ` +
+                  `${recipientEmail}`);
+                const tokensSnapshot = await db.collection("fcmTokens")
+                    .where("email", "==", recipientEmail)
+                    .get();
+
+                console.log(`📊 Found ${tokensSnapshot.size} FCM token(s) ` +
+                  `for ${recipientEmail}`);
+
+                if (!tokensSnapshot.empty) {
+                  const tokens = tokensSnapshot.docs
+                      .map((doc) => doc.data().token);
+
+                  const messagePayload = {
+                    notification: {
+                      title: title,
+                      body: body,
+                    },
+                    data: {
+                      url: url,
+                      type: "task_message",
+                      taskId: taskId,
+                      senderRole: senderRole,
+                    },
+                  };
+
+                  // Send to all user's devices
+                  for (const token of tokens) {
+                    try {
+                      await admin.messaging().send({
+                        ...messagePayload,
+                        token: token,
+                      });
+                      console.log(`✅ Push notification sent to ` +
+                        `${recipientEmail}`);
+                    } catch (tokenError) {
+                      console.error(`❌ Failed to send to token: ` +
+                        `${tokenError.message}`);
+                      // Remove invalid token
+                      try {
+                        const invalidTokenDocs = await db
+                            .collection("fcmTokens")
+                            .where("token", "==", token)
+                            .get();
+                        invalidTokenDocs.forEach((doc) => doc.ref.delete());
+                      } catch (cleanupError) {
+                        console.error("Error cleaning up invalid token:",
+                            cleanupError);
+                      }
+                    }
+                  }
+                } else {
+                  console.log(`📱 No FCM tokens found for: ` +
+                    `${recipientEmail}`);
+                  console.log(`❗ NOTIFICATION ISSUE: User ${recipientEmail} ` +
+                    `has not registered for push notifications yet.`);
+                  console.log(`💡 SOLUTION: User needs to:`);
+                  console.log(`   1. Visit the dashboard/website`);
+                  console.log(`   2. Enable notifications when prompted`);
+                  console.log(`   3. Or manually enable them in ` +
+                    `notification settings`);
+                  console.log(`📝 Notification will be saved to ` +
+                    `history instead.`);
+                }
+              } catch (error) {
+                console.error("Error sending mobile notification:", error);
+              }
+            }
+
+            // Save notification to history
+            try {
+              await saveNotificationToHistory(recipientUserId, {
+                title: title,
+                body: body,
+                type: "task_message",
+                url: url,
+                metadata: {
+                  taskId: taskId,
+                  senderEmail: senderEmail,
+                  senderRole: senderRole,
+                  messageType: messageType,
+                  taskTitle: taskTitle,
+                },
+              });
+              console.log(`📝 Notification saved to history for: ` +
+                `${recipientEmail}`);
+            } catch (historyError) {
+              console.error("Error saving notification to history:",
+                  historyError);
+            }
+          }
+        }
+
+        console.log(`✅ Task update processing completed for ${taskId}`);
+      } catch (error) {
+        console.error(`❌ Error processing task update for ${taskId}:`,
+            error);
+      }
+    });

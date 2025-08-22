@@ -192,16 +192,10 @@ export default function RapidWorksHeader() {
 
   const renderUserAvatar = (isMobile = false) => {
     const hasPhoto = currentUser && currentUser.photoURL && currentUser.photoURL.trim() !== '' && !imgError;
-    const isOrgContext = currentContext?.type === 'organization';
-    const bgColor = isOrgContext ? 'bg-blue-600' : 'bg-[#7C3BEC]';
     
     return (
-      <div className={`${bgColor} rounded-full flex items-center justify-center overflow-hidden flex-shrink-0 ${isMobile ? 'w-7 h-7 min-w-7 min-h-7' : 'w-8 h-8 min-w-8 min-h-8'}`} style={{ aspectRatio: '1 / 1' }}>
-        {isOrgContext ? (
-          <span className={`font-bold text-white ${isMobile ? 'text-xs' : 'text-sm'}`}>
-            {currentContext.organization.name.substring(0, 2).toUpperCase()}
-          </span>
-        ) : hasPhoto ? (
+      <div className={`bg-[#7C3BEC] rounded-full flex items-center justify-center overflow-hidden flex-shrink-0 ${isMobile ? 'w-7 h-7 min-w-7 min-h-7' : 'w-8 h-8 min-w-8 min-h-8'}`} style={{ aspectRatio: '1 / 1' }}>
+        {hasPhoto ? (
           <img
             src={currentUser.photoURL}
             alt={currentUser.displayName || 'User'}
@@ -340,16 +334,10 @@ export default function RapidWorksHeader() {
                       <div className="p-2">
                         <div className="ml-1 mb-1">
                           <p className="font-medium text-sm text-gray-800 truncate">
-                            {currentContext?.type === 'organization' 
-                              ? currentContext.organization.name
-                              : currentUser.displayName
-                            }
+                            {currentUser.displayName}
                           </p>
                           <p className="text-xs text-gray-500 truncate">
-                            {currentContext?.type === 'organization' 
-                              ? `${currentContext.permissions?.role === 'admin' ? 'Administrator' : 'Member'} • ${currentUser.email}`
-                              : currentUser.email
-                            }
+                            {currentUser.email}
                           </p>
                         </div>
                         <div className="border-t border-gray-100 my-1"></div>
@@ -408,16 +396,8 @@ export default function RapidWorksHeader() {
                   {renderUserAvatar(true)}
                   <div className="truncate ml-3">
                     <div className="font-medium">
-                      {currentContext?.type === 'organization' 
-                        ? currentContext.organization.name
-                        : (currentUser.displayName || currentUser.email)
-                      }
+                      {currentUser.displayName || currentUser.email}
                     </div>
-                    {currentContext?.type === 'organization' && (
-                      <div className="text-xs text-gray-500">
-                        {currentContext.permissions?.role === 'admin' ? 'Administrator' : 'Member'}
-                      </div>
-                    )}
                   </div>
                 </div>
                 {/* Edit Profile and Notification Settings moved into Dashboard sidebar */}

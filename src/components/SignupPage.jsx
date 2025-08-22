@@ -49,6 +49,13 @@ const SignupPage = () => {
       return;
     }
 
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
     try {
       setError('');
       setLoading(true);
@@ -61,7 +68,30 @@ const SignupPage = () => {
 
       navigate(redirectTo);
     } catch (error) {
-      setError('Failed to create account. Please try again.');
+      // Handle Firebase authentication errors with descriptive messages
+      let errorMessage;
+      
+      switch (error.code) {
+        case 'auth/weak-password':
+          errorMessage = 'Password should be at least 6 characters long';
+          break;
+        case 'auth/email-already-in-use':
+          errorMessage = 'An account with this email already exists';
+          break;
+        case 'auth/invalid-email':
+          errorMessage = 'Please enter a valid email address';
+          break;
+        case 'auth/operation-not-allowed':
+          errorMessage = 'Email/password accounts are not enabled';
+          break;
+        case 'auth/network-request-failed':
+          errorMessage = 'Network error. Please check your connection and try again';
+          break;
+        default:
+          errorMessage = 'Failed to create account. Please try again';
+      }
+      
+      setError(errorMessage);
       console.error('Signup error:', error);
     }
     setLoading(false);
@@ -74,7 +104,30 @@ const SignupPage = () => {
       await loginWithGoogle();
       navigate(redirectTo);
     } catch (error) {
-      setError('Failed to sign up with Google');
+      // Handle Google signup errors with descriptive messages
+      let errorMessage;
+      
+      switch (error.code) {
+        case 'auth/cancelled-popup-request':
+          errorMessage = 'Signup cancelled';
+          break;
+        case 'auth/popup-blocked':
+          errorMessage = 'Popup blocked. Please allow popups and try again';
+          break;
+        case 'auth/popup-closed-by-user':
+          errorMessage = 'Signup cancelled by user';
+          break;
+        case 'auth/network-request-failed':
+          errorMessage = 'Network error. Please check your connection and try again';
+          break;
+        case 'auth/account-exists-with-different-credential':
+          errorMessage = 'An account already exists with this email using a different sign-in method';
+          break;
+        default:
+          errorMessage = 'Failed to sign up with Google. Please try again';
+      }
+      
+      setError(errorMessage);
       console.error('Google signup error:', error);
     }
     setLoading(false);

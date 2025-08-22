@@ -1,5 +1,5 @@
-import React, { useState, useContext } from 'react';
-import { X, Loader2, CheckCircle, AlertCircle, Clock, Upload, Calendar, FileText, Image, Archive } from 'lucide-react';
+import React, { useState, useContext, useEffect } from 'react';
+import { X, Loader2, CheckCircle, AlertCircle, Clock, Upload, Calendar, FileText, Image, Archive, Building2, Bell } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { LanguageContext as AppLanguageContext } from '../App';
 import { uploadTaskFiles, formatFileSize, getFileCategory } from '../utils/taskFileService';
@@ -7,10 +7,15 @@ import { saveTaskRequest } from '../utils/taskRequestService';
 import { getExpertEmailByRole } from '../utils/expertService';
 import { sendNewTaskNotification, sendSimpleTaskNotification, sendPowerAutomateTaskNotification, testTeamsWebhook } from '../utils/teamsWebhookService';
 import { getCurrentUserContext } from '../utils/organizationService';
+import OrganizationSwitcher from './OrganizationSwitcher';
+import CreateOrganizationModal from './CreateOrganizationModal';
+import customerNotificationService from '../utils/customerNotificationService';
 
 const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '' }) => {
   const { currentUser } = useAuth();
   const context = useContext(AppLanguageContext);
+  const [currentContext, setCurrentContext] = useState(null);
+  const [loadingContext, setLoadingContext] = useState(true);
   const [formData, setFormData] = useState({
     taskName: '',
     taskDescription: '',
@@ -21,6 +26,57 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
   const [errorMessage, setErrorMessage] = useState('');
   const [uploadingFiles, setUploadingFiles] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({});
+  const [isCreateOrgModalOpen, setIsCreateOrgModalOpen] = useState(false);
+  const [isFirstTask, setIsFirstTask] = useState(false);
+  const [enablingNotifications, setEnablingNotifications] = useState(false);
+  const [lastSubmittedTaskId, setLastSubmittedTaskId] = useState(null);
+
+  const handleEnableNotifications = async () => {
+    if (enablingNotifications) return;
+    
+    setEnablingNotifications(true);
+    try {
+      console.log('🔔 Setting up notifications for first-time user...');
+      
+      // Use the same method as dashboard notification settings
+      const { requestNotificationPermission } = await import('../firebase/messaging');
+      const notificationResult = await requestNotificationPermission();
+      
+      console.log('Notification setup result:', notificationResult);
+      
+      if (notificationResult.success && lastSubmittedTaskId) {
+        // Send the notification for the task they just submitted
+        const taskData = {
+          id: lastSubmittedTaskId,
+          taskName: formData.taskName,
+          taskDescription: formData.taskDescription,
+          dueDate: formData.dueDate
+        };
+        
+        const notificationSent = await customerNotificationService.sendTaskSubmittedNotification(
+          taskData,
+          currentUser.email
+        );
+        console.log('First task notification sent:', notificationSent);
+      }
+      
+      // After successful setup, hide the button
+      setIsFirstTask(false);
+    } catch (error) {
+      console.error('Error enabling notifications:', error);
+    } finally {
+      setEnablingNotifications(false);
+    }
+  };
+
+  // Debug: Track expert props
+  useEffect(() => {
+    console.log('🎯 NewTaskModal props updated:', {
+      selectedExpertType,
+      expertName,
+      isOpen
+    });
+  }, [selectedExpertType, expertName, isOpen]);
 
   // Translation content
   const translations = {
@@ -49,14 +105,21 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
       viewFile: "View",
       submitButton: "Request Fixed Price Offer",
       submittingButton: "Submitting Request...",
-      successTitle: "Task Request Submitted!",
+      successTitle: "Task Submitted Successfully!",
       successMessage: "Your task has been sent to our expert for review.",
-      successSubtext: "You'll receive a fixed price offer soon via push notification.",
+      successSubtext: "You'll receive push notifications when the expert responds with questions or an estimate.",
       closeButton: "Close",
       errorRequired: "Please fill in all required fields",
       errorLogin: "You must be logged in to submit a task request.",
       errorLoginFiles: "You must be logged in to upload files.",
-      errorFileSize: "File size must be less than 10MB"
+      errorFileSize: "File size must be less than 10MB",
+      // Organization context
+      organizationContext: "Organization Required",
+      taskFor: "Creating task for",
+      personalAccount: "Personal Account",
+      noOrganization: "Organization Required",
+      noOrganizationMessage: "You need to be part of an organization to create tasks. Please create an organization first.",
+      createOrganization: "Create Organization"
     },
     de: {
       title: "Beschreibe deine Aufgabe",
@@ -83,19 +146,69 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
       viewFile: "Ansehen",
       submitButton: "Fixpreis-Angebot anfordern",
       submittingButton: "Anfrage wird gesendet...",
-      successTitle: "Aufgabe erfolgreich übermittelt!",
+      successTitle: "Aufgabe erfolgreich eingereicht!",
       successMessage: "Ihre Aufgabe wurde zur Überprüfung an unseren Experten gesendet.",
-      successSubtext: "Sie erhalten bald ein Fixpreis-Angebot per Push-Benachrichtigung.",
+      successSubtext: "Sie erhalten Push-Benachrichtigungen, wenn der Experte mit Fragen oder einem Kostenvoranschlag antwortet.",
       closeButton: "Schließen",
       errorRequired: "Bitte füllen Sie alle Pflichtfelder aus",
       errorLogin: "Sie müssen angemeldet sein, um eine Aufgabe zu übermitteln.",
       errorLoginFiles: "Sie müssen angemeldet sein, um Dateien hochzuladen.",
-      errorFileSize: "Die Dateigröße muss unter 10MB liegen"
+      errorFileSize: "Die Dateigröße muss unter 10MB liegen",
+      // Organization context
+      organizationContext: "Organisation erforderlich",
+      taskFor: "Erstelle Aufgabe für",
+      personalAccount: "Persönliches Konto",
+      noOrganization: "Organisation erforderlich",
+      noOrganizationMessage: "Sie müssen Teil einer Organisation sein, um Aufgaben zu erstellen. Bitte erstellen Sie zuerst eine Organisation.",
+      createOrganization: "Organisation erstellen"
     }
   };
 
   const { language } = context || { language: 'en' };
   const t = translations[language] || translations.en;
+
+  // Load user context when modal opens
+  useEffect(() => {
+    const loadUserContext = async () => {
+      if (!currentUser || !isOpen) return;
+      
+      setLoadingContext(true);
+      try {
+        const userContext = await getCurrentUserContext(currentUser.uid);
+        setCurrentContext(userContext);
+      } catch (error) {
+        console.error('Error loading user context:', error);
+      } finally {
+        setLoadingContext(false);
+      }
+    };
+
+    loadUserContext();
+  }, [currentUser, isOpen]);
+
+  // Handle organization context change
+  const handleContextChange = (newContext) => {
+    setCurrentContext(newContext);
+  };
+
+  // Handle organization creation success
+  const handleOrganizationCreated = async () => {
+    setIsCreateOrgModalOpen(false);
+    // Refresh user context after organization creation
+    if (currentUser) {
+      try {
+        const userContext = await getCurrentUserContext(currentUser.uid);
+        setCurrentContext(userContext);
+      } catch (error) {
+        console.error('Error refreshing user context:', error);
+      }
+    }
+  };
+
+  // Check if user has any organizations
+  const hasOrganizations = () => {
+    return currentContext?.type === 'organization';
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -116,8 +229,8 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
     }
 
     try {
-      // Get user context (personal vs organization)
-      const userContext = await getCurrentUserContext(currentUser.uid);
+      // Use current organization context
+      const userContext = currentContext;
       
       // Get expert email for the selected expert type
       const expertEmail = getExpertEmailByRole(selectedExpertType);
@@ -149,6 +262,43 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
       // Save task request to Firebase
       const taskId = await saveTaskRequest(taskData);
       console.log('Task request saved with ID:', taskId);
+      setLastSubmittedTaskId(taskId); // Store for notification setup later
+      
+      // Check if this is the user's first task submission
+      try {
+        console.log('🆕 Checking if this is the user\'s first task...');
+        const { getUserTaskRequests } = await import('../utils/taskRequestService');
+        const userTasks = await getUserTaskRequests(currentUser.uid, 5); // Get a few tasks to be sure
+        
+        // Filter out the task we just created to get previous tasks
+        const previousTasks = userTasks.filter(task => task.id !== taskId);
+        const isFirstTask = previousTasks.length === 0; // No previous tasks = first task
+        
+        console.log(`📊 User has ${userTasks.length} total task(s), ${previousTasks.length} previous task(s). First task: ${isFirstTask}`);
+        setIsFirstTask(isFirstTask);
+        
+        // For all users, try to send a notification (quietly)
+        try {
+          const tokenCheck = await customerNotificationService.checkUserHasNotificationTokens(currentUser.email);
+          
+          if (tokenCheck.hasTokens) {
+            console.log('✅ User already has notifications enabled');
+            const notificationResult = await customerNotificationService.sendTaskSubmittedNotification(
+              { ...taskData, id: taskId },
+              currentUser.email
+            );
+            console.log('Task notification sent:', notificationResult);
+          } else {
+            console.log('⚠️ User has no notification tokens yet');
+            // Don't show popup here - we'll show button on success page for first-time users
+          }
+        } catch (notifError) {
+          console.log('Notification check failed:', notifError);
+        }
+      } catch (taskCheckError) {
+        console.error('Error checking user task history:', taskCheckError);
+        setIsFirstTask(false); // Default to false if check fails
+      }
       
       // Send Teams notification (don't wait for it, run in background)
       try {
@@ -324,6 +474,9 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
               dueDate: '',
               files: []
             });
+            setLastSubmittedTaskId(null);
+            setIsFirstTask(false);
+            setEnablingNotifications(false);
           }}
           className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all duration-200 z-10"
           aria-label="Close modal"
@@ -332,19 +485,6 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
         </button>
 
         <div className="p-8 pt-12">
-          {/* Header */}
-          <div className="text-center mb-10">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#7C3BEC] to-[#9F7AEA] rounded-full mb-6">
-              <Clock className="h-8 w-8 text-white" />
-            </div>
-            <h2 className="text-4xl font-bold mb-4 text-gray-900">{t.title}</h2>
-                         <div className="max-w-2xl mx-auto">
-               <p className="text-gray-600 leading-relaxed text-lg">
-                 {t.description1} {expertName || t.ourExpert} {t.description2} {expertName || t.ourExpert} {t.description3} {expertName || t.ourExpert} {t.description4} {expertName || t.ourExpert} {t.description5}
-               </p>
-             </div>
-          </div>
-
           {status === 'success' ? (
             <div className="text-center py-16">
               <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-6">
@@ -357,9 +497,45 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
               <p className="text-gray-500 mb-6">
                 {t.successSubtext}
               </p>
+              
+              {/* First-time user notification setup */}
+              {isFirstTask && (
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+                  <div className="flex items-start gap-3">
+                    <Bell className="h-5 w-5 text-gray-600 mt-0.5 flex-shrink-0" />
+                    <div className="flex-1">
+                      <h4 className="font-medium text-gray-900 mb-1">Enable notifications</h4>
+                      <p className="text-sm text-gray-600 mb-3">
+                        Get instant updates when our expert reviews your task and provides feedback.
+                      </p>
+                      <button
+                        onClick={handleEnableNotifications}
+                        disabled={enablingNotifications}
+                        className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-900 hover:bg-gray-800 disabled:bg-gray-400 text-white text-sm rounded-md font-medium transition-colors"
+                      >
+                        {enablingNotifications ? (
+                          <>
+                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                            Enabling...
+                          </>
+                        ) : (
+                          <>
+                            <Bell className="h-3.5 w-3.5" />
+                            Enable
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
               <button
                 onClick={() => {
                   setStatus('idle');
+                  setLastSubmittedTaskId(null);
+                  setIsFirstTask(false);
+                  setEnablingNotifications(false);
                   onClose();
                 }}
                 className="px-8 py-3 bg-[#7C3BEC] hover:bg-[#6B32D6] text-white rounded-lg font-medium transition-colors shadow-sm"
@@ -368,6 +544,64 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
               </button>
             </div>
           ) : (
+            <>
+              {/* Header */}
+              <div className="text-center mb-10">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#7C3BEC] to-[#9F7AEA] rounded-full mb-6">
+                  <Clock className="h-8 w-8 text-white" />
+                </div>
+                <h2 className="text-4xl font-bold mb-4 text-gray-900">{t.title}</h2>
+                             <div className="max-w-2xl mx-auto">
+                   <p className="text-gray-600 leading-relaxed text-lg">
+                     {t.description1} {expertName || t.ourExpert} {t.description2} {expertName || t.ourExpert} {t.description3} {expertName || t.ourExpert} {t.description4} {expertName || t.ourExpert} {t.description5}
+                   </p>
+                 </div>
+              </div>
+
+              {/* Organization Context Switcher */}
+              {loadingContext ? (
+                <div className="flex items-center justify-center py-4 mb-8">
+                  <Loader2 className="h-5 w-5 animate-spin text-gray-400 mr-2" />
+                  <span className="text-gray-500">Loading context...</span>
+                </div>
+              ) : !hasOrganizations() ? (
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 mb-8">
+                  <div className="flex items-start gap-3">
+                    <AlertCircle className="h-6 w-6 text-amber-600 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-medium text-amber-800 mb-2">{t.noOrganization}</h4>
+                      <p className="text-sm text-amber-700 mb-4">{t.noOrganizationMessage}</p>
+                      <button 
+                        onClick={() => setIsCreateOrgModalOpen(true)}
+                        className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-medium transition-colors"
+                      >
+                        {t.createOrganization}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-gray-50 rounded-xl p-6 mb-8">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Building2 className="h-5 w-5 text-gray-600" />
+                    <span className="text-lg font-semibold text-gray-700">{t.organizationContext}</span>
+                  </div>
+                  <OrganizationSwitcher 
+                    currentContext={currentContext}
+                    onContextChange={handleContextChange}
+                    onCreateOrganization={() => setIsCreateOrgModalOpen(true)}
+                  />
+                  <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p className="text-sm text-blue-800">
+                      <strong>{t.taskFor}:</strong> {
+                        currentContext?.type === 'organization' 
+                          ? `${currentContext.organization.name} (${currentContext.permissions?.role === 'admin' ? 'Administrator' : 'Member'})`
+                          : t.personalAccount
+                      }
+                    </p>
+                  </div>
+                </div>
+              )}
             <form onSubmit={handleSubmit} className="space-y-8">
               {/* Task Name */}
               <div className="space-y-2">
@@ -526,26 +760,38 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
                 <button
                   type="submit"
                   className={`w-full inline-flex justify-center items-center px-8 py-5 text-white rounded-xl font-bold text-lg transition-all duration-200 transform ${
-                    status === 'loading'
-                      ? 'bg-orange-400 cursor-not-allowed'
+                    status === 'loading' || !hasOrganizations()
+                      ? 'bg-gray-400 cursor-not-allowed'
                       : 'bg-gradient-to-r from-[#FF6B47] to-[#FF8A65] hover:from-[#E55A3C] hover:to-[#FF7043] hover:shadow-lg hover:-translate-y-0.5'
                   }`}
-                  disabled={status === 'loading'}
+                  disabled={status === 'loading' || !hasOrganizations()}
                 >
                   {status === 'loading' ? (
                     <>
                       <Loader2 className="animate-spin -ml-1 mr-3 h-6 w-6" />
                       {t.submittingButton}
                     </>
+                  ) : !hasOrganizations() ? (
+                    t.organizationRequired
                   ) : (
                     t.submitButton
                   )}
                 </button>
               </div>
             </form>
+            </>
           )}
         </div>
       </div>
+      
+      {/* Create Organization Modal */}
+      {isCreateOrgModalOpen && (
+        <CreateOrganizationModal
+          isOpen={isCreateOrgModalOpen}
+          onClose={() => setIsCreateOrgModalOpen(false)}
+          onSuccess={handleOrganizationCreated}
+        />
+      )}
     </div>
   );
 };

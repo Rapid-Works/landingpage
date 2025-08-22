@@ -588,6 +588,7 @@ const TeamPage = () => {
     // Firebase tracking is now handled in the FrameworkAgreementModal
     setIsFrameworkModalOpen(false);
     setIsTaskModalOpen(true);
+    // Keep expert data for the task modal
   };
 
   // Function to close login modal
@@ -600,8 +601,8 @@ const TeamPage = () => {
   // Function to close framework modal
   const handleCloseFrameworkModal = () => {
     setIsFrameworkModalOpen(false);
-    setSelectedExpertType(''); // Clear selections on close
-    setSelectedExpertName('');
+    // Keep expert data - it will be cleared when task modal closes
+    // This preserves the expert selection through the framework signing process
   };
 
   return (
