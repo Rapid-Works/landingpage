@@ -50,7 +50,7 @@ import PublicBrandingKits from './components/PublicBrandingKits'
 import TrackingRedirect from './components/TrackingRedirect'
 
 // Authentication imports
-import { AuthProvider } from './contexts/AuthContext'
+import { AuthProvider, useAuth } from './contexts/AuthContext'
 import Dashboard from './components/Dashboard'
 import ForgotPassword from './components/ForgotPassword'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -59,6 +59,9 @@ import OrganizationInvite from './components/OrganizationInvite'
 
 // Initialize Firebase messaging and service worker
 import './firebase/messaging'
+
+// Import notification service for automatic registration
+import customerNotificationService from './utils/customerNotificationService'
 
 // Create and export Language Context with initial values
 export const LanguageContext = createContext({
@@ -1240,6 +1243,72 @@ const VisibilityCTA = ({ fadeIn }) => {
 }
 
 
+/**
+ * Automatic notification registration component
+ * Silently registers logged-in users for push notifications in the background
+ */
+function AutoNotificationRegistration() {
+  const { currentUser } = useAuth();
+
+  useEffect(() => {
+    if (!currentUser?.email) return;
+
+    const registerNotificationsAutomatically = async () => {
+      try {
+        console.log('🔔 Auto-checking notification registration for:', currentUser.email);
+        
+        // Check if user already has FCM tokens
+        const tokenCheck = await customerNotificationService.checkUserHasNotificationTokens(currentUser.email);
+        
+        if (tokenCheck.hasTokens) {
+          console.log(`✅ User ${currentUser.email} already has ${tokenCheck.tokenCount} FCM token(s)`);
+          return;
+        }
+
+        console.log('📱 User has no FCM tokens, attempting automatic registration...');
+        
+        // Check browser permission status
+        if (!('Notification' in window)) {
+          console.log('⚠️ Browser does not support notifications');
+          return;
+        }
+
+        const permission = Notification.permission;
+        
+        if (permission === 'granted') {
+          // User has already granted permission, register silently
+          console.log('🔔 Permission already granted, registering FCM token...');
+          const result = await customerNotificationService.ensureNotificationsEnabled();
+          
+          if (result.enabled) {
+            console.log(`✅ Successfully auto-registered ${currentUser.email} for notifications`);
+          } else {
+            console.log(`⚠️ Auto-registration failed: ${result.reason}`);
+          }
+        } else if (permission === 'default') {
+          // Permission not decided yet - don't auto-prompt, just log
+          console.log('💡 User has not granted notification permission yet');
+          console.log('💡 They can enable notifications manually via the notification settings');
+        } else {
+          // Permission denied
+          console.log('❌ User has denied notification permissions');
+        }
+      } catch (error) {
+        console.error('Error in automatic notification registration:', error);
+      }
+    };
+
+    // Run the check after a short delay to ensure app is fully loaded
+    const timeoutId = setTimeout(registerNotificationsAutomatically, 2000);
+    
+    return () => clearTimeout(timeoutId);
+  }, [currentUser]);
+
+  // This component doesn't render anything
+  return null;
+}
+
+
 function App() {
   const [language, setLanguage] = useState(() => {
     return localStorage.getItem('language') || 'de'
@@ -1293,10 +1362,11 @@ function App() {
     transition: { duration: 0.6 },
   }
 
-    return (
+  return (
     <AuthProvider>
       <NotificationProvider>
-    <LanguageContext.Provider value={contextValue}>
+        <AutoNotificationRegistration />
+        <LanguageContext.Provider value={contextValue}>
           <ScrollToTop />
           <Analytics />
           <Routes>
@@ -1308,6 +1378,11 @@ function App() {
               </ProtectedRoute>
             } />
             <Route path="/dashboard/:kitId" element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/task/:taskId" element={
               <ProtectedRoute>
                 <Dashboard />
               </ProtectedRoute>

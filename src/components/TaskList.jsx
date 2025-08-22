@@ -62,6 +62,23 @@ const TaskList = ({ userRole, expertInfo, initialSelectedTaskId, onTaskSelected,
     }
   }, [initialSelectedTaskId, onTaskSelected]);
 
+  // Auto-select task after tasks are loaded if initialSelectedTaskId is provided
+  useEffect(() => {
+    if (initialSelectedTaskId && tasks.length > 0 && !loading) {
+      const taskExists = tasks.find(task => task.id === initialSelectedTaskId);
+      if (taskExists) {
+        console.log('🎯 Auto-selecting task after load:', initialSelectedTaskId);
+        setSelectedTaskId(initialSelectedTaskId);
+        // Call the callback to notify parent that task was successfully selected
+        if (onTaskSelected) {
+          onTaskSelected();
+        }
+      } else {
+        console.warn('⚠️ Task not found in loaded tasks:', initialSelectedTaskId);
+      }
+    }
+  }, [initialSelectedTaskId, tasks, loading, onTaskSelected]);
+
   // Simplified date formatting for tables
   const formatSimpleDate = (date) => {
     if (!date) return '';
@@ -81,11 +98,17 @@ const TaskList = ({ userRole, expertInfo, initialSelectedTaskId, onTaskSelected,
     let unsubscribe = null;
     const onData = (rawTasks) => {
       let taskData = rawTasks || [];
+      console.log('📋 Tasks loaded:', taskData.length, 'tasks');
+      
       if (userRole === 'expert' && expertInfo?.email) {
         if (isRapidWorksAdmin && selectedExpert) {
           taskData = taskData.filter(t => t.expertEmail === selectedExpert.email || t.expertName === selectedExpert.name);
         }
       }
+      
+      console.log('📋 Tasks after filtering:', taskData.length, 'tasks');
+      console.log('📋 Task IDs:', taskData.map(t => t.id));
+      
       setTasks(taskData);
       if (typeof onUnreadTotalChange === 'function') {
         const totalUnread = taskData.reduce((sum, t) => {

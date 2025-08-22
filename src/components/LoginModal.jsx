@@ -57,6 +57,19 @@ const LoginModal = ({
       return;
     }
 
+    // Client-side password validation for signup
+    if (isSignup && password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      return;
+    }
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
     try {
       setError('');
       setLoading(true);
@@ -77,7 +90,55 @@ const LoginModal = ({
       
       onClose();
     } catch (error) {
-      setError(isSignup ? 'Failed to create account' : 'Failed to log in. Please check your credentials.');
+      // Handle Firebase authentication errors with descriptive messages
+      let errorMessage;
+      
+      if (isSignup) {
+        switch (error.code) {
+          case 'auth/weak-password':
+            errorMessage = 'Password should be at least 6 characters long';
+            break;
+          case 'auth/email-already-in-use':
+            errorMessage = 'An account with this email already exists';
+            break;
+          case 'auth/invalid-email':
+            errorMessage = 'Please enter a valid email address';
+            break;
+          case 'auth/operation-not-allowed':
+            errorMessage = 'Email/password accounts are not enabled';
+            break;
+          case 'auth/network-request-failed':
+            errorMessage = 'Network error. Please check your connection and try again';
+            break;
+          default:
+            errorMessage = 'Failed to create account. Please try again';
+        }
+      } else {
+        switch (error.code) {
+          case 'auth/user-not-found':
+            errorMessage = 'No account found with this email address';
+            break;
+          case 'auth/wrong-password':
+            errorMessage = 'Incorrect password';
+            break;
+          case 'auth/invalid-email':
+            errorMessage = 'Please enter a valid email address';
+            break;
+          case 'auth/user-disabled':
+            errorMessage = 'This account has been disabled';
+            break;
+          case 'auth/too-many-requests':
+            errorMessage = 'Too many failed attempts. Please try again later';
+            break;
+          case 'auth/network-request-failed':
+            errorMessage = 'Network error. Please check your connection and try again';
+            break;
+          default:
+            errorMessage = 'Failed to log in. Please check your credentials';
+        }
+      }
+      
+      setError(errorMessage);
       console.error(isSignup ? 'Signup error:' : 'Login error:', error);
     }
     setLoading(false);
@@ -98,7 +159,30 @@ const LoginModal = ({
       
       onClose();
     } catch (error) {
-      setError('Failed to log in with Google');
+      // Handle Google login errors with descriptive messages
+      let errorMessage;
+      
+      switch (error.code) {
+        case 'auth/cancelled-popup-request':
+          errorMessage = 'Login cancelled';
+          break;
+        case 'auth/popup-blocked':
+          errorMessage = 'Popup blocked. Please allow popups and try again';
+          break;
+        case 'auth/popup-closed-by-user':
+          errorMessage = 'Login cancelled by user';
+          break;
+        case 'auth/network-request-failed':
+          errorMessage = 'Network error. Please check your connection and try again';
+          break;
+        case 'auth/account-exists-with-different-credential':
+          errorMessage = 'An account already exists with this email using a different sign-in method';
+          break;
+        default:
+          errorMessage = 'Failed to log in with Google. Please try again';
+      }
+      
+      setError(errorMessage);
       console.error('Google login error:', error);
     }
     setLoading(false);
@@ -206,6 +290,11 @@ const LoginModal = ({
                 )}
               </button>
             </div>
+            {isSignup && (
+              <p className="text-xs text-gray-500 mt-1">
+                Password must be at least 6 characters long
+              </p>
+            )}
           </div>
 
           {isSignup && (

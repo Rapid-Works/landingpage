@@ -1,11 +1,14 @@
-import React, { useState, useContext } from 'react';
-import { X, Download, Upload, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import React, { useState, useContext, useEffect } from 'react';
+import { X, Download, Upload, Loader2, CheckCircle, AlertCircle, Building2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { LanguageContext as AppLanguageContext } from '../App';
 import { 
   uploadFrameworkDocument, 
   saveFrameworkAgreement 
 } from '../utils/frameworkAgreementService';
+import { getCurrentUserContext } from '../utils/organizationService';
+import OrganizationSwitcher from './OrganizationSwitcher';
+import CreateOrganizationModal from './CreateOrganizationModal';
 
 const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName = '' }) => {
   const { currentUser } = useAuth();
@@ -14,6 +17,9 @@ const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName 
   const [uploadedFile, setUploadedFile] = useState(null);
   const [status, setStatus] = useState('idle'); // idle, loading, success, error
   const [errorMessage, setErrorMessage] = useState('');
+  const [currentContext, setCurrentContext] = useState(null);
+  const [loadingContext, setLoadingContext] = useState(true);
+  const [isCreateOrgModalOpen, setIsCreateOrgModalOpen] = useState(false);
 
   // Translation content
   const translations = {
@@ -36,7 +42,19 @@ const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName 
       errorPdfOnly: "Please upload a PDF file.",
       errorFileSize: "File size must be less than 10MB.",
       errorUploadFirst: "Please upload the signed Framework Agreement first.",
-      errorLoginRequired: "You must be logged in to upload the agreement."
+      errorLoginRequired: "You must be logged in to upload the agreement.",
+      // Organization context
+      organizationContext: "Organization Required",
+      signingAs: "Signing as",
+      personalAccount: "Personal Account",
+      adminRequired: "Administrator Required",
+      adminRequiredMessage: "Only organization administrators can sign framework agreements. Please contact your administrator to sign the agreement for your organization.",
+      contactAdmin: "Contact Administrator",
+      memberAccess: "Member Access",
+      cannotSign: "As a member, you cannot sign legal agreements for this organization.",
+      noOrganization: "Organization Required",
+      noOrganizationMessage: "You need to be part of an organization to sign framework agreements. Please create an organization first.",
+      createOrganization: "Create Organization"
     },
     de: {
       title: "Rapid Experts Rahmenvertrag",
@@ -57,12 +75,77 @@ const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName 
       errorPdfOnly: "Bitte laden Sie eine PDF-Datei hoch.",
       errorFileSize: "Die Dateigröße muss unter 10MB liegen.",
       errorUploadFirst: "Bitte laden Sie zuerst den unterzeichneten Rahmenvertrag hoch.",
-      errorLoginRequired: "Sie müssen angemeldet sein, um den Vertrag hochzuladen."
+      errorLoginRequired: "Sie müssen angemeldet sein, um den Vertrag hochzuladen.",
+      // Organization context
+      organizationContext: "Organisation erforderlich",
+      signingAs: "Unterzeichnet als",
+      personalAccount: "Persönliches Konto",
+      adminRequired: "Administrator erforderlich",
+      adminRequiredMessage: "Nur Organisationsadministratoren können Rahmenverträge unterzeichnen. Bitte kontaktieren Sie Ihren Administrator, um den Vertrag für Ihre Organisation zu unterzeichnen.",
+      contactAdmin: "Administrator kontaktieren",
+      memberAccess: "Mitgliederzugang",
+      cannotSign: "Als Mitglied können Sie keine rechtlichen Vereinbarungen für diese Organisation unterzeichnen.",
+      noOrganization: "Organisation erforderlich",
+      noOrganizationMessage: "Sie müssen Teil einer Organisation sein, um Rahmenverträge zu unterzeichnen. Bitte erstellen Sie zuerst eine Organisation.",
+      createOrganization: "Organisation erstellen"
     }
   };
 
   const { language } = context || { language: 'en' };
   const t = translations[language] || translations.en;
+
+  // Load user context when modal opens
+  useEffect(() => {
+    const loadUserContext = async () => {
+      if (!currentUser || !isOpen) return;
+      
+      setLoadingContext(true);
+      try {
+        const userContext = await getCurrentUserContext(currentUser.uid);
+        setCurrentContext(userContext);
+      } catch (error) {
+        console.error('Error loading user context:', error);
+      } finally {
+        setLoadingContext(false);
+      }
+    };
+
+    loadUserContext();
+  }, [currentUser, isOpen]);
+
+  // Handle organization context change
+  const handleContextChange = (newContext) => {
+    setCurrentContext(newContext);
+  };
+
+  // Handle organization creation success
+  const handleOrganizationCreated = async () => {
+    setIsCreateOrgModalOpen(false);
+    // Refresh user context after organization creation
+    if (currentUser) {
+      try {
+        const userContext = await getCurrentUserContext(currentUser.uid);
+        setCurrentContext(userContext);
+      } catch (error) {
+        console.error('Error refreshing user context:', error);
+      }
+    }
+  };
+
+  // Check if user can sign agreements
+  const canSignAgreement = () => {
+    if (!currentContext) return false;
+    // Only organization admins can sign agreements - no personal accounts
+    if (currentContext.type === 'organization') {
+      return currentContext.permissions?.role === 'admin';
+    }
+    return false; // No personal account access
+  };
+
+  // Check if user has any organizations
+  const hasOrganizations = () => {
+    return currentContext?.type === 'organization';
+  };
 
   const handleFileUpload = (file) => {
     setErrorMessage('');
@@ -124,6 +207,11 @@ const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName 
       return;
     }
 
+    if (!canSignAgreement()) {
+      setErrorMessage(t.cannotSign);
+      return;
+    }
+
     setStatus('loading');
     setErrorMessage('');
     
@@ -134,13 +222,26 @@ const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName 
       const documentUrl = await uploadFrameworkDocument(uploadedFile, currentUser.uid);
       console.log('Document uploaded, URL:', documentUrl);
       
+      // Prepare agreement data with organization context
+      const agreementData = {
+        userId: currentUser.uid,
+        userEmail: currentUser.email,
+        documentUrl: documentUrl,
+        organizationId: currentContext?.type === 'organization' ? currentContext.organization.id : null,
+        organizationName: currentContext?.type === 'organization' ? currentContext.organization.name : null,
+        signedBy: currentUser.displayName || currentUser.email,
+        signedAsRole: currentContext?.type === 'organization' ? currentContext.permissions?.role : 'personal',
+        signedAt: new Date().toISOString()
+      };
+      
       // Save the agreement status to Firestore
       await saveFrameworkAgreement(
         currentUser.uid, 
         currentUser.email, 
-        documentUrl
+        documentUrl,
+        agreementData
       );
-      console.log('Agreement status saved to Firestore');
+      console.log('Agreement status saved to Firestore with organization context');
       
       setStatus('success');
       
@@ -177,8 +278,6 @@ const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName 
         </button>
 
         <div className="p-8">
-          <h2 className="text-3xl font-bold mb-6 text-gray-900 text-center">{t.title}</h2>
-          
           {status === 'success' ? (
             <div className="text-center py-12">
               <CheckCircle className="h-20 w-20 text-green-500 mx-auto mb-6" />
@@ -205,6 +304,70 @@ const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName 
             </div>
           ) : (
             <>
+              <h2 className="text-3xl font-bold mb-6 text-gray-900 text-center">{t.title}</h2>
+              
+              {/* Organization Context Switcher */}
+              {loadingContext ? (
+                <div className="flex items-center justify-center py-4 mb-6">
+                  <Loader2 className="h-5 w-5 animate-spin text-gray-400 mr-2" />
+                  <span className="text-gray-500">Loading context...</span>
+                </div>
+              ) : !hasOrganizations() ? (
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 mb-6">
+                  <div className="flex items-start gap-3">
+                    <AlertCircle className="h-6 w-6 text-amber-600 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-medium text-amber-800 mb-2">{t.noOrganization}</h4>
+                      <p className="text-sm text-amber-700 mb-4">{t.noOrganizationMessage}</p>
+                      <button 
+                        onClick={() => setIsCreateOrgModalOpen(true)}
+                        className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-medium transition-colors"
+                      >
+                        {t.createOrganization}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Building2 className="h-4 w-4 text-gray-600" />
+                    <span className="text-sm font-medium text-gray-700">{t.organizationContext}</span>
+                  </div>
+                  <OrganizationSwitcher 
+                    currentContext={currentContext}
+                    onContextChange={handleContextChange}
+                    onCreateOrganization={() => setIsCreateOrgModalOpen(true)}
+                  />
+                  <div className="mt-3 text-sm text-gray-600">
+                    <strong>{t.signingAs}:</strong> {
+                      currentContext?.type === 'organization' 
+                        ? `${currentContext.organization.name} (${currentContext.permissions?.role === 'admin' ? 'Administrator' : 'Member'})`
+                        : t.personalAccount
+                    }
+                  </div>
+                </div>
+              )}
+
+              {/* Role-based access control */}
+              {currentContext && !canSignAgreement() && (
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+                  <div className="flex items-start gap-3">
+                    <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-medium text-amber-800 mb-1">{t.adminRequired}</h4>
+                      <p className="text-sm text-amber-700 mb-3">{t.adminRequiredMessage}</p>
+                      <button 
+                        onClick={onClose}
+                        className="text-sm font-medium text-amber-800 hover:text-amber-900 underline"
+                      >
+                        {t.contactAdmin}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div className="text-center mb-8">
                 <p className="text-gray-600 leading-relaxed">
                   {t.greeting} <span className="font-semibold text-[#7C3BEC]">{userName || 'FIRST-NAME'}</span>. {t.description} <span className="font-semibold">{t.frameworkAgreement}</span>. {t.explanation}
@@ -270,9 +433,9 @@ const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName 
                 <div className="text-center">
                   <button
                     onClick={handleSubmit}
-                    disabled={!hasUploadedAgreement || status === 'loading'}
+                    disabled={!hasUploadedAgreement || status === 'loading' || !canSignAgreement()}
                     className={`px-8 py-3 rounded-lg font-medium transition-colors ${
-                      hasUploadedAgreement && status !== 'loading'
+                      hasUploadedAgreement && status !== 'loading' && canSignAgreement()
                         ? 'bg-[#FF6B47] hover:bg-[#E55A3C] text-white'
                         : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     }`}
@@ -286,12 +449,27 @@ const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName 
                       t.confirmButton
                     )}
                   </button>
+                  {!canSignAgreement() && currentContext && (
+                    <p className="text-sm text-gray-500 mt-2">
+                      {currentContext.type === 'organization' && currentContext.permissions?.role !== 'admin'
+                        ? t.memberAccess
+                        : ''
+                      }
+                    </p>
+                  )}
                 </div>
               </div>
-            </>
-          )}
+              </>
+            )}
         </div>
       </div>
+
+      {/* Create Organization Modal */}
+      <CreateOrganizationModal 
+        isOpen={isCreateOrgModalOpen}
+        onClose={() => setIsCreateOrgModalOpen(false)}
+        onOrganizationCreated={handleOrganizationCreated}
+      />
     </div>
   );
 };
