@@ -30,13 +30,24 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
   const [isFirstTask, setIsFirstTask] = useState(false);
   const [enablingNotifications, setEnablingNotifications] = useState(false);
   const [lastSubmittedTaskId, setLastSubmittedTaskId] = useState(null);
+  const [showNotificationButton, setShowNotificationButton] = useState(true);
 
   const handleEnableNotifications = async () => {
     if (enablingNotifications) return;
     
     setEnablingNotifications(true);
     try {
-      console.log('🔔 Setting up notifications for first-time user...');
+      console.log('🔔 Setting up notifications for user...');
+      
+      // Check if user already has notifications enabled
+      const tokenCheck = await customerNotificationService.checkUserHasNotificationTokens(currentUser.email);
+      
+      if (tokenCheck.hasTokens) {
+        console.log('✅ User already has notifications enabled');
+        // Hide the button since notifications are already working
+        setShowNotificationButton(false);
+        return;
+      }
       
       // Use the same method as dashboard notification settings
       const { requestNotificationPermission } = await import('../firebase/messaging');
@@ -57,11 +68,11 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
           taskData,
           currentUser.email
         );
-        console.log('First task notification sent:', notificationSent);
+        console.log('Task notification sent:', notificationSent);
       }
       
       // After successful setup, hide the button
-      setIsFirstTask(false);
+      setShowNotificationButton(false);
     } catch (error) {
       console.error('Error enabling notifications:', error);
     } finally {
@@ -176,6 +187,16 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
       try {
         const userContext = await getCurrentUserContext(currentUser.uid);
         setCurrentContext(userContext);
+        
+        // Check if user already has notifications enabled
+        const tokenCheck = await customerNotificationService.checkUserHasNotificationTokens(currentUser.email);
+        if (tokenCheck.hasTokens) {
+          console.log('✅ User already has notifications enabled, hiding button');
+          setShowNotificationButton(false);
+        } else {
+          console.log('⚠️ User has no notification tokens, showing button');
+          setShowNotificationButton(true);
+        }
       } catch (error) {
         console.error('Error loading user context:', error);
       } finally {
@@ -477,6 +498,7 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
             setLastSubmittedTaskId(null);
             setIsFirstTask(false);
             setEnablingNotifications(false);
+            setShowNotificationButton(true);
           }}
           className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all duration-200 z-10"
           aria-label="Close modal"
@@ -498,8 +520,8 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
                 {t.successSubtext}
               </p>
               
-              {/* First-time user notification setup */}
-              {isFirstTask && (
+              {/* Notification setup for all users */}
+              {showNotificationButton && (
                 <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
                   <div className="flex items-start gap-3">
                     <Bell className="h-5 w-5 text-gray-600 mt-0.5 flex-shrink-0" />
@@ -536,6 +558,7 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
                   setLastSubmittedTaskId(null);
                   setIsFirstTask(false);
                   setEnablingNotifications(false);
+                  setShowNotificationButton(true);
                   onClose();
                 }}
                 className="px-8 py-3 bg-[#7C3BEC] hover:bg-[#6B32D6] text-white rounded-lg font-medium transition-colors shadow-sm"

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Settings, Bell, Mail, Smartphone, Save, Loader2, Check, Send } from 'lucide-react';
+import { X, Settings, Bell, Mail, Smartphone, Save, Loader2, Check, Send, Bug } from 'lucide-react';
 import { httpsCallable } from 'firebase/functions';
 import { functions } from '../firebase/config';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../firebase/config';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { runNotificationDiagnostic, testNotificationFlow, showDiagnosticModal } from '../utils/notificationDiagnostic';
 
 const NotificationSettingsModal = ({ isOpen, onClose, onPreferencesSaved }) => {
   const { currentUser } = useAuth();
@@ -15,6 +16,7 @@ const NotificationSettingsModal = ({ isOpen, onClose, onPreferencesSaved }) => {
   const [success, setSuccess] = useState('');
   const [subscribing, setSubscribing] = useState(false);
   const [testing, setTesting] = useState(false);
+  const [diagnosing, setDiagnosing] = useState(false);
 
   // Default settings - both mobile and email enabled for all notification types
   const [settings, setSettings] = useState({
@@ -175,6 +177,36 @@ const NotificationSettingsModal = ({ isOpen, onClose, onPreferencesSaved }) => {
     }
   };
 
+  const runDiagnostic = async () => {
+    try {
+      setDiagnosing(true);
+      setError('');
+      setSuccess('');
+      
+      console.log('🔍 Running notification diagnostic...');
+      const results = await runNotificationDiagnostic();
+      
+      // Show results in modal
+      showDiagnosticModal(results);
+      
+      if (results.issues.length === 0) {
+        setSuccess('✅ Diagnostic passed - notifications should work!');
+      } else {
+        setError(`⚠️ Found ${results.issues.length} issue(s) - check diagnostic popup`);
+      }
+      
+    } catch (e) {
+      setError('Failed to run diagnostic.');
+      console.error('Diagnostic error:', e);
+    } finally {
+      setDiagnosing(false);
+      setTimeout(() => {
+        setSuccess('');
+        setError('');
+      }, 5000);
+    }
+  };
+
   const handleToggle = (notificationType, method) => {
     setSettings(prev => ({
       ...prev,
@@ -332,6 +364,16 @@ const NotificationSettingsModal = ({ isOpen, onClose, onPreferencesSaved }) => {
                       >
                         {testing ? <Loader2 className="h-4 w-4 animate-spin inline-block" /> : <Send className="h-4 w-4" />}
                         <span>{testing ? 'Sending…' : 'Send Test Notifications'}</span>
+                      </button>
+                    </div>
+                    <div className="flex gap-3">
+                      <button
+                        onClick={runDiagnostic}
+                        disabled={diagnosing}
+                        className="flex-1 px-5 py-2.5 rounded-lg border border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-100 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                      >
+                        {diagnosing ? <Loader2 className="h-4 w-4 animate-spin inline-block" /> : <Bug className="h-4 w-4" />}
+                        <span>{diagnosing ? 'Checking...' : 'Run Diagnostic'}</span>
                       </button>
                     </div>
                     <div className="flex gap-3">
