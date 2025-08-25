@@ -61,6 +61,14 @@ messaging.onBackgroundMessage((payload) => {
       }
     ];
   }
+  
+  // Special handling for task message notifications
+  if (payload.data.type === "task_message") {
+    notificationOptions.icon = "https://www.rapid-works.io/opengraphimage.png";
+    notificationOptions.badge = "https://www.rapid-works.io/logo192.png";
+    notificationOptions.requireInteraction = true; // Keep notification visible until clicked
+    notificationOptions.data.url = payload.data.url || "/dashboard"; // Ensure we have a URL
+  }
 
   // console.log("[firebase-messaging-sw.js] Notification options:", notificationOptions);
 
@@ -72,6 +80,7 @@ self.addEventListener("notificationclick", (event) => {
   const clickedUrl = event.notification.data.url;
   const notificationType = event.notification.data.type;
   const kitId = event.notification.data.kitId;
+  const taskId = event.notification.data.taskId;
   
   // console.log("Notification click received. URL:", clickedUrl, "Type:", notificationType);
   
@@ -87,6 +96,12 @@ self.addEventListener("notificationclick", (event) => {
     // For branding kit notifications, always go to dashboard
     event.waitUntil(
       clients.openWindow("/dashboard")
+    );
+  } else if (notificationType === "task_message") {
+    // For task message notifications, go to dashboard with task focus
+    const taskUrl = taskId ? `/dashboard/task/${taskId}` : "/dashboard";
+    event.waitUntil(
+      clients.openWindow(taskUrl)
     );
   } else {
     // Default behavior for other notifications
