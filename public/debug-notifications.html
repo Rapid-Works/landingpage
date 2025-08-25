@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification Debug Tool</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .debug-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 4px; }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .warning { background: #fff3cd; border-color: #ffeaa7; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 10px 20px; margin: 10px 5px; border: none; border-radius: 4px; cursor: pointer; }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-warning { background: #ffc107; color: black; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        #results { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Notification Debug Tool</h1>
+        <p>Debug push notifications for user: <strong>calvinsamueldonkor@gmail.com</strong></p>
+        
+        <div class="debug-section">
+            <h3>Quick Actions</h3>
+            <button class="btn-primary" onclick="runFullDiagnostic()">🔍 Run Full Diagnostic</button>
+            <button class="btn-success" onclick="testNotificationFlow()">🧪 Test Notifications</button>
+            <button class="btn-warning" onclick="enableNotifications()">🔔 Enable Notifications</button>
+            <button class="btn-primary" onclick="runMobileDiagnostic()">📱 Mobile Diagnostic</button>
+            <button class="btn-success" onclick="testMobileNotification()">📱 Test Mobile Push</button>
+            <button class="btn-primary" onclick="testTaskNotification()">💬 Test Task Notification</button>
+        </div>
+        
+        <div id="results"></div>
+    </div>
+
+    <script type="module">
+        const TARGET_USER = 'calvinsamueldonkor@gmail.com';
+        let firebaseApp = null;
+        
+        // Initialize Firebase (using the existing config)
+        async function initFirebase() {
+            if (firebaseApp) return firebaseApp;
+            
+            try {
+                const { initializeApp } = await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js');
+                const { getAuth } = await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js');
+                const { getFirestore } = await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js');
+                
+                // Use the same config as your app
+                const firebaseConfig = {
+                    apiKey: "AIzaSyDoIexsBB5I8ylX2t2N4fxVjVcsst71c5Y",
+                    authDomain: "landingpage-606e9.firebaseapp.com",
+                    projectId: "landingpage-606e9",
+                    storageBucket: "landingpage-606e9.firebasestorage.app",
+                    messagingSenderId: "449487247565",
+                    appId: "1:449487247565:web:7bf02a5898cb57a13cb184"
+                };
+                
+                firebaseApp = initializeApp(firebaseConfig);
+                return firebaseApp;
+            } catch (error) {
+                console.error('Firebase init failed:', error);
+                return null;
+            }
+        }
+        
+        // Check FCM tokens for the user
+        async function checkUserFCMTokens(userEmail) {
+            try {
+                await initFirebase();
+                const { getFirestore, collection, query, where, getDocs } = await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js');
+                
+                const db = getFirestore();
+                const tokensRef = collection(db, 'fcmTokens');
+                const q = query(tokensRef, where('email', '==', userEmail));
+                const tokensSnapshot = await getDocs(q);
+                
+                return {
+                    hasTokens: tokensSnapshot.size > 0,
+                    tokenCount: tokensSnapshot.size,
+                    tokens: tokensSnapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }))
+                };
+            } catch (error) {
+                console.error('Error checking FCM tokens:', error);
+                return { hasTokens: false, tokenCount: 0, tokens: [], error: error.message };
+            }
+        }
+        
+        // Check authentication status
+        async function checkAuthStatus() {
+            try {
+                await initFirebase();
+                const { getAuth } = await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js');
+                const auth = getAuth();
+                
+                return {
+                    isLoggedIn: !!auth.currentUser,
+                    userEmail: auth.currentUser?.email,
+                    isTargetUser: auth.currentUser?.email === TARGET_USER
+                };
+            } catch (error) {
+                return { isLoggedIn: false, error: error.message };
+            }
+        }
+        
+        // Run full diagnostic
+        window.runFullDiagnostic = async function() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<h3>🔍 Running Full Diagnostic...</h3>';
+            
+            const results = [];
+            
+            // 1. Check browser support
+            results.push({
+                title: '🌐 Browser Support',
+                status: 'Notification' in window ? 'success' : 'error',
+                message: 'Notification' in window ? 'Notifications supported' : 'Notifications NOT supported',
+                details: {
+                    'Notification API': 'Notification' in window,
+                    'Service Worker': 'serviceWorker' in navigator,
+                    'Protocol': window.location.protocol,
+                    'User Agent': navigator.userAgent.substring(0, 50) + '...'
+                }
+            });
+            
+            // 2. Check permissions
+            results.push({
+                title: '🔔 Permission Status',
+                status: Notification.permission === 'granted' ? 'success' : 
+                        Notification.permission === 'denied' ? 'error' : 'warning',
+                message: `Permission: ${Notification.permission}`,
+                details: {
+                    'Current Permission': Notification.permission,
+                    'Can Request': Notification.permission === 'default'
+                }
+            });
+            
+            // 3. Check authentication
+            const authStatus = await checkAuthStatus();
+            results.push({
+                title: '🔐 Authentication',
+                status: authStatus.isTargetUser ? 'success' : 'error',
+                message: authStatus.isLoggedIn ? 
+                    `Logged in as: ${authStatus.userEmail}` : 
+                    'Not logged in',
+                details: authStatus
+            });
+            
+            // 4. Check FCM tokens
+            const tokenStatus = await checkUserFCMTokens(TARGET_USER);
+            results.push({
+                title: '📱 FCM Tokens',
+                status: tokenStatus.hasTokens ? 'success' : 'error',
+                message: tokenStatus.hasTokens ? 
+                    `Found ${tokenStatus.tokenCount} token(s)` : 
+                    'No FCM tokens found',
+                details: tokenStatus
+            });
+            
+            // 5. Display results
+            let html = '<h3>📊 Diagnostic Results</h3>';
+            results.forEach(result => {
+                const className = result.status === 'success' ? 'success' : 
+                                result.status === 'error' ? 'error' : 'warning';
+                
+                html += `
+                    <div class="debug-section ${className}">
+                        <h4>${result.title}</h4>
+                        <p><strong>${result.message}</strong></p>
+                        <details>
+                            <summary>Details</summary>
+                            <pre>${JSON.stringify(result.details, null, 2)}</pre>
+                        </details>
+                    </div>
+                `;
+            });
+            
+            // 6. Add recommendations
+            const issues = results.filter(r => r.status === 'error');
+            if (issues.length > 0) {
+                html += `
+                    <div class="debug-section error">
+                        <h4>🔧 Issues Found</h4>
+                        <ul>
+                            ${issues.map(issue => `<li>${issue.title}: ${issue.message}</li>`).join('')}
+                        </ul>
+                        <h5>Recommendations:</h5>
+                        <ul>
+                            ${!tokenStatus.hasTokens ? '<li>User needs to enable notifications via the notification button</li>' : ''}
+                            ${Notification.permission !== 'granted' ? '<li>User needs to grant notification permission in browser</li>' : ''}
+                            ${!authStatus.isTargetUser ? '<li>User needs to log in with the correct email address</li>' : ''}
+                        </ul>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="debug-section success">
+                        <h4>✅ All Checks Passed!</h4>
+                        <p>User should be able to receive notifications. If they're still not getting them:</p>
+                        <ul>
+                            <li>Check Firebase Function logs for any errors</li>
+                            <li>Verify the expert sent the message correctly</li>
+                            <li>Ensure the task has the expert properly assigned</li>
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            resultsDiv.innerHTML = html;
+        };
+        
+        // Test notification flow
+        window.testNotificationFlow = async function() {
+            const resultsDiv = document.getElementById('results');
+            
+            if (Notification.permission !== 'granted') {
+                resultsDiv.innerHTML = `
+                    <div class="debug-section warning">
+                        <h4>⚠️ Cannot Test</h4>
+                        <p>Notification permission not granted. Please enable notifications first.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            try {
+                const testNotif = new Notification(`🧪 Test for ${TARGET_USER}`, {
+                    body: 'If you see this, browser notifications work!',
+                    icon: '/logo192.png',
+                    tag: 'debug-test'
+                });
+                
+                setTimeout(() => testNotif.close(), 4000);
+                
+                resultsDiv.innerHTML = `
+                    <div class="debug-section success">
+                        <h4>✅ Test Notification Sent</h4>
+                        <p>A test notification was sent. If you saw it, browser notifications are working!</p>
+                    </div>
+                `;
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="debug-section error">
+                        <h4>❌ Test Failed</h4>
+                        <p>Error: ${error.message}</p>
+                    </div>
+                `;
+            }
+        };
+        
+        // Enable notifications
+        window.enableNotifications = async function() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<h3>🔔 Requesting notification permission...</h3>';
+            
+            try {
+                const permission = await Notification.requestPermission();
+                
+                if (permission === 'granted') {
+                    resultsDiv.innerHTML = `
+                        <div class="debug-section success">
+                            <h4>✅ Permission Granted</h4>
+                            <p>Notification permission granted! Now run the full diagnostic again.</p>
+                        </div>
+                    `;
+                } else {
+                    resultsDiv.innerHTML = `
+                        <div class="debug-section error">
+                            <h4>❌ Permission Denied</h4>
+                            <p>User denied notification permission. They need to enable it manually in browser settings.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="debug-section error">
+                        <h4>❌ Error</h4>
+                        <p>Failed to request permission: ${error.message}</p>
+                    </div>
+                `;
+            }
+        };
+        
+        // Run mobile-specific diagnostic
+        window.runMobileDiagnostic = async function() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<h3>📱 Running Mobile Diagnostic...</h3>';
+            
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+            const isAndroid = /Android/i.test(navigator.userAgent);
+            const isPWA = window.matchMedia('(display-mode: standalone)').matches;
+            
+            let html = '<h3>📱 Mobile Notification Diagnostic</h3>';
+            
+            // Device info
+            html += `
+                <div class="debug-section ${isMobile ? 'success' : 'warning'}">
+                    <h4>📱 Device Information</h4>
+                    <ul>
+                        <li>Is Mobile: ${isMobile ? '✅ Yes' : '❌ No'}</li>
+                        <li>Platform: ${isIOS ? 'iOS' : isAndroid ? 'Android' : 'Desktop/Other'}</li>
+                        <li>Is PWA: ${isPWA ? '✅ Yes' : '❌ No'}</li>
+                        <li>User Agent: ${navigator.userAgent.substring(0, 60)}...</li>
+                    </ul>
+                </div>
+            `;
+            
+            // Mobile-specific issues
+            const issues = [];
+            const recommendations = [];
+            
+            if (isMobile && !isPWA) {
+                issues.push('App not installed as PWA');
+                recommendations.push('Install app to home screen for better notifications');
+            }
+            
+            if (isIOS && !isPWA) {
+                issues.push('iOS Safari has limited notification support');
+                recommendations.push('Add to home screen and open from there');
+            }
+            
+            if (isAndroid) {
+                recommendations.push('Check battery optimization settings in Android');
+            }
+            
+            // Service worker check
+            let swStatus = 'Not supported';
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    const firebaseWorker = registrations.find(reg => 
+                        reg.scope.includes('firebase-messaging-sw.js')
+                    );
+                    swStatus = firebaseWorker ? '✅ Active' : '❌ Not found';
+                } catch (error) {
+                    swStatus = '❌ Error: ' + error.message;
+                }
+            }
+            
+            html += `
+                <div class="debug-section">
+                    <h4>🔧 Technical Status</h4>
+                    <ul>
+                        <li>Service Worker: ${swStatus}</li>
+                        <li>Notification Permission: ${Notification.permission}</li>
+                        <li>Push Manager: ${'PushManager' in window ? '✅ Supported' : '❌ Not supported'}</li>
+                        <li>Visibility API: ${'visibilityState' in document ? '✅ Supported' : '❌ Not supported'}</li>
+                    </ul>
+                </div>
+            `;
+            
+            // Issues and recommendations
+            if (issues.length > 0 || recommendations.length > 0) {
+                html += `
+                    <div class="debug-section warning">
+                        <h4>📋 Mobile-Specific Issues & Recommendations</h4>
+                        ${issues.length > 0 ? `
+                            <h5>Issues:</h5>
+                            <ul>
+                                ${issues.map(issue => `<li>⚠️ ${issue}</li>`).join('')}
+                            </ul>
+                        ` : ''}
+                        <h5>Recommendations:</h5>
+                        <ul>
+                            ${recommendations.map(rec => `<li>💡 ${rec}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            resultsDiv.innerHTML = html;
+        };
+        
+        // Test mobile push notification via Firebase Function
+        window.testMobileNotification = async function() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<h3>📱 Testing Mobile Push Notification...</h3>';
+            
+            try {
+                // Get current user
+                await initFirebase();
+                const { getAuth } = await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js');
+                const auth = getAuth();
+                
+                if (!auth.currentUser) {
+                    resultsDiv.innerHTML = `
+                        <div class="debug-section error">
+                            <h4>❌ Authentication Required</h4>
+                            <p>You must be logged in to test mobile notifications.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Call Firebase Function to test mobile notification
+                const { getFunctions, httpsCallable } = await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-functions.js');
+                const functions = getFunctions();
+                const testMobileNotif = httpsCallable(functions, 'sendTestMobileNotification');
+                
+                const result = await testMobileNotif({
+                    userEmail: auth.currentUser.email,
+                    testType: 'mobile_diagnostic_test'
+                });
+                
+                const data = result.data;
+                const statusClass = data.success ? 'success' : 'error';
+                
+                resultsDiv.innerHTML = `
+                    <div class="debug-section ${statusClass}">
+                        <h4>📱 Mobile Notification Test Results</h4>
+                        <p><strong>Status:</strong> ${data.success ? '✅ Success' : '❌ Failed'}</p>
+                        <p><strong>Message:</strong> ${data.message}</p>
+                        <details>
+                            <summary>Details</summary>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </details>
+                        ${data.success ? `
+                            <p>🎉 If mobile notifications are working, you should see a test notification now!</p>
+                        ` : `
+                            <h5>Troubleshooting:</h5>
+                            <ul>
+                                <li>Make sure notifications are enabled for this user</li>
+                                <li>Check that FCM tokens are registered</li>
+                                <li>Verify mobile device settings allow notifications</li>
+                            </ul>
+                        `}
+                    </div>
+                `;
+                
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="debug-section error">
+                        <h4>❌ Mobile Test Failed</h4>
+                        <p>Error: ${error.message}</p>
+                        <details>
+                            <summary>Error Details</summary>
+                            <pre>${error.stack || error.toString()}</pre>
+                        </details>
+                    </div>
+                `;
+            }
+        };
+        
+        // Test task notification function
+        window.testTaskNotification = async function() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<h3>💬 Testing Task Notification...</h3>';
+            
+            try {
+                // Get current user
+                await initFirebase();
+                const { getAuth } = await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js');
+                const auth = getAuth();
+                
+                if (!auth.currentUser) {
+                    resultsDiv.innerHTML = `
+                        <div class="debug-section error">
+                            <h4>❌ Authentication Required</h4>
+                            <p>You must be logged in to test task notifications.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Call Firebase Function to test task notification
+                const { getFunctions, httpsCallable } = await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-functions.js');
+                const functions = getFunctions();
+                const testTaskNotif = httpsCallable(functions, 'testTaskNotification');
+                
+                const result = await testTaskNotif({
+                    userEmail: auth.currentUser.email,
+                    testType: 'task_diagnostic_test'
+                });
+                
+                const data = result.data;
+                const statusClass = data.success ? 'success' : 'error';
+                
+                resultsDiv.innerHTML = `
+                    <div class="debug-section ${statusClass}">
+                        <h4>💬 Task Notification Test Results</h4>
+                        <p><strong>Status:</strong> ${data.success ? '✅ Success' : '❌ Failed'}</p>
+                        <p><strong>Message:</strong> ${data.message}</p>
+                        ${data.details ? `<p><strong>Details:</strong> ${JSON.stringify(data.details, null, 2)}</p>` : ''}
+                        ${data.token ? `<p><strong>FCM Token:</strong> ${data.token.substring(0, 50)}...</p>` : ''}
+                        ${data.preferences ? `<p><strong>Notification Preferences:</strong> ${JSON.stringify(data.preferences, null, 2)}</p>` : ''}
+                    </div>
+                    <div class="debug-section info">
+                        <h4>ℹ️ What was tested:</h4>
+                        <ul>
+                            <li>User authentication status</li>
+                            <li>FCM token retrieval</li>
+                            <li>Task notification preferences</li>
+                            <li>Notification sending capability</li>
+                            <li>Mobile device compatibility</li>
+                        </ul>
+                        <p><strong>Note:</strong> Check your device for the test notification within 30 seconds.</p>
+                    </div>
+                `;
+                
+                // Set a timeout to remind user to check for notification
+                setTimeout(() => {
+                    const reminderDiv = document.createElement('div');
+                    reminderDiv.className = 'debug-section warning';
+                    reminderDiv.innerHTML = `
+                        <h4>⏰ Notification Check</h4>
+                        <p>Did you receive the task notification? If not, check:</p>
+                        <ul>
+                            <li>Browser notification permissions</li>
+                            <li>Firebase messaging service worker</li>
+                            <li>Your notification preferences</li>
+                            <li>Mobile device notification settings</li>
+                        </ul>
+                    `;
+                    resultsDiv.appendChild(reminderDiv);
+                }, 10000);
+                
+            } catch (error) {
+                console.error('Task notification test failed:', error);
+                resultsDiv.innerHTML = `
+                    <div class="debug-section error">
+                        <h4>❌ Task Notification Test Failed</h4>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                        <p><strong>Stack:</strong> ${error.stack}</p>
+                    </div>
+                `;
+            }
+        };
+        
+        // Auto-run diagnostic on load
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(runFullDiagnostic, 1000);
+        });
+    </script>
+</body>
+</html>

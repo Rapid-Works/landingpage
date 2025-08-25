@@ -10,6 +10,10 @@ export const DEFAULT_PREFERENCES = {
   brandingKitReady: {
     mobile: true,
     email: true
+  },
+  taskMessages: {
+    mobile: true,
+    email: true
   }
 };
 
