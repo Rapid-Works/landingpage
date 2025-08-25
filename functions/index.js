@@ -1230,7 +1230,7 @@ exports.sendTaskMessageNotification = onCall(async (request) => {
     const url = `/dashboard?task=${taskId}`;
 
     // Check if user wants task message notifications
-    const shouldSendMobile = preferences.taskMessages?.mobile !== false;
+    const shouldSendMobile = preferences.taskMessages?.mobile === true;
 
     let notificationsSent = 0;
 
@@ -1440,7 +1440,7 @@ exports.onTaskUpdated = onDocumentUpdated("taskRequests/{taskId}",
             const url = `/dashboard?task=${taskId}`;
 
             // Send mobile push notification if user wants them
-            const shouldSendMobile = preferences.taskMessages?.mobile !== false;
+            const shouldSendMobile = preferences.taskMessages?.mobile === true;
 
             if (shouldSendMobile) {
               try {
@@ -1498,19 +1498,20 @@ exports.onTaskUpdated = onDocumentUpdated("taskRequests/{taskId}",
                 } else {
                   console.log(`📱 No FCM tokens found for: ` +
                     `${recipientEmail}`);
-                  console.log(`❗ NOTIFICATION ISSUE: User ${recipientEmail} ` +
-                    `has not registered for push notifications yet.`);
+                  console.log(`❗ TASK NOTIFICATION ISSUE: User ${recipientEmail} ` +
+                    `has not enabled task notifications yet.`);
                   console.log(`💡 SOLUTION: User needs to:`);
                   console.log(`   1. Visit the dashboard/website`);
-                  console.log(`   2. Enable notifications when prompted`);
-                  console.log(`   3. Or manually enable them in ` +
-                    `notification settings`);
-                  console.log(`📝 Notification will be saved to ` +
-                    `history instead.`);
+                  console.log(`   2. Enable task notifications when prompted`);
+                  console.log(`   3. Or manually enable them in notification settings`);
+                  console.log(`📝 Notification will be saved to history instead.`);
                 }
               } catch (error) {
                 console.error("Error sending mobile notification:", error);
               }
+            } else {
+              console.log(`📵 User ${recipientEmail} has disabled mobile ` +
+                "notifications for task messages");
             }
 
             // Save notification to history
@@ -1543,3 +1544,251 @@ exports.onTaskUpdated = onDocumentUpdated("taskRequests/{taskId}",
             error);
       }
     });
+
+// Mobile-specific notification test function
+exports.sendTestMobileNotification = onCall(async (request) => {
+  const {userEmail, testType = "mobile_test"} = request.data;
+
+  if (!userEmail) {
+    throw new Error("User email is required for mobile notification test");
+  }
+
+  try {
+    console.log(`📱 Testing mobile notifications for: ${userEmail}`);
+
+    // Get user ID
+    const userId = await getUserIdFromEmail(userEmail);
+    if (!userId) {
+      throw new Error(`User not found for email: ${userEmail}`);
+    }
+
+    // Get FCM tokens for this user
+    const tokensSnapshot = await db.collection("fcmTokens")
+        .where("email", "==", userEmail)
+        .get();
+
+    console.log(`📊 Found ${tokensSnapshot.size} FCM token(s) for ${userEmail}`);
+
+    if (tokensSnapshot.empty) {
+      return {
+        success: false,
+        reason: "no_tokens",
+        message: `No FCM tokens found for ${userEmail}. User needs to enable notifications first.`,
+        userEmail: userEmail,
+        tokenCount: 0,
+      };
+    }
+
+    const tokens = tokensSnapshot.docs.map((doc) => doc.data().token);
+
+    // Create mobile-optimized test notification
+    const testNotification = {
+      notification: {
+        title: "📱 Mobile Test Notification",
+        body: `Mobile notifications are working for ${userEmail}! This is a test message.`,
+      },
+      data: {
+        url: "/dashboard",
+        type: "mobile_test",
+        testType: testType,
+        timestamp: Date.now().toString(),
+      },
+    };
+
+    let sentCount = 0;
+    const errors = [];
+
+    // Send to all user's tokens
+    for (const token of tokens) {
+      try {
+        await admin.messaging().send({
+          ...testNotification,
+          token: token,
+        });
+        sentCount++;
+        console.log(`✅ Mobile test notification sent to token: ${token.substring(0, 10)}...`);
+      } catch (error) {
+        console.error(`❌ Failed to send to token ${token.substring(0, 10)}...:`, error);
+        errors.push({
+          token: token.substring(0, 10) + "...",
+          error: error.message,
+        });
+
+        // Remove invalid tokens
+        if (error.code === "messaging/registration-token-not-registered") {
+          try {
+            const invalidTokenDocs = await db.collection("fcmTokens")
+                .where("token", "==", token)
+                .get();
+            invalidTokenDocs.forEach((doc) => doc.ref.delete());
+            console.log(`🗑️ Removed invalid token: ${token.substring(0, 10)}...`);
+          } catch (cleanupError) {
+            console.error("Error cleaning up invalid token:", cleanupError);
+          }
+        }
+      }
+    }
+
+    // Save test notification to history
+    await saveNotificationToHistory(userId, {
+      title: testNotification.notification.title,
+      body: testNotification.notification.body,
+      type: "mobile_test",
+      url: "/dashboard",
+      metadata: {
+        testType: testType,
+        sentCount: sentCount,
+        totalTokens: tokens.length,
+        errors: errors,
+      },
+    });
+
+    return {
+      success: sentCount > 0,
+      userEmail: userEmail,
+      tokenCount: tokens.length,
+      sentCount: sentCount,
+      errors: errors,
+      message: sentCount > 0 ?
+        `Successfully sent ${sentCount}/${tokens.length} test notifications` :
+        `Failed to send any notifications. ${errors.length} errors occurred.`,
+    };
+  } catch (error) {
+    console.error("Error in mobile notification test:", error);
+    throw new Error(`Mobile notification test failed: ${error.message}`);
+  }
+});
+
+// Test function for task message notifications
+exports.testTaskNotification = onCall(async (request) => {
+  const {taskId, userEmail, expertEmail, messageContent = "Test task message"} = request.data;
+
+  if (!taskId || !userEmail || !expertEmail) {
+    throw new Error("Task ID, user email, and expert email are required for testing");
+  }
+
+  try {
+    console.log(`🧪 Testing task notifications for task: ${taskId}`);
+
+    // Simulate a task message update by directly triggering the notification logic
+    const recipientUserId = await getUserIdFromEmail(userEmail);
+    if (!recipientUserId) {
+      throw new Error(`User not found for email: ${userEmail}`);
+    }
+
+    // Get user preferences
+    const preferences = await getUserNotificationPreferences(recipientUserId);
+    console.log("User task notification preferences:", preferences.taskMessages);
+
+    // Check if user wants task message notifications
+    const shouldSendMobile = preferences.taskMessages?.mobile === true;
+
+    if (!shouldSendMobile) {
+      return {
+        success: false,
+        reason: "user_preferences_disabled",
+        message: `User ${userEmail} has task notifications disabled in preferences`,
+        preferences: preferences.taskMessages,
+      };
+    }
+
+    // Get FCM tokens for this user
+    const tokensSnapshot = await db.collection("fcmTokens")
+        .where("email", "==", userEmail)
+        .get();
+
+    console.log(`📊 Found ${tokensSnapshot.size} FCM token(s) for ${userEmail}`);
+
+    if (tokensSnapshot.empty) {
+      return {
+        success: false,
+        reason: "no_tokens",
+        message: `No FCM tokens found for ${userEmail}. User needs to enable notifications first.`,
+        userEmail: userEmail,
+        tokenCount: 0,
+        preferences: preferences.taskMessages,
+      };
+    }
+
+    const tokens = tokensSnapshot.docs.map((doc) => doc.data().token);
+
+    // Create test task message notification
+    const testNotification = {
+      notification: {
+        title: "🧪 Test Task Message",
+        body: `Test message for task ${taskId}: ${messageContent}`,
+      },
+      data: {
+        url: `/dashboard?task=${taskId}`,
+        type: "task_message",
+        taskId: taskId,
+        senderRole: "expert",
+      },
+    };
+
+    let sentCount = 0;
+    const errors = [];
+
+    // Send to all user's tokens
+    for (const token of tokens) {
+      try {
+        await admin.messaging().send({
+          ...testNotification,
+          token: token,
+        });
+        sentCount++;
+        console.log(`✅ Test task notification sent to token: ${token.substring(0, 10)}...`);
+      } catch (error) {
+        console.error(`❌ Failed to send to token ${token.substring(0, 10)}...:`, error);
+        errors.push({
+          token: token.substring(0, 10) + "...",
+          error: error.message,
+        });
+
+        // Remove invalid tokens
+        if (error.code === "messaging/registration-token-not-registered") {
+          try {
+            const invalidTokenDocs = await db.collection("fcmTokens")
+                .where("token", "==", token)
+                .get();
+            invalidTokenDocs.forEach((doc) => doc.ref.delete());
+            console.log(`🗑️ Removed invalid token: ${token.substring(0, 10)}...`);
+          } catch (cleanupError) {
+            console.error("Error cleaning up invalid token:", cleanupError);
+          }
+        }
+      }
+    }
+
+    // Save test notification to history
+    await saveNotificationToHistory(recipientUserId, {
+      title: testNotification.notification.title,
+      body: testNotification.notification.body,
+      type: "task_message_test",
+      url: `/dashboard?task=${taskId}`,
+      metadata: {
+        taskId: taskId,
+        testType: "task_notification_test",
+        sentCount: sentCount,
+        totalTokens: tokens.length,
+        errors: errors,
+      },
+    });
+
+    return {
+      success: sentCount > 0,
+      userEmail: userEmail,
+      taskId: taskId,
+      tokenCount: tokens.length,
+      sentCount: sentCount,
+      errors: errors,
+      preferences: preferences.taskMessages,
+      message: sentCount > 0 ?
+        `Successfully sent ${sentCount}/${tokens.length} task test notifications` :
+        `Failed to send any notifications. ${errors.length} errors occurred.`,
+    };
+  } catch (error) {
+    console.error("Error in task notification test:", error);
+    throw new Error(`Task notification test failed: ${error.message}`);
+  }
+});

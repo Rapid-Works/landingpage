@@ -115,8 +115,8 @@ export const runNotificationDiagnostic = async () => {
   }
 
   // 7. Check if page is served over HTTPS
-  results.checks.isHTTPS = location.protocol === 'https:';
-  if (!results.checks.isHTTPS && location.hostname !== 'localhost') {
+  results.checks.isHTTPS = window.location.protocol === 'https:';
+  if (!results.checks.isHTTPS && window.location.hostname !== 'localhost') {
     results.issues.push('❌ Page not served over HTTPS - required for notifications');
   }
 
@@ -128,7 +128,7 @@ export const runNotificationDiagnostic = async () => {
   return results;
 };
 
-export const testNotificationFlow = async () => {
+export const testNotificationFlow = async (currentUser = null) => {
   console.log('🧪 Testing complete notification flow...');
   
   try {
@@ -160,14 +160,10 @@ export const testNotificationFlow = async () => {
       return { success: false, reason: result.reason, diagnostic };
     }
 
-    // 4. Test sending a notification via the service
-    const { default: customerNotificationService } = await import('./customerNotificationService');
-    
-    // Get current user
-    const { useAuth } = await import('../contexts/AuthContext');
-    const auth = useAuth();
-    
-    if (auth.currentUser) {
+    // 4. Test sending a notification via the service (only if user is provided)
+    if (currentUser) {
+      const { default: customerNotificationService } = await import('./customerNotificationService');
+      
       console.log('📤 Testing notification service...');
       const testResult = await customerNotificationService.sendTaskSubmittedNotification(
         {
@@ -175,7 +171,7 @@ export const testNotificationFlow = async () => {
           taskName: 'Test Notification',
           taskDescription: 'This is a test notification'
         },
-        auth.currentUser.email
+        currentUser.email
       );
       
       console.log('📬 Notification service test result:', testResult);
