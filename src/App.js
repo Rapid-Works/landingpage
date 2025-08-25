@@ -63,6 +63,45 @@ import './firebase/messaging'
 // Import notification service for automatic registration
 import customerNotificationService from './utils/customerNotificationService'
 
+// Add foreground message handler for Firebase notifications
+import { onForegroundMessage } from './firebase/messaging'
+
+// Set up foreground notification handler
+if (typeof window !== 'undefined') {
+  onForegroundMessage((payload) => {
+    console.log('📱 Foreground notification received:', payload);
+    
+    // Create a browser notification even when app is in foreground
+    const notificationTitle = payload.notification?.title || 'Notification';
+    const notificationBody = payload.notification?.body || 'You have a new message';
+    
+    // Only show if browser tab doesn't have focus or user prefers notifications
+    if (document.hidden || !document.hasFocus()) {
+      try {
+        const notification = new Notification(notificationTitle, {
+          body: notificationBody,
+          icon: payload.notification?.icon || '/favicon.ico',
+          tag: payload.data?.type || 'general',
+          data: payload.data
+        });
+        
+        notification.onclick = () => {
+          window.focus();
+          if (payload.data?.url) {
+            window.location.href = payload.data.url;
+          }
+          notification.close();
+        };
+        
+        // Auto-close after 5 seconds
+        setTimeout(() => notification.close(), 5000);
+      } catch (error) {
+        console.log('Could not show foreground notification:', error);
+      }
+    }
+  });
+}
+
 // Create and export Language Context with initial values
 export const LanguageContext = createContext({
   language: 'de',
