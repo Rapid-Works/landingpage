@@ -6,7 +6,10 @@ import { sendTaskMessageNotification } from './taskNotificationService';
  */
 class CustomerNotificationService {
   constructor() {
-    this.permissionStatus = Notification.permission;
+    // Safe check for Notification API availability
+    this.permissionStatus = (typeof window !== 'undefined' && typeof window.Notification !== 'undefined') 
+      ? window.Notification.permission 
+      : 'unsupported';
     this.isInitialized = false;
     this.notificationQueue = [];
   }
@@ -50,11 +53,11 @@ class CustomerNotificationService {
    * Check if notifications are enabled and prompt user if not
    */
   async ensureNotificationsEnabled() {
-    if (Notification.permission === 'granted') {
+    if (typeof window !== 'undefined' && typeof window.Notification !== 'undefined' && window.Notification.permission === 'granted') {
       return { enabled: true, token: null };
     }
 
-    if (Notification.permission === 'denied') {
+    if (typeof window !== 'undefined' && typeof window.Notification !== 'undefined' && window.Notification.permission === 'denied') {
       return { 
         enabled: false, 
         reason: 'Notifications are blocked. Please enable them in your browser settings.',
@@ -65,7 +68,9 @@ class CustomerNotificationService {
     // Permission is 'default', ask for permission
     try {
       const result = await requestNotificationPermission();
-      this.permissionStatus = Notification.permission;
+      this.permissionStatus = (typeof window !== 'undefined' && typeof window.Notification !== 'undefined') 
+        ? window.Notification.permission 
+        : 'unsupported';
       return {
         enabled: result.success,
         reason: result.reason,
@@ -123,7 +128,9 @@ class CustomerNotificationService {
       }
       
       // No tokens found, check browser permission status
-      const permissionStatus = Notification.permission;
+      const permissionStatus = (typeof window !== 'undefined' && typeof window.Notification !== 'undefined') 
+        ? window.Notification.permission 
+        : 'unsupported';
       
       // If already granted, just ensure we have a valid token
       if (permissionStatus === 'granted') {
@@ -324,9 +331,13 @@ class CustomerNotificationService {
     }, 5000);
 
     // Also try to show browser notification if permission is granted
-    if (Notification.permission === 'granted') {
+    if (typeof window !== 'undefined' && typeof window.Notification !== 'undefined' && window.Notification.permission === 'granted') {
       try {
-        new Notification(notification.title, {
+        if (typeof window === 'undefined' || typeof window.Notification === 'undefined') {
+          console.warn('Notification API not available - skipping browser notification');
+          return;
+        }
+        new window.Notification(notification.title, {
           body: notification.body,
           icon: notification.icon || '/logo192.png',
           badge: '/logo192.png',
