@@ -1415,24 +1415,111 @@ function App() {
   useEffect(() => {
     const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown';
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+
     console.log('🌐 App loaded:', {
       userAgent,
       isMobile,
       language,
       pathname: location.pathname,
-      readyState: typeof document !== 'undefined' ? document.readyState : 'Unknown'
+      readyState: typeof document !== 'undefined' ? document.readyState : 'Unknown',
+      timestamp: new Date().toISOString()
     });
+
+    // Comprehensive mobile debugging
+    if (isMobile) {
+      console.log('📱 Mobile Debug Info:', {
+        userAgent,
+        platform: navigator.platform,
+        cookieEnabled: navigator.cookieEnabled,
+        onLine: navigator.onLine,
+        language: navigator.language,
+        screen: {
+          width: screen.width,
+          height: screen.height,
+          colorDepth: screen.colorDepth
+        },
+        viewport: {
+          width: window.innerWidth,
+          height: window.innerHeight
+        }
+      });
+
+      // Check for common mobile issues
+      const mobileIssues = [];
+
+      if (!navigator.onLine) mobileIssues.push('Device is offline');
+      if (!navigator.cookieEnabled) mobileIssues.push('Cookies disabled');
+      if (window.innerWidth < 320) mobileIssues.push('Very small viewport');
+
+      if (mobileIssues.length > 0) {
+        console.warn('⚠️ Mobile Issues Detected:', mobileIssues);
+      }
+    }
+
+    // Check Firebase services availability (critical for mobile)
+    const checkFirebaseServices = async () => {
+      try {
+        console.log('🔥 Checking Firebase services...');
+        const { auth, db, functions, analytics, messaging } = await import('./firebase/config');
+
+        const servicesStatus = {
+          auth: !!auth,
+          db: !!db,
+          functions: !!functions,
+          analytics: !!analytics,
+          messaging: !!messaging,
+          isMobile
+        };
+
+        console.log('🔥 Firebase services status:', servicesStatus);
+
+        // Check for service initialization failures
+        const failedServices = [];
+        if (!auth) failedServices.push('auth');
+        if (!db) failedServices.push('firestore');
+        if (!functions) failedServices.push('functions');
+        if (isMobile && !messaging) failedServices.push('messaging (mobile)');
+        if (!isMobile && !analytics) failedServices.push('analytics (desktop)');
+
+        if (failedServices.length > 0) {
+          console.error('❌ Firebase services failed to initialize:', failedServices);
+          if (isMobile) {
+            console.error('🚨 Mobile Critical: Firebase failures may cause white screen');
+          }
+        } else {
+          console.log('✅ All Firebase services initialized successfully');
+        }
+
+      } catch (error) {
+        console.error('❌ Firebase services check failed:', error);
+        if (isMobile) {
+          console.error('🚨 Mobile Critical: Firebase import failed - this causes white screen');
+        }
+      }
+    };
 
     // Check for critical missing dependencies
     const missingDeps = [];
     if (typeof window === 'undefined') missingDeps.push('window');
     if (!document) missingDeps.push('document');
+    if (typeof navigator === 'undefined') missingDeps.push('navigator');
+
     if (missingDeps.length > 0) {
       console.error('🚨 Critical dependencies missing:', missingDeps);
+      if (isMobile) {
+        console.error('🚨 Mobile Critical: Missing dependencies will cause white screen');
+      }
     }
 
+    // Run Firebase check
+    checkFirebaseServices();
+
     // Mark app as ready after initial checks
-    setTimeout(() => setAppReady(true), 100);
+    setTimeout(() => {
+      console.log('✅ App marked as ready, rendering React components...');
+      setAppReady(true);
+    }, 100);
+
   }, [language, location.pathname]);
   
   // Check if we're on a dashboard page
@@ -1483,27 +1570,39 @@ function App() {
 
   // Show loading screen while app initializes
   if (!appReady) {
+    const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown';
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
+        <div className="text-center max-w-sm mx-4">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading RapidWorks...</p>
+          <p className="text-gray-600 font-medium">Loading RapidWorks...</p>
           <p className="text-sm text-gray-500 mt-2">
-            {typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.includes('Mobile') ? 'Mobile device detected' : 'Desktop device detected'}
+            {isMobile ? '📱 Mobile device detected' : '💻 Desktop device detected'}
+          </p>
+          <p className="text-xs text-gray-400 mt-1">
+            Initializing Firebase services...
+          </p>
+          <p className="text-xs text-gray-400 mt-1">
+            Device: {userAgent.split(' ').pop() || 'Unknown'}
           </p>
         </div>
       </div>
     );
   }
 
-  return (
-    <AuthProvider>
-      <NotificationProvider>
-        <AutoNotificationRegistration />
-        <LanguageContext.Provider value={contextValue}>
-          <ScrollToTop />
-          <Analytics />
-          <Routes>
+  // Emergency fallback for white screen issues
+  try {
+    return (
+      <ErrorBoundary>
+        <AuthProvider>
+          <NotificationProvider>
+            <AutoNotificationRegistration />
+            <LanguageContext.Provider value={contextValue}>
+            <ScrollToTop />
+            <Analytics />
+            <Routes>
             {/* Authentication Routes */}
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/dashboard" element={
@@ -1567,17 +1666,46 @@ function App() {
           /> */}
           {!isDashboardPage && <Footer />}
           <CookieConsent />
-    </LanguageContext.Provider>
-      </NotificationProvider>
-    </AuthProvider>
-  )
+          </LanguageContext.Provider>
+        </NotificationProvider>
+      </AuthProvider>
+    </ErrorBoundary>
+  );
+  } catch (error) {
+    // Emergency fallback if anything fails
+    console.error('🚨 Critical app rendering error:', error);
+    return (
+      <div className="min-h-screen bg-red-50 flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6 text-center">
+          <div className="text-red-500 text-6xl mb-4">⚠️</div>
+          <h1 className="text-xl font-bold text-gray-900 mb-4">App Loading Error</h1>
+          <p className="text-gray-600 mb-4">
+            There was a critical error loading the application.
+          </p>
+          <div className="text-sm text-gray-500 mb-4">
+            Error: {error?.message || 'Unknown error'}
+          </div>
+          <div className="space-y-2">
+            <button
+              onClick={() => window.location.reload()}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium"
+            >
+              Reload Page
+            </button>
+            <button
+              onClick={() => {
+                localStorage.clear();
+                window.location.reload();
+              }}
+              className="w-full bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium"
+            >
+              Clear Data & Reload
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
-// Wrap App with ErrorBoundary for mobile compatibility
-const AppWithErrorBoundary = () => (
-  <ErrorBoundary>
-    <App />
-  </ErrorBoundary>
-);
-
-export default AppWithErrorBoundary;
+export default App;

@@ -105,7 +105,7 @@ if (typeof window !== 'undefined') {
     try {
       // Only initialize messaging if supported and not causing issues
       if (!messaging) {
-        console.log('📱 Firebase messaging not available on this device');
+        console.log('📱 Firebase messaging not available or failed to initialize on this device');
         return;
       }
 
