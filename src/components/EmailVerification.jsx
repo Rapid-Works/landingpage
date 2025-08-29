@@ -3,12 +3,19 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { motion } from 'framer-motion';
 import { Mail, CheckCircle, RefreshCw, ArrowLeft } from 'lucide-react';
+import { 
+  checkRecentEmailVerification, 
+  markEmailVerificationSent, 
+  getEmailVerificationErrorMessage 
+} from '../utils/emailVerificationUtils';
 
 const EmailVerification = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [verificationSent, setVerificationSent] = useState(false);
+  const [lastSentTime, setLastSentTime] = useState(null);
+  const [cooldownTime, setCooldownTime] = useState(0);
   const { currentUser, sendVerificationEmail, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -19,16 +26,47 @@ const EmailVerification = () => {
     }
   }, [currentUser, navigate]);
 
-  // Send verification email automatically on component mount
+  // Check if user was recently sent an email (to prevent auto-sending)
   useEffect(() => {
-    if (currentUser && !currentUser.emailVerified && !verificationSent) {
-      handleSendVerification();
+    if (!currentUser?.email) return;
+    
+    const status = checkRecentEmailVerification(currentUser.email);
+    if (status.isRecent) {
+      setVerificationSent(true);
+      setMessage('A verification email was recently sent. Please check your inbox.');
+      setLastSentTime(status.lastSentTime);
     }
   }, [currentUser]);
+
+  // Cooldown timer effect
+  useEffect(() => {
+    if (lastSentTime) {
+      const updateCooldown = () => {
+        const now = Date.now();
+        const timeSinceLastSent = now - lastSentTime;
+        const cooldownRemaining = Math.max(0, 60000 - timeSinceLastSent); // 1 minute cooldown
+        
+        if (cooldownRemaining > 0) {
+          setCooldownTime(Math.ceil(cooldownRemaining / 1000));
+          setTimeout(updateCooldown, 1000);
+        } else {
+          setCooldownTime(0);
+        }
+      };
+      
+      updateCooldown();
+    }
+  }, [lastSentTime]);
 
   const handleSendVerification = async () => {
     if (!currentUser) {
       setError('No user found. Please sign up again.');
+      return;
+    }
+
+    // Check cooldown
+    if (cooldownTime > 0) {
+      setError(`Please wait ${cooldownTime} seconds before requesting another email.`);
       return;
     }
 
@@ -38,11 +76,25 @@ const EmailVerification = () => {
       setLoading(true);
       
       await sendVerificationEmail(currentUser);
+      
+      // Store timestamp for rate limiting
+      markEmailVerificationSent(currentUser.email);
+      setLastSentTime(Date.now());
+      
       setVerificationSent(true);
-      setMessage('Verification email sent! Please check your inbox.');
+      setMessage('Verification email sent! Please check your inbox and spam folder.');
     } catch (error) {
-      setError('Failed to send verification email. Please try again.');
       console.error('Email verification error:', error);
+      
+      // Use utility function for consistent error handling
+      const errorMessage = getEmailVerificationErrorMessage(error);
+      setError(errorMessage);
+      
+      // If we got rate limited, set a longer cooldown
+      if (error.code === 'auth/too-many-requests' || error.isRateLimit) {
+        markEmailVerificationSent(currentUser.email);
+        setLastSentTime(Date.now());
+      }
     }
     setLoading(false);
   };
@@ -140,7 +192,7 @@ const EmailVerification = () => {
 
           <button
             onClick={handleSendVerification}
-            disabled={loading}
+            disabled={loading || cooldownTime > 0}
             className="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center"
           >
             {loading ? (
@@ -148,10 +200,15 @@ const EmailVerification = () => {
                 <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
                 Sending...
               </>
+            ) : cooldownTime > 0 ? (
+              <>
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Resend in {cooldownTime}s
+              </>
             ) : (
               <>
                 <RefreshCw className="h-4 w-4 mr-2" />
-                Resend Verification Email
+                {verificationSent ? 'Resend Verification Email' : 'Send Verification Email'}
               </>
             )}
           </button>
@@ -159,8 +216,15 @@ const EmailVerification = () => {
 
         <div className="mt-8 text-center space-y-4">
           <p className="text-sm text-gray-600">
-            Didn't receive the email? Check your spam folder or try resending.
+            Didn't receive the email? Check your spam folder{verificationSent ? ' or try resending' : ''}.
           </p>
+          
+          {!verificationSent && (
+            <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg text-sm">
+              <p className="font-medium mb-1">Ready to verify your email?</p>
+              <p>Click "Send Verification Email" above to get started.</p>
+            </div>
+          )}
           
           <div className="flex items-center justify-center space-x-4 text-sm">
             <button
@@ -187,6 +251,13 @@ const EmailVerification = () => {
               support@rapid-works.io
             </a>
           </p>
+          
+          {error && error.includes('too many') && (
+            <div className="mt-4 bg-amber-50 border border-amber-200 text-amber-700 px-4 py-3 rounded-lg text-sm">
+              <p className="font-medium mb-1">Rate Limited</p>
+              <p>Firebase has temporarily limited verification emails. This is normal and helps prevent spam. Please wait a few minutes and try again.</p>
+            </div>
+          )}
         </div>
       </motion.div>
     </div>

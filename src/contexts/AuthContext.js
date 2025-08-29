@@ -69,18 +69,38 @@ export function AuthProvider({ children }) {
     return signOut(auth);
   }
 
-  // Send email verification using custom function
+  // Rate limiting for email verification
+  const emailVerificationCooldown = new Map();
+  const VERIFICATION_COOLDOWN_MS = 60000; // 1 minute
+
+  // Send email verification using custom function with rate limiting
   async function sendVerificationEmail(user) {
     console.log('📧 Starting email verification for:', user.email);
+    
+    // Check rate limiting
+    const now = Date.now();
+    const lastSent = emailVerificationCooldown.get(user.email);
+    
+    if (lastSent && (now - lastSent) < VERIFICATION_COOLDOWN_MS) {
+      const remainingTime = Math.ceil((VERIFICATION_COOLDOWN_MS - (now - lastSent)) / 1000);
+      const error = new Error(`Please wait ${remainingTime} seconds before requesting another verification email`);
+      error.code = 'auth/too-many-requests';
+      error.isRateLimit = true;
+      throw error;
+    }
     
     try {
       // Check if functions are available
       if (!functions) {
-        console.error('❌ Firebase Functions not initialized');
+        console.warn('⚠️ Firebase Functions not initialized, using fallback');
         throw new Error('Functions not available');
       }
       
       console.log('☁️ Calling custom email verification function...');
+      
+      // Set rate limit before attempting
+      emailVerificationCooldown.set(user.email, now);
+      
       // Use our custom Cloud Function for branded verification emails
       const sendCustomEmailVerification = httpsCallable(functions, 'sendCustomEmailVerification');
       const result = await sendCustomEmailVerification({ 
@@ -97,6 +117,14 @@ export function AuthProvider({ children }) {
         details: error.details
       });
       
+      // Check for specific errors that shouldn't trigger fallback
+      if (error.code === 'auth/too-many-requests' || 
+          error.code === 'functions/deadline-exceeded' ||
+          error.isRateLimit) {
+        // Don't attempt fallback for rate limiting errors
+        throw error;
+      }
+      
       // Fallback to Firebase default if our custom function fails
       console.log('🔄 Falling back to Firebase default email verification');
       try {
@@ -105,6 +133,15 @@ export function AuthProvider({ children }) {
         return fallbackResult;
       } catch (fallbackError) {
         console.error('❌ Even fallback failed:', fallbackError);
+        
+        // Provide user-friendly error messages
+        if (fallbackError.code === 'auth/too-many-requests') {
+          const enhancedError = new Error('Too many verification emails sent. Please wait a few minutes before trying again.');
+          enhancedError.code = 'auth/too-many-requests';
+          enhancedError.isRateLimit = true;
+          throw enhancedError;
+        }
+        
         throw fallbackError;
       }
     }

@@ -2396,11 +2396,38 @@ exports.sendCustomEmailVerification = onCall(async (request) => {
 
     console.log(`📧 Custom email verification requested for: ${email}`);
     
-    // Generate email verification link using Firebase Admin
-    const verificationLink = await admin.auth().generateEmailVerificationLink(email, {
-      url: 'https://landingpage-606e9.firebaseapp.com/__/auth/action',
-      handleCodeInApp: false,
-    });
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      throw new Error('Invalid email format');
+    }
+    
+    // Check for email service configuration
+    if (!emailConfig.auth.user || !emailConfig.auth.pass) {
+      console.error('❌ Email configuration missing');
+      throw new Error('Email service not configured');
+    }
+    
+    // Add timeout and retry logic
+    const generateLinkWithRetry = async (email, maxRetries = 2) => {
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+          console.log(`📧 Attempt ${attempt} to generate verification link for: ${email}`);
+          return await admin.auth().generateEmailVerificationLink(email, {
+            url: 'https://landingpage-606e9.firebaseapp.com/__/auth/action',
+            handleCodeInApp: false,
+          });
+        } catch (error) {
+          console.error(`❌ Attempt ${attempt} failed:`, error.message);
+          if (attempt === maxRetries) throw error;
+          // Wait before retry
+          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        }
+      }
+    };
+    
+    // Generate email verification link with retry
+    const verificationLink = await generateLinkWithRetry(email);
     
     // Extract user's first name for personalization
     let userName = '';
@@ -2412,32 +2439,67 @@ exports.sendCustomEmailVerification = onCall(async (request) => {
     const emailHtml = createEmailVerificationTemplate(verificationLink, userName);
     const t = emailTranslations.en.emailVerification;
     
-    // Send email using nodemailer
-    await emailTransporter.sendMail({
+    // Send email using nodemailer with timeout
+    const mailOptions = {
       from: `"RapidWorks" <${emailConfig.auth.user}>`,
       to: email,
       subject: t.subject,
       html: emailHtml,
-    });
+    };
+    
+    // Set a timeout for email sending
+    const sendMailWithTimeout = (options, timeout = 10000) => {
+      return Promise.race([
+        emailTransporter.sendMail(options),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Email send timeout')), timeout)
+        )
+      ]);
+    };
+    
+    await sendMailWithTimeout(mailOptions);
     
     console.log(`✅ Custom email verification sent to: ${email}`);
     
     return {
       success: true,
-      message: 'Email verification sent successfully'
+      message: 'Email verification sent successfully',
+      timestamp: new Date().toISOString()
     };
     
   } catch (error) {
     console.error('Error in custom email verification:', error);
     
-    // Return user-friendly error messages
+    // Enhanced error handling with more specific messages
+    let errorMessage = 'Failed to send verification email. Please try again.';
+    let errorCode = 'unknown';
+    
     if (error.code === 'auth/user-not-found') {
-      throw new Error('No account found with this email address');
+      errorMessage = 'No account found with this email address';
+      errorCode = 'user-not-found';
     } else if (error.code === 'auth/invalid-email') {
-      throw new Error('Invalid email address');
-    } else {
-      throw new Error('Failed to send verification email. Please try again.');
+      errorMessage = 'Invalid email address';
+      errorCode = 'invalid-email';
+    } else if (error.code === 'auth/too-many-requests') {
+      errorMessage = 'Too many requests. Please wait before trying again.';
+      errorCode = 'rate-limited';
+    } else if (error.message?.includes('timeout')) {
+      errorMessage = 'Request timed out. Please check your connection and try again.';
+      errorCode = 'timeout';
+    } else if (error.message?.includes('configuration') || error.message?.includes('configured')) {
+      errorMessage = 'Email service temporarily unavailable. Please try again later.';
+      errorCode = 'service-unavailable';
+    } else if (error.message?.includes('quota') || error.message?.includes('limit')) {
+      errorMessage = 'Service temporarily at capacity. Please try again in a few minutes.';
+      errorCode = 'quota-exceeded';
     }
+    
+    // Create error object with additional context
+    const enhancedError = new Error(errorMessage);
+    enhancedError.code = `custom-verification/${errorCode}`;
+    enhancedError.originalError = error.message;
+    
+    throw enhancedError;
   }
 });
 
