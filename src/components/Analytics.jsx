@@ -280,7 +280,7 @@ const Analytics = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">Traffic Analytics</h1>
+          <h1 className="text-2xl font-semibold text-gray-900">Rapid Analytics</h1>
           <p className="text-gray-600 mt-1">
             Track and analyze your marketing campaigns with custom links and QR codes
           </p>

@@ -269,18 +269,10 @@ const ExpertTaskView = ({ taskData, onBack, viewOnly = false }) => {
       // Add message to Firebase
       await addTaskMessage(taskData.id, newMessage);
 
-      // Update local messages immediately for better UX
-      const messageWithId = {
-        ...newMessage,
-        id: Date.now().toString(),
-        timestamp: new Date().toISOString(),
-        createdAt: new Date().toISOString()
-      };
-
-      setMessages(prev => [...prev, messageWithId]);
+      // Clear message input immediately
       setMessage('');
 
-      // No manual refresh needed; realtime listener will sync
+      // Do not append locally – rely on realtime update to avoid duplicate
 
     } catch (error) {
       console.error('Error sending message:', error);
@@ -373,17 +365,8 @@ const ExpertTaskView = ({ taskData, onBack, viewOnly = false }) => {
           senderEmail: 'system@rapidworks.de'
         };
 
-        // Add message to Firebase
+        // Add message to Firebase - realtime listener will update local state
         await addTaskMessage(taskData.id, estimateMessage);
-        
-        // Update local messages
-        const messageWithId = {
-          ...estimateMessage,
-          id: Date.now().toString(),
-          timestamp: new Date().toISOString(),
-          createdAt: new Date().toISOString()
-        };
-        setMessages(prev => [...prev, messageWithId]);
       } else {
         // Update existing estimate in messages
         const updatedMessages = messages.map(msg => {

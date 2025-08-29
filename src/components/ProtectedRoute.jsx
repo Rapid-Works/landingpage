@@ -6,15 +6,19 @@ const ProtectedRoute = ({ children }) => {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
 
-  // Redirect to homepage if user is not authenticated
+  // Redirect based on authentication and email verification status
   useEffect(() => {
     if (!currentUser) {
+      // No user logged in - redirect to homepage
       navigate('/', { replace: true });
+    } else if (!currentUser.emailVerified) {
+      // User logged in but email not verified - redirect to verification page
+      navigate('/verify-email', { replace: true });
     }
   }, [currentUser, navigate]);
 
-  // If user is logged in, show the protected content
-  if (currentUser) {
+  // If user is logged in and email is verified, show the protected content
+  if (currentUser && currentUser.emailVerified) {
     return children;
   }
 

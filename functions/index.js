@@ -3,10 +3,523 @@ const {onCall} = require("firebase-functions/v2/https");
 const {onDocumentUpdated} = require("firebase-functions/v2/firestore");
 const admin = require("firebase-admin");
 const {GoogleGenerativeAI} = require("@google/generative-ai");
+const nodemailer = require("nodemailer");
 
 admin.initializeApp();
 
 const db = admin.firestore();
+
+// Email Configuration
+const emailConfig = {
+  service: 'gmail',
+  auth: {
+    user: 'noreplyrapidworks@gmail.com', // You can change this to noreply@rapid-works.io when ready
+    pass: 'lipl ggum cmef bjpp' // App password
+  }
+};
+
+// Create email transporter
+const emailTransporter = nodemailer.createTransport(emailConfig);
+
+// Email Verification Template
+const createEmailVerificationTemplate = (verificationLink, userName = '') => {
+  const t = emailTranslations.en.emailVerification;
+  
+  return `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${t.subject}</title>
+      <style>
+        body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; }
+        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
+        .header { background: linear-gradient(135deg, #7C3BEC 0%, #6B32D6 100%); padding: 40px 20px; text-align: center; }
+        .header h1 { color: #ffffff; margin: 0; font-size: 28px; font-weight: bold; }
+        .header p { color: #e0d4f7; margin: 10px 0 0 0; font-size: 16px; }
+        .content { padding: 40px 30px; }
+        .greeting { font-size: 18px; color: #2d3748; margin-bottom: 20px; font-weight: 600; }
+        .message { font-size: 16px; color: #4a5568; line-height: 1.6; margin-bottom: 30px; }
+        .button-container { text-align: center; margin: 40px 0; }
+        .verify-button { 
+          display: inline-block; 
+          background: linear-gradient(135deg, #7C3BEC 0%, #6B32D6 100%); 
+          color: #ffffff; 
+          text-decoration: none; 
+          padding: 16px 32px; 
+          border-radius: 8px; 
+          font-weight: bold; 
+          font-size: 16px;
+          box-shadow: 0 4px 12px rgba(124, 59, 236, 0.3);
+        }
+        .verify-button:hover { background: linear-gradient(135deg, #6B32D6 0%, #5a2bb8 100%); }
+        .expiry-notice { font-size: 14px; color: #718096; text-align: center; margin: 20px 0; }
+        .ignore-notice { font-size: 14px; color: #718096; margin: 30px 0; }
+        .footer { background-color: #f7fafc; padding: 30px; text-align: center; border-top: 1px solid #e2e8f0; }
+        .footer-text { font-size: 12px; color: #a0aec0; margin-bottom: 10px; }
+        .copyright { font-size: 12px; color: #a0aec0; }
+        @media only screen and (max-width: 600px) {
+          .content { padding: 30px 20px; }
+          .header { padding: 30px 20px; }
+          .verify-button { padding: 14px 28px; font-size: 15px; }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>RapidWorks</h1>
+          <p>${t.headerSubtitle}</p>
+        </div>
+        
+        <div class="content">
+          <div class="greeting">
+            ${t.greetingText}${userName ? ' ' + userName + '!' : ''}
+          </div>
+          
+          <div class="message">
+            ${t.bodyText}
+          </div>
+          
+          <div class="button-container">
+            <a href="${verificationLink}" class="verify-button">${t.buttonText}</a>
+          </div>
+          
+          <div class="expiry-notice">
+            ⏰ ${t.expiryText}
+          </div>
+          
+          <div class="ignore-notice">
+            ${t.ignoreText}
+          </div>
+        </div>
+        
+        <div class="footer">
+          <div class="footer-text">${t.footerText}</div>
+          <div class="copyright">${t.copyrightText}</div>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+};
+
+// Password Reset Email Template
+const createPasswordResetEmailTemplate = (resetLink, userName = '') => {
+  const t = emailTranslations.en.passwordReset;
+  
+  return `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${t.subject}</title>
+      <style>
+        body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; }
+        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
+        .header { background: linear-gradient(135deg, #7C3BEC 0%, #6B32D6 100%); padding: 40px 20px; text-align: center; }
+        .header h1 { color: #ffffff; margin: 0; font-size: 28px; font-weight: bold; }
+        .header p { color: #e0d4f7; margin: 10px 0 0 0; font-size: 16px; }
+        .content { padding: 40px 30px; }
+        .greeting { font-size: 18px; color: #2d3748; margin-bottom: 20px; }
+        .message { font-size: 16px; color: #4a5568; line-height: 1.6; margin-bottom: 30px; }
+        .button-container { text-align: center; margin: 40px 0; }
+        .reset-button { 
+          display: inline-block; 
+          background: linear-gradient(135deg, #7C3BEC 0%, #6B32D6 100%); 
+          color: #ffffff; 
+          text-decoration: none; 
+          padding: 16px 32px; 
+          border-radius: 8px; 
+          font-weight: bold; 
+          font-size: 16px;
+          box-shadow: 0 4px 12px rgba(124, 59, 236, 0.3);
+        }
+        .reset-button:hover { background: linear-gradient(135deg, #6B32D6 0%, #5a2bb8 100%); }
+        .expiry-notice { font-size: 14px; color: #718096; text-align: center; margin: 20px 0; }
+        .ignore-notice { font-size: 14px; color: #718096; margin: 30px 0; }
+        .footer { background-color: #f7fafc; padding: 30px; text-align: center; border-top: 1px solid #e2e8f0; }
+        .footer-text { font-size: 12px; color: #a0aec0; margin-bottom: 10px; }
+        .copyright { font-size: 12px; color: #a0aec0; }
+        @media only screen and (max-width: 600px) {
+          .content { padding: 30px 20px; }
+          .header { padding: 30px 20px; }
+          .reset-button { padding: 14px 28px; font-size: 15px; }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>RapidWorks</h1>
+          <p>${t.headerSubtitle}</p>
+        </div>
+        
+        <div class="content">
+          <div class="greeting">
+            ${t.greetingText}${userName ? ' ' + userName : ''}
+          </div>
+          
+          <div class="message">
+            ${t.bodyText}
+          </div>
+          
+          <div class="button-container">
+            <a href="${resetLink}" class="reset-button">${t.buttonText}</a>
+          </div>
+          
+          <div class="expiry-notice">
+            ⏰ ${t.expiryText}
+          </div>
+          
+          <div class="ignore-notice">
+            ${t.ignoreText}
+          </div>
+        </div>
+        
+        <div class="footer">
+          <div class="footer-text">${t.footerText}</div>
+          <div class="copyright">${t.copyrightText}</div>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+};
+
+// Email Translation Strings
+const emailTranslations = {
+  en: {
+    emailVerification: {
+      subject: "✅ Verify Your RapidWorks Email Address",
+      headerSubtitle: "Email Verification Required",
+      greetingText: "Welcome to RapidWorks!",
+      bodyText: "Please verify your email address to complete your account setup. Click the button below to verify your email:",
+      buttonText: "Verify Email Address",
+      expiryText: "This verification link will expire in 1 hour for security reasons.",
+      ignoreText: "If you didn't create a RapidWorks account, you can safely ignore this email.",
+      footerText: "You're receiving this because you signed up for a RapidWorks account.",
+      copyrightText: "© 2024 RapidWorks. All rights reserved."
+    },
+    passwordReset: {
+      subject: "🔐 Reset Your RapidWorks Password",
+      headerSubtitle: "Password Reset Request",
+      greetingText: "Hello,",
+      bodyText: "You requested to reset your password for your RapidWorks account. Click the button below to set a new password:",
+      buttonText: "Reset Password",
+      expiryText: "This link will expire in 1 hour for security reasons.",
+      ignoreText: "If you didn't request this password reset, you can safely ignore this email.",
+      footerText: "You're receiving this because a password reset was requested for your account.",
+      copyrightText: "© 2024 RapidWorks. All rights reserved."
+    },
+    taskUpdate: {
+      subject: "📋 Task Update: {taskName}",
+      headerSubtitle: "Task Update Notification",
+      buttonText: "View Dashboard",
+      footerText: "You're receiving this because you have notifications enabled for task updates.",
+      copyrightText: "© 2024 RapidWorks. All rights reserved."
+    },
+    taskCompleted: {
+      subject: "✅ Task Completed: {taskName}",
+      headerSubtitle: "Task Completed!",
+      completedText: "Your task has been completed successfully!",
+      estimateLabel: "Estimated completion time:",
+      buttonText: "View Results",
+      footerText: "You're receiving this because you have notifications enabled for task updates.",
+      copyrightText: "© 2024 RapidWorks. All rights reserved."
+    },
+    expertMessage: {
+      subject: "💬 New Message from {expertName}",
+      headerSubtitle: "New Expert Message",
+      fromLabel: "From:",
+      buttonText: "Reply in Dashboard",
+      footerText: "You're receiving this because you have notifications enabled for task messages.",
+      copyrightText: "© 2024 RapidWorks. All rights reserved."
+    }
+  },
+  de: {
+    taskUpdate: {
+      subject: "📋 Aufgaben-Update: {taskName}",
+      headerSubtitle: "Aufgaben-Update Benachrichtigung",
+      buttonText: "Dashboard anzeigen",
+      footerText: "Sie erhalten diese E-Mail, weil Sie Benachrichtigungen für Aufgaben-Updates aktiviert haben.",
+      copyrightText: "© 2024 RapidWorks. Alle Rechte vorbehalten."
+    },
+    taskCompleted: {
+      subject: "✅ Aufgabe abgeschlossen: {taskName}",
+      headerSubtitle: "Aufgabe abgeschlossen!",
+      completedText: "Ihre Aufgabe wurde erfolgreich abgeschlossen!",
+      estimateLabel: "Geschätzte Bearbeitungszeit:",
+      buttonText: "Ergebnisse anzeigen",
+      footerText: "Sie erhalten diese E-Mail, weil Sie Benachrichtigungen für Aufgaben-Updates aktiviert haben.",
+      copyrightText: "© 2024 RapidWorks. Alle Rechte vorbehalten."
+    },
+    expertMessage: {
+      subject: "💬 Neue Nachricht von {expertName}",
+      headerSubtitle: "Neue Experten-Nachricht",
+      fromLabel: "Von:",
+      buttonText: "Im Dashboard antworten",
+      footerText: "Sie erhalten diese E-Mail, weil Sie Benachrichtigungen für Aufgaben-Nachrichten aktiviert haben.",
+      copyrightText: "© 2024 RapidWorks. Alle Rechte vorbehalten."
+    }
+  }
+};
+
+// Email Templates with Language Support
+const emailTemplates = {
+  taskUpdate: (taskName, message, dashboardUrl, language = 'en') => {
+    const t = emailTranslations[language] || emailTranslations['en'];
+    return {
+      subject: t.taskUpdate.subject.replace('{taskName}', taskName),
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center;">
+            <h1 style="color: white; margin: 0; font-size: 24px;">RapidWorks</h1>
+            <p style="color: white; margin: 5px 0 0 0; opacity: 0.9;">${t.taskUpdate.headerSubtitle}</p>
+          </div>
+          <div style="padding: 30px; background: #f8f9fa;">
+            <h2 style="color: #333; margin-bottom: 20px;">📋 ${taskName}</h2>
+            <div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea;">
+              <p style="margin: 0; color: #555; line-height: 1.6;">${message}</p>
+            </div>
+            <div style="text-align: center; margin-top: 30px;">
+              <a href="${dashboardUrl}" style="background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">${t.taskUpdate.buttonText}</a>
+            </div>
+          </div>
+          <div style="padding: 20px; text-align: center; color: #666; font-size: 12px;">
+            <p>${t.taskUpdate.footerText}</p>
+            <p>${t.taskUpdate.copyrightText}</p>
+          </div>
+        </div>
+      `
+    };
+  },
+  
+  taskCompleted: (taskName, estimateTime, dashboardUrl, language = 'en') => {
+    const t = emailTranslations[language] || emailTranslations['en'];
+    return {
+      subject: t.taskCompleted.subject.replace('{taskName}', taskName),
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); padding: 30px; text-align: center;">
+            <h1 style="color: white; margin: 0; font-size: 24px;">RapidWorks</h1>
+            <p style="color: white; margin: 5px 0 0 0; opacity: 0.9;">${t.taskCompleted.headerSubtitle}</p>
+          </div>
+          <div style="padding: 30px; background: #f8f9fa;">
+            <h2 style="color: #333; margin-bottom: 20px;">🎉 ${taskName}</h2>
+            <div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #11998e;">
+              <p style="margin: 0 0 15px 0; color: #555; line-height: 1.6;">${t.taskCompleted.completedText}</p>
+              ${estimateTime ? `<p style="margin: 0; color: #666;"><strong>${t.taskCompleted.estimateLabel}</strong> ${estimateTime}</p>` : ''}
+            </div>
+            <div style="text-align: center; margin-top: 30px;">
+              <a href="${dashboardUrl}" style="background: #11998e; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">${t.taskCompleted.buttonText}</a>
+            </div>
+          </div>
+          <div style="padding: 20px; text-align: center; color: #666; font-size: 12px;">
+            <p>${t.taskCompleted.footerText}</p>
+            <p>${t.taskCompleted.copyrightText}</p>
+          </div>
+        </div>
+      `
+    };
+  },
+
+  expertMessage: (taskName, expertName, message, dashboardUrl, language = 'en') => {
+    const t = emailTranslations[language] || emailTranslations['en'];
+    return {
+      subject: t.expertMessage.subject.replace('{expertName}', expertName),
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center;">
+            <h1 style="color: white; margin: 0; font-size: 24px;">RapidWorks</h1>
+            <p style="color: white; margin: 5px 0 0 0; opacity: 0.9;">${t.expertMessage.headerSubtitle}</p>
+          </div>
+          <div style="padding: 30px; background: #f8f9fa;">
+            <h2 style="color: #333; margin-bottom: 20px;">💬 ${taskName}</h2>
+            <div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea;">
+              <p style="margin: 0 0 15px 0; color: #555;"><strong>${t.expertMessage.fromLabel}</strong> ${expertName}</p>
+              <p style="margin: 0; color: #555; line-height: 1.6;">${message}</p>
+            </div>
+            <div style="text-align: center; margin-top: 30px;">
+              <a href="${dashboardUrl}" style="background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">${t.expertMessage.buttonText}</a>
+            </div>
+          </div>
+          <div style="padding: 20px; text-align: center; color: #666; font-size: 12px;">
+            <p>${t.expertMessage.footerText}</p>
+            <p>${t.expertMessage.copyrightText}</p>
+          </div>
+        </div>
+      `
+    };
+  }
+};
+
+// Email sending function
+const sendEmail = async (to, template) => {
+  try {
+    const mailOptions = {
+      from: {
+        name: 'RapidWorks',
+        address: 'noreplyrapidworks@gmail.com'
+      },
+      to: to,
+      subject: template.subject,
+      html: template.html
+    };
+
+    const info = await emailTransporter.sendMail(mailOptions);
+    console.log('Email sent successfully:', info.messageId);
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error('Error sending email:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+// Email Notification Functions
+exports.sendTaskUpdateEmail = onCall(async (request) => {
+  try {
+    const { userEmail, taskName, message, taskId, language = 'en' } = request.data;
+
+    if (!userEmail || !taskName || !message) {
+      throw new Error('Missing required fields: userEmail, taskName, message');
+    }
+
+    // Get user preferences
+    const userId = await getUserIdFromEmail(userEmail);
+    const preferences = userId ? await getUserNotificationPreferences(userId) : DEFAULT_PREFERENCES;
+
+    // Check if email notifications are enabled
+    if (!preferences.taskMessages?.email) {
+      console.log(`Email notifications disabled for user: ${userEmail}`);
+      return { success: false, reason: 'Email notifications disabled by user' };
+    }
+
+    const dashboardUrl = taskId 
+      ? `https://rapid-works.io/dashboard/task/${taskId}`
+      : 'https://rapid-works.io/dashboard';
+
+    const template = emailTemplates.taskUpdate(taskName, message, dashboardUrl, language);
+    const result = await sendEmail(userEmail, template);
+
+    if (result.success) {
+      console.log(`Task update email sent to ${userEmail} for task: ${taskName} (language: ${language})`);
+    }
+
+    return result;
+  } catch (error) {
+    console.error('Error sending task update email:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+exports.sendTaskCompletedEmail = onCall(async (request) => {
+  try {
+    const { userEmail, taskName, estimateTime, taskId, language = 'en' } = request.data;
+
+    if (!userEmail || !taskName) {
+      throw new Error('Missing required fields: userEmail, taskName');
+    }
+
+    // Get user preferences
+    const userId = await getUserIdFromEmail(userEmail);
+    const preferences = userId ? await getUserNotificationPreferences(userId) : DEFAULT_PREFERENCES;
+
+    // Check if email notifications are enabled
+    if (!preferences.taskMessages?.email) {
+      console.log(`Email notifications disabled for user: ${userEmail}`);
+      return { success: false, reason: 'Email notifications disabled by user' };
+    }
+
+    const dashboardUrl = taskId 
+      ? `https://rapid-works.io/dashboard/task/${taskId}`
+      : 'https://rapid-works.io/dashboard';
+
+    const template = emailTemplates.taskCompleted(taskName, estimateTime, dashboardUrl, language);
+    const result = await sendEmail(userEmail, template);
+
+    if (result.success) {
+      console.log(`Task completed email sent to ${userEmail} for task: ${taskName} (language: ${language})`);
+    }
+
+    return result;
+  } catch (error) {
+    console.error('Error sending task completed email:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+exports.sendExpertMessageEmail = onCall(async (request) => {
+  try {
+    const { userEmail, taskName, expertName, message, taskId, language = 'en' } = request.data;
+
+    if (!userEmail || !taskName || !expertName || !message) {
+      throw new Error('Missing required fields: userEmail, taskName, expertName, message');
+    }
+
+    // Get user preferences
+    const userId = await getUserIdFromEmail(userEmail);
+    const preferences = userId ? await getUserNotificationPreferences(userId) : DEFAULT_PREFERENCES;
+
+    // Check if email notifications are enabled
+    if (!preferences.taskMessages?.email) {
+      console.log(`Email notifications disabled for user: ${userEmail}`);
+      return { success: false, reason: 'Email notifications disabled by user' };
+    }
+
+    const dashboardUrl = taskId 
+      ? `https://rapid-works.io/dashboard/task/${taskId}`
+      : 'https://rapid-works.io/dashboard';
+
+    const template = emailTemplates.expertMessage(taskName, expertName, message, dashboardUrl, language);
+    const result = await sendEmail(userEmail, template);
+
+    if (result.success) {
+      console.log(`Expert message email sent to ${userEmail} from ${expertName} (language: ${language})`);
+    }
+
+    return result;
+  } catch (error) {
+    console.error('Error sending expert message email:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+// Test email function
+exports.sendTestEmail = onCall(async (request) => {
+  try {
+    const { userEmail, language = 'en' } = request.data;
+
+    if (!userEmail) {
+      throw new Error('Missing required field: userEmail');
+    }
+
+    // Use translated test content
+    const testContent = language === 'de' 
+      ? 'Dies ist eine Test-E-Mail, um zu überprüfen, ob Ihre E-Mail-Benachrichtigungen ordnungsgemäß funktionieren.'
+      : 'This is a test email to verify your email notifications are working correctly.';
+
+    const template = emailTemplates.taskUpdate(
+      'Test Task',
+      testContent,
+      'https://rapid-works.io/dashboard',
+      language
+    );
+
+    const result = await sendEmail(userEmail, template);
+    
+    if (result.success) {
+      console.log(`Test email sent successfully to ${userEmail} (language: ${language})`);
+    }
+
+    return result;
+  } catch (error) {
+    console.error('Error sending test email:', error);
+    return { success: false, error: error.message };
+  }
+});
 
 // Default notification preferences
 const DEFAULT_PREFERENCES = {
@@ -17,11 +530,6 @@ const DEFAULT_PREFERENCES = {
   brandingKitReady: {
     mobile: true,
     email: true,
-  },
-  taskUpdates: {
-    mobile: true,
-    email: true,
-    sms: false, // Only for urgent
   },
   taskMessages: {
     mobile: true,
@@ -1216,7 +1724,7 @@ exports.sendTaskMessageNotification = onCall(async (request) => {
         break;
     }
 
-    const url = taskId ? `/dashboard?task=${taskId}` : "/dashboard";
+    const url = taskId ? `https://rapid-works.io/dashboard/task/${taskId}` : "https://rapid-works.io/dashboard";
 
     // Fetch tokens for the recipient email and send push (no preference checks)
     let notificationsSent = 0;
@@ -1304,15 +1812,107 @@ exports.sendTaskMessageNotification = onCall(async (request) => {
       );
     }
 
-    let responseMessage = "No push tokens for recipient. " +
-      "Notification saved to history if possible.";
+    // Send email notification as backup/additional channel
+    let emailSent = false;
+    try {
+      console.log(`📧 Attempting to send email notification to: ${recipientEmail}`);
+      
+      // Determine notification type for email
+      let emailType = 'expert_message';
+      if (messageType === 'task_completed') {
+        emailType = 'task_completed';
+      } else if (messageType === 'task_update') {
+        emailType = 'task_update';
+      }
+      
+      // Get user language preference (default to 'en')
+      let userLanguage = 'en';
+      try {
+        const recipientUserId = await getUserIdFromEmail(recipientEmail);
+        if (recipientUserId) {
+          const userPrefs = await getUserNotificationPreferences(recipientUserId);
+          userLanguage = userPrefs.language || 'en';
+        }
+      } catch (langError) {
+        console.log('Could not determine user language, using default:', langError.message);
+      }
+      
+      if (emailType === 'expert_message') {
+        // Get proper expert name from email or use fallback
+        let expertName = 'Expert';
+        if (senderEmail) {
+          // Extract name from email or get from task data
+          if (taskData?.expertName) {
+            expertName = taskData.expertName;
+          } else if (senderEmail.includes('samuel')) {
+            expertName = 'Samuel Donkor';
+          } else if (senderEmail.includes('prince')) {
+            expertName = 'Prince Ardiabah';
+          } else {
+            // Use email username as fallback
+            expertName = senderEmail.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+          }
+        }
+        
+        const template = emailTemplates.expertMessage(
+          taskTitle || 'Task Update',
+          expertName,
+          messageContent || body,
+          url,
+          userLanguage
+        );
+        const emailResult = await sendEmail(recipientEmail, template);
+        emailSent = emailResult.success;
+        
+        if (emailSent) {
+          console.log(`✅ Email notification sent to ${recipientEmail}`);
+        } else {
+          console.log(`❌ Email notification failed for ${recipientEmail}:`, emailResult.error);
+        }
+      } else if (emailType === 'task_completed') {
+        const template = emailTemplates.taskCompleted(
+          taskTitle || 'Task',
+          null, // estimateTime
+          url,
+          userLanguage
+        );
+        const emailResult = await sendEmail(recipientEmail, template);
+        emailSent = emailResult.success;
+        
+        if (emailSent) {
+          console.log(`✅ Task completion email sent to ${recipientEmail}`);
+        } else {
+          console.log(`❌ Task completion email failed for ${recipientEmail}:`, emailResult.error);
+        }
+      } else if (emailType === 'task_update') {
+        const template = emailTemplates.taskUpdate(
+          taskTitle || 'Task',
+          body,
+          url,
+          userLanguage
+        );
+        const emailResult = await sendEmail(recipientEmail, template);
+        emailSent = emailResult.success;
+        
+        if (emailSent) {
+          console.log(`✅ Task update email sent to ${recipientEmail}`);
+        } else {
+          console.log(`❌ Task update email failed for ${recipientEmail}:`, emailResult.error);
+        }
+      }
+    } catch (emailError) {
+      console.error(`❌ Error sending email notification to ${recipientEmail}:`, emailError);
+    }
+
+    let responseMessage = `No push tokens for recipient. Email ${emailSent ? 'sent' : 'failed'}. Notification saved to history if possible.`;
     if (notificationsSent > 0) {
-      responseMessage = `Sent ${notificationsSent} push notification(s)`;
+      responseMessage = `Sent ${notificationsSent} push notification(s)${emailSent ? ' and email' : ', email failed'}`;
     }
 
     return {
       success: true,
       notificationsSent: notificationsSent,
+      emailSent: emailSent,
       recipientEmail: recipientEmail,
       messageType: messageType,
       hasTokens: notificationsSent > 0,
@@ -1785,272 +2385,118 @@ exports.testTaskNotification = onCall(async (request) => {
   }
 });
 
-/**
- * Multi-Channel Notification System
- * Sends notifications through multiple channels for maximum reliability
- */
-
-// Send web push notification (Android/Desktop)
-exports.sendWebPushNotification = onCall(async (request) => {
-  const { userEmail, notification } = request.data;
-  
-  if (!userEmail || !notification) {
-    throw new Error('userEmail and notification are required');
-  }
-
+// Custom Email Verification Function
+exports.sendCustomEmailVerification = onCall(async (request) => {
   try {
-    console.log(`Sending web push notification to: ${userEmail}`);
+    const { email, displayName } = request.data;
     
-    // Get user's FCM tokens
-    const tokensSnapshot = await db.collection('fcmTokens')
-      .where('userEmail', '==', userEmail)
-      .where('isValid', '==', true)
-      .get();
-
-    if (tokensSnapshot.empty) {
-      return {
-        success: false,
-        reason: 'No valid FCM tokens found for user',
-        userEmail: userEmail
-      };
+    if (!email) {
+      throw new Error('Email is required');
     }
 
-    // Prepare FCM message with cross-platform optimization
-    const message = {
-      notification: {
-        title: notification.title,
-        body: notification.body,
-        icon: notification.icon || '/logo192.png'
-      },
-      data: {
-        ...notification.data,
-        click_action: notification.actionUrl || '/',
-        type: 'web_push'
-      },
-      webpush: {
-        headers: {
-          Urgency: notification.urgent ? 'high' : 'normal'
-        },
-        notification: {
-          title: notification.title,
-          body: notification.body,
-          icon: notification.icon || '/logo192.png',
-          badge: notification.badge || '/logo192.png',
-          requireInteraction: notification.urgent || false,
-          actions: notification.actions || []
-        }
-      }
-    };
-
-    // Send to all user's devices
-    const results = [];
-    for (const tokenDoc of tokensSnapshot.docs) {
-      const tokenData = tokenDoc.data();
-      
-      try {
-        message.token = tokenData.token;
-        const result = await admin.messaging().send(message);
-        results.push({ success: true, messageId: result, platform: tokenData.platform });
-      } catch (error) {
-        results.push({ success: false, error: error.message, platform: tokenData.platform });
-        
-        // Mark invalid tokens
-        if (error.code === 'messaging/invalid-registration-token' || 
-            error.code === 'messaging/registration-token-not-registered') {
-          await tokenDoc.ref.update({ isValid: false });
-        }
-      }
-    }
-
-    const successCount = results.filter(r => r.success).length;
+    console.log(`📧 Custom email verification requested for: ${email}`);
     
-    return {
-      success: successCount > 0,
-      userEmail: userEmail,
-      results: results,
-      successCount: successCount,
-      totalAttempts: results.length
-    };
-
-  } catch (error) {
-    console.error("Error sending web push notification:", error);
-    throw new Error(`Web push notification failed: ${error.message}`);
-  }
-});
-
-// Send email notification (Universal fallback)
-exports.sendEmailNotification = onCall(async (request) => {
-  const { userEmail, userName, notification } = request.data;
-  
-  if (!userEmail || !notification) {
-    throw new Error('userEmail and notification are required');
-  }
-
-  try {
-    console.log(`Sending email notification to: ${userEmail}`);
-    
-    // Check user's email preferences
-    const preferencesDoc = await db.collection('userNotificationPreferences').doc(userEmail).get();
-    const preferences = preferencesDoc.exists ? preferencesDoc.data() : DEFAULT_PREFERENCES;
-    
-    // Check if email notifications are enabled for this type
-    const notificationType = notification.type || 'taskUpdates';
-    if (!preferences[notificationType]?.email) {
-      return {
-        success: false,
-        reason: 'Email notifications disabled for this type',
-        userEmail: userEmail
-      };
-    }
-
-    // Prepare email content
-    const emailData = {
-      to: userEmail,
-      template: {
-        name: 'notification-email',
-        data: {
-          userName: userName || userEmail.split('@')[0],
-          subject: notification.subject,
-          title: notification.title,
-          body: notification.body,
-          actionUrl: notification.actionUrl,
-          actionText: notification.actionText || 'View Task',
-          priority: notification.priority || 'normal',
-          timestamp: new Date().toISOString()
-        }
-      }
-    };
-
-    // Use your existing email service (SendGrid, AWS SES, etc.)
-    // For now, storing in Firestore for email service to process
-    await db.collection('emailQueue').add({
-      ...emailData,
-      status: 'pending',
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      attempts: 0
+    // Generate email verification link using Firebase Admin
+    const verificationLink = await admin.auth().generateEmailVerificationLink(email, {
+      url: 'https://landingpage-606e9.firebaseapp.com/__/auth/action',
+      handleCodeInApp: false,
     });
-
+    
+    // Extract user's first name for personalization
+    let userName = '';
+    if (displayName) {
+      userName = displayName.split(' ')[0]; // First name only
+    }
+    
+    // Create email content
+    const emailHtml = createEmailVerificationTemplate(verificationLink, userName);
+    const t = emailTranslations.en.emailVerification;
+    
+    // Send email using nodemailer
+    await emailTransporter.sendMail({
+      from: `"RapidWorks" <${emailConfig.auth.user}>`,
+      to: email,
+      subject: t.subject,
+      html: emailHtml,
+    });
+    
+    console.log(`✅ Custom email verification sent to: ${email}`);
+    
     return {
       success: true,
-      userEmail: userEmail,
-      message: 'Email notification queued successfully'
+      message: 'Email verification sent successfully'
     };
-
+    
   } catch (error) {
-    console.error("Error sending email notification:", error);
-    throw new Error(`Email notification failed: ${error.message}`);
+    console.error('Error in custom email verification:', error);
+    
+    // Return user-friendly error messages
+    if (error.code === 'auth/user-not-found') {
+      throw new Error('No account found with this email address');
+    } else if (error.code === 'auth/invalid-email') {
+      throw new Error('Invalid email address');
+    } else {
+      throw new Error('Failed to send verification email. Please try again.');
+    }
   }
 });
 
-// Send SMS notification (Urgent only)
-exports.sendSMSNotification = onCall(async (request) => {
-  const { userEmail, notification } = request.data;
-  
-  if (!userEmail || !notification) {
-    throw new Error('userEmail and notification are required');
-  }
-
-  if (!notification.urgent) {
-    throw new Error('SMS notifications are only for urgent messages');
-  }
-
+// Custom Password Reset Function
+exports.sendCustomPasswordReset = onCall(async (request) => {
   try {
-    console.log(`Sending SMS notification to: ${userEmail}`);
+    const { email } = request.data;
     
-    // Get user's phone number from profile
-    const userDoc = await db.collection('users').doc(userEmail).get();
-    if (!userDoc.exists) {
-      throw new Error('User not found');
+    if (!email) {
+      throw new Error('Email is required');
     }
 
-    const userData = userDoc.data();
-    if (!userData.phoneNumber) {
-      return {
-        success: false,
-        reason: 'No phone number on file',
-        userEmail: userEmail
-      };
-    }
-
-    // Check SMS preferences
-    const preferencesDoc = await db.collection('userNotificationPreferences').doc(userEmail).get();
-    const preferences = preferencesDoc.exists ? preferencesDoc.data() : DEFAULT_PREFERENCES;
+    console.log(`🔐 Custom password reset requested for: ${email}`);
     
-    if (!preferences.taskUpdates?.sms) {
-      return {
-        success: false,
-        reason: 'SMS notifications disabled',
-        userEmail: userEmail
-      };
-    }
-
-    // Prepare SMS data (integrate with Twilio, AWS SNS, etc.)
-    const smsData = {
-      to: userData.phoneNumber,
-      message: notification.message,
-      urgent: true,
-      userEmail: userEmail
-    };
-
-    // Queue SMS for processing
-    await db.collection('smsQueue').add({
-      ...smsData,
-      status: 'pending',
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      attempts: 0
+    // Generate password reset link using Firebase Admin
+    const resetLink = await admin.auth().generatePasswordResetLink(email, {
+      url: 'https://landingpage-606e9.firebaseapp.com/__/auth/action',
+      handleCodeInApp: false,
     });
-
+    
+    // Get user info for personalization
+    let userName = '';
+    try {
+      const userRecord = await admin.auth().getUserByEmail(email);
+      userName = userRecord.displayName || '';
+    } catch (userError) {
+      console.log('User not found or error getting user info:', userError.message);
+      // Continue anyway - email might be valid but user record not created yet
+    }
+    
+    // Create email content
+    const emailHtml = createPasswordResetEmailTemplate(resetLink, userName);
+    const t = emailTranslations.en.passwordReset;
+    
+    // Send email using nodemailer
+    await emailTransporter.sendMail({
+      from: `"RapidWorks" <${emailConfig.auth.user}>`,
+      to: email,
+      subject: t.subject,
+      html: emailHtml,
+    });
+    
+    console.log(`✅ Custom password reset email sent to: ${email}`);
+    
     return {
       success: true,
-      userEmail: userEmail,
-      phoneNumber: userData.phoneNumber.replace(/(\d{3})\d{4}(\d{4})/, '$1***$2'),
-      message: 'SMS notification queued successfully'
+      message: 'Password reset email sent successfully'
     };
-
+    
   } catch (error) {
-    console.error("Error sending SMS notification:", error);
-    throw new Error(`SMS notification failed: ${error.message}`);
-  }
-});
-
-// Get user's notification capabilities
-exports.getUserNotificationCapabilities = onCall(async (request) => {
-  const { userEmail } = request.data;
-  
-  if (!userEmail) {
-    throw new Error('userEmail is required');
-  }
-
-  try {
-    // Check FCM tokens
-    const tokensSnapshot = await db.collection('fcmTokens')
-      .where('userEmail', '==', userEmail)
-      .where('isValid', '==', true)
-      .get();
-
-    // Check user preferences
-    const preferencesDoc = await db.collection('userNotificationPreferences').doc(userEmail).get();
-    const preferences = preferencesDoc.exists ? preferencesDoc.data() : DEFAULT_PREFERENCES;
-
-    // Check user profile for phone number
-    const userDoc = await db.collection('users').doc(userEmail).get();
-    const hasPhoneNumber = userDoc.exists && userDoc.data().phoneNumber;
-
-    return {
-      userEmail: userEmail,
-      capabilities: {
-        webPush: tokensSnapshot.size > 0,
-        email: true,
-        sms: hasPhoneNumber && preferences.taskUpdates?.sms,
-        webSocket: true // Always available when online
-      },
-      preferences: preferences,
-      tokenCount: tokensSnapshot.size,
-      hasPhoneNumber: !!hasPhoneNumber
-    };
-
-  } catch (error) {
-    console.error("Error getting notification capabilities:", error);
-    throw new Error(`Failed to get capabilities: ${error.message}`);
+    console.error('Error in custom password reset:', error);
+    
+    // Return user-friendly error messages
+    if (error.code === 'auth/user-not-found') {
+      throw new Error('No account found with this email address');
+    } else if (error.code === 'auth/invalid-email') {
+      throw new Error('Invalid email address');
+    } else {
+      throw new Error('Failed to send password reset email. Please try again.');
+    }
   }
 });

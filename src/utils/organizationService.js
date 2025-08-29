@@ -344,7 +344,7 @@ export const acceptInvitation = async (token, userId, userEmail) => {
       throw new Error('This invitation was sent to a different email address');
     }
     
-    // Check if user is already a member
+    // Check if user is already a member of this specific organization
     const existingMemberQuery = query(
       collection(db, 'organizationMembers'),
       where('organizationId', '==', invitation.organizationId),
@@ -358,6 +358,24 @@ export const acceptInvitation = async (token, userId, userEmail) => {
     }
     
     const batch = writeBatch(db);
+    
+    // Remove user from all existing organization memberships (since users can only be in one org)
+    const allUserMembershipsQuery = query(
+      collection(db, 'organizationMembers'),
+      where('userId', '==', userId),
+      where('status', '==', 'active')
+    );
+    
+    const allUserMemberships = await getDocs(allUserMembershipsQuery);
+    console.log(`🔄 Removing user from ${allUserMemberships.size} existing organization memberships`);
+    
+    allUserMemberships.forEach((membershipDoc) => {
+      batch.update(membershipDoc.ref, {
+        status: 'inactive',
+        leftAt: serverTimestamp(),
+        leftReason: 'joined_new_organization'
+      });
+    });
     
     // Create organization member
     const memberRef = firestoreDoc(collection(db, 'organizationMembers'));

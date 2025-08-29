@@ -29,7 +29,7 @@ import {
 import RapidWorksHeader from "./new_landing_page_header" 
 import { LanguageContext as AppLanguageContext } from "../App"
 import { useAuth } from '../contexts/AuthContext'
-import { checkFrameworkAgreementStatus, checkOrganizationFrameworkStatus } from '../utils/frameworkAgreementService'
+import { checkOrganizationFrameworkStatus } from '../utils/frameworkAgreementService'
 import { getCurrentUserContext, hasUserOrganizationMembership } from '../utils/organizationService'
 import ExploreMoreSection from "./ExploreMoreSection" // Import the new component
 import { testimonials } from "../testimonialsData"

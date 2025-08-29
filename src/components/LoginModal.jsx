@@ -74,18 +74,24 @@ const LoginModal = ({
       setError('');
       setLoading(true);
       
-      let user;
+      let result;
       if (isSignup) {
-        user = await signup(email, password);
+        result = await signup(email, password);
+        // For signup, redirect to email verification
+        navigate('/verify-email');
       } else {
-        user = await login(email, password);
-      }
-      
-      // Call success callback or navigate
-      if (onLoginSuccess) {
-        onLoginSuccess(user);
-      } else {
-        navigate(redirectTo);
+        result = await login(email, password);
+        // For login, check if email is verified
+        if (result.user && !result.user.emailVerified) {
+          navigate('/verify-email');
+        } else {
+          // Call success callback or navigate to dashboard
+          if (onLoginSuccess) {
+            onLoginSuccess(result);
+          } else {
+            navigate(redirectTo);
+          }
+        }
       }
       
       onClose();

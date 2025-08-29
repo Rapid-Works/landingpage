@@ -110,21 +110,21 @@ export const subscribeUserTaskRequests = (userId, callback, organizationId = nul
   let q;
   
   if (organizationId) {
-    // Filter by user and organization
+    // Filter by user and organization - order by most recent activity
     q = query(
       collection(db, 'taskRequests'),
       where('userId', '==', userId),
       where('organizationId', '==', organizationId),
-      orderBy('createdAt', 'desc'),
+      orderBy('updatedAt', 'desc'),
       limit(limitCount)
     );
   } else {
-    // Personal tasks only (no organization)
+    // Personal tasks only (no organization) - order by most recent activity
     q = query(
       collection(db, 'taskRequests'),
       where('userId', '==', userId),
       where('organizationId', '==', null),
-      orderBy('createdAt', 'desc'),
+      orderBy('updatedAt', 'desc'),
       limit(limitCount)
     );
   }
@@ -152,7 +152,7 @@ export const subscribeOrganizationTaskRequests = (organizationId, callback, limi
   const q = query(
     collection(db, 'taskRequests'),
     where('organizationId', '==', organizationId),
-    orderBy('createdAt', 'desc'),
+    orderBy('updatedAt', 'desc'),
     limit(limitCount)
   );
   return onSnapshot(q, (snapshot) => {
@@ -209,7 +209,7 @@ export const subscribeExpertTaskRequestsByEmail = (expertEmail, callback, limitC
   const q = query(
     collection(db, 'taskRequests'),
     where('expertEmail', '==', expertEmail),
-    orderBy('createdAt', 'desc'),
+    orderBy('updatedAt', 'desc'),
     limit(limitCount)
   );
   return onSnapshot(q, (snapshot) => {
@@ -541,7 +541,7 @@ export const getAllTaskRequests = async (limitCount = 100) => {
 export const subscribeAllTaskRequests = (callback, limitCount = 100) => {
   const q = query(
     collection(db, 'taskRequests'),
-    orderBy('createdAt', 'desc'),
+    orderBy('updatedAt', 'desc'),
     limit(limitCount)
   );
   return onSnapshot(q, (snapshot) => {

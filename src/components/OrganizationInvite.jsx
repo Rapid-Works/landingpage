@@ -221,16 +221,19 @@ const OrganizationInvite = () => {
                     </div>
                   )}
 
-                  {/* Email Verification Notice */}
+                  {/* Email Verification Notice - Only show if emails don't match */}
                   {currentUser && currentUser.email !== invitation.inviteeEmail && (
                     <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-lg text-sm">
                       <p className="font-medium">Email mismatch</p>
-                      <p>This invitation was sent to <strong>{invitation.inviteeEmail}</strong>, but you're logged in as <strong>{currentUser.email}</strong>.</p>
+                      <p>This invitation was sent to a different email address, but you're logged in as <strong>{currentUser.email}</strong>.</p>
                     </div>
                   )}
 
-                  {/* Existing Organizations Warning */}
-                  {!checkingExistingOrgs && existingOrganizations.length > 0 && (
+                  {/* Existing Organizations Warning - Only show if emails match AND user has existing orgs */}
+                  {currentUser && 
+                   currentUser.email === invitation.inviteeEmail && 
+                   !checkingExistingOrgs && 
+                   existingOrganizations.length > 0 && (
                     <div className="bg-orange-50 border border-orange-200 text-orange-800 px-4 py-3 rounded-lg text-sm">
                       <p className="font-medium">Organization Replacement Notice</p>
                       <p className="mb-2">

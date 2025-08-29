@@ -53,6 +53,7 @@ import TrackingRedirect from './components/TrackingRedirect'
 import { AuthProvider } from './contexts/AuthContext'
 import Dashboard from './components/Dashboard'
 import ForgotPassword from './components/ForgotPassword'
+import EmailVerification from './components/EmailVerification'
 import ProtectedRoute from './components/ProtectedRoute'
 // import { NotificationProvider } from './contexts/NotificationContext' // DISABLED
 import OrganizationInvite from './components/OrganizationInvite'
@@ -1407,6 +1408,7 @@ function App() {
             <Routes>
             {/* Authentication Routes */}
             <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/verify-email" element={<EmailVerification />} />
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <Dashboard />

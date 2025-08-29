@@ -23,11 +23,16 @@ const ForgotPassword = () => {
       setMessage('');
       setError('');
       setLoading(true);
-      await resetPassword(email);
+      
+      console.log('🔍 ForgotPassword: Starting password reset for:', email);
+      
+      const result = await resetPassword(email);
+      console.log('🔍 ForgotPassword: Reset password result:', result);
+      
       setMessage('Check your inbox for further instructions');
     } catch (error) {
       setError('Failed to reset password. Please check your email address.');
-      console.error('Password reset error:', error);
+      console.error('🔍 ForgotPassword: Password reset error:', error);
     }
     setLoading(false);
   };
