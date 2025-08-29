@@ -66,12 +66,14 @@ try {
   customerNotificationService = null;
 }
 
-// Mobile-specific error prevention
+// Enhanced mobile detection and Notification API safety
 const isMobile = typeof window !== 'undefined' && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+const isiOS = typeof window !== 'undefined' && /iPhone|iPad|iPod/i.test(navigator.userAgent);
 const isStandalone = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
+const hasNotificationAPI = typeof window !== 'undefined' && typeof window.Notification !== 'undefined';
 
-// Only initialize Firebase messaging on desktop or mobile PWA
-if (typeof window !== 'undefined' && (!isMobile || isStandalone)) {
+// Only initialize Firebase messaging on desktop or mobile PWA with Notification API
+if (typeof window !== 'undefined' && (!isMobile || isStandalone) && hasNotificationAPI) {
   // Dynamically import messaging to handle potential failures
   import('./firebase/messaging')
     .then(({ onForegroundMessage, monitorTokenRefresh }) => {
@@ -87,18 +89,18 @@ if (typeof window !== 'undefined' && (!isMobile || isStandalone)) {
     if (document.hidden || !document.hasFocus()) {
       try {
                 // Check if Notification API is available before using it
-                if (typeof Notification === 'undefined') {
+                if (typeof window === 'undefined' || typeof window.Notification === 'undefined') {
                   console.log('📱 Notification API not available in this browser');
                   return;
                 }
 
                 // Check if permission is granted
-                if (Notification.permission !== 'granted') {
+                if (window.Notification.permission !== 'granted') {
                   console.log('📱 Notification permission not granted');
                   return;
                 }
 
-        const notification = new Notification(notificationTitle, {
+        const notification = new window.Notification(notificationTitle, {
           body: notificationBody,
           icon: payload.notification?.icon || '/favicon.ico',
           tag: payload.data?.type || 'general',
@@ -144,8 +146,16 @@ if (typeof window !== 'undefined' && (!isMobile || isStandalone)) {
     .catch(error => {
       console.warn('Firebase messaging setup failed (non-critical):', error.message);
     });
-} else if (isMobile && !isStandalone) {
-  console.log('📱 Mobile browser detected - Firebase messaging completely skipped (prevents white screen)');
+} else {
+  if (isMobile && !isStandalone) {
+    console.log('📱 Mobile browser detected - Firebase messaging completely skipped (prevents white screen)');
+  }
+  if (!hasNotificationAPI) {
+    console.log('📱 Notification API not available - Firebase messaging skipped (prevents ReferenceError)');
+  }
+  if (isiOS) {
+    console.log('📱 iOS Safari browser - Firebase messaging disabled to prevent errors');
+  }
 }
 
 // Create and export Language Context with initial values
@@ -1385,6 +1395,9 @@ function MobilePWAPrompt() {
   const [showPrompt, setShowPrompt] = useState(false);
   
   useEffect(() => {
+    // Safe browser detection
+    if (typeof window === 'undefined' || typeof navigator === 'undefined') return;
+    
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     const isStandalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
     const isInAppBrowser = /FBAN|FBAV|Instagram|Twitter|LinkedIn|WhatsApp/i.test(navigator.userAgent);
@@ -1454,7 +1467,7 @@ function AutoNotificationRegistration() {
         }
         
         // Check if Notification API is available
-        if (typeof Notification === 'undefined') {
+        if (typeof window === 'undefined' || typeof window.Notification === 'undefined') {
           console.log('📱 Notification API not available in this browser (common on mobile)');
           return;
         }
@@ -1475,7 +1488,7 @@ function AutoNotificationRegistration() {
 
         console.log('📱 User has no FCM tokens, attempting automatic registration...');
 
-        const permission = Notification.permission;
+        const permission = window.Notification.permission;
         
         if (permission === 'granted') {
           // User has already granted permission, register silently
