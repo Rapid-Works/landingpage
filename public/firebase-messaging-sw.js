@@ -1,31 +1,42 @@
 // Scripts for firebase and firebase messaging
-// Version: 1.5 - Add skipWaiting and clientsClaim
-importScripts("https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js");
-importScripts("https://www.gstatic.com/firebasejs/9.15.0/firebase-messaging-compat.js");
+// Version: 1.6 - Add iOS Safari browser protection
+// Check if we're in a supported browser before loading Firebase scripts
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+const isStandalone = (typeof self !== 'undefined' && self.matchMedia && self.matchMedia('(display-mode: standalone)').matches);
 
-// console.log('Firebase messaging service worker loaded');
+// Only load Firebase on supported browsers
+if (!isiOS || isStandalone) {
+  importScripts("https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js");
+  importScripts("https://www.gstatic.com/firebasejs/9.15.0/firebase-messaging-compat.js");
+} else {
+  console.log('[firebase-messaging-sw.js] iOS Safari browser detected - Firebase messaging disabled');
+}
 
-// Initialize the Firebase app in the service worker by passing in
-// the messagingSenderId.
-// TODO: REPLACE WITH YOUR FIREBASE CONFIG
-firebase.initializeApp({
-  apiKey: 'AIzaSyDoIexsBB5I8ylX2t2N4fxVjVcsst71c5Y',
-  authDomain: 'landingpage-606e9.firebaseapp.com',
-  projectId: 'landingpage-606e9',
-  storageBucket: 'landingpage-606e9.firebasestorage.app',
-  messagingSenderId: '449487247565',
-  appId: '1:449487247565:web:7bf02a5898cb57a13cb184'
-});
+// Only initialize Firebase if we're in a supported browser
+if (!isiOS || isStandalone) {
+  // console.log('Firebase messaging service worker loaded');
 
-// console.log('Firebase initialized in service worker');
+  // Initialize the Firebase app in the service worker by passing in
+  // the messagingSenderId.
+  firebase.initializeApp({
+    apiKey: 'AIzaSyDoIexsBB5I8ylX2t2N4fxVjVcsst71c5Y',
+    authDomain: 'landingpage-606e9.firebaseapp.com',
+    projectId: 'landingpage-606e9',
+    storageBucket: 'landingpage-606e9.firebasestorage.app',
+    messagingSenderId: '449487247565',
+    appId: '1:449487247565:web:7bf02a5898cb57a13cb184'
+  });
 
-// Retrieve an instance of Firebase Messaging so that it can handle background
-// messages.
-const messaging = firebase.messaging();
+  // console.log('Firebase initialized in service worker');
 
-// console.log('Firebase messaging instance created');
+  // Retrieve an instance of Firebase Messaging so that it can handle background
+  // messages.
+  const messaging = firebase.messaging();
 
-messaging.onBackgroundMessage((payload) => {
+  // console.log('Firebase messaging instance created');
+
+  messaging.onBackgroundMessage((payload) => {
   console.log("[firebase-messaging-sw.js] Received background message ", payload);
   
   // Mobile-specific handling
@@ -166,6 +177,11 @@ self.addEventListener("notificationclick", (event) => {
     );
   }
 });
+
+} else {
+  // iOS Safari browser - provide minimal service worker functionality
+  console.log('[firebase-messaging-sw.js] iOS Safari service worker - Firebase messaging skipped');
+}
 
 // Activate immediately when updated
 self.addEventListener('install', (event) => {
