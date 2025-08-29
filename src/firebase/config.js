@@ -68,15 +68,55 @@ try {
 }
 export { analytics };
 
-// Initialize Messaging with error handling (can fail on unsupported browsers)
-let messaging;
-try {
-  messaging = getMessaging(app);
-  console.log('✅ Firebase Messaging initialized');
-} catch (error) {
-  console.warn('⚠️ Firebase Messaging failed to initialize (non-critical):', error.message);
-  messaging = null;
+// Initialize Messaging with proper browser support detection
+let messaging = null;
+
+// Check if we're in a browser environment and if messaging is supported
+const initializeMessaging = async () => {
+  if (typeof window === 'undefined') {
+    console.log('🔇 Server-side rendering - Firebase Messaging skipped');
+    return;
+  }
+
+  try {
+    // Check if the browser supports Firebase Messaging
+    const { isSupported } = await import('firebase/messaging');
+    const messagingSupported = await isSupported();
+    
+    if (!messagingSupported) {
+      console.log('📱 Firebase Messaging not supported in this browser (common on mobile)');
+      return;
+    }
+
+    // Check if required APIs are available
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+      console.log('📱 Service Worker or Push API not supported - skipping Firebase Messaging');
+      return;
+    }
+
+    // Additional mobile browser checks
+    const isMobileSafari = /iPhone|iPad|iPod/i.test(navigator.userAgent) && /Safari/i.test(navigator.userAgent);
+    if (isMobileSafari) {
+      console.log('📱 Mobile Safari detected - Firebase Messaging has limited support');
+      // Still try to initialize but expect it might fail
+    }
+
+    messaging = getMessaging(app);
+    console.log('✅ Firebase Messaging initialized successfully');
+    
+  } catch (error) {
+    console.warn('⚠️ Firebase Messaging initialization failed (non-critical):', error.message);
+    messaging = null;
+  }
+};
+
+// Initialize messaging asynchronously to avoid blocking app startup
+if (typeof window !== 'undefined') {
+  initializeMessaging().catch(error => {
+    console.warn('⚠️ Async messaging initialization failed:', error.message);
+  });
 }
+
 export { messaging };
 
 export default app;

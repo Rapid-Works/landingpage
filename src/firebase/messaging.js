@@ -118,11 +118,22 @@ export const unregisterServiceWorkers = async () => {
 };
 
 export const requestNotificationPermission = async () => {
+  // Check if Notification API is available
+  if (typeof Notification === 'undefined') {
+    return {
+      success: false,
+      reason: 'Notification API is not supported in this browser (common on mobile).',
+      token: null,
+      notSupported: true
+    };
+  }
+
   if (!messaging) {
     return {
       success: false,
-      reason: 'Messaging is not supported in this browser.',
-      token: null
+      reason: 'Firebase Messaging is not supported in this browser.',
+      token: null,
+      notSupported: true
     };
   }
 

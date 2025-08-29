@@ -66,23 +66,79 @@
       </style>
     </div>
     
-    <script>
-      // Remove loading fallback when React app loads
-      setTimeout(() => {
-        const fallback = document.getElementById('loading-fallback');
-        if (fallback && window.React) {
-          fallback.remove();
+          <script>
+        // Function to remove loading screen
+        function removeLoadingScreen() {
+          const fallback = document.getElementById('loading-fallback');
+          if (fallback) {
+            console.log('🚀 Removing loading screen');
+            fallback.style.opacity = '0';
+            setTimeout(() => {
+              if (fallback.parentNode) {
+                fallback.remove();
+              }
+            }, 300);
+          }
         }
-      }, 5000);
-      
-      // Mobile debugging - log errors to console
-      window.addEventListener('error', (e) => {
-        console.error('Global error:', e.error, e.filename, e.lineno);
-      });
-      
-      window.addEventListener('unhandledrejection', (e) => {
-        console.error('Unhandled promise rejection:', e.reason);
-      });
-    </script>
+        
+        // Method 1: Watch for React root content changes
+        const observer = new MutationObserver((mutations) => {
+          const root = document.getElementById('root');
+          // Check if there are React elements in the root (more than just loading screen)
+          if (root && root.children.length > 1) {
+            console.log('✅ React app detected - removing loading screen');
+            removeLoadingScreen();
+            observer.disconnect();
+          }
+        });
+        
+        // Start watching for changes
+        const rootElement = document.getElementById('root');
+        if (rootElement) {
+          observer.observe(rootElement, { 
+            childList: true, 
+            subtree: true 
+          });
+        }
+        
+        // Method 2: Timeout fallback (remove after 8 seconds regardless)
+        setTimeout(() => {
+          console.log('⏰ Timeout reached - removing loading screen');
+          removeLoadingScreen();
+          if (observer) observer.disconnect();
+        }, 8000);
+        
+        // Method 3: Remove when React elements are detected
+        const checkReactInterval = setInterval(() => {
+          const root = document.getElementById('root');
+          // Look for React elements (div elements that aren't the loading screen)
+          const reactElements = root ? root.querySelectorAll('div:not(#loading-fallback)') : [];
+          if (reactElements.length > 0) {
+            console.log('⚛️ React elements detected - removing loading screen');
+            removeLoadingScreen();
+            if (observer) observer.disconnect();
+            clearInterval(checkReactInterval);
+          }
+        }, 1000);
+        
+        // Mobile debugging - log errors to console
+        window.addEventListener('error', (e) => {
+          console.error('Global error:', e.error || e.message, e.filename, e.lineno);
+          // If there's a critical error, remove loading screen after delay
+          setTimeout(() => {
+            removeLoadingScreen();
+          }, 2000);
+        });
+        
+        window.addEventListener('unhandledrejection', (e) => {
+          console.error('Unhandled promise rejection:', e.reason);
+          // If there's a critical error, remove loading screen after delay
+          setTimeout(() => {
+            removeLoadingScreen();
+          }, 2000);
+        });
+        
+        console.log('📱 Mobile debug script loaded - watching for React app');
+      </script>
   </body>
 </html>
