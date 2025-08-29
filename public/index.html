@@ -132,6 +132,12 @@
         // Mobile debugging - log errors to console
         window.addEventListener('error', (e) => {
           console.error('Global error:', e.error || e.message, e.filename, e.lineno);
+          
+          // Special handling for Notification API errors on iOS
+          if (e.message && e.message.includes('Notification')) {
+            console.log('📱 iOS Notification API error detected - this is expected on iOS Safari');
+          }
+          
           // If there's a critical error, remove loading screen after delay
           setTimeout(() => {
             removeLoadingScreen();
