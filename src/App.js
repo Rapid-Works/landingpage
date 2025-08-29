@@ -57,28 +57,35 @@ import ProtectedRoute from './components/ProtectedRoute'
 import { NotificationProvider } from './contexts/NotificationContext'
 import OrganizationInvite from './components/OrganizationInvite'
 
-// Initialize Firebase messaging and service worker
-import './firebase/messaging'
+// Import notification service for automatic registration (safe import)
+let customerNotificationService;
+try {
+  customerNotificationService = require('./utils/customerNotificationService').default;
+} catch (error) {
+  console.warn('Customer notification service not available:', error.message);
+  customerNotificationService = null;
+}
 
-// Import notification service for automatic registration
-import customerNotificationService from './utils/customerNotificationService'
+// Mobile-specific error prevention
+const isMobile = typeof window !== 'undefined' && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+const isStandalone = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
 
-// Add foreground message handler for Firebase notifications with error handling
-if (typeof window !== 'undefined') {
+// Only initialize Firebase messaging on desktop or mobile PWA
+if (typeof window !== 'undefined' && (!isMobile || isStandalone)) {
   // Dynamically import messaging to handle potential failures
   import('./firebase/messaging')
     .then(({ onForegroundMessage, monitorTokenRefresh }) => {
       if (onForegroundMessage) {
-        onForegroundMessage((payload) => {
-          console.log('📱 Foreground notification received:', payload);
-          
-          // Create a browser notification even when app is in foreground
-          const notificationTitle = payload.notification?.title || 'Notification';
-          const notificationBody = payload.notification?.body || 'You have a new message';
-          
-                      // Only show if browser tab doesn't have focus or user prefers notifications
-            if (document.hidden || !document.hasFocus()) {
-              try {
+  onForegroundMessage((payload) => {
+    console.log('📱 Foreground notification received:', payload);
+    
+    // Create a browser notification even when app is in foreground
+    const notificationTitle = payload.notification?.title || 'Notification';
+    const notificationBody = payload.notification?.body || 'You have a new message';
+    
+    // Only show if browser tab doesn't have focus or user prefers notifications
+    if (document.hidden || !document.hasFocus()) {
+      try {
                 // Check if Notification API is available before using it
                 if (typeof Notification === 'undefined') {
                   console.log('📱 Notification API not available in this browser');
@@ -91,30 +98,30 @@ if (typeof window !== 'undefined') {
                   return;
                 }
 
-                const notification = new Notification(notificationTitle, {
-                  body: notificationBody,
-                  icon: payload.notification?.icon || '/favicon.ico',
-                  tag: payload.data?.type || 'general',
-                  data: payload.data
-                });
-                
-                notification.onclick = () => {
-                  window.focus();
-                  if (payload.data?.url) {
-                    window.location.href = payload.data.url;
-                  }
-                  notification.close();
-                };
-                
-                // Auto-close after 5 seconds
-                setTimeout(() => notification.close(), 5000);
-              } catch (error) {
-                console.log('📱 Could not show foreground notification (common on mobile):', error.message);
-              }
-            }
+        const notification = new Notification(notificationTitle, {
+          body: notificationBody,
+          icon: payload.notification?.icon || '/favicon.ico',
+          tag: payload.data?.type || 'general',
+          data: payload.data
         });
+        
+        notification.onclick = () => {
+          window.focus();
+          if (payload.data?.url) {
+            window.location.href = payload.data.url;
+          }
+          notification.close();
+        };
+        
+        // Auto-close after 5 seconds
+        setTimeout(() => notification.close(), 5000);
+      } catch (error) {
+                console.log('📱 Could not show foreground notification (common on mobile):', error.message);
       }
-      
+    }
+  });
+}
+
       // Set up iOS token refresh monitoring
       if (monitorTokenRefresh) {
         const isMobileSafari = /iPhone|iPad|iPod/i.test(navigator.userAgent) && /Safari/i.test(navigator.userAgent);
@@ -137,6 +144,8 @@ if (typeof window !== 'undefined') {
     .catch(error => {
       console.warn('Firebase messaging setup failed (non-critical):', error.message);
     });
+} else if (isMobile && !isStandalone) {
+  console.log('📱 Mobile browser detected - Firebase messaging completely skipped (prevents white screen)');
 }
 
 // Create and export Language Context with initial values
@@ -1332,10 +1341,22 @@ class ErrorBoundary extends Component {
 
   componentDidCatch(error, errorInfo) {
     console.error('React Error Boundary caught an error:', error, errorInfo);
+    
+    // Mobile-specific error logging
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobile) {
+      console.error('📱 Mobile browser error detected:', error.message);
+    }
   }
 
   render() {
     if (this.state.hasError) {
+      // Remove loading screen immediately if there's an error
+      const fallback = document.getElementById('loading-fallback');
+      if (fallback) {
+        fallback.remove();
+      }
+      
       return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50">
           <div className="text-center p-8">
@@ -1453,7 +1474,7 @@ function AutoNotificationRegistration() {
         }
 
         console.log('📱 User has no FCM tokens, attempting automatic registration...');
-        
+
         const permission = Notification.permission;
         
         if (permission === 'granted') {
@@ -1461,14 +1482,14 @@ function AutoNotificationRegistration() {
           console.log('🔔 Permission already granted, registering FCM token...');
           
           if (typeof customerNotificationService.ensureNotificationsEnabled === 'function') {
-            const result = await customerNotificationService.ensureNotificationsEnabled();
-            
-            if (result.enabled) {
-              console.log(`✅ Successfully auto-registered ${currentUser.email} for notifications`);
+          const result = await customerNotificationService.ensureNotificationsEnabled();
+          
+          if (result.enabled) {
+            console.log(`✅ Successfully auto-registered ${currentUser.email} for notifications`);
             } else if (result.notSupported) {
               console.log(`📱 Notifications not supported on this device: ${result.reason}`);
-            } else {
-              console.log(`⚠️ Auto-registration failed: ${result.reason}`);
+          } else {
+            console.log(`⚠️ Auto-registration failed: ${result.reason}`);
             }
           }
         } else if (permission === 'default') {
@@ -1502,11 +1523,11 @@ function AutoNotificationRegistration() {
 
 function App() {
   const [language, setLanguage] = useState(() => {
-    return localStorage.getItem('language') || 'de'
+      return localStorage.getItem('language') || 'de'
   })
   const [showTimedWebinarModal, setShowTimedWebinarModal] = useState(false);
   const location = useLocation();
-  
+
   // Remove loading screen when React app successfully mounts
   useEffect(() => {
     const removeLoadingScreen = () => {
@@ -1522,11 +1543,22 @@ function App() {
       }
     };
     
+    // More aggressive removal for mobile browsers
+    const isMobileBrowser = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
     // Remove immediately when component mounts
     removeLoadingScreen();
     
-    // Also try after a short delay to ensure DOM is ready
-    setTimeout(removeLoadingScreen, 100);
+    // Multiple attempts for mobile browsers
+    if (isMobileBrowser) {
+      setTimeout(removeLoadingScreen, 50);
+      setTimeout(removeLoadingScreen, 200);
+      setTimeout(removeLoadingScreen, 500);
+      setTimeout(removeLoadingScreen, 1000);
+        } else {
+      // Also try after a short delay to ensure DOM is ready
+      setTimeout(removeLoadingScreen, 100);
+    }
   }, []);
   
   // Check if we're on a dashboard page
@@ -1575,13 +1607,13 @@ function App() {
     transition: { duration: 0.6 },
   }
 
-  return (
-    <ErrorBoundary>
-      <AuthProvider>
-        <NotificationProvider>
-          <AutoNotificationRegistration />
+    return (
+      <ErrorBoundary>
+        <AuthProvider>
+          <NotificationProvider>
+            <AutoNotificationRegistration />
           <MobilePWAPrompt />
-          <LanguageContext.Provider value={contextValue}>
+            <LanguageContext.Provider value={contextValue}>
             <ScrollToTop />
             <Analytics />
             <Routes>
@@ -1648,10 +1680,10 @@ function App() {
           /> */}
           {!isDashboardPage && <Footer />}
           <CookieConsent />
-        </LanguageContext.Provider>
-      </NotificationProvider>
-    </AuthProvider>
-  </ErrorBoundary>
+          </LanguageContext.Provider>
+        </NotificationProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   )
 }
 
