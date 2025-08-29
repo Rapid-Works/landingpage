@@ -54,109 +54,11 @@ import { AuthProvider, useAuth } from './contexts/AuthContext'
 import Dashboard from './components/Dashboard'
 import ForgotPassword from './components/ForgotPassword'
 import ProtectedRoute from './components/ProtectedRoute'
-import { NotificationProvider } from './contexts/NotificationContext'
+// import { NotificationProvider } from './contexts/NotificationContext' // DISABLED
 import OrganizationInvite from './components/OrganizationInvite'
 
-// Import notification service for automatic registration (safe import)
-let customerNotificationService;
-try {
-  customerNotificationService = require('./utils/customerNotificationService').default;
-} catch (error) {
-  console.warn('Customer notification service not available:', error.message);
-  customerNotificationService = null;
-}
-
-// Enhanced mobile detection and Notification API safety
-const isMobile = typeof window !== 'undefined' && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-const isiOS = typeof window !== 'undefined' && /iPhone|iPad|iPod/i.test(navigator.userAgent);
-const isStandalone = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
-const hasNotificationAPI = typeof window !== 'undefined' && typeof window.Notification !== 'undefined';
-
-// Only initialize Firebase messaging on desktop or mobile PWA with Notification API
-if (typeof window !== 'undefined' && (!isMobile || isStandalone) && hasNotificationAPI) {
-  // Dynamically import messaging to handle potential failures
-  import('./firebase/messaging')
-    .then(({ onForegroundMessage, monitorTokenRefresh }) => {
-      if (onForegroundMessage) {
-  onForegroundMessage((payload) => {
-    console.log('📱 Foreground notification received:', payload);
-    
-    // Create a browser notification even when app is in foreground
-    const notificationTitle = payload.notification?.title || 'Notification';
-    const notificationBody = payload.notification?.body || 'You have a new message';
-    
-    // Only show if browser tab doesn't have focus or user prefers notifications
-    if (document.hidden || !document.hasFocus()) {
-      try {
-                // Check if Notification API is available before using it
-                if (typeof window === 'undefined' || typeof window.Notification === 'undefined') {
-                  console.log('📱 Notification API not available in this browser');
-                  return;
-                }
-
-                // Check if permission is granted
-                if (window.Notification.permission !== 'granted') {
-                  console.log('📱 Notification permission not granted');
-                  return;
-                }
-
-        const notification = new window.Notification(notificationTitle, {
-          body: notificationBody,
-          icon: payload.notification?.icon || '/favicon.ico',
-          tag: payload.data?.type || 'general',
-          data: payload.data
-        });
-        
-        notification.onclick = () => {
-          window.focus();
-          if (payload.data?.url) {
-            window.location.href = payload.data.url;
-          }
-          notification.close();
-        };
-        
-        // Auto-close after 5 seconds
-        setTimeout(() => notification.close(), 5000);
-      } catch (error) {
-                console.log('📱 Could not show foreground notification (common on mobile):', error.message);
-      }
-    }
-  });
-}
-
-      // Set up iOS token refresh monitoring
-      if (monitorTokenRefresh) {
-        const isMobileSafari = /iPhone|iPad|iPod/i.test(navigator.userAgent) && /Safari/i.test(navigator.userAgent);
-        if (isMobileSafari) {
-          console.log('📱 Setting up iOS token refresh monitoring');
-          monitorTokenRefresh(async (newToken) => {
-            // Update server with new token for iOS devices
-            try {
-              if (customerNotificationService && customerNotificationService.updateFcmToken) {
-                await customerNotificationService.updateFcmToken(newToken);
-                console.log('✅ Updated server with new iOS FCM token');
-              }
-            } catch (error) {
-              console.error('Failed to update server with new token:', error);
-            }
-          });
-        }
-      }
-    })
-    .catch(error => {
-      console.warn('Firebase messaging setup failed (non-critical):', error.message);
-    });
-} else {
-  if (isMobile && !isStandalone) {
-    console.log('📱 Mobile browser detected - Firebase messaging completely skipped (prevents white screen)');
-  }
-  if (!hasNotificationAPI) {
-    console.log('📱 Notification API not available - Firebase messaging skipped (prevents ReferenceError)');
-  }
-  if (isiOS) {
-    console.log('📱 iOS Safari browser - Firebase messaging disabled to prevent errors');
-  }
-}
+// PUSH NOTIFICATIONS COMPLETELY DISABLED - TO PREVENT iOS ISSUES
+console.log('🔕 Push notifications are disabled to ensure iOS Safari compatibility');
 
 // Create and export Language Context with initial values
 export const LanguageContext = createContext({
@@ -1388,148 +1290,21 @@ class ErrorBoundary extends Component {
 }
 
 /**
- * Mobile PWA installation prompt component
- * Shows installation hint for mobile browsers to enable notifications
+ * Mobile PWA installation prompt component - DISABLED
+ * PWA prompt disabled since notifications are disabled
  */
 function MobilePWAPrompt() {
-  const [showPrompt, setShowPrompt] = useState(false);
-  
-  useEffect(() => {
-    // Safe browser detection
-    if (typeof window === 'undefined' || typeof navigator === 'undefined') return;
-    
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    const isStandalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
-    const isInAppBrowser = /FBAN|FBAV|Instagram|Twitter|LinkedIn|WhatsApp/i.test(navigator.userAgent);
-    
-    // Show prompt for mobile browsers (not PWA, not in-app browsers)
-    if (isMobile && !isStandalone && !isInAppBrowser) {
-      // Don't show immediately, wait for user to interact with site
-      const timer = setTimeout(() => {
-        const hasSeenPrompt = localStorage.getItem('pwa-prompt-seen');
-        if (!hasSeenPrompt) {
-          setShowPrompt(true);
-        }
-      }, 10000); // Show after 10 seconds
-      
-      return () => clearTimeout(timer);
-    }
-  }, []);
-  
-  const dismissPrompt = () => {
-    setShowPrompt(false);
-    localStorage.setItem('pwa-prompt-seen', 'true');
-  };
-  
-  if (!showPrompt) return null;
-  
-  return (
-    <div className="fixed bottom-4 left-4 right-4 bg-violet-600 text-white p-4 rounded-lg shadow-lg z-50 md:max-w-sm md:left-auto">
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <h3 className="font-semibold text-sm mb-1">📱 Install App for Notifications</h3>
-          <p className="text-xs opacity-90">
-            Add this app to your home screen to receive push notifications and enjoy a better experience.
-          </p>
-          <div className="mt-2 text-xs opacity-75">
-            Tap Share → Add to Home Screen
-          </div>
-        </div>
-        <button 
-          onClick={dismissPrompt}
-          className="ml-2 text-white hover:text-gray-300"
-        >
-          <X className="h-4 w-4" />
-        </button>
-      </div>
-    </div>
-  );
+  // Component disabled - no PWA prompt needed without notifications
+  return null;
 }
 
 /**
- * Automatic notification registration component
- * Silently registers logged-in users for push notifications in the background
+ * Automatic notification registration component - DISABLED
+ * Push notifications are disabled to ensure iOS Safari compatibility
  */
 function AutoNotificationRegistration() {
-  const { currentUser } = useAuth();
-
-  useEffect(() => {
-    if (!currentUser?.email) return;
-
-    const registerNotificationsAutomatically = async () => {
-      try {
-        console.log('🔔 Auto-checking notification registration for:', currentUser.email);
-        
-        // Check if we're on a mobile browser that doesn't support notifications
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        if (isMobile) {
-          console.log('📱 Mobile device detected - notification support may be limited');
-        }
-        
-        // Check if Notification API is available
-        if (typeof window === 'undefined' || typeof window.Notification === 'undefined') {
-          console.log('📱 Notification API not available in this browser (common on mobile)');
-          return;
-        }
-        
-        // Check if customerNotificationService is available
-        if (!customerNotificationService || typeof customerNotificationService.checkUserHasNotificationTokens !== 'function') {
-          console.log('⚠️ Notification service not available, skipping auto-registration');
-          return;
-        }
-        
-        // Check if user already has FCM tokens
-        const tokenCheck = await customerNotificationService.checkUserHasNotificationTokens(currentUser.email);
-        
-        if (tokenCheck.hasTokens) {
-          console.log(`✅ User ${currentUser.email} already has ${tokenCheck.tokenCount} FCM token(s)`);
-          return;
-        }
-
-        console.log('📱 User has no FCM tokens, attempting automatic registration...');
-
-        const permission = window.Notification.permission;
-        
-        if (permission === 'granted') {
-          // User has already granted permission, register silently
-          console.log('🔔 Permission already granted, registering FCM token...');
-          
-          if (typeof customerNotificationService.ensureNotificationsEnabled === 'function') {
-          const result = await customerNotificationService.ensureNotificationsEnabled();
-          
-          if (result.enabled) {
-            console.log(`✅ Successfully auto-registered ${currentUser.email} for notifications`);
-            } else if (result.notSupported) {
-              console.log(`📱 Notifications not supported on this device: ${result.reason}`);
-          } else {
-            console.log(`⚠️ Auto-registration failed: ${result.reason}`);
-            }
-          }
-        } else if (permission === 'default') {
-          // Permission not decided yet - don't auto-prompt, just log
-          console.log('💡 User has not granted notification permission yet');
-          console.log('💡 They can enable notifications manually via the notification settings');
-        } else {
-          // Permission denied
-          console.log('❌ User has denied notification permissions');
-        }
-      } catch (error) {
-        // More specific error handling for mobile browsers
-        if (error.message.includes('Messaging') || error.message.includes('APIs required')) {
-          console.log('📱 Firebase Messaging not supported on this mobile browser (expected)');
-        } else {
-          console.warn('Non-critical error in automatic notification registration:', error.message);
-        }
-      }
-    };
-
-    // Run the check after a short delay to ensure app is fully loaded
-    const timeoutId = setTimeout(registerNotificationsAutomatically, 2000);
-    
-    return () => clearTimeout(timeoutId);
-  }, [currentUser]);
-
-  // This component doesn't render anything
+  // Component disabled - no auto registration to prevent iOS issues
+  console.log('🔕 Auto-notification registration disabled for iOS compatibility');
   return null;
 }
 
@@ -1623,10 +1398,10 @@ function App() {
     return (
       <ErrorBoundary>
         <AuthProvider>
-          <NotificationProvider>
-            <AutoNotificationRegistration />
+          {/* NotificationProvider disabled to prevent iOS issues */}
+          <AutoNotificationRegistration />
           <MobilePWAPrompt />
-            <LanguageContext.Provider value={contextValue}>
+          <LanguageContext.Provider value={contextValue}>
             <ScrollToTop />
             <Analytics />
             <Routes>
@@ -1694,9 +1469,8 @@ function App() {
           {!isDashboardPage && <Footer />}
           <CookieConsent />
           </LanguageContext.Provider>
-        </NotificationProvider>
-      </AuthProvider>
-    </ErrorBoundary>
+        </AuthProvider>
+      </ErrorBoundary>
   )
 }
 
