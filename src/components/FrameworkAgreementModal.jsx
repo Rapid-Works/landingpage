@@ -6,11 +6,11 @@ import {
   uploadFrameworkDocument, 
   saveFrameworkAgreement 
 } from '../utils/frameworkAgreementService';
-import { getCurrentUserContext } from '../utils/organizationService';
-import OrganizationSwitcher from './OrganizationSwitcher';
+import { getCurrentUserContext, hasUserOrganizationMembership } from '../utils/organizationService';
 import CreateOrganizationModal from './CreateOrganizationModal';
 
-const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName = '' }) => {
+const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName = '', message = '' }) => {
+  const [currentMessage, setCurrentMessage] = useState(message);
   const { currentUser } = useAuth();
   const context = useContext(AppLanguageContext);
   const [hasUploadedAgreement, setHasUploadedAgreement] = useState(false);
@@ -101,8 +101,16 @@ const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName 
       
       setLoadingContext(true);
       try {
-        const userContext = await getCurrentUserContext(currentUser.uid);
-        setCurrentContext(userContext);
+        // Check if user has any organization membership
+        const hasOrganization = await hasUserOrganizationMembership(currentUser.uid);
+        
+        if (hasOrganization) {
+          const userContext = await getCurrentUserContext(currentUser.uid);
+          setCurrentContext(userContext);
+        } else {
+          // User has no organization
+          setCurrentContext(null);
+        }
       } catch (error) {
         console.error('Error loading user context:', error);
       } finally {
@@ -113,21 +121,35 @@ const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName 
     loadUserContext();
   }, [currentUser, isOpen]);
 
-  // Handle organization context change
-  const handleContextChange = (newContext) => {
-    setCurrentContext(newContext);
-  };
+  // Update current message when prop changes
+  useEffect(() => {
+    setCurrentMessage(message);
+  }, [message]);
 
   // Handle organization creation success
   const handleOrganizationCreated = async () => {
     setIsCreateOrgModalOpen(false);
+    // Clear the message since user now has an organization
+    setCurrentMessage('');
+    
     // Refresh user context after organization creation
     if (currentUser) {
       try {
-        const userContext = await getCurrentUserContext(currentUser.uid);
-        setCurrentContext(userContext);
+        setLoadingContext(true);
+        // Check if user has any organization membership
+        const hasOrganization = await hasUserOrganizationMembership(currentUser.uid);
+        
+        if (hasOrganization) {
+          const userContext = await getCurrentUserContext(currentUser.uid);
+          setCurrentContext(userContext);
+        } else {
+          // User has no organization
+          setCurrentContext(null);
+        }
       } catch (error) {
         console.error('Error refreshing user context:', error);
+      } finally {
+        setLoadingContext(false);
       }
     }
   };
@@ -135,16 +157,13 @@ const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName 
   // Check if user can sign agreements
   const canSignAgreement = () => {
     if (!currentContext) return false;
-    // Only organization admins can sign agreements - no personal accounts
-    if (currentContext.type === 'organization') {
-      return currentContext.permissions?.role === 'admin';
-    }
-    return false; // No personal account access
+    // Only organization admins can sign agreements
+    return currentContext.permissions?.role === 'admin';
   };
 
   // Check if user has any organizations
   const hasOrganizations = () => {
-    return currentContext?.type === 'organization';
+    return currentContext !== null;
   };
 
   const handleFileUpload = (file) => {
@@ -306,71 +325,97 @@ const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName 
             <>
               <h2 className="text-3xl font-bold mb-6 text-gray-900 text-center">{t.title}</h2>
               
-              {/* Organization Context Switcher */}
+              {/* Organization Status */}
               {loadingContext ? (
                 <div className="flex items-center justify-center py-4 mb-6">
                   <Loader2 className="h-5 w-5 animate-spin text-gray-400 mr-2" />
-                  <span className="text-gray-500">Loading context...</span>
+                  <span className="text-gray-500">Loading organization status...</span>
+                </div>
+              ) : currentMessage === 'no-organization' ? (
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 mb-6">
+                  <div className="flex items-start gap-3">
+                    <AlertCircle className="h-6 w-6 text-amber-600 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-medium text-amber-800 mb-2">Organization Required</h4>
+                      <p className="text-sm text-amber-700 mb-4">Either create an organization or ask the admin of your company to invite you to an existing organization.</p>
+                      <button 
+                        onClick={() => setIsCreateOrgModalOpen(true)}
+                        className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-medium transition-colors"
+                      >
+                        Create Organization
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : currentMessage === 'admin-required' ? (
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 mb-6">
+                  <div className="flex items-start gap-3">
+                    <AlertCircle className="h-6 w-6 text-amber-600 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-medium text-amber-800 mb-2">Administrator Required</h4>
+                      <p className="text-sm text-amber-700 mb-4">Only organization administrators can sign framework agreements. Please contact your administrator to sign the agreement for your organization.</p>
+                      <button 
+                        onClick={onClose}
+                        className="text-sm font-medium text-amber-800 hover:text-amber-900 underline"
+                      >
+                        Contact Administrator
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : currentMessage === 'organization-not-found' ? (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
+                  <div className="flex items-start gap-3">
+                    <AlertCircle className="h-6 w-6 text-red-600 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-medium text-red-800 mb-2">Organization Not Found</h4>
+                      <p className="text-sm text-red-700 mb-4">Organization information not found. Please try again.</p>
+                    </div>
+                  </div>
+                </div>
+              ) : currentMessage === 'user-not-found' ? (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
+                  <div className="flex items-start gap-3">
+                    <AlertCircle className="h-6 w-6 text-red-600 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-medium text-red-800 mb-2">User Not Found</h4>
+                      <p className="text-sm text-red-700 mb-4">User information not found. Please try again.</p>
+                    </div>
+                  </div>
+                </div>
+              ) : currentMessage === 'error' ? (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
+                  <div className="flex items-start gap-3">
+                    <AlertCircle className="h-6 w-6 text-red-600 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-medium text-red-800 mb-2">Error</h4>
+                      <p className="text-sm text-red-700 mb-4">An error occurred while checking permissions. Please try again.</p>
+                    </div>
+                  </div>
                 </div>
               ) : !hasOrganizations() ? (
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 mb-6">
                   <div className="flex items-start gap-3">
                     <AlertCircle className="h-6 w-6 text-amber-600 mt-0.5 flex-shrink-0" />
                     <div>
-                      <h4 className="font-medium text-amber-800 mb-2">{t.noOrganization}</h4>
-                      <p className="text-sm text-amber-700 mb-4">{t.noOrganizationMessage}</p>
+                      <h4 className="font-medium text-amber-800 mb-2">Organization Required</h4>
+                      <p className="text-sm text-amber-700 mb-4">Either create an organization or ask the admin of your company to invite you to an existing organization.</p>
                       <button 
                         onClick={() => setIsCreateOrgModalOpen(true)}
                         className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-medium transition-colors"
                       >
-                        {t.createOrganization}
+                        Create Organization
                       </button>
                     </div>
                   </div>
                 </div>
-              ) : (
-                <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Building2 className="h-4 w-4 text-gray-600" />
-                    <span className="text-sm font-medium text-gray-700">{t.organizationContext}</span>
-                  </div>
-                  <OrganizationSwitcher 
-                    currentContext={currentContext}
-                    onContextChange={handleContextChange}
-                    onCreateOrganization={() => setIsCreateOrgModalOpen(true)}
-                  />
-                  <div className="mt-3 text-sm text-gray-600">
-                    <strong>{t.signingAs}:</strong> {
-                      currentContext?.type === 'organization' 
-                        ? `${currentContext.organization.name} (${currentContext.permissions?.role === 'admin' ? 'Administrator' : 'Member'})`
-                        : t.personalAccount
-                    }
-                  </div>
-                </div>
-              )}
+              ) : null}
 
-              {/* Role-based access control */}
-              {currentContext && !canSignAgreement() && (
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
-                  <div className="flex items-start gap-3">
-                    <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-medium text-amber-800 mb-1">{t.adminRequired}</h4>
-                      <p className="text-sm text-amber-700 mb-3">{t.adminRequiredMessage}</p>
-                      <button 
-                        onClick={onClose}
-                        className="text-sm font-medium text-amber-800 hover:text-amber-900 underline"
-                      >
-                        {t.contactAdmin}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
+
 
               <div className="text-center mb-8">
                 <p className="text-gray-600 leading-relaxed">
-                  {t.greeting} <span className="font-semibold text-[#7C3BEC]">{userName || 'FIRST-NAME'}</span>. {t.description} <span className="font-semibold">{t.frameworkAgreement}</span>. {t.explanation}
+                  {t.greeting} <span className="font-semibold text-gray-900">{userName || 'FIRST-NAME'}</span>. {t.description} <span className="font-semibold">{t.frameworkAgreement}</span>. {t.explanation}
                 </p>
               </div>
 
@@ -433,9 +478,9 @@ const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName 
                 <div className="text-center">
                   <button
                     onClick={handleSubmit}
-                    disabled={!hasUploadedAgreement || status === 'loading' || !canSignAgreement()}
+                    disabled={!hasUploadedAgreement || status === 'loading' || !canSignAgreement() || currentMessage !== ''}
                     className={`px-8 py-3 rounded-lg font-medium transition-colors ${
-                      hasUploadedAgreement && status !== 'loading' && canSignAgreement()
+                      hasUploadedAgreement && status !== 'loading' && canSignAgreement() && currentMessage === ''
                         ? 'bg-[#FF6B47] hover:bg-[#E55A3C] text-white'
                         : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     }`}
@@ -449,10 +494,10 @@ const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName 
                       t.confirmButton
                     )}
                   </button>
-                  {!canSignAgreement() && currentContext && (
+                  {!canSignAgreement() && currentContext && currentMessage === '' && (
                     <p className="text-sm text-gray-500 mt-2">
-                      {currentContext.type === 'organization' && currentContext.permissions?.role !== 'admin'
-                        ? t.memberAccess
+                      {currentContext.permissions?.role !== 'admin'
+                        ? 'Member Access'
                         : ''
                       }
                     </p>
