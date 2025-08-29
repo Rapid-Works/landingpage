@@ -35,7 +35,10 @@ export const EXPERT_EMAIL_MAP = {
  */
 export const EXPERT_ROLE_EMAIL_MAP = {
   'Software Expert': 'samuel.donkor@rapid-works.io',
+  // German aliases
+  'Software Experte': 'samuel.donkor@rapid-works.io',
   'Marketing Expert': 'prince.ardiabah@rapid-works.io',
+  'Marketing Experte': 'prince.ardiabah@rapid-works.io',
   'Design Expert': null, // Coming soon
   'Finance Expert': null, // Coming soon
   'Data Analysis Expert': null, // Coming soon

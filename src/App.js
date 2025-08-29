@@ -1,4 +1,4 @@
-import React, { useState, createContext, useContext, useEffect, useMemo } from "react"
+import React, { useState, createContext, useContext, useEffect, useMemo, useCallback, Component } from "react"
 import { motion } from "framer-motion"
 import { Analytics } from "@vercel/analytics/react"
 import {
@@ -100,6 +100,56 @@ if (typeof window !== 'undefined') {
       }
     }
   });
+}
+
+// Error Boundary Component for mobile compatibility
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('🚨 React Error Boundary caught an error:', error, errorInfo);
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      componentStack: errorInfo.componentStack,
+      userAgent: navigator.userAgent,
+      isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    });
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+          <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6 text-center">
+            <div className="text-red-500 text-6xl mb-4">⚠️</div>
+            <h1 className="text-xl font-bold text-gray-900 mb-4">Something went wrong</h1>
+            <p className="text-gray-600 mb-4">
+              We're sorry, but something went wrong while loading the page.
+            </p>
+            <div className="text-sm text-gray-500 mb-4">
+              Error: {this.state.error?.message || 'Unknown error'}
+            </div>
+            <button
+              onClick={() => window.location.reload()}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium"
+            >
+              Reload Page
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
 }
 
 // Create and export Language Context with initial values
@@ -1350,10 +1400,40 @@ function AutoNotificationRegistration() {
 
 function App() {
   const [language, setLanguage] = useState(() => {
-    return localStorage.getItem('language') || 'de'
+    try {
+      return localStorage.getItem('language') || 'de'
+    } catch (error) {
+      console.warn('Could not access localStorage for language:', error);
+      return 'de';
+    }
   })
   const [showTimedWebinarModal, setShowTimedWebinarModal] = useState(false);
+  const [appReady, setAppReady] = useState(false);
   const location = useLocation();
+
+  // Debug logging for mobile troubleshooting
+  useEffect(() => {
+    const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown';
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+    console.log('🌐 App loaded:', {
+      userAgent,
+      isMobile,
+      language,
+      pathname: location.pathname,
+      readyState: typeof document !== 'undefined' ? document.readyState : 'Unknown'
+    });
+
+    // Check for critical missing dependencies
+    const missingDeps = [];
+    if (typeof window === 'undefined') missingDeps.push('window');
+    if (!document) missingDeps.push('document');
+    if (missingDeps.length > 0) {
+      console.error('🚨 Critical dependencies missing:', missingDeps);
+    }
+
+    // Mark app as ready after initial checks
+    setTimeout(() => setAppReady(true), 100);
+  }, [language, location.pathname]);
   
   // Check if we're on a dashboard page
   const isDashboardPage = location.pathname.startsWith('/dashboard');
@@ -1399,6 +1479,21 @@ function App() {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
     transition: { duration: 0.6 },
+  }
+
+  // Show loading screen while app initializes
+  if (!appReady) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading RapidWorks...</p>
+          <p className="text-sm text-gray-500 mt-2">
+            {typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.includes('Mobile') ? 'Mobile device detected' : 'Desktop device detected'}
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -1478,4 +1573,11 @@ function App() {
   )
 }
 
-export default App
+// Wrap App with ErrorBoundary for mobile compatibility
+const AppWithErrorBoundary = () => (
+  <ErrorBoundary>
+    <App />
+  </ErrorBoundary>
+);
+
+export default AppWithErrorBoundary;

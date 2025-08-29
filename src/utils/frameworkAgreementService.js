@@ -74,6 +74,47 @@ export const checkFrameworkAgreementStatus = async (userId) => {
 };
 
 /**
+ * Check if an organization has signed the framework agreement
+ * @param {string} organizationId - The organization's ID
+ * @returns {Promise<{signed: boolean, signedBy?: string, signedAt?: Date, organizationName?: string}>}
+ */
+export const checkOrganizationFrameworkStatus = async (organizationId) => {
+  if (!organizationId) {
+    return { signed: false };
+  }
+
+  try {
+    // Query framework agreements by organizationId
+    const agreementsRef = collection(db, 'frameworkAgreements');
+    const q = query(
+      agreementsRef, 
+      where('organizationId', '==', organizationId),
+      where('signed', '==', true)
+    );
+    const querySnapshot = await getDocs(q);
+    
+    if (!querySnapshot.empty) {
+      // Get the first signed agreement for this organization
+      const agreementDoc = querySnapshot.docs[0];
+      const data = agreementDoc.data();
+      
+      return {
+        signed: true,
+        signedBy: data.signedBy || data.userEmail,
+        signedAt: safeToDate(data.signedAt),
+        organizationName: data.organizationName,
+        documentUrl: data.documentUrl
+      };
+    } else {
+      return { signed: false };
+    }
+  } catch (error) {
+    console.error('Error checking organization framework agreement status:', error);
+    return { signed: false };
+  }
+};
+
+/**
  * Upload signed framework agreement document
  * @param {File} file - The PDF file to upload
  * @param {string} userId - The user's UID
@@ -219,6 +260,7 @@ export const deleteFrameworkAgreement = async (userId) => {
 
 export const frameworkAgreementApi = {
   checkFrameworkAgreementStatus,
+  checkOrganizationFrameworkStatus,
   uploadFrameworkDocument,
   saveFrameworkAgreement,
   getAllSignedAgreements,

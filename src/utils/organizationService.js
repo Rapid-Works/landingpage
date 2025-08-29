@@ -30,6 +30,23 @@ export const hasUserCreatedOrganization = async (userId) => {
   }
 };
 
+// Check if user has any organization membership (created or invited)
+export const hasUserOrganizationMembership = async (userId) => {
+  try {
+    const membersQuery = query(
+      collection(db, 'organizationMembers'),
+      where('userId', '==', userId),
+      where('status', '==', 'active')
+    );
+    
+    const querySnapshot = await getDocs(membersQuery);
+    return !querySnapshot.empty; // Returns true if user is a member of any organization
+  } catch (error) {
+    console.error('Error checking if user has organization membership:', error);
+    throw new Error('Failed to check organization membership status');
+  }
+};
+
 // Organization CRUD operations
 export const createOrganization = async (userId, orgData) => {
   try {

@@ -29,8 +29,8 @@ import {
 import RapidWorksHeader from "./new_landing_page_header" 
 import { LanguageContext as AppLanguageContext } from "../App"
 import { useAuth } from '../contexts/AuthContext'
-import { checkFrameworkAgreementStatus } from '../utils/frameworkAgreementService'
-import { getCurrentUserContext } from '../utils/organizationService'
+import { checkFrameworkAgreementStatus, checkOrganizationFrameworkStatus } from '../utils/frameworkAgreementService'
+import { getCurrentUserContext, hasUserOrganizationMembership } from '../utils/organizationService'
 import ExploreMoreSection from "./ExploreMoreSection" // Import the new component
 import { testimonials } from "../testimonialsData"
 import TestimonialCard from "./TestimonialCard"
@@ -274,6 +274,7 @@ const TeamPage = () => {
   const [selectedExpertName, setSelectedExpertName] = useState(''); // <-- State for selected expert name
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); // <-- State for login modal visibility
   const [isFrameworkModalOpen, setIsFrameworkModalOpen] = useState(false); // <-- State for framework agreement modal visibility
+  const [frameworkModalMessage, setFrameworkModalMessage] = useState(''); // <-- State for framework modal message
   // const [hasSignedFramework, setHasSignedFramework] = useState(false); // <-- Track if user has signed framework agreement
 
   useEffect(() => {
@@ -500,34 +501,49 @@ const TeamPage = () => {
     }
     
     try {
-      // Check user's current context (personal vs organization)
-      const userContext = await getCurrentUserContext(currentUser.uid);
+      // Check if user has any organization membership
+      const hasOrganization = await hasUserOrganizationMembership(currentUser.uid);
       
-      // If user is in organization context, check if they have permission to request experts
-      if (userContext.type === 'organization') {
-        const canRequestExperts = userContext.permissions?.role === 'admin' || 
-                                  userContext.permissions?.permissions?.canRequestExperts;
-        
-        if (!canRequestExperts) {
-          alert('You do not have permission to request experts in this organization. Please contact your administrator.');
-          return;
-        }
-      }
-      
-      // Check if user has signed framework agreement using Firebase
-      const frameworkStatus = await checkFrameworkAgreementStatus(currentUser.uid);
-      console.log('Framework status:', frameworkStatus);
-      
-      if (!frameworkStatus.signed) {
+      if (!hasOrganization) {
+        // User has no organization - show framework modal with organization creation message
+        setFrameworkModalMessage('no-organization');
         setIsFrameworkModalOpen(true);
         return;
       }
       
-      // User is logged in, has framework signed, and has permissions - show task modal
+      // User has organization - check organization-level framework status
+      const userContext = await getCurrentUserContext(currentUser.uid);
+      const organizationId = userContext?.organization?.id;
+      
+      if (!organizationId) {
+        setFrameworkModalMessage('organization-not-found');
+        setIsFrameworkModalOpen(true);
+        return;
+      }
+      
+      const organizationFrameworkStatus = await checkOrganizationFrameworkStatus(organizationId);
+      console.log('Organization framework status:', organizationFrameworkStatus);
+      
+      if (!organizationFrameworkStatus.signed) {
+        // Organization hasn't signed framework - check user role
+        if (userContext.permissions?.role === 'admin') {
+          // Admin can sign framework agreement
+          setFrameworkModalMessage('');
+          setIsFrameworkModalOpen(true);
+          return;
+        } else {
+          // Member cannot sign - show contact admin message
+          setFrameworkModalMessage('admin-required');
+          setIsFrameworkModalOpen(true);
+          return;
+        }
+      }
+      
+      // Organization has signed framework - allow any member to proceed
       setIsTaskModalOpen(true);
     } catch (error) {
-      console.error('Error checking framework status or organization permissions:', error);
-      // If there's an error checking, assume they haven't signed and show framework modal
+      console.error('Error checking organization framework status:', error);
+      setFrameworkModalMessage('error');
       setIsFrameworkModalOpen(true);
     }
   };
@@ -547,38 +563,53 @@ const TeamPage = () => {
     const userId = user?.uid || currentUser?.uid;
     
     if (!userId) {
-      // If no user ID available, show framework modal as default for new users
+      setFrameworkModalMessage('user-not-found');
       setIsFrameworkModalOpen(true);
       return;
     }
     
     try {
-      // Check user's current context (personal vs organization)
-      const userContext = await getCurrentUserContext(userId);
+      // Check if user has any organization membership
+      const hasOrganization = await hasUserOrganizationMembership(userId);
       
-      // If user is in organization context, check if they have permission to request experts
-      if (userContext.type === 'organization') {
-        const canRequestExperts = userContext.permissions?.role === 'admin' || 
-                                  userContext.permissions?.permissions?.canRequestExperts;
-        
-        if (!canRequestExperts) {
-          alert('You do not have permission to request experts in this organization. Please contact your administrator.');
-          return;
-        }
+      if (!hasOrganization) {
+        // User has no organization - show framework modal with organization creation message
+        setFrameworkModalMessage('no-organization');
+        setIsFrameworkModalOpen(true);
+        return;
       }
       
-      // After login, check framework agreement using Firebase
-      const frameworkStatus = await checkFrameworkAgreementStatus(userId);
-      console.log('Framework status after login:', frameworkStatus);
+      // User has organization - check organization-level framework status
+      const userContext = await getCurrentUserContext(userId);
+      const organizationId = userContext?.organization?.id;
       
-      if (!frameworkStatus.signed) {
+      if (!organizationId) {
+        setFrameworkModalMessage('organization-not-found');
         setIsFrameworkModalOpen(true);
+        return;
+      }
+      
+      const organizationFrameworkStatus = await checkOrganizationFrameworkStatus(organizationId);
+      console.log('Organization framework status after login:', organizationFrameworkStatus);
+      
+      if (!organizationFrameworkStatus.signed) {
+        // Organization hasn't signed framework - check user role
+        if (userContext.permissions?.role === 'admin') {
+          // Admin can sign framework agreement
+          setFrameworkModalMessage('');
+          setIsFrameworkModalOpen(true);
+        } else {
+          // Member cannot sign - show contact admin message
+          setFrameworkModalMessage('admin-required');
+          setIsFrameworkModalOpen(true);
+        }
       } else {
+        // Organization has signed framework - allow any member to proceed
         setIsTaskModalOpen(true);
       }
     } catch (error) {
-      console.error('Error checking framework status or organization permissions after login:', error);
-      // If there's an error checking, assume they haven't signed and show framework modal
+      console.error('Error checking organization framework status after login:', error);
+      setFrameworkModalMessage('error');
       setIsFrameworkModalOpen(true);
     }
   };
@@ -601,6 +632,7 @@ const TeamPage = () => {
   // Function to close framework modal
   const handleCloseFrameworkModal = () => {
     setIsFrameworkModalOpen(false);
+    setFrameworkModalMessage(''); // Clear the message
     // Keep expert data - it will be cleared when task modal closes
     // This preserves the expert selection through the framework signing process
   };
@@ -867,6 +899,7 @@ const TeamPage = () => {
         onClose={handleCloseFrameworkModal}
         onAgreementSigned={handleFrameworkSigned}
         userName={currentUser?.displayName || currentUser?.email}
+        message={frameworkModalMessage}
       />
 
       {/* Task Request Modal */}
