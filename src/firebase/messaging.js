@@ -1,15 +1,8 @@
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
-import { db, auth } from './config';
+import { db, auth, messaging } from './config';
 import { collection, addDoc, serverTimestamp, query, where, getDocs, deleteDoc, updateDoc, doc as firestoreDoc } from 'firebase/firestore';
 
 const VAPID_KEY = 'BC9X8U5hWzbbGbbB8x_net_q4eG5RA798jZxKcOPS5e5joRHXN7XcCS2yv-UwCKY0lZZ59mOOspl_aSWEjSV33M';
-
-let messaging;
-try {
-  messaging = getMessaging();
-} catch (err) {
-  console.error('Failed to initialize Firebase Messaging', err);
-}
 
 // Register the Firebase messaging service worker
 const registerServiceWorker = async () => {
@@ -94,76 +87,13 @@ export const initializeMessaging = async () => {
   }
 };
 
-// Auto-initialize when module loads (simplified for mobile compatibility)
+// Auto-initialize when module loads
 if (typeof window !== 'undefined') {
-  // Detect mobile devices
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-  // Simplified initialization for better mobile compatibility
-  const initFirebaseMessaging = async () => {
-    try {
-      // Only initialize messaging if supported and not causing issues
-      if (!messaging) {
-        console.log('📱 Firebase messaging not available on this device');
-        return;
-      }
-
-      // Initialize service worker
-      await initializeMessaging();
-
-      // Add basic token refresh for non-mobile or when explicitly requested
-      if (!isMobile && messaging) {
-        let lastToken = null;
-        const checkTokenChanges = async () => {
-          try {
-            if (Notification.permission === 'granted') {
-              const currentToken = await getToken(messaging, { vapidKey: VAPID_KEY });
-              if (currentToken && currentToken !== lastToken) {
-                console.log('🔄 FCM Token changed, updating...');
-                lastToken = currentToken;
-                const currentUser = auth.currentUser;
-                const userEmail = currentUser?.email || null;
-
-                await upsertFcmToken(currentToken, userEmail, {
-                  refreshed: true,
-                  refreshTime: new Date().toISOString(),
-                  isMobile: isMobile,
-                  isIOS: isIOS
-                });
-              }
-            }
-          } catch (error) {
-            console.log('Token check failed (non-critical):', error.message);
-          }
-        };
-
-        // Check every 10 minutes (less frequent for performance)
-        setInterval(checkTokenChanges, 10 * 60 * 1000);
-
-        // Check when user returns to tab
-        document.addEventListener('visibilitychange', () => {
-          if (!document.hidden) {
-            setTimeout(checkTokenChanges, 1000); // Small delay
-          }
-        });
-      }
-
-      console.log('✅ Firebase messaging initialized successfully');
-
-    } catch (error) {
-      console.error('❌ Firebase messaging initialization failed:', error);
-      // Don't let this break the entire app
-    }
-  };
-
-  // Initialize after a short delay to avoid conflicts
+  // Wait for window load to avoid race conditions with CRA assets
   if (document.readyState === 'complete') {
-    setTimeout(initFirebaseMessaging, 100);
+    initializeMessaging();
   } else {
-    window.addEventListener('load', () => {
-      setTimeout(initFirebaseMessaging, 100);
-    });
+    window.addEventListener('load', () => initializeMessaging());
   }
 }
 
@@ -349,3 +279,4 @@ export const onForegroundMessage = (callback) => {
     });
   }
 }; 
+

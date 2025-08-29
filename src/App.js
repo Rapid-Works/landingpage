@@ -1,4 +1,4 @@
-import React, { useState, createContext, useContext, useEffect, useMemo, useCallback, Component } from "react"
+import React, { useState, createContext, useContext, useEffect, useMemo, Component } from "react"
 import { motion } from "framer-motion"
 import { Analytics } from "@vercel/analytics/react"
 import {
@@ -63,93 +63,49 @@ import './firebase/messaging'
 // Import notification service for automatic registration
 import customerNotificationService from './utils/customerNotificationService'
 
-// Add foreground message handler for Firebase notifications
-import { onForegroundMessage } from './firebase/messaging'
-
-// Set up foreground notification handler
+// Add foreground message handler for Firebase notifications with error handling
 if (typeof window !== 'undefined') {
-  onForegroundMessage((payload) => {
-    console.log('📱 Foreground notification received:', payload);
-    
-    // Create a browser notification even when app is in foreground
-    const notificationTitle = payload.notification?.title || 'Notification';
-    const notificationBody = payload.notification?.body || 'You have a new message';
-    
-    // Only show if browser tab doesn't have focus or user prefers notifications
-    if (document.hidden || !document.hasFocus()) {
-      try {
-        const notification = new Notification(notificationTitle, {
-          body: notificationBody,
-          icon: payload.notification?.icon || '/favicon.ico',
-          tag: payload.data?.type || 'general',
-          data: payload.data
-        });
-        
-        notification.onclick = () => {
-          window.focus();
-          if (payload.data?.url) {
-            window.location.href = payload.data.url;
+  // Dynamically import messaging to handle potential failures
+  import('./firebase/messaging')
+    .then(({ onForegroundMessage }) => {
+      if (onForegroundMessage) {
+        onForegroundMessage((payload) => {
+          console.log('📱 Foreground notification received:', payload);
+          
+          // Create a browser notification even when app is in foreground
+          const notificationTitle = payload.notification?.title || 'Notification';
+          const notificationBody = payload.notification?.body || 'You have a new message';
+          
+          // Only show if browser tab doesn't have focus or user prefers notifications
+          if (document.hidden || !document.hasFocus()) {
+            try {
+              const notification = new Notification(notificationTitle, {
+                body: notificationBody,
+                icon: payload.notification?.icon || '/favicon.ico',
+                tag: payload.data?.type || 'general',
+                data: payload.data
+              });
+              
+              notification.onclick = () => {
+                window.focus();
+                if (payload.data?.url) {
+                  window.location.href = payload.data.url;
+                }
+                notification.close();
+              };
+              
+              // Auto-close after 5 seconds
+              setTimeout(() => notification.close(), 5000);
+            } catch (error) {
+              console.log('Could not show foreground notification:', error);
+            }
           }
-          notification.close();
-        };
-        
-        // Auto-close after 5 seconds
-        setTimeout(() => notification.close(), 5000);
-      } catch (error) {
-        console.log('Could not show foreground notification:', error);
+        });
       }
-    }
-  });
-}
-
-// Error Boundary Component for mobile compatibility
-class ErrorBoundary extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false, error: null };
-  }
-
-  static getDerivedStateFromError(error) {
-    return { hasError: true, error };
-  }
-
-  componentDidCatch(error, errorInfo) {
-    console.error('🚨 React Error Boundary caught an error:', error, errorInfo);
-    console.error('Error details:', {
-      message: error.message,
-      stack: error.stack,
-      componentStack: errorInfo.componentStack,
-      userAgent: navigator.userAgent,
-      isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    })
+    .catch(error => {
+      console.warn('Firebase messaging setup failed (non-critical):', error.message);
     });
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-          <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6 text-center">
-            <div className="text-red-500 text-6xl mb-4">⚠️</div>
-            <h1 className="text-xl font-bold text-gray-900 mb-4">Something went wrong</h1>
-            <p className="text-gray-600 mb-4">
-              We're sorry, but something went wrong while loading the page.
-            </p>
-            <div className="text-sm text-gray-500 mb-4">
-              Error: {this.state.error?.message || 'Unknown error'}
-            </div>
-            <button
-              onClick={() => window.location.reload()}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium"
-            >
-              Reload Page
-            </button>
-          </div>
-        </div>
-      );
-    }
-
-    return this.props.children;
-  }
 }
 
 // Create and export Language Context with initial values
@@ -1191,7 +1147,7 @@ const WhyChooseUsSection = ({ fadeIn }) => {
   const { translate } = useContext(LanguageContext)
 
   return (
-    <section className="w-full py-12 md:py-24 lg:py-32bg-white">
+    <section className="w-full py-12 md:py-24 lg:py-32 bg-white">
       <div className="container px-4 md:px-6">
         <motion.div
           className="text-center mb-12"
@@ -1332,6 +1288,43 @@ const VisibilityCTA = ({ fadeIn }) => {
 }
 
 
+// Error Boundary Component for React errors
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('React Error Boundary caught an error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <div className="text-center p-8">
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Something went wrong</h1>
+            <p className="text-gray-600 mb-6">We're having technical difficulties. Please try refreshing the page.</p>
+            <button 
+              onClick={() => window.location.reload()}
+              className="px-6 py-3 bg-violet-600 text-white rounded-md hover:bg-violet-700 transition-colors"
+            >
+              Refresh Page
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
 /**
  * Automatic notification registration component
  * Silently registers logged-in users for push notifications in the background
@@ -1345,6 +1338,12 @@ function AutoNotificationRegistration() {
     const registerNotificationsAutomatically = async () => {
       try {
         console.log('🔔 Auto-checking notification registration for:', currentUser.email);
+        
+        // Check if customerNotificationService is available
+        if (!customerNotificationService || typeof customerNotificationService.checkUserHasNotificationTokens !== 'function') {
+          console.log('⚠️ Notification service not available, skipping auto-registration');
+          return;
+        }
         
         // Check if user already has FCM tokens
         const tokenCheck = await customerNotificationService.checkUserHasNotificationTokens(currentUser.email);
@@ -1367,12 +1366,15 @@ function AutoNotificationRegistration() {
         if (permission === 'granted') {
           // User has already granted permission, register silently
           console.log('🔔 Permission already granted, registering FCM token...');
-          const result = await customerNotificationService.ensureNotificationsEnabled();
           
-          if (result.enabled) {
-            console.log(`✅ Successfully auto-registered ${currentUser.email} for notifications`);
-          } else {
-            console.log(`⚠️ Auto-registration failed: ${result.reason}`);
+          if (typeof customerNotificationService.ensureNotificationsEnabled === 'function') {
+            const result = await customerNotificationService.ensureNotificationsEnabled();
+            
+            if (result.enabled) {
+              console.log(`✅ Successfully auto-registered ${currentUser.email} for notifications`);
+            } else {
+              console.log(`⚠️ Auto-registration failed: ${result.reason}`);
+            }
           }
         } else if (permission === 'default') {
           // Permission not decided yet - don't auto-prompt, just log
@@ -1383,7 +1385,7 @@ function AutoNotificationRegistration() {
           console.log('❌ User has denied notification permissions');
         }
       } catch (error) {
-        console.error('Error in automatic notification registration:', error);
+        console.warn('Non-critical error in automatic notification registration:', error.message);
       }
     };
 
@@ -1400,40 +1402,10 @@ function AutoNotificationRegistration() {
 
 function App() {
   const [language, setLanguage] = useState(() => {
-    try {
-      return localStorage.getItem('language') || 'de'
-    } catch (error) {
-      console.warn('Could not access localStorage for language:', error);
-      return 'de';
-    }
+    return localStorage.getItem('language') || 'de'
   })
   const [showTimedWebinarModal, setShowTimedWebinarModal] = useState(false);
-  const [appReady, setAppReady] = useState(false);
   const location = useLocation();
-
-  // Debug logging for mobile troubleshooting
-  useEffect(() => {
-    const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown';
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
-    console.log('🌐 App loaded:', {
-      userAgent,
-      isMobile,
-      language,
-      pathname: location.pathname,
-      readyState: typeof document !== 'undefined' ? document.readyState : 'Unknown'
-    });
-
-    // Check for critical missing dependencies
-    const missingDeps = [];
-    if (typeof window === 'undefined') missingDeps.push('window');
-    if (!document) missingDeps.push('document');
-    if (missingDeps.length > 0) {
-      console.error('🚨 Critical dependencies missing:', missingDeps);
-    }
-
-    // Mark app as ready after initial checks
-    setTimeout(() => setAppReady(true), 100);
-  }, [language, location.pathname]);
   
   // Check if we're on a dashboard page
   const isDashboardPage = location.pathname.startsWith('/dashboard');
@@ -1481,29 +1453,15 @@ function App() {
     transition: { duration: 0.6 },
   }
 
-  // Show loading screen while app initializes
-  if (!appReady) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading RapidWorks...</p>
-          <p className="text-sm text-gray-500 mt-2">
-            {typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.includes('Mobile') ? 'Mobile device detected' : 'Desktop device detected'}
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <AuthProvider>
-      <NotificationProvider>
-        <AutoNotificationRegistration />
-        <LanguageContext.Provider value={contextValue}>
-          <ScrollToTop />
-          <Analytics />
-          <Routes>
+    <ErrorBoundary>
+      <AuthProvider>
+        <NotificationProvider>
+          <AutoNotificationRegistration />
+          <LanguageContext.Provider value={contextValue}>
+            <ScrollToTop />
+            <Analytics />
+            <Routes>
             {/* Authentication Routes */}
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/dashboard" element={
@@ -1567,17 +1525,11 @@ function App() {
           /> */}
           {!isDashboardPage && <Footer />}
           <CookieConsent />
-    </LanguageContext.Provider>
+        </LanguageContext.Provider>
       </NotificationProvider>
     </AuthProvider>
+  </ErrorBoundary>
   )
 }
 
-// Wrap App with ErrorBoundary for mobile compatibility
-const AppWithErrorBoundary = () => (
-  <ErrorBoundary>
-    <App />
-  </ErrorBoundary>
-);
-
-export default AppWithErrorBoundary;
+export default App
