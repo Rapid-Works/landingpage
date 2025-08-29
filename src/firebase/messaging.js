@@ -118,6 +118,24 @@ export const unregisterServiceWorkers = async () => {
 };
 
 export const requestNotificationPermission = async () => {
+  // Enhanced mobile browser detection
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  const isStandalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
+  const isInAppBrowser = /FBAN|FBAV|Instagram|Twitter|LinkedIn|WhatsApp/i.test(navigator.userAgent);
+  
+  // Block FCM requests on mobile browsers (not PWA) to prevent white screens
+  if (isMobile && !isStandalone) {
+    return {
+      success: false,
+      reason: isInAppBrowser 
+        ? 'Push notifications are not supported in in-app browsers. Please open in your device browser and add to home screen.'
+        : 'Push notifications require installing the app to your home screen. Tap Share → Add to Home Screen.',
+      token: null,
+      notSupported: true,
+      requiresPWA: true
+    };
+  }
+  
   // Check if Notification API is available
   if (typeof Notification === 'undefined') {
     return {
@@ -289,5 +307,24 @@ export const onForegroundMessage = (callback) => {
       callback(payload);
     });
   }
+};
+
+// Add iOS-specific token refresh monitoring
+export const monitorTokenRefresh = (onTokenUpdate) => {
+  if (!messaging) return;
+  
+  // Listen for token refresh (iOS Safari PWA issue)
+  messaging.onTokenRefresh && messaging.onTokenRefresh(async () => {
+    try {
+      console.log('🔄 FCM Token refreshed (iOS Safari PWA)');
+      const newToken = await getToken(messaging, { vapidKey: VAPID_KEY });
+      if (newToken && onTokenUpdate) {
+        console.log('📱 Updating server with new iOS token:', newToken);
+        onTokenUpdate(newToken);
+      }
+    } catch (error) {
+      console.error('Failed to get refreshed token:', error);
+    }
+  });
 }; 
 

@@ -30,6 +30,12 @@ messaging.onBackgroundMessage((payload) => {
   
   // Mobile-specific handling
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  
+  // iOS Safari PWA requires ALL notifications to be displayed
+  if (isiOS) {
+    console.log("[firebase-messaging-sw.js] iOS detected - ensuring notification is displayed");
+  }
   
   // The browser may already display the notification automatically from the F-A-P
   // but we are creating it manually here to control the click behavior.
