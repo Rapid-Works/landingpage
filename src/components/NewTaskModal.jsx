@@ -48,12 +48,13 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
         return;
       }
       
-      // Use the same robust method as dashboard notification settings
-      const notificationResult = await customerNotificationService.ensureNotificationsEnabled();
+      // Use the same method as dashboard notification settings
+      const { requestNotificationPermission } = await import('../firebase/messaging');
+      const notificationResult = await requestNotificationPermission();
       
       console.log('Notification setup result:', notificationResult);
       
-      if (notificationResult.enabled && lastSubmittedTaskId) {
+      if (notificationResult.success && lastSubmittedTaskId) {
         // Send the notification for the task they just submitted
         const taskData = {
           id: lastSubmittedTaskId,

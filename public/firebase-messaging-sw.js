@@ -5,15 +5,6 @@ importScripts("https://www.gstatic.com/firebasejs/9.15.0/firebase-messaging-comp
 
 // console.log('Firebase messaging service worker loaded');
 
-// Add error handling for mobile compatibility
-self.addEventListener('error', (event) => {
-  console.error('Service Worker Error:', event.error);
-});
-
-self.addEventListener('unhandledrejection', (event) => {
-  console.error('Service Worker Unhandled Rejection:', event.reason);
-});
-
 // Initialize the Firebase app in the service worker by passing in
 // the messagingSenderId.
 // TODO: REPLACE WITH YOUR FIREBASE CONFIG

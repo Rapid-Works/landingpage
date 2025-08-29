@@ -9,7 +9,6 @@ const NotificationTester = () => {
   const [isTesting, setIsTesting] = useState(false);
   const [testResults, setTestResults] = useState([]);
   const [showDiagnostics, setShowDiagnostics] = useState(false);
-  const [isHealthCheck, setIsHealthCheck] = useState(false);
 
   const addTestResult = (result) => {
     setTestResults(prev => [
@@ -75,64 +74,6 @@ const NotificationTester = () => {
       });
     } finally {
       setIsTesting(false);
-    }
-  };
-
-  const performHealthCheck = async () => {
-    setIsHealthCheck(true);
-
-    try {
-      const healthResults = await customerNotificationService.performNotificationHealthCheck();
-
-      // Add individual test results
-      addTestResult({
-        type: healthResults.browserSupport ? 'success' : 'error',
-        message: `Browser Support: ${healthResults.browserSupport ? '✅ Supported' : '❌ Not supported'}`
-      });
-
-      addTestResult({
-        type: healthResults.serviceWorker ? 'success' : 'error',
-        message: `Service Worker: ${healthResults.serviceWorker ? '✅ Registered' : '❌ Not registered'}`
-      });
-
-      addTestResult({
-        type: healthResults.permission === 'granted' ? 'success' :
-             healthResults.permission === 'denied' ? 'error' : 'warning',
-        message: `Permission: ${healthResults.permission === 'granted' ? '✅ Granted' :
-                               healthResults.permission === 'denied' ? '❌ Denied' : '⚠️ Default'}`
-      });
-
-      addTestResult({
-        type: healthResults.token ? 'success' : 'error',
-        message: `FCM Token: ${healthResults.token ? '✅ Generated' : '❌ Failed'}`
-      });
-
-      addTestResult({
-        type: healthResults.database ? 'success' : 'error',
-        message: `Database: ${healthResults.database ? '✅ Connected' : '❌ Disconnected'}`
-      });
-
-      // Overall result
-      addTestResult({
-        type: healthResults.overall ? 'success' : 'error',
-        message: `Overall Health: ${healthResults.overall ? '✅ All systems operational' : '❌ Issues detected'}`
-      });
-
-      if (healthResults.error) {
-        addTestResult({
-          type: 'error',
-          message: `Health Check Error: ${healthResults.error}`
-        });
-      }
-
-    } catch (error) {
-      console.error('Health check failed:', error);
-      addTestResult({
-        type: 'error',
-        message: `Health check failed: ${error.message}`
-      });
-    } finally {
-      setIsHealthCheck(false);
     }
   };
 
@@ -214,15 +155,6 @@ const NotificationTester = () => {
           >
             <CheckCircle className="h-4 w-4" />
             {isTesting ? 'Testing...' : 'Test Task Notification'}
-          </button>
-
-          <button
-            onClick={performHealthCheck}
-            disabled={isHealthCheck}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400 text-white rounded-lg font-medium transition-colors"
-          >
-            <Bell className="h-4 w-4" />
-            {isHealthCheck ? 'Checking...' : 'Health Check'}
           </button>
 
           <button

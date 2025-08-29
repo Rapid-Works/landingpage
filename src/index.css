@@ -4,12 +4,30 @@
 
 html {
   overflow-y: scroll;
+  /* Fix mobile viewport height issues */
+  height: 100%;
 }
 
 body {
   font-family: 'Inter', sans-serif;
   @apply font-sans antialiased;
   overflow-x: hidden;
+  /* Ensure body fills viewport on mobile */
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+}
+
+/* Fix mobile viewport height */
+@supports (-webkit-touch-callout: none) {
+  body {
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* Root element fix for mobile */
+#root {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
 }
 
 /* Custom animations */
