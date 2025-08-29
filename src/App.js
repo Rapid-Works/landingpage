@@ -76,30 +76,42 @@ if (typeof window !== 'undefined') {
           const notificationTitle = payload.notification?.title || 'Notification';
           const notificationBody = payload.notification?.body || 'You have a new message';
           
-          // Only show if browser tab doesn't have focus or user prefers notifications
-          if (document.hidden || !document.hasFocus()) {
-            try {
-              const notification = new Notification(notificationTitle, {
-                body: notificationBody,
-                icon: payload.notification?.icon || '/favicon.ico',
-                tag: payload.data?.type || 'general',
-                data: payload.data
-              });
-              
-              notification.onclick = () => {
-                window.focus();
-                if (payload.data?.url) {
-                  window.location.href = payload.data.url;
+                      // Only show if browser tab doesn't have focus or user prefers notifications
+            if (document.hidden || !document.hasFocus()) {
+              try {
+                // Check if Notification API is available before using it
+                if (typeof Notification === 'undefined') {
+                  console.log('📱 Notification API not available in this browser');
+                  return;
                 }
-                notification.close();
-              };
-              
-              // Auto-close after 5 seconds
-              setTimeout(() => notification.close(), 5000);
-            } catch (error) {
-              console.log('Could not show foreground notification:', error);
+
+                // Check if permission is granted
+                if (Notification.permission !== 'granted') {
+                  console.log('📱 Notification permission not granted');
+                  return;
+                }
+
+                const notification = new Notification(notificationTitle, {
+                  body: notificationBody,
+                  icon: payload.notification?.icon || '/favicon.ico',
+                  tag: payload.data?.type || 'general',
+                  data: payload.data
+                });
+                
+                notification.onclick = () => {
+                  window.focus();
+                  if (payload.data?.url) {
+                    window.location.href = payload.data.url;
+                  }
+                  notification.close();
+                };
+                
+                // Auto-close after 5 seconds
+                setTimeout(() => notification.close(), 5000);
+              } catch (error) {
+                console.log('📱 Could not show foreground notification (common on mobile):', error.message);
+              }
             }
-          }
         });
       }
     })
@@ -1339,6 +1351,18 @@ function AutoNotificationRegistration() {
       try {
         console.log('🔔 Auto-checking notification registration for:', currentUser.email);
         
+        // Check if we're on a mobile browser that doesn't support notifications
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        if (isMobile) {
+          console.log('📱 Mobile device detected - notification support may be limited');
+        }
+        
+        // Check if Notification API is available
+        if (typeof Notification === 'undefined') {
+          console.log('📱 Notification API not available in this browser (common on mobile)');
+          return;
+        }
+        
         // Check if customerNotificationService is available
         if (!customerNotificationService || typeof customerNotificationService.checkUserHasNotificationTokens !== 'function') {
           console.log('⚠️ Notification service not available, skipping auto-registration');
@@ -1355,12 +1379,6 @@ function AutoNotificationRegistration() {
 
         console.log('📱 User has no FCM tokens, attempting automatic registration...');
         
-        // Check browser permission status
-        if (!('Notification' in window)) {
-          console.log('⚠️ Browser does not support notifications');
-          return;
-        }
-
         const permission = Notification.permission;
         
         if (permission === 'granted') {
@@ -1372,6 +1390,8 @@ function AutoNotificationRegistration() {
             
             if (result.enabled) {
               console.log(`✅ Successfully auto-registered ${currentUser.email} for notifications`);
+            } else if (result.notSupported) {
+              console.log(`📱 Notifications not supported on this device: ${result.reason}`);
             } else {
               console.log(`⚠️ Auto-registration failed: ${result.reason}`);
             }
@@ -1385,7 +1405,12 @@ function AutoNotificationRegistration() {
           console.log('❌ User has denied notification permissions');
         }
       } catch (error) {
-        console.warn('Non-critical error in automatic notification registration:', error.message);
+        // More specific error handling for mobile browsers
+        if (error.message.includes('Messaging') || error.message.includes('APIs required')) {
+          console.log('📱 Firebase Messaging not supported on this mobile browser (expected)');
+        } else {
+          console.warn('Non-critical error in automatic notification registration:', error.message);
+        }
       }
     };
 
@@ -1406,6 +1431,28 @@ function App() {
   })
   const [showTimedWebinarModal, setShowTimedWebinarModal] = useState(false);
   const location = useLocation();
+  
+  // Remove loading screen when React app successfully mounts
+  useEffect(() => {
+    const removeLoadingScreen = () => {
+      const fallback = document.getElementById('loading-fallback');
+      if (fallback) {
+        console.log('🚀 React App mounted - removing loading screen');
+        fallback.style.opacity = '0';
+        setTimeout(() => {
+          if (fallback.parentNode) {
+            fallback.remove();
+          }
+        }, 300);
+      }
+    };
+    
+    // Remove immediately when component mounts
+    removeLoadingScreen();
+    
+    // Also try after a short delay to ensure DOM is ready
+    setTimeout(removeLoadingScreen, 100);
+  }, []);
   
   // Check if we're on a dashboard page
   const isDashboardPage = location.pathname.startsWith('/dashboard');
