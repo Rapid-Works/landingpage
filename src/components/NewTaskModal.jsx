@@ -7,7 +7,6 @@ import { saveTaskRequest } from '../utils/taskRequestService';
 import { getExpertEmailByRole } from '../utils/expertService';
 import { sendNewTaskNotification, sendSimpleTaskNotification, sendPowerAutomateTaskNotification, testTeamsWebhook } from '../utils/teamsWebhookService';
 import { getCurrentUserContext } from '../utils/organizationService';
-import OrganizationSwitcher from './OrganizationSwitcher';
 import CreateOrganizationModal from './CreateOrganizationModal';
 import customerNotificationService from '../utils/customerNotificationService';
 
@@ -49,13 +48,12 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
         return;
       }
       
-      // Use the same method as dashboard notification settings
-      const { requestNotificationPermission } = await import('../firebase/messaging');
-      const notificationResult = await requestNotificationPermission();
+      // Use the same robust method as dashboard notification settings
+      const notificationResult = await customerNotificationService.ensureNotificationsEnabled();
       
       console.log('Notification setup result:', notificationResult);
       
-      if (notificationResult.success && lastSubmittedTaskId) {
+      if (notificationResult.enabled && lastSubmittedTaskId) {
         // Send the notification for the task they just submitted
         const taskData = {
           id: lastSubmittedTaskId,
@@ -603,28 +601,7 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
                     </div>
                   </div>
                 </div>
-              ) : (
-                <div className="bg-gray-50 rounded-xl p-6 mb-8">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Building2 className="h-5 w-5 text-gray-600" />
-                    <span className="text-lg font-semibold text-gray-700">{t.organizationContext}</span>
-                  </div>
-                  <OrganizationSwitcher 
-                    currentContext={currentContext}
-                    onContextChange={handleContextChange}
-                    onCreateOrganization={() => setIsCreateOrgModalOpen(true)}
-                  />
-                  <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                    <p className="text-sm text-blue-800">
-                      <strong>{t.taskFor}:</strong> {
-                        currentContext?.type === 'organization' 
-                          ? `${currentContext.organization.name} (${currentContext.permissions?.role === 'admin' ? 'Administrator' : 'Member'})`
-                          : t.personalAccount
-                      }
-                    </p>
-                  </div>
-                </div>
-              )}
+              ) : null}
             <form onSubmit={handleSubmit} className="space-y-8">
               {/* Task Name */}
               <div className="space-y-2">

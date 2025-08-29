@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Building2, User, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { getInvitationByToken, acceptInvitation } from '../utils/organizationService';
+import { getInvitationByToken, acceptInvitation, getUserOrganizations } from '../utils/organizationService';
 import RapidWorksHeader from './new_landing_page_header';
 import LoginModal from './LoginModal';
 
@@ -16,12 +16,20 @@ const OrganizationInvite = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [existingOrganizations, setExistingOrganizations] = useState([]);
+  const [checkingExistingOrgs, setCheckingExistingOrgs] = useState(false);
 
   useEffect(() => {
     if (token) {
       loadInvitation();
     }
   }, [token]);
+
+  useEffect(() => {
+    if (currentUser && invitation) {
+      checkExistingOrganizations();
+    }
+  }, [currentUser, invitation]);
 
   const loadInvitation = async () => {
     setLoading(true);
@@ -41,6 +49,20 @@ const OrganizationInvite = () => {
       setError('Failed to load invitation. Please try again.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const checkExistingOrganizations = async () => {
+    if (!currentUser) return;
+    
+    setCheckingExistingOrgs(true);
+    try {
+      const userOrgs = await getUserOrganizations(currentUser.uid);
+      setExistingOrganizations(userOrgs);
+    } catch (error) {
+      console.error('Error checking existing organizations:', error);
+    } finally {
+      setCheckingExistingOrgs(false);
     }
   };
 
@@ -207,6 +229,20 @@ const OrganizationInvite = () => {
                     </div>
                   )}
 
+                  {/* Existing Organizations Warning */}
+                  {!checkingExistingOrgs && existingOrganizations.length > 0 && (
+                    <div className="bg-orange-50 border border-orange-200 text-orange-800 px-4 py-3 rounded-lg text-sm">
+                      <p className="font-medium">Organization Replacement Notice</p>
+                      <p className="mb-2">
+                        You are currently a member of <strong>{existingOrganizations[0].name}</strong>. 
+                        Accepting this invitation will replace your current organization membership.
+                      </p>
+                      <p className="text-xs text-orange-700">
+                        You can only be a member of one organization at a time.
+                      </p>
+                    </div>
+                  )}
+
                   {/* Action Buttons */}
                   <div className="space-y-3">
                     {!currentUser ? (
@@ -232,6 +268,8 @@ const OrganizationInvite = () => {
                             <Loader2 className="h-4 w-4 animate-spin" />
                             Accepting Invitation...
                           </>
+                        ) : existingOrganizations.length > 0 ? (
+                          'Replace Current Organization'
                         ) : (
                           'Accept Invitation'
                         )}
