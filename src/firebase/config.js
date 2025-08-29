@@ -71,11 +71,37 @@ export { analytics };
 // Initialize Messaging with proper browser support detection
 let messaging = null;
 
+// Enhanced mobile browser detection and FCM bypassing
+const isMobile = () => /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+const isMobileSafari = () => /iPhone|iPad|iPod/i.test(navigator.userAgent) && /Safari/i.test(navigator.userAgent);
+const isStandalone = () => window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
+const isInAppBrowser = () => /FBAN|FBAV|Instagram|Twitter|LinkedIn|WhatsApp/i.test(navigator.userAgent);
+
 // Check if we're in a browser environment and if messaging is supported
 const initializeMessaging = async () => {
   if (typeof window === 'undefined') {
     console.log('🔇 Server-side rendering - Firebase Messaging skipped');
     return;
+  }
+
+  // Skip FCM initialization on mobile browsers to prevent white screens
+  if (isMobile()) {
+    if (isInAppBrowser()) {
+      console.log('📱 In-app browser detected - Firebase Messaging disabled (prevents white screen)');
+      return;
+    }
+    
+    if (isMobileSafari() && !isStandalone()) {
+      console.log('📱 Mobile Safari browser (not PWA) - Firebase Messaging disabled (prevents white screen)');
+      return;
+    }
+    
+    if (!isStandalone()) {
+      console.log('📱 Mobile browser (not installed as PWA) - Firebase Messaging disabled (prevents white screen)');
+      return;
+    }
+    
+    console.log('📱 Mobile PWA detected - attempting Firebase Messaging initialization');
   }
 
   try {
@@ -84,7 +110,7 @@ const initializeMessaging = async () => {
     const messagingSupported = await isSupported();
     
     if (!messagingSupported) {
-      console.log('📱 Firebase Messaging not supported in this browser (common on mobile)');
+      console.log('📱 Firebase Messaging not supported in this browser');
       return;
     }
 
@@ -92,13 +118,6 @@ const initializeMessaging = async () => {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
       console.log('📱 Service Worker or Push API not supported - skipping Firebase Messaging');
       return;
-    }
-
-    // Additional mobile browser checks
-    const isMobileSafari = /iPhone|iPad|iPod/i.test(navigator.userAgent) && /Safari/i.test(navigator.userAgent);
-    if (isMobileSafari) {
-      console.log('📱 Mobile Safari detected - Firebase Messaging has limited support');
-      // Still try to initialize but expect it might fail
     }
 
     messaging = getMessaging(app);
