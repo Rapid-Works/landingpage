@@ -28,6 +28,61 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Fallback content for mobile debugging -->
+      <div id="loading-fallback" style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        z-index: 9999;
+      ">
+        <div style="text-align: center; padding: 20px;">
+          <h1 style="color: #333; margin-bottom: 10px;">RapidWorks</h1>
+          <p style="color: #666; margin-bottom: 20px;">Loading...</p>
+          <div style="
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #333;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+          "></div>
+        </div>
+      </div>
+      <style>
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      </style>
+    </div>
+    
+    <script>
+      // Remove loading fallback when React app loads
+      setTimeout(() => {
+        const fallback = document.getElementById('loading-fallback');
+        if (fallback && window.React) {
+          fallback.remove();
+        }
+      }, 5000);
+      
+      // Mobile debugging - log errors to console
+      window.addEventListener('error', (e) => {
+        console.error('Global error:', e.error, e.filename, e.lineno);
+      });
+      
+      window.addEventListener('unhandledrejection', (e) => {
+        console.error('Unhandled promise rejection:', e.reason);
+      });
+    </script>
   </body>
 </html>

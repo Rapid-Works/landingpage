@@ -49,175 +49,34 @@ class CustomerNotificationService {
   /**
    * Check if notifications are enabled and prompt user if not
    */
-  async ensureNotificationsEnabled(maxRetries = 2) {
-    let lastError = null;
-
-    for (let attempt = 0; attempt <= maxRetries; attempt++) {
-      try {
-        if (Notification.permission === 'granted') {
-          // Double-check that we can actually get a token
-          try {
-            const { requestNotificationPermission } = await import('../firebase/messaging');
-            const tokenResult = await requestNotificationPermission();
-
-            if (tokenResult.success && tokenResult.token) {
-              return { enabled: true, token: tokenResult.token };
-            } else {
-              // Permission granted but token failed - try to recover
-              console.warn('Permission granted but token generation failed, retrying...');
-              if (attempt < maxRetries) {
-                await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second
-                continue;
-              }
-              return {
-                enabled: false,
-                reason: 'Permission granted but failed to generate notification token',
-                token: null
-              };
-            }
-          } catch (tokenError) {
-            console.warn('Token generation error:', tokenError);
-            if (attempt < maxRetries) {
-              await new Promise(resolve => setTimeout(resolve, 1000));
-              continue;
-            }
-            return {
-              enabled: false,
-              reason: 'Failed to generate notification token',
-              token: null
-            };
-          }
-        }
-
-        if (Notification.permission === 'denied') {
-          return {
-            enabled: false,
-            reason: 'Notifications are blocked. Please enable them in your browser settings.',
-            token: null
-          };
-        }
-
-        // Permission is 'default', ask for permission
-        console.log(`🔔 Requesting notification permission (attempt ${attempt + 1}/${maxRetries + 1})...`);
-        const result = await requestNotificationPermission();
-        this.permissionStatus = Notification.permission;
-
-        if (result.success) {
-          console.log('✅ Notification permission granted successfully');
-          return {
-            enabled: true,
-            reason: result.reason,
-            token: result.token
-          };
-        } else {
-          console.warn(`❌ Notification permission attempt ${attempt + 1} failed:`, result.reason);
-          lastError = result.reason;
-
-          // If it's a recoverable error and we have retries left, wait and retry
-          if (attempt < maxRetries && !result.reason?.includes('blocked') && !result.reason?.includes('denied')) {
-            console.log('⏳ Retrying notification permission in 2 seconds...');
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            continue;
-          }
-
-          return {
-            enabled: false,
-            reason: result.reason || lastError,
-            token: null
-          };
-        }
-      } catch (error) {
-        console.error(`❌ Notification setup error (attempt ${attempt + 1}):`, error);
-        lastError = error.message;
-
-        if (attempt < maxRetries) {
-          console.log('⏳ Retrying after error in 3 seconds...');
-          await new Promise(resolve => setTimeout(resolve, 3000));
-          continue;
-        }
-
-        return {
-          enabled: false,
-          reason: `Failed to setup notifications: ${error.message}`,
-          token: null
-        };
-      }
+  async ensureNotificationsEnabled() {
+    if (Notification.permission === 'granted') {
+      return { enabled: true, token: null };
     }
 
-    // All retries exhausted
-    return {
-      enabled: false,
-      reason: lastError || 'Failed to setup notifications after multiple attempts',
-      token: null
-    };
-  }
+    if (Notification.permission === 'denied') {
+      return { 
+        enabled: false, 
+        reason: 'Notifications are blocked. Please enable them in your browser settings.',
+        token: null 
+      };
+    }
 
-  /**
-   * Health check for notification system
-   */
-  async performNotificationHealthCheck() {
-    const results = {
-      browserSupport: false,
-      serviceWorker: false,
-      permission: null,
-      token: false,
-      database: false,
-      overall: false
-    };
-
+    // Permission is 'default', ask for permission
     try {
-      // 1. Check browser support
-      results.browserSupport = 'Notification' in window && 'serviceWorker' in navigator;
-
-      // 2. Check service worker
-      if ('serviceWorker' in navigator) {
-        const registrations = await navigator.serviceWorker.getRegistrations();
-        results.serviceWorker = registrations.some(reg =>
-          reg.scope.includes('firebase-messaging-sw.js') ||
-          reg.scope.includes('firebase-cloud-messaging-push-scope')
-        );
-      }
-
-      // 3. Check permission status
-      results.permission = Notification.permission;
-
-      // 4. Check token (if permission granted)
-      if (Notification.permission === 'granted') {
-        try {
-          const { requestNotificationPermission } = await import('../firebase/messaging');
-          const tokenResult = await requestNotificationPermission();
-          results.token = tokenResult.success && !!tokenResult.token;
-        } catch (e) {
-          console.warn('Token check failed:', e);
-          results.token = false;
-        }
-      }
-
-      // 5. Check database connectivity
-      try {
-        const tokenCheck = await this.checkUserHasNotificationTokens('health-check@test.com');
-        results.database = true; // If query succeeds, database is accessible
-      } catch (e) {
-        console.warn('Database check failed:', e);
-        results.database = false;
-      }
-
-      // 6. Overall health
-      results.overall = results.browserSupport &&
-                       results.serviceWorker &&
-                       results.permission === 'granted' &&
-                       results.token &&
-                       results.database;
-
-      console.log('🩺 Notification Health Check Results:', results);
-      return results;
-
-    } catch (error) {
-      console.error('❌ Notification health check failed:', error);
+      const result = await requestNotificationPermission();
+      this.permissionStatus = Notification.permission;
       return {
-        ...results,
-        overall: false,
-        error: error.message
+        enabled: result.success,
+        reason: result.reason,
+        token: result.token
+      };
+    } catch (error) {
+      console.error('Error requesting notification permission:', error);
+      return {
+        enabled: false,
+        reason: 'Failed to request notification permission',
+        token: null
       };
     }
   }
@@ -329,85 +188,47 @@ class CustomerNotificationService {
   }
 
   /**
-   * Send notification when task is successfully submitted with robust fallback
+   * Send notification when task is successfully submitted
    */
   async sendTaskSubmittedNotification(taskData, userEmail) {
-    let pushNotificationSent = false;
-    let inAppNotificationSent = false;
-
     try {
       // First ensure notifications are enabled
       const notificationStatus = await this.ensureNotificationsEnabled();
+      
+      if (!notificationStatus.enabled) {
+        console.log('Notifications not enabled, cannot send task submitted notification');
+        return { success: false, reason: notificationStatus.reason };
+      }
 
-      if (notificationStatus.enabled) {
-        try {
-          // Send push notification
-          await sendTaskMessageNotification({
-            taskId: taskData.id,
-            senderEmail: 'system@rapidworks.com',
-            senderRole: 'system',
-            recipientEmail: userEmail,
-            recipientRole: 'customer',
-            messageContent: `Task "${taskData.taskName}" has been submitted successfully! Our expert will review it shortly.`,
-            messageType: 'task_submitted',
-            taskData: {
-              id: taskData.id,
-              title: taskData.taskName,
-              status: 'pending'
-            }
-          });
-          pushNotificationSent = true;
-          console.log('✅ Push notification sent successfully');
-        } catch (pushError) {
-          console.warn('❌ Push notification failed, falling back to in-app:', pushError);
+      // Send immediate confirmation notification
+      await sendTaskMessageNotification({
+        taskId: taskData.id,
+        senderEmail: 'system@rapidworks.com',
+        senderRole: 'system',
+        recipientEmail: userEmail,
+        recipientRole: 'customer',
+        messageContent: `Task "${taskData.taskName}" has been submitted successfully! Our expert will review it shortly.`,
+        messageType: 'task_submitted',
+        taskData: {
+          id: taskData.id,
+          title: taskData.taskName,
+          status: 'pending'
         }
-      } else {
-        console.log('🔔 Push notifications not enabled, using in-app notification only');
-      }
+      });
 
-      // Always show in-app notification as backup
-      try {
-        this.showInAppNotification({
-          notification: {
-            title: 'Task Submitted Successfully! 🎉',
-            body: `Your task "${taskData.taskName}" has been received. ${pushNotificationSent ? 'You\'ll get updates via push notifications.' : 'Enable push notifications to get instant updates.'}`,
-            icon: '/logo192.png',
-            type: 'task_submitted',
-            taskId: taskData.id
-          }
-        });
-        inAppNotificationSent = true;
-        console.log('✅ In-app notification displayed');
-      } catch (inAppError) {
-        console.error('❌ In-app notification also failed:', inAppError);
-      }
+      // Show in-app notification as well
+      this.showInAppNotification({
+        notification: {
+          title: 'Task Submitted Successfully! 🎉',
+          body: `Your task "${taskData.taskName}" has been received. You'll get updates via push notifications.`,
+          icon: '/logo192.png'
+        }
+      });
 
-      return {
-        success: pushNotificationSent || inAppNotificationSent,
-        pushNotificationSent,
-        inAppNotificationSent,
-        reason: pushNotificationSent ? 'Task submission notification sent' :
-               inAppNotificationSent ? 'In-app notification shown (push notifications not enabled)' :
-               'Failed to send any notifications'
-      };
+      return { success: true, reason: 'Task submission notification sent' };
     } catch (error) {
-      console.error('Error in task submitted notification:', error);
-
-      // Last resort: try in-app notification even if everything else failed
-      try {
-        this.showInAppNotification({
-          notification: {
-            title: 'Task Submitted! 🎉',
-            body: `Your task "${taskData.taskName}" has been received.`,
-            icon: '/logo192.png',
-            type: 'task_submitted',
-            taskId: taskData.id
-          }
-        });
-        return { success: true, reason: 'In-app notification shown as fallback' };
-      } catch (fallbackError) {
-        return { success: false, reason: `Complete notification failure: ${error.message}` };
-      }
+      console.error('Error sending task submitted notification:', error);
+      return { success: false, reason: error.message };
     }
   }
 
