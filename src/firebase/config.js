@@ -23,13 +23,50 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firebase services
+// Initialize Firebase services with mobile-safe error handling
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 export const db = getFirestore(app);
-export const storage = getStorage(app); // Add Firebase Storage
-export const functions = getFunctions(app); // Add this line
-export const analytics = getAnalytics(app);
-export const messaging = getMessaging(app);
+export const storage = getStorage(app);
+
+// Initialize functions safely
+let functionsInstance;
+try {
+  functionsInstance = getFunctions(app);
+} catch (error) {
+  console.warn('Firebase Functions initialization failed:', error);
+  functionsInstance = null;
+}
+export const functions = functionsInstance;
+
+// Initialize analytics safely (can cause issues on mobile)
+let analyticsInstance;
+try {
+  // Only initialize analytics on desktop or when explicitly supported
+  const isMobile = typeof navigator !== 'undefined' &&
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+  if (!isMobile) {
+    analyticsInstance = getAnalytics(app);
+    console.log('✅ Firebase Analytics initialized (desktop)');
+  } else {
+    console.log('📱 Skipping Firebase Analytics on mobile to prevent conflicts');
+  }
+} catch (error) {
+  console.warn('Firebase Analytics initialization failed:', error);
+  analyticsInstance = null;
+}
+export const analytics = analyticsInstance;
+
+// Initialize messaging safely for mobile
+let messagingInstance;
+try {
+  messagingInstance = getMessaging(app);
+  console.log('✅ Firebase Messaging initialized');
+} catch (error) {
+  console.warn('Firebase Messaging initialization failed:', error);
+  messagingInstance = null;
+}
+export const messaging = messagingInstance;
 
 export default app;
