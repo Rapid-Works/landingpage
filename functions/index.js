@@ -18,6 +18,11 @@ const DEFAULT_PREFERENCES = {
     mobile: true,
     email: true,
   },
+  taskUpdates: {
+    mobile: true,
+    email: true,
+    sms: false, // Only for urgent
+  },
   taskMessages: {
     mobile: true,
     email: true,
@@ -1777,5 +1782,275 @@ exports.testTaskNotification = onCall(async (request) => {
   } catch (error) {
     console.error("Error in task notification test:", error);
     throw new Error(`Task notification test failed: ${error.message}`);
+  }
+});
+
+/**
+ * Multi-Channel Notification System
+ * Sends notifications through multiple channels for maximum reliability
+ */
+
+// Send web push notification (Android/Desktop)
+exports.sendWebPushNotification = onCall(async (request) => {
+  const { userEmail, notification } = request.data;
+  
+  if (!userEmail || !notification) {
+    throw new Error('userEmail and notification are required');
+  }
+
+  try {
+    console.log(`Sending web push notification to: ${userEmail}`);
+    
+    // Get user's FCM tokens
+    const tokensSnapshot = await db.collection('fcmTokens')
+      .where('userEmail', '==', userEmail)
+      .where('isValid', '==', true)
+      .get();
+
+    if (tokensSnapshot.empty) {
+      return {
+        success: false,
+        reason: 'No valid FCM tokens found for user',
+        userEmail: userEmail
+      };
+    }
+
+    // Prepare FCM message with cross-platform optimization
+    const message = {
+      notification: {
+        title: notification.title,
+        body: notification.body,
+        icon: notification.icon || '/logo192.png'
+      },
+      data: {
+        ...notification.data,
+        click_action: notification.actionUrl || '/',
+        type: 'web_push'
+      },
+      webpush: {
+        headers: {
+          Urgency: notification.urgent ? 'high' : 'normal'
+        },
+        notification: {
+          title: notification.title,
+          body: notification.body,
+          icon: notification.icon || '/logo192.png',
+          badge: notification.badge || '/logo192.png',
+          requireInteraction: notification.urgent || false,
+          actions: notification.actions || []
+        }
+      }
+    };
+
+    // Send to all user's devices
+    const results = [];
+    for (const tokenDoc of tokensSnapshot.docs) {
+      const tokenData = tokenDoc.data();
+      
+      try {
+        message.token = tokenData.token;
+        const result = await admin.messaging().send(message);
+        results.push({ success: true, messageId: result, platform: tokenData.platform });
+      } catch (error) {
+        results.push({ success: false, error: error.message, platform: tokenData.platform });
+        
+        // Mark invalid tokens
+        if (error.code === 'messaging/invalid-registration-token' || 
+            error.code === 'messaging/registration-token-not-registered') {
+          await tokenDoc.ref.update({ isValid: false });
+        }
+      }
+    }
+
+    const successCount = results.filter(r => r.success).length;
+    
+    return {
+      success: successCount > 0,
+      userEmail: userEmail,
+      results: results,
+      successCount: successCount,
+      totalAttempts: results.length
+    };
+
+  } catch (error) {
+    console.error("Error sending web push notification:", error);
+    throw new Error(`Web push notification failed: ${error.message}`);
+  }
+});
+
+// Send email notification (Universal fallback)
+exports.sendEmailNotification = onCall(async (request) => {
+  const { userEmail, userName, notification } = request.data;
+  
+  if (!userEmail || !notification) {
+    throw new Error('userEmail and notification are required');
+  }
+
+  try {
+    console.log(`Sending email notification to: ${userEmail}`);
+    
+    // Check user's email preferences
+    const preferencesDoc = await db.collection('userNotificationPreferences').doc(userEmail).get();
+    const preferences = preferencesDoc.exists ? preferencesDoc.data() : DEFAULT_PREFERENCES;
+    
+    // Check if email notifications are enabled for this type
+    const notificationType = notification.type || 'taskUpdates';
+    if (!preferences[notificationType]?.email) {
+      return {
+        success: false,
+        reason: 'Email notifications disabled for this type',
+        userEmail: userEmail
+      };
+    }
+
+    // Prepare email content
+    const emailData = {
+      to: userEmail,
+      template: {
+        name: 'notification-email',
+        data: {
+          userName: userName || userEmail.split('@')[0],
+          subject: notification.subject,
+          title: notification.title,
+          body: notification.body,
+          actionUrl: notification.actionUrl,
+          actionText: notification.actionText || 'View Task',
+          priority: notification.priority || 'normal',
+          timestamp: new Date().toISOString()
+        }
+      }
+    };
+
+    // Use your existing email service (SendGrid, AWS SES, etc.)
+    // For now, storing in Firestore for email service to process
+    await db.collection('emailQueue').add({
+      ...emailData,
+      status: 'pending',
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      attempts: 0
+    });
+
+    return {
+      success: true,
+      userEmail: userEmail,
+      message: 'Email notification queued successfully'
+    };
+
+  } catch (error) {
+    console.error("Error sending email notification:", error);
+    throw new Error(`Email notification failed: ${error.message}`);
+  }
+});
+
+// Send SMS notification (Urgent only)
+exports.sendSMSNotification = onCall(async (request) => {
+  const { userEmail, notification } = request.data;
+  
+  if (!userEmail || !notification) {
+    throw new Error('userEmail and notification are required');
+  }
+
+  if (!notification.urgent) {
+    throw new Error('SMS notifications are only for urgent messages');
+  }
+
+  try {
+    console.log(`Sending SMS notification to: ${userEmail}`);
+    
+    // Get user's phone number from profile
+    const userDoc = await db.collection('users').doc(userEmail).get();
+    if (!userDoc.exists) {
+      throw new Error('User not found');
+    }
+
+    const userData = userDoc.data();
+    if (!userData.phoneNumber) {
+      return {
+        success: false,
+        reason: 'No phone number on file',
+        userEmail: userEmail
+      };
+    }
+
+    // Check SMS preferences
+    const preferencesDoc = await db.collection('userNotificationPreferences').doc(userEmail).get();
+    const preferences = preferencesDoc.exists ? preferencesDoc.data() : DEFAULT_PREFERENCES;
+    
+    if (!preferences.taskUpdates?.sms) {
+      return {
+        success: false,
+        reason: 'SMS notifications disabled',
+        userEmail: userEmail
+      };
+    }
+
+    // Prepare SMS data (integrate with Twilio, AWS SNS, etc.)
+    const smsData = {
+      to: userData.phoneNumber,
+      message: notification.message,
+      urgent: true,
+      userEmail: userEmail
+    };
+
+    // Queue SMS for processing
+    await db.collection('smsQueue').add({
+      ...smsData,
+      status: 'pending',
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      attempts: 0
+    });
+
+    return {
+      success: true,
+      userEmail: userEmail,
+      phoneNumber: userData.phoneNumber.replace(/(\d{3})\d{4}(\d{4})/, '$1***$2'),
+      message: 'SMS notification queued successfully'
+    };
+
+  } catch (error) {
+    console.error("Error sending SMS notification:", error);
+    throw new Error(`SMS notification failed: ${error.message}`);
+  }
+});
+
+// Get user's notification capabilities
+exports.getUserNotificationCapabilities = onCall(async (request) => {
+  const { userEmail } = request.data;
+  
+  if (!userEmail) {
+    throw new Error('userEmail is required');
+  }
+
+  try {
+    // Check FCM tokens
+    const tokensSnapshot = await db.collection('fcmTokens')
+      .where('userEmail', '==', userEmail)
+      .where('isValid', '==', true)
+      .get();
+
+    // Check user preferences
+    const preferencesDoc = await db.collection('userNotificationPreferences').doc(userEmail).get();
+    const preferences = preferencesDoc.exists ? preferencesDoc.data() : DEFAULT_PREFERENCES;
+
+    // Check user profile for phone number
+    const userDoc = await db.collection('users').doc(userEmail).get();
+    const hasPhoneNumber = userDoc.exists && userDoc.data().phoneNumber;
+
+    return {
+      userEmail: userEmail,
+      capabilities: {
+        webPush: tokensSnapshot.size > 0,
+        email: true,
+        sms: hasPhoneNumber && preferences.taskUpdates?.sms,
+        webSocket: true // Always available when online
+      },
+      preferences: preferences,
+      tokenCount: tokensSnapshot.size,
+      hasPhoneNumber: !!hasPhoneNumber
+    };
+
+  } catch (error) {
+    console.error("Error getting notification capabilities:", error);
+    throw new Error(`Failed to get capabilities: ${error.message}`);
   }
 });
