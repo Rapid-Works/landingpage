@@ -66,7 +66,8 @@ const SignupPage = () => {
         displayName: `${formData.firstName} ${formData.lastName}`
       });
 
-      navigate(redirectTo);
+      // Redirect to email verification instead of dashboard
+      navigate('/verify-email');
     } catch (error) {
       // Handle Firebase authentication errors with descriptive messages
       let errorMessage;
