@@ -50,7 +50,7 @@ import PublicBrandingKits from './components/PublicBrandingKits'
 import TrackingRedirect from './components/TrackingRedirect'
 
 // Authentication imports
-import { AuthProvider, useAuth } from './contexts/AuthContext'
+import { AuthProvider } from './contexts/AuthContext'
 import Dashboard from './components/Dashboard'
 import ForgotPassword from './components/ForgotPassword'
 import ProtectedRoute from './components/ProtectedRoute'

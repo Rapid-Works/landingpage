@@ -21,7 +21,9 @@ export const runNotificationDiagnostic = async () => {
   }
 
   // 2. Check notification permission
-  results.checks.permission = Notification.permission;
+  results.checks.permission = (typeof window !== 'undefined' && typeof window.Notification !== 'undefined') 
+    ? window.Notification.permission 
+    : 'unsupported';
   if (results.checks.permission === 'denied') {
     results.issues.push('❌ Notification permission denied - user must enable in browser settings');
   } else if (results.checks.permission === 'default') {
@@ -95,7 +97,10 @@ export const runNotificationDiagnostic = async () => {
   // 6. Test browser notification
   if (results.checks.permission === 'granted') {
     try {
-      const testNotification = new Notification('🧪 Test Notification', {
+      if (typeof window === 'undefined' || typeof window.Notification === 'undefined') {
+        throw new Error('Notification API not available');
+      }
+      const testNotification = new window.Notification('🧪 Test Notification', {
         body: 'If you see this, browser notifications work!',
         icon: '/logo192.png',
         tag: 'test-notification'
@@ -141,9 +146,14 @@ export const testNotificationFlow = async (currentUser = null) => {
     }
 
     // 2. Request permission if needed
-    if (Notification.permission !== 'granted') {
+    if (typeof window === 'undefined' || typeof window.Notification === 'undefined' || window.Notification.permission !== 'granted') {
       console.log('📝 Requesting notification permission...');
-      const permission = await Notification.requestPermission();
+      
+      if (typeof window === 'undefined' || typeof window.Notification === 'undefined') {
+        return { success: false, error: 'Notification API not available in this browser' };
+      }
+      
+      const permission = await window.Notification.requestPermission();
       if (permission !== 'granted') {
         console.log('❌ Permission denied');
         return { success: false, reason: 'Permission denied' };

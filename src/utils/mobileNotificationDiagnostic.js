@@ -67,7 +67,9 @@ export const runMobileNotificationDiagnostic = async () => {
   }
 
   // 6. Check notification permission with mobile-specific handling
-  results.checks.permission = Notification.permission;
+  results.checks.permission = (typeof window !== 'undefined' && typeof window.Notification !== 'undefined') 
+    ? window.Notification.permission 
+    : 'unsupported';
   if (results.checks.permission !== 'granted') {
     if (results.isMobile) {
       results.issues.push('❌ Mobile notification permission not granted');
@@ -149,7 +151,11 @@ For best results, use the installed app for notifications.`);
 
     // 3. Request permission with mobile-optimized messaging
     console.log('📱 Requesting notification permission...');
-    const permission = await Notification.requestPermission();
+    if (typeof window === 'undefined' || typeof window.Notification === 'undefined') {
+      return { success: false, reason: 'Notification API not available in this browser' };
+    }
+    
+    const permission = await window.Notification.requestPermission();
     
     if (permission !== 'granted') {
       let message = 'Permission denied';
@@ -170,7 +176,10 @@ For best results, use the installed app for notifications.`);
         
         // Test with mobile-optimized notification
         try {
-          const testNotif = new Notification('📱 Mobile Test', {
+          if (typeof window === 'undefined' || typeof window.Notification === 'undefined') {
+            throw new Error('Notification API not available');
+          }
+          const testNotif = new window.Notification('📱 Mobile Test', {
             body: 'Mobile notifications are working!',
             icon: '/logo192.png',
             badge: '/logo192.png',
@@ -207,7 +216,7 @@ export const testMobileNotification = async (userEmail) => {
     }
 
     // Check permission
-    if (Notification.permission !== 'granted') {
+    if (typeof window === 'undefined' || typeof window.Notification === 'undefined' || window.Notification.permission !== 'granted') {
       return { success: false, reason: 'Notification permission not granted' };
     }
 
