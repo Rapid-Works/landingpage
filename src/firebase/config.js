@@ -56,6 +56,8 @@ export const googleProvider = new GoogleAuthProvider();
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 export const functions = getFunctions(app);
+// Set functions region to match deployment (us-central1 is default)
+// If your functions are deployed to a different region, update this
 
 // Initialize Analytics with error handling (can fail on mobile with ad blockers)
 let analytics;
