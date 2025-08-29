@@ -67,7 +67,7 @@ import customerNotificationService from './utils/customerNotificationService'
 if (typeof window !== 'undefined') {
   // Dynamically import messaging to handle potential failures
   import('./firebase/messaging')
-    .then(({ onForegroundMessage }) => {
+    .then(({ onForegroundMessage, monitorTokenRefresh }) => {
       if (onForegroundMessage) {
         onForegroundMessage((payload) => {
           console.log('📱 Foreground notification received:', payload);
@@ -113,6 +113,25 @@ if (typeof window !== 'undefined') {
               }
             }
         });
+      }
+      
+      // Set up iOS token refresh monitoring
+      if (monitorTokenRefresh) {
+        const isMobileSafari = /iPhone|iPad|iPod/i.test(navigator.userAgent) && /Safari/i.test(navigator.userAgent);
+        if (isMobileSafari) {
+          console.log('📱 Setting up iOS token refresh monitoring');
+          monitorTokenRefresh(async (newToken) => {
+            // Update server with new token for iOS devices
+            try {
+              if (customerNotificationService && customerNotificationService.updateFcmToken) {
+                await customerNotificationService.updateFcmToken(newToken);
+                console.log('✅ Updated server with new iOS FCM token');
+              }
+            } catch (error) {
+              console.error('Failed to update server with new token:', error);
+            }
+          });
+        }
       }
     })
     .catch(error => {
@@ -1338,6 +1357,62 @@ class ErrorBoundary extends Component {
 }
 
 /**
+ * Mobile PWA installation prompt component
+ * Shows installation hint for mobile browsers to enable notifications
+ */
+function MobilePWAPrompt() {
+  const [showPrompt, setShowPrompt] = useState(false);
+  
+  useEffect(() => {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isStandalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
+    const isInAppBrowser = /FBAN|FBAV|Instagram|Twitter|LinkedIn|WhatsApp/i.test(navigator.userAgent);
+    
+    // Show prompt for mobile browsers (not PWA, not in-app browsers)
+    if (isMobile && !isStandalone && !isInAppBrowser) {
+      // Don't show immediately, wait for user to interact with site
+      const timer = setTimeout(() => {
+        const hasSeenPrompt = localStorage.getItem('pwa-prompt-seen');
+        if (!hasSeenPrompt) {
+          setShowPrompt(true);
+        }
+      }, 10000); // Show after 10 seconds
+      
+      return () => clearTimeout(timer);
+    }
+  }, []);
+  
+  const dismissPrompt = () => {
+    setShowPrompt(false);
+    localStorage.setItem('pwa-prompt-seen', 'true');
+  };
+  
+  if (!showPrompt) return null;
+  
+  return (
+    <div className="fixed bottom-4 left-4 right-4 bg-violet-600 text-white p-4 rounded-lg shadow-lg z-50 md:max-w-sm md:left-auto">
+      <div className="flex items-start justify-between">
+        <div className="flex-1">
+          <h3 className="font-semibold text-sm mb-1">📱 Install App for Notifications</h3>
+          <p className="text-xs opacity-90">
+            Add this app to your home screen to receive push notifications and enjoy a better experience.
+          </p>
+          <div className="mt-2 text-xs opacity-75">
+            Tap Share → Add to Home Screen
+          </div>
+        </div>
+        <button 
+          onClick={dismissPrompt}
+          className="ml-2 text-white hover:text-gray-300"
+        >
+          <X className="h-4 w-4" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/**
  * Automatic notification registration component
  * Silently registers logged-in users for push notifications in the background
  */
@@ -1505,6 +1580,7 @@ function App() {
       <AuthProvider>
         <NotificationProvider>
           <AutoNotificationRegistration />
+          <MobilePWAPrompt />
           <LanguageContext.Provider value={contextValue}>
             <ScrollToTop />
             <Analytics />
