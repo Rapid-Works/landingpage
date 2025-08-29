@@ -1,6 +1,6 @@
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { db, auth } from './config';
-import { collection, addDoc, serverTimestamp, query, where, getDocs, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, query, where, getDocs, deleteDoc, updateDoc, doc as firestoreDoc } from 'firebase/firestore';
 
 const VAPID_KEY = 'BC9X8U5hWzbbGbbB8x_net_q4eG5RA798jZxKcOPS5e5joRHXN7XcCS2yv-UwCKY0lZZ59mOOspl_aSWEjSV33M';
 
@@ -34,23 +34,136 @@ const registerServiceWorker = async () => {
   }
 };
 
+// Ensure a token document exists (upsert) without removing other device tokens
+const upsertFcmToken = async (token, userEmail, metadata = {}) => {
+  const tokensCollection = collection(db, 'fcmTokens');
+  // See if this exact token already exists
+  const existingByToken = await getDocs(query(tokensCollection, where('token', '==', token)));
+  if (!existingByToken.empty) {
+    // Update email/lastUsed if needed
+    const tokenDoc = existingByToken.docs[0];
+    try {
+      await updateDoc(tokenDoc.ref, {
+        email: userEmail || tokenDoc.data().email || null,
+        lastUsed: serverTimestamp(),
+        userAgent: navigator.userAgent,
+        ...metadata
+      });
+    } catch (e) {
+      // non-fatal
+    }
+    return tokenDoc.id;
+  }
+
+  // If not existing, create new
+  const created = await addDoc(tokensCollection, {
+    token,
+    email: userEmail || null,
+    createdAt: serverTimestamp(),
+    lastUsed: serverTimestamp(),
+    userAgent: navigator.userAgent,
+    ...metadata
+  });
+  return created.id;
+};
+
 // Initialize messaging - register service worker when module loads
 export const initializeMessaging = async () => {
   try {
     await registerServiceWorker();
     console.log('Firebase messaging initialized successfully');
+
+    // Silent token ensure if permission already granted (no extra prompt)
+    if (typeof Notification !== 'undefined' && Notification.permission === 'granted' && messaging) {
+      try {
+        const currentToken = await getToken(messaging, { vapidKey: VAPID_KEY });
+        if (currentToken) {
+          const currentUser = auth.currentUser;
+          const userEmail = currentUser?.email || null;
+          await upsertFcmToken(currentToken, userEmail, {
+            isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
+            isIOS: /iPhone|iPad|iPod/i.test(navigator.userAgent)
+          });
+        }
+      } catch (e) {
+        // ignore; will retry on explicit enable
+      }
+    }
   } catch (error) {
     console.error('Failed to initialize Firebase messaging:', error);
   }
 };
 
-// Auto-initialize when module loads
+// Auto-initialize when module loads (simplified for mobile compatibility)
 if (typeof window !== 'undefined') {
-  // Wait for window load to avoid race conditions with CRA assets
+  // Detect mobile devices
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  // Simplified initialization for better mobile compatibility
+  const initFirebaseMessaging = async () => {
+    try {
+      // Only initialize messaging if supported and not causing issues
+      if (!messaging) {
+        console.log('📱 Firebase messaging not available on this device');
+        return;
+      }
+
+      // Initialize service worker
+      await initializeMessaging();
+
+      // Add basic token refresh for non-mobile or when explicitly requested
+      if (!isMobile && messaging) {
+        let lastToken = null;
+        const checkTokenChanges = async () => {
+          try {
+            if (Notification.permission === 'granted') {
+              const currentToken = await getToken(messaging, { vapidKey: VAPID_KEY });
+              if (currentToken && currentToken !== lastToken) {
+                console.log('🔄 FCM Token changed, updating...');
+                lastToken = currentToken;
+                const currentUser = auth.currentUser;
+                const userEmail = currentUser?.email || null;
+
+                await upsertFcmToken(currentToken, userEmail, {
+                  refreshed: true,
+                  refreshTime: new Date().toISOString(),
+                  isMobile: isMobile,
+                  isIOS: isIOS
+                });
+              }
+            }
+          } catch (error) {
+            console.log('Token check failed (non-critical):', error.message);
+          }
+        };
+
+        // Check every 10 minutes (less frequent for performance)
+        setInterval(checkTokenChanges, 10 * 60 * 1000);
+
+        // Check when user returns to tab
+        document.addEventListener('visibilitychange', () => {
+          if (!document.hidden) {
+            setTimeout(checkTokenChanges, 1000); // Small delay
+          }
+        });
+      }
+
+      console.log('✅ Firebase messaging initialized successfully');
+
+    } catch (error) {
+      console.error('❌ Firebase messaging initialization failed:', error);
+      // Don't let this break the entire app
+    }
+  };
+
+  // Initialize after a short delay to avoid conflicts
   if (document.readyState === 'complete') {
-    initializeMessaging();
+    setTimeout(initFirebaseMessaging, 100);
   } else {
-    window.addEventListener('load', () => initializeMessaging());
+    window.addEventListener('load', () => {
+      setTimeout(initFirebaseMessaging, 100);
+    });
   }
 }
 
@@ -117,28 +230,10 @@ export const requestNotificationPermission = async () => {
         const currentUser = auth.currentUser;
         const userEmail = currentUser?.email || null;
         
-        // Remove any existing tokens for this user/device to avoid duplicates
-        if (userEmail) {
-          const tokensCollection = collection(db, 'fcmTokens');
-          const existingTokensQuery = query(tokensCollection, where('email', '==', userEmail));
-          const existingTokensSnapshot = await getDocs(existingTokensQuery);
-          
-          // Delete existing tokens for this user
-          const deletePromises = existingTokensSnapshot.docs.map(doc => deleteDoc(doc.ref));
-          await Promise.all(deletePromises);
-        }
-        
-        // Store the new token with user email and device info
-        const tokensCollection = collection(db, 'fcmTokens');
-        await addDoc(tokensCollection, {
-          token: currentToken,
-          email: userEmail,
-          createdAt: serverTimestamp(),
-          // Mobile-specific metadata
+        // Upsert token without deleting other device tokens
+        await upsertFcmToken(currentToken, userEmail, {
           isMobile: isMobile,
-          isIOS: isIOS,
-          userAgent: navigator.userAgent,
-          lastUsed: serverTimestamp()
+          isIOS: isIOS
         });
         
         // Initialize notification preferences for this user if they don't exist

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Building2, MapPin, Calendar, Loader2, AlertTriangle } from 'lucide-react';
+import { X, Building2, MapPin, Loader2, AlertTriangle } from 'lucide-react';
 import { createOrganization, hasUserCreatedOrganization } from '../utils/organizationService';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -9,8 +9,7 @@ const CreateOrganizationModal = ({ isOpen, onClose, onOrganizationCreated }) => 
     name: '',
     street: '',
     city: '',
-    postalCode: '',
-    dateOfEstablishment: ''
+    postalCode: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -63,10 +62,7 @@ const CreateOrganizationModal = ({ isOpen, onClose, onOrganizationCreated }) => 
       return;
     }
     
-    if (!formData.dateOfEstablishment) {
-      setError('Date of establishment is required');
-      return;
-    }
+
 
     setIsSubmitting(true);
 
@@ -78,8 +74,7 @@ const CreateOrganizationModal = ({ isOpen, onClose, onOrganizationCreated }) => 
         name: '',
         street: '',
         city: '',
-        postalCode: '',
-        dateOfEstablishment: ''
+        postalCode: ''
       });
       
       onOrganizationCreated(organization);
@@ -231,25 +226,7 @@ const CreateOrganizationModal = ({ isOpen, onClose, onOrganizationCreated }) => 
             </div>
           </div>
 
-          {/* Date of Establishment */}
-          <div>
-            <label htmlFor="dateOfEstablishment" className="block text-sm font-medium text-gray-700 mb-2">
-              Date of Establishment *
-            </label>
-            <div className="relative">
-              <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <input
-                type="date"
-                id="dateOfEstablishment"
-                name="dateOfEstablishment"
-                value={formData.dateOfEstablishment}
-                onChange={handleInputChange}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7C3BEC] focus:border-[#7C3BEC] outline-none transition-colors"
-                disabled={isSubmitting}
-                required
-              />
-            </div>
-          </div>
+
 
           {/* Submit Button */}
           <div className="flex gap-3 pt-4">
