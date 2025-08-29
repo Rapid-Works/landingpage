@@ -6,6 +6,14 @@ const VAPID_KEY = 'BC9X8U5hWzbbGbbB8x_net_q4eG5RA798jZxKcOPS5e5joRHXN7XcCS2yv-Uw
 
 // Register the Firebase messaging service worker
 const registerServiceWorker = async () => {
+  // Check if we're on iOS Safari browser (not PWA)
+  const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const isStandalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
+  
+  if (isiOS && !isStandalone) {
+    throw new Error('Service Worker registration skipped on iOS Safari browser');
+  }
+  
   if ('serviceWorker' in navigator) {
     try {
       const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
