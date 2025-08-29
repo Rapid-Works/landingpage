@@ -56,10 +56,9 @@ const TaskList = ({ userRole, expertInfo, initialSelectedTaskId, onTaskSelected,
       if (onTaskSelected) {
         onTaskSelected();
       }
-    } else {
-      // Clear selected task when initialSelectedTaskId is null
-      setSelectedTaskId(null);
     }
+    // Don't clear selectedTaskId when initialSelectedTaskId is null
+    // This preserves user's local task selection
   }, [initialSelectedTaskId, onTaskSelected]);
 
   // Auto-select task after tasks are loaded if initialSelectedTaskId is provided
