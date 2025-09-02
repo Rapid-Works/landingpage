@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { X, Bell, Smartphone, Share } from 'lucide-react';
-import { requestNotificationPermission } from '../firebase/messaging';
 import { useAuth } from '../contexts/AuthContext';
 
 const NotificationPermissionBanner = () => {
@@ -12,28 +11,7 @@ const NotificationPermissionBanner = () => {
   console.log('🔔 NotificationPermissionBanner rendered, isVisible:', isVisible);
 
   useEffect(() => {
-    const checkAndSetStatus = async () => {
-      // TEMPORARY: Force show banner for testing (remove this after testing)
-      if (currentUser) {
-        console.log('🔔 FORCE SHOWING BANNER FOR TESTING - SKIPPING NORMAL LOGIC');
-        console.log('🔔 Device info for debug:', {
-          isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
-          isStandalone: window.matchMedia && window.matchMedia('(display-mode: standalone)').matches,
-          userAgent: navigator.userAgent
-        });
-        setIsVisible(true);
-        setBannerType('permission');
-        console.log('🔔 Banner should now be visible on mobile and desktop');
-        return; // Skip normal logic when force-showing
-      } else {
-        console.log('🔔 No currentUser, cannot force show banner');
-      }
-      
-      // Normal logic (only runs if not logged in)
-      await checkNotificationStatus();
-    };
-    
-    checkAndSetStatus();
+    checkNotificationStatus();
   }, [currentUser]);
 
   const checkNotificationStatus = async () => {
@@ -123,6 +101,8 @@ const NotificationPermissionBanner = () => {
   const handleEnableNotifications = async () => {
     setIsLoading(true);
     try {
+      // Dynamic import to avoid iOS Safari import errors
+      const { requestNotificationPermission } = await import('../firebase/messaging');
       const result = await requestNotificationPermission();
       
       if (result.success) {
