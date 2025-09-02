@@ -9,33 +9,58 @@ const NotificationPermissionBanner = () => {
   const [bannerType, setBannerType] = useState('permission'); // 'permission', 'pwa', 'success'
   const { currentUser } = useAuth();
 
+  console.log('🔔 NotificationPermissionBanner rendered, isVisible:', isVisible);
+
   useEffect(() => {
-    checkNotificationStatus();
+    const checkAndSetStatus = async () => {
+      await checkNotificationStatus();
+      
+      // TEMPORARY: Force show banner for testing (remove this after testing)
+      if (currentUser) {
+        console.log('🔔 FORCE SHOWING BANNER FOR TESTING');
+        console.log('🔔 Setting isVisible to true...');
+        setIsVisible(true);
+        setBannerType('permission');
+        console.log('🔔 Banner should now be visible');
+      } else {
+        console.log('🔔 No currentUser, cannot force show banner');
+      }
+    };
+    
+    checkAndSetStatus();
   }, [currentUser]);
 
   const checkNotificationStatus = async () => {
+    console.log('🔔 NotificationPermissionBanner: Checking notification status');
+    console.log('🔔 Current user:', currentUser ? currentUser.email : 'null');
+    
     // Only show for logged in users
     if (!currentUser) {
+      console.log('🔔 No current user, hiding banner');
       setIsVisible(false);
       return;
     }
 
     // Check if user has already dismissed the banner
     const dismissed = localStorage.getItem('notificationBannerDismissed');
+    console.log('🔔 Banner dismissed status:', dismissed);
     if (dismissed === 'true') {
+      console.log('🔔 Banner was dismissed, not showing');
       return;
     }
 
     // Check current notification permission status
     if (typeof Notification === 'undefined') {
-      // Notification API not supported
+      console.log('🔔 Notification API not supported');
       setIsVisible(false);
       return;
     }
 
     const permission = Notification.permission;
+    console.log('🔔 Current notification permission:', permission);
     
     if (permission === 'granted') {
+      console.log('🔔 Permission granted, checking FCM tokens...');
       // Permission already granted, check if we have FCM tokens
       try {
         const { db } = await import('../firebase/config');
@@ -46,20 +71,26 @@ const NotificationPermissionBanner = () => {
           where('email', '==', currentUser.email)
         );
         const tokensSnapshot = await getDocs(tokensQuery);
+        console.log('🔔 Found FCM tokens:', tokensSnapshot.docs.length);
         
         if (tokensSnapshot.docs.length === 0) {
-          // No tokens found, might need to re-register
+          console.log('🔔 No FCM tokens found, showing permission banner');
           setBannerType('permission');
           setIsVisible(true);
+        } else {
+          console.log('🔔 User has FCM tokens, not showing banner');
         }
       } catch (error) {
-        console.error('Error checking FCM tokens:', error);
+        console.error('🔔 Error checking FCM tokens:', error);
+        // Show banner if we can't check tokens
+        setBannerType('permission');
+        setIsVisible(true);
       }
       return;
     }
 
     if (permission === 'denied') {
-      // Permission denied, show instructions to enable in settings
+      console.log('🔔 Permission denied, showing denied banner');
       setBannerType('denied');
       setIsVisible(true);
       return;
@@ -70,12 +101,14 @@ const NotificationPermissionBanner = () => {
     const isStandalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
     const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
+    console.log('🔔 Device info:', { isMobile, isStandalone, isIOS, permission });
+
     if (isMobile && !isStandalone) {
-      // Mobile browser, needs PWA installation
+      console.log('🔔 Mobile browser detected, showing PWA banner');
       setBannerType('pwa');
       setIsVisible(true);
     } else {
-      // Desktop or PWA, can request permission directly
+      console.log('🔔 Desktop or PWA detected, showing permission banner');
       setBannerType('permission');
       setIsVisible(true);
     }
@@ -242,7 +275,7 @@ const NotificationPermissionBanner = () => {
   }
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+    <div className="fixed left-0 right-0 z-[60] bg-white border-b border-gray-200 shadow-sm" style={{ top: '70px' }}>
       <div className="max-w-7xl mx-auto px-4 py-3">
         {renderBannerContent()}
       </div>
