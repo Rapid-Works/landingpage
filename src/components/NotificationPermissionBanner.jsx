@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Bell, Smartphone, Share } from 'lucide-react';
+import { requestNotificationPermission } from '../firebase/messaging';
 import { useAuth } from '../contexts/AuthContext';
 
 const NotificationPermissionBanner = () => {
@@ -11,7 +12,22 @@ const NotificationPermissionBanner = () => {
   console.log('🔔 NotificationPermissionBanner rendered, isVisible:', isVisible);
 
   useEffect(() => {
-    checkNotificationStatus();
+    const checkAndSetStatus = async () => {
+      await checkNotificationStatus();
+      
+      // TEMPORARY: Force show banner for testing (remove this after testing)
+      if (currentUser) {
+        console.log('🔔 FORCE SHOWING BANNER FOR TESTING');
+        console.log('🔔 Setting isVisible to true...');
+        setIsVisible(true);
+        setBannerType('permission');
+        console.log('🔔 Banner should now be visible');
+      } else {
+        console.log('🔔 No currentUser, cannot force show banner');
+      }
+    };
+    
+    checkAndSetStatus();
   }, [currentUser]);
 
   const checkNotificationStatus = async () => {
@@ -101,8 +117,6 @@ const NotificationPermissionBanner = () => {
   const handleEnableNotifications = async () => {
     setIsLoading(true);
     try {
-      // Dynamic import to avoid iOS Safari import errors
-      const { requestNotificationPermission } = await import('../firebase/messaging');
       const result = await requestNotificationPermission();
       
       if (result.success) {
