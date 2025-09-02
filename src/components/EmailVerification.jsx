@@ -58,14 +58,22 @@ const EmailVerification = () => {
     }
   }, [lastSentTime]);
 
-  const handleSendVerification = async () => {
+  const handleSendVerification = async (forceOverride = false) => {
     if (!currentUser) {
       setError('No user found. Please sign up again.');
       return;
     }
 
-    // Check cooldown
-    if (cooldownTime > 0) {
+    // Development override check
+    const isDevelopment = process.env.NODE_ENV === 'development' || 
+                         window.location.hostname === 'localhost' ||
+                         window.location.hostname.includes('127.0.0.1');
+
+    // Check cooldown (unless forced override in development)
+    if (cooldownTime > 0 && !forceOverride) {
+      if (isDevelopment) {
+        console.log('🚧 Development detected - you can force override by holding Shift+Click');
+      }
       setError(`Please wait ${cooldownTime} seconds before requesting another email.`);
       return;
     }
@@ -191,8 +199,14 @@ const EmailVerification = () => {
           </button>
 
           <button
-            onClick={handleSendVerification}
-            disabled={loading || cooldownTime > 0}
+            onClick={(e) => {
+              const isDevelopment = process.env.NODE_ENV === 'development' || 
+                                   window.location.hostname === 'localhost' ||
+                                   window.location.hostname.includes('127.0.0.1');
+              const forceOverride = isDevelopment && e.shiftKey;
+              handleSendVerification(forceOverride);
+            }}
+            disabled={loading || (cooldownTime > 0 && !(process.env.NODE_ENV === 'development' || window.location.hostname === 'localhost'))}
             className="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center"
           >
             {loading ? (
@@ -256,6 +270,13 @@ const EmailVerification = () => {
             <div className="mt-4 bg-amber-50 border border-amber-200 text-amber-700 px-4 py-3 rounded-lg text-sm">
               <p className="font-medium mb-1">Rate Limited</p>
               <p>Firebase has temporarily limited verification emails. This is normal and helps prevent spam. Please wait a few minutes and try again.</p>
+            </div>
+          )}
+          
+          {(process.env.NODE_ENV === 'development' || window.location.hostname === 'localhost') && (
+            <div className="mt-4 bg-purple-50 border border-purple-200 text-purple-700 px-4 py-3 rounded-lg text-sm">
+              <p className="font-medium mb-1">🚧 Development Mode</p>
+              <p>Rate limiting is disabled in development. Hold <kbd className="px-1 py-0.5 bg-purple-200 rounded">Shift</kbd> + click "Send Email" to force override cooldowns.</p>
             </div>
           )}
         </div>

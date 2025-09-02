@@ -12,6 +12,7 @@ import {
 import { auth, googleProvider, functions } from '../firebase/config';
 import { getFirestore, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { httpsCallable } from 'firebase/functions';
+import notificationInitService from '../utils/notificationInitService';
 
 const AuthContext = createContext();
 
@@ -77,16 +78,25 @@ export function AuthProvider({ children }) {
   async function sendVerificationEmail(user) {
     console.log('📧 Starting email verification for:', user.email);
     
-    // Check rate limiting
-    const now = Date.now();
-    const lastSent = emailVerificationCooldown.get(user.email);
+    // Development bypass for rate limiting
+    const isDevelopment = process.env.NODE_ENV === 'development' || 
+                         window.location.hostname === 'localhost' ||
+                         window.location.hostname.includes('127.0.0.1');
     
-    if (lastSent && (now - lastSent) < VERIFICATION_COOLDOWN_MS) {
-      const remainingTime = Math.ceil((VERIFICATION_COOLDOWN_MS - (now - lastSent)) / 1000);
-      const error = new Error(`Please wait ${remainingTime} seconds before requesting another verification email`);
-      error.code = 'auth/too-many-requests';
-      error.isRateLimit = true;
-      throw error;
+    // Check rate limiting (skip in development)
+    if (!isDevelopment) {
+      const now = Date.now();
+      const lastSent = emailVerificationCooldown.get(user.email);
+      
+      if (lastSent && (now - lastSent) < VERIFICATION_COOLDOWN_MS) {
+        const remainingTime = Math.ceil((VERIFICATION_COOLDOWN_MS - (now - lastSent)) / 1000);
+        const error = new Error(`Please wait ${remainingTime} seconds before requesting another verification email`);
+        error.code = 'auth/too-many-requests';
+        error.isRateLimit = true;
+        throw error;
+      }
+    } else {
+      console.log('🚧 Development mode: Skipping rate limiting');
     }
     
     try {
@@ -98,8 +108,11 @@ export function AuthProvider({ children }) {
       
       console.log('☁️ Calling custom email verification function...');
       
-      // Set rate limit before attempting
-      emailVerificationCooldown.set(user.email, now);
+      // Set rate limit before attempting (if not in development)
+      if (!isDevelopment) {
+        const now = Date.now();
+        emailVerificationCooldown.set(user.email, now);
+      }
       
       // Use our custom Cloud Function for branded verification emails
       const sendCustomEmailVerification = httpsCallable(functions, 'sendCustomEmailVerification');
@@ -197,6 +210,17 @@ export function AuthProvider({ children }) {
       // Ensure user document exists whenever auth state changes
       if (user) {
         await ensureUserDocument(user);
+        
+        // Initialize notifications silently (no UI prompts)
+        // This will check if user has existing tokens and setup listeners
+        try {
+          await notificationInitService.initializeForUser(user, true);
+        } catch (error) {
+          console.log('📱 Silent notification initialization skipped:', error.message);
+        }
+      } else {
+        // Reset notification service when user logs out
+        notificationInitService.reset();
       }
       
       setLoading(false);

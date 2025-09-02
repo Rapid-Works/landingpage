@@ -57,9 +57,10 @@ import EmailVerification from './components/EmailVerification'
 import ProtectedRoute from './components/ProtectedRoute'
 // import { NotificationProvider } from './contexts/NotificationContext' // DISABLED
 import OrganizationInvite from './components/OrganizationInvite'
+import NotificationPermissionBanner from './components/NotificationPermissionBanner'
 
-// PUSH NOTIFICATIONS COMPLETELY DISABLED - TO PREVENT iOS ISSUES
-console.log('🔕 Push notifications are disabled to ensure iOS Safari compatibility');
+// PUSH NOTIFICATIONS RE-ENABLED WITH MOBILE/PWA SAFETY CHECKS
+console.log('🔔 Push notifications enabled with mobile/PWA safety measures');
 
 // Create and export Language Context with initial values
 export const LanguageContext = createContext({
@@ -1399,7 +1400,8 @@ function App() {
     return (
       <ErrorBoundary>
         <AuthProvider>
-          {/* NotificationProvider disabled to prevent iOS issues */}
+          {/* Notification permission banner for mobile/PWA users */}
+          <NotificationPermissionBanner />
           <AutoNotificationRegistration />
           <MobilePWAPrompt />
           <LanguageContext.Provider value={contextValue}>
