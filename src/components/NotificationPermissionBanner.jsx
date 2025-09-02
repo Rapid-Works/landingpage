@@ -14,17 +14,6 @@ const NotificationPermissionBanner = () => {
   useEffect(() => {
     const checkAndSetStatus = async () => {
       await checkNotificationStatus();
-      
-      // TEMPORARY: Force show banner for testing (remove this after testing)
-      if (currentUser) {
-        console.log('🔔 FORCE SHOWING BANNER FOR TESTING');
-        console.log('🔔 Setting isVisible to true...');
-        setIsVisible(true);
-        setBannerType('permission');
-        console.log('🔔 Banner should now be visible');
-      } else {
-        console.log('🔔 No currentUser, cannot force show banner');
-      }
     };
     
     checkAndSetStatus();

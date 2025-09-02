@@ -57,7 +57,7 @@ export const sendTaskMessageNotification = async ({
   taskData
 }) => {
   try {
-    console.log('🔔 Attempting to send task notification:', {
+    console.log('🔔 NOTIFICATION SERVICE: Attempting to send task notification:', {
       taskId,
       senderEmail,
       senderRole,

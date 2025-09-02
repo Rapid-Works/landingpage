@@ -354,6 +354,14 @@ export const addTaskMessage = async (taskId, message, sendNotification = true) =
     console.log('Message added to task:', taskId);
 
     // Send notification if enabled and we have recipient information
+    console.log('🔔 Checking notification conditions:', {
+      sendNotification,
+      messageSender: message.sender,
+      userEmail: taskData.userEmail,
+      expertEmail: taskData.expertEmail,
+      shouldSendNotification: sendNotification && message.sender && taskData.userEmail && taskData.expertEmail
+    });
+
     if (sendNotification && message.sender && taskData.userEmail && taskData.expertEmail) {
       try {
         // Import notification service dynamically to avoid circular dependencies
