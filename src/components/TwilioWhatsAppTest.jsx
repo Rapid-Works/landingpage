@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import { Send, MessageCircle, AlertCircle, CheckCircle } from 'lucide-react';
+import { httpsCallable } from 'firebase/functions';
+import { functions } from '../firebase/config';
 
 const TwilioWhatsAppTest = ({ currentUser, currentContext }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState({ type: '', message: '' });
 
-  // Twilio credentials from environment variables
-  const TWILIO_ACCOUNT_SID = process.env.REACT_APP_TWILIO_ACCOUNT_SID;
-  const TWILIO_AUTH_TOKEN = process.env.REACT_APP_TWILIO_AUTH_TOKEN;
-  const TWILIO_WHATSAPP_FROM = process.env.REACT_APP_TWILIO_WHATSAPP_FROM;
+  // Using secure Firebase Function instead of environment variables
 
   const formatPhoneNumber = (number) => {
     // Remove all non-digit characters
@@ -34,62 +33,39 @@ const TwilioWhatsAppTest = ({ currentUser, currentContext }) => {
       return;
     }
 
-    // Check if environment variables are configured
-    if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN || !TWILIO_WHATSAPP_FROM) {
-      setStatus({ 
-        type: 'error', 
-        message: 'Twilio credentials not configured. Please check your environment variables.' 
-      });
-      return;
-    }
-
     setIsLoading(true);
     setStatus({ type: '', message: '' });
 
     try {
-      const formattedNumber = formatPhoneNumber(phoneNumber);
-      
-      // Create personalized message
+      // Prepare data for Firebase Function
       const username = currentUser?.displayName || currentUser?.email?.split('@')[0] || 'User';
       const orgName = currentContext?.type === 'organization' ? currentContext.organization?.name : 'your personal account';
-      const message = `Welcome to RapidWorks ${username}. Your organization ${orgName} was created successfully`;
-
-      // Create form data for Twilio API
-      const formData = new FormData();
-      formData.append('To', `whatsapp:${formattedNumber}`);
-      formData.append('From', TWILIO_WHATSAPP_FROM);
-      formData.append('Body', message);
-
-      // Create basic auth header
-      const credentials = btoa(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`);
-
-      const response = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Basic ${credentials}`,
-        },
-        body: formData
+      
+      // Call Firebase Function instead of direct Twilio API
+      const sendTwilioWhatsApp = httpsCallable(functions, 'sendTwilioWhatsApp');
+      const result = await sendTwilioWhatsApp({
+        phoneNumber: phoneNumber,
+        userName: username,
+        orgName: orgName
       });
 
-      if (response.ok) {
-        const result = await response.json();
+      if (result.data.success) {
         setStatus({ 
           type: 'success', 
-          message: `WhatsApp message sent successfully! Message SID: ${result.sid}` 
+          message: `WhatsApp message sent successfully! Message SID: ${result.data.messageSid}` 
         });
         setPhoneNumber(''); // Clear the input
       } else {
-        const error = await response.json();
         setStatus({ 
           type: 'error', 
-          message: `Failed to send message: ${error.message || 'Unknown error'}` 
+          message: result.data.message || 'Failed to send message' 
         });
       }
     } catch (error) {
       console.error('Error sending WhatsApp message:', error);
       setStatus({ 
         type: 'error', 
-        message: `Network error: ${error.message}. Note: Direct API calls may be blocked by CORS. Consider using a backend proxy.` 
+        message: `Failed to send message: ${error.message}` 
       });
     } finally {
       setIsLoading(false);
