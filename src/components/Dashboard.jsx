@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { motion } from 'framer-motion';
-import { Edit, Package, MessageSquare, FileCheck, Receipt, ChevronDown, ChevronRight, BellRing, Users, Building, BarChart3 } from 'lucide-react';
+import { Edit, Package, MessageSquare, FileCheck, Receipt, ChevronDown, ChevronRight, BellRing, Users, Building, BarChart3, MessageCircle } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import RapidWorksHeader from './new_landing_page_header';
 import BrandingKits from './BrandingKits';
@@ -16,6 +16,7 @@ import OrganizationUsers from './OrganizationUsers';
 import OrganizationsList from './OrganizationsList';
 import Analytics from './Analytics';
 import AllUsers from './AllUsers';
+import TwilioWhatsAppTest from './TwilioWhatsAppTest';
 
 import { isExpert, getExpertByEmail, isAdmin, getAllExperts } from '../utils/expertService';
 import { getCurrentUserContext } from '../utils/organizationService';
@@ -532,6 +533,27 @@ const Dashboard = () => {
                   </button>
                 )}
 
+                {/* Twilio WhatsApp Test - Available to all authenticated users */}
+                {currentUser && (
+                  <button
+                    onClick={() => {
+                      setActiveTab('twilio-test');
+                      setSelectedTaskId(null); // Clear when leaving tasks area
+                      setIsMobileMenuOpen(false); // Close mobile menu
+                    }}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
+                      activeTab === 'twilio-test'
+                        ? 'bg-[#7C3BEC] text-white shadow-lg'
+                        : 'text-gray-700 hover:bg-white hover:shadow-md'
+                    }`}
+                  >
+                    <MessageCircle className="h-5 w-5" />
+                    <div className="flex-1">
+                      <div className="font-medium">Twilio Test</div>
+                    </div>
+                  </button>
+                )}
+
                 {canAccessMembers && (
                   <button
                     onClick={() => {
@@ -604,6 +626,7 @@ const Dashboard = () => {
                   {activeTab === 'organizations' && 'Organizations'}
                   {activeTab === 'users' && 'Users'}
                   {activeTab === 'analytics' && 'Rapid Analytics'}
+                  {activeTab === 'twilio-test' && 'Twilio Test'}
                   {activeTab === 'members' && 'Members'}
                 </h1>
               </div>
@@ -694,6 +717,20 @@ const Dashboard = () => {
                     className="bg-white rounded-lg border border-gray-200 p-4 lg:p-6"
                   >
                     <Analytics />
+                  </motion.div>
+                )}
+
+                {activeTab === 'twilio-test' && currentUser && (
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="bg-gray-50"
+                  >
+                    <TwilioWhatsAppTest 
+                      currentUser={currentUser} 
+                      currentContext={currentContext} 
+                    />
                   </motion.div>
                 )}
 
