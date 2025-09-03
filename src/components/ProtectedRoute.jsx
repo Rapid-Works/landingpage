@@ -6,19 +6,22 @@ const ProtectedRoute = ({ children }) => {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
 
+  // TEMPORARY: Email verification disabled for Microsoft 365 SMTP fix
+  const EMAIL_VERIFICATION_DISABLED = true;
+
   // Redirect based on authentication and email verification status
   useEffect(() => {
     if (!currentUser) {
       // No user logged in - redirect to homepage
       navigate('/', { replace: true });
-    } else if (!currentUser.emailVerified) {
+    } else if (!EMAIL_VERIFICATION_DISABLED && !currentUser.emailVerified) {
       // User logged in but email not verified - redirect to verification page
       navigate('/verify-email', { replace: true });
     }
   }, [currentUser, navigate]);
 
-  // If user is logged in and email is verified, show the protected content
-  if (currentUser && currentUser.emailVerified) {
+  // If user is logged in (and email verification is disabled OR verified), show the protected content
+  if (currentUser && (EMAIL_VERIFICATION_DISABLED || currentUser.emailVerified)) {
     return children;
   }
 

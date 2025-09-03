@@ -75,14 +75,21 @@ const LoginModal = ({
       setLoading(true);
       
       let result;
+      // TEMPORARY: Email verification disabled for Microsoft 365 SMTP fix
+      const EMAIL_VERIFICATION_DISABLED = true;
+
       if (isSignup) {
         result = await signup(email, password);
-        // For signup, redirect to email verification
-        navigate('/verify-email');
+        // For signup, redirect to dashboard instead of email verification (temporarily)
+        if (EMAIL_VERIFICATION_DISABLED) {
+          navigate('/dashboard');
+        } else {
+          navigate('/verify-email');
+        }
       } else {
         result = await login(email, password);
-        // For login, check if email is verified
-        if (result.user && !result.user.emailVerified) {
+        // For login, check if email is verified (skip if disabled)
+        if (!EMAIL_VERIFICATION_DISABLED && result.user && !result.user.emailVerified) {
           navigate('/verify-email');
         } else {
           // Call success callback or navigate to dashboard

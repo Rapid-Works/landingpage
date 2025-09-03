@@ -66,8 +66,15 @@ const SignupPage = () => {
         displayName: `${formData.firstName} ${formData.lastName}`
       });
 
-      // Redirect to email verification instead of dashboard
-      navigate('/verify-email');
+      // TEMPORARY: Email verification disabled for Microsoft 365 SMTP fix
+      const EMAIL_VERIFICATION_DISABLED = true;
+      
+      // Redirect to dashboard instead of email verification (temporarily)
+      if (EMAIL_VERIFICATION_DISABLED) {
+        navigate('/dashboard');
+      } else {
+        navigate('/verify-email');
+      }
     } catch (error) {
       // Handle Firebase authentication errors with descriptive messages
       let errorMessage;
