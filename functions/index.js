@@ -2562,3 +2562,77 @@ exports.sendCustomPasswordReset = onCall(async (request) => {
     }
   }
 });
+
+// Twilio WhatsApp Message Function
+exports.sendTwilioWhatsApp = onCall(async (request) => {
+  try {
+    const { phoneNumber, userName, orgName } = request.data;
+    
+    if (!phoneNumber) {
+      throw new Error('Phone number is required');
+    }
+
+    console.log(`📱 Twilio WhatsApp request for: ${phoneNumber}`);
+    
+    // Twilio configuration from environment variables (.env file)
+    const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID;
+    const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
+    const twilioWhatsAppFrom = process.env.TWILIO_WHATSAPP_FROM;
+    
+    if (!twilioAccountSid || !twilioAuthToken || !twilioWhatsAppFrom) {
+      throw new Error('Twilio configuration missing');
+    }
+    
+    // Format phone number
+    const formatPhoneNumber = (number) => {
+      const cleaned = number.replace(/\D/g, '');
+      if (cleaned.startsWith('233')) {
+        return `+${cleaned}`;
+      } else if (cleaned.startsWith('0')) {
+        return `+233${cleaned.substring(1)}`;
+      } else if (!cleaned.startsWith('+')) {
+        return `+${cleaned}`;
+      }
+      return cleaned.startsWith('+') ? cleaned : `+${cleaned}`;
+    };
+    
+    const formattedNumber = formatPhoneNumber(phoneNumber);
+    const message = `Welcome to RapidWorks ${userName || 'User'}. Your organization ${orgName || 'your personal account'} was created successfully`;
+    
+    // Call Twilio API
+    const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${twilioAccountSid}/Messages.json`;
+    
+    const formData = new URLSearchParams();
+    formData.append('To', `whatsapp:${formattedNumber}`);
+    formData.append('From', twilioWhatsAppFrom);
+    formData.append('Body', message);
+    
+    const response = await fetch(twilioUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${Buffer.from(`${twilioAccountSid}:${twilioAuthToken}`).toString('base64')}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: formData
+    });
+    
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(`Twilio API error: ${error.message || 'Unknown error'}`);
+    }
+    
+    const result = await response.json();
+    console.log(`✅ WhatsApp message sent successfully: ${result.sid}`);
+    
+    return {
+      success: true,
+      messageSid: result.sid,
+      to: formattedNumber,
+      message: 'WhatsApp message sent successfully'
+    };
+    
+  } catch (error) {
+    console.error('Error sending Twilio WhatsApp message:', error);
+    throw new Error(`Failed to send WhatsApp message: ${error.message}`);
+  }
+});
