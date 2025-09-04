@@ -36,14 +36,19 @@ if (!isiOS || isStandalone) {
 
   // console.log('Firebase messaging instance created');
 
-  messaging.onBackgroundMessage((payload) => {
-  console.log("[firebase-messaging-sw.js] 🚨 EXPERT MESSAGE RECEIVED:", payload);
-  console.log("[firebase-messaging-sw.js] Notification data:", payload.notification);
-  console.log("[firebase-messaging-sw.js] Custom data:", payload.data);
-  
-  // Mobile-specific handling
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  // iOS FIX: Use push event listener instead of onBackgroundMessage
+  self.addEventListener('push', function(event) {
+    console.log("[firebase-messaging-sw.js] 🚨 PUSH EVENT RECEIVED");
+    
+    if (event.data) {
+      const payload = event.data.json();
+      console.log("[firebase-messaging-sw.js] 🚨 EXPERT MESSAGE RECEIVED:", payload);
+      console.log("[firebase-messaging-sw.js] Notification data:", payload.notification);
+      console.log("[firebase-messaging-sw.js] Custom data:", payload.data);
+      
+      // Mobile-specific handling
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
   
   // iOS Safari PWA requires ALL notifications to be displayed
   if (isiOS) {
@@ -105,8 +110,12 @@ if (!isiOS || isStandalone) {
 
   console.log("[firebase-messaging-sw.js] Showing notification with options:", notificationOptions);
 
-  return self.registration.showNotification(notificationTitle, notificationOptions);
-});
+  // CRITICAL: Use event.waitUntil() to prevent iOS token unregistration
+  event.waitUntil(
+    self.registration.showNotification(notificationTitle, notificationOptions)
+  );
+    }
+  });
 
 // Handle notification clicks with mobile optimizations
 self.addEventListener("notificationclick", (event) => {
