@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { X, Building2, MapPin, Loader2, AlertTriangle } from 'lucide-react';
 import { createOrganization, hasUserCreatedOrganization } from '../utils/organizationService';
 import { useAuth } from '../contexts/AuthContext';
+import { httpsCallable } from 'firebase/functions';
+import { functions } from '../firebase/config';
+import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
+import './phone-input-custom.css';
 
 const CreateOrganizationModal = ({ isOpen, onClose, onOrganizationCreated }) => {
   const { currentUser } = useAuth();
@@ -11,6 +16,7 @@ const CreateOrganizationModal = ({ isOpen, onClose, onOrganizationCreated }) => 
     city: '',
     postalCode: ''
   });
+  const [phoneNumber, setPhoneNumber] = useState(); // Professional phone input handles this
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [hasCreatedOrg, setHasCreatedOrg] = useState(false);
@@ -39,6 +45,7 @@ const CreateOrganizationModal = ({ isOpen, onClose, onOrganizationCreated }) => 
     checkUserRestriction();
   }, [currentUser, isOpen]);
 
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -61,6 +68,8 @@ const CreateOrganizationModal = ({ isOpen, onClose, onOrganizationCreated }) => 
       setError('Complete address is required');
       return;
     }
+
+    // Phone number validation is handled by the library automatically
     
 
 
@@ -69,6 +78,26 @@ const CreateOrganizationModal = ({ isOpen, onClose, onOrganizationCreated }) => 
     try {
       const organization = await createOrganization(currentUser.uid, formData);
       
+      // Send welcome WhatsApp message if phone number provided
+      if (phoneNumber) {
+        try {
+          const username = currentUser?.displayName || currentUser?.email?.split('@')[0] || 'User';
+          const sendTwilioWhatsApp = httpsCallable(functions, 'sendTwilioWhatsApp');
+          
+          // phoneNumber is already in full international format (e.g., "+233501311059")
+          await sendTwilioWhatsApp({
+            phoneNumber: phoneNumber,
+            userName: username,
+            orgName: formData.name
+          });
+          
+          console.log('✅ Welcome WhatsApp message sent successfully');
+        } catch (twilioError) {
+          console.error('⚠️ WhatsApp message failed (organization still created):', twilioError);
+          // Don't fail the organization creation if WhatsApp fails
+        }
+      }
+      
       // Reset form
       setFormData({
         name: '',
@@ -76,6 +105,7 @@ const CreateOrganizationModal = ({ isOpen, onClose, onOrganizationCreated }) => 
         city: '',
         postalCode: ''
       });
+      setPhoneNumber(undefined);
       
       onOrganizationCreated(organization);
       onClose();
@@ -224,6 +254,21 @@ const CreateOrganizationModal = ({ isOpen, onClose, onOrganizationCreated }) => 
                 />
               </div>
             </div>
+          </div>
+
+          {/* Phone Number Section */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Phone Number (optional)
+            </label>
+            <PhoneInput
+              defaultCountry="DE"
+              value={phoneNumber}
+              onChange={setPhoneNumber}
+              disabled={isSubmitting}
+              className="phone-input-custom"
+              placeholder="Enter phone number (without leading zeros)"
+            />
           </div>
 
 

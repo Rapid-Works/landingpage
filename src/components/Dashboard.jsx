@@ -533,26 +533,7 @@ const Dashboard = () => {
                   </button>
                 )}
 
-                {/* Twilio WhatsApp Test - Available to all authenticated users */}
-                {currentUser && (
-                  <button
-                    onClick={() => {
-                      setActiveTab('twilio-test');
-                      setSelectedTaskId(null); // Clear when leaving tasks area
-                      setIsMobileMenuOpen(false); // Close mobile menu
-                    }}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
-                      activeTab === 'twilio-test'
-                        ? 'bg-[#7C3BEC] text-white shadow-lg'
-                        : 'text-gray-700 hover:bg-white hover:shadow-md'
-                    }`}
-                  >
-                    <MessageCircle className="h-5 w-5" />
-                    <div className="flex-1">
-                      <div className="font-medium">Twilio Test</div>
-                    </div>
-                  </button>
-                )}
+                {/* Twilio WhatsApp Test - Temporarily hidden (integrated into organization creation) */}
 
                 {canAccessMembers && (
                   <button
@@ -626,7 +607,7 @@ const Dashboard = () => {
                   {activeTab === 'organizations' && 'Organizations'}
                   {activeTab === 'users' && 'Users'}
                   {activeTab === 'analytics' && 'Rapid Analytics'}
-                  {activeTab === 'twilio-test' && 'Twilio Test'}
+                  {/* {activeTab === 'twilio-test' && 'Twilio Test'} */}
                   {activeTab === 'members' && 'Members'}
                 </h1>
               </div>
@@ -720,19 +701,7 @@ const Dashboard = () => {
                   </motion.div>
                 )}
 
-                {activeTab === 'twilio-test' && currentUser && (
-                  <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="bg-gray-50"
-                  >
-                    <TwilioWhatsAppTest 
-                      currentUser={currentUser} 
-                      currentContext={currentContext} 
-                    />
-                  </motion.div>
-                )}
+                {/* Twilio test content temporarily hidden */}
 
                 {activeTab === 'members' && canAccessMembers && (
                   <motion.div

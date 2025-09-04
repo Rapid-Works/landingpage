@@ -19,6 +19,7 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
     taskName: '',
     taskDescription: '',
     dueDate: '',
+    dueTime: '',
     files: [] // Will store { name, url, size, type } objects after upload
   });
   const [status, setStatus] = useState('idle'); // idle, loading, success, error
@@ -154,7 +155,7 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
       uploadedFiles: "Hochgeladene Dateien:",
       uploaded: "✓ Hochgeladen",
       viewFile: "Ansehen",
-      submitButton: "Fixpreis-Angebot anfordern",
+      submitButton: "Fixpreis-Angebot anfragen",
       submittingButton: "Anfrage wird gesendet...",
       successTitle: "Aufgabe erfolgreich eingereicht!",
       successMessage: "Ihre Aufgabe wurde zur Überprüfung an unseren Experten gesendet.",
@@ -260,6 +261,8 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
         taskName: formData.taskName.trim(),
         taskDescription: formData.taskDescription.trim(),
         dueDate: formData.dueDate || null,
+        dueTime: formData.dueTime || null,
+        dueDatetime: formData.dueDate && formData.dueTime ? `${formData.dueDate}T${formData.dueTime}` : null,
         files: formData.files, // This now contains uploaded file objects with URLs
         expertType: selectedExpertType,
         expertName: expertName,
@@ -368,6 +371,7 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
         taskName: '',
         taskDescription: '', 
         dueDate: '',
+        dueTime: '',
         files: []
       });
       
@@ -477,6 +481,23 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
       month: 'long', 
       day: 'numeric' 
     });
+  };
+
+  const formatDateTimeDisplay = (dateString, timeString) => {
+    if (!dateString) return '';
+    
+    const date = new Date(dateString);
+    const dateFormatted = date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+    
+    if (timeString) {
+      return `${dateFormatted} at ${timeString}`;
+    }
+    
+    return dateFormatted;
   };
 
   if (!isOpen) return null;
@@ -639,32 +660,55 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
                 </p>
               </div>
 
-              {/* Due Date */}
-                             <div className="space-y-2">
-                 <label className="block text-sm font-semibold text-gray-700 mb-3">
-                   {t.dueDateLabel}
-                 </label>
-                 <div className="relative">
-                   <input
-                     type="date"
-                     value={formData.dueDate}
-                     onChange={(e) => handleInputChange('dueDate', e.target.value)}
-                     className="w-full h-16 px-6 text-lg border-2 border-gray-300 rounded-xl focus:border-[#7C3BEC] focus:outline-none transition-colors duration-200 text-gray-700 bg-white date-input"
-                     disabled={status === 'loading'}
-                     style={{
-                       colorScheme: 'light',
-                       WebkitAppearance: 'none',
-                       MozAppearance: 'textfield'
-                     }}
-                   />
-                   <Calendar className="absolute right-4 top-1/2 transform -translate-y-1/2 h-6 w-6 text-gray-400 pointer-events-none" />
-                 </div>
-                 {formData.dueDate && (
-                   <p className="text-sm text-gray-600 mt-2">
-                     {t.dueDatePrefix} {formatDateDisplay(formData.dueDate)}
-                   </p>
-                 )}
-               </div>
+              {/* Due Date & Time */}
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                  {t.dueDateLabel}
+                </label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Date Input */}
+                  <div className="relative">
+                    <input
+                      type="date"
+                      value={formData.dueDate}
+                      onChange={(e) => handleInputChange('dueDate', e.target.value)}
+                      className="w-full h-16 px-6 text-lg border-2 border-gray-300 rounded-xl focus:border-[#7C3BEC] focus:outline-none transition-colors duration-200 text-gray-700 bg-white date-input"
+                      disabled={status === 'loading'}
+                      style={{
+                        colorScheme: 'light',
+                        WebkitAppearance: 'none',
+                        MozAppearance: 'textfield'
+                      }}
+                    />
+                    <Calendar className="absolute right-4 top-1/2 transform -translate-y-1/2 h-6 w-6 text-gray-400 pointer-events-none" />
+                  </div>
+                  
+                  {/* Time Input */}
+                  <div className="relative">
+                    <input
+                      type="time"
+                      value={formData.dueTime}
+                      onChange={(e) => handleInputChange('dueTime', e.target.value)}
+                      className="w-full h-16 px-6 text-lg border-2 border-gray-300 rounded-xl focus:border-[#7C3BEC] focus:outline-none transition-colors duration-200 text-gray-700 bg-white"
+                      disabled={status === 'loading' || !formData.dueDate}
+                      placeholder="Select time"
+                      style={{
+                        colorScheme: 'light',
+                        WebkitAppearance: 'none',
+                        MozAppearance: 'textfield'
+                      }}
+                    />
+                    <Clock className="absolute right-4 top-1/2 transform -translate-y-1/2 h-6 w-6 text-gray-400 pointer-events-none" />
+                  </div>
+                </div>
+                
+                {/* Date/Time Display */}
+                {formData.dueDate && (
+                  <p className="text-sm text-gray-600 mt-2">
+                    {t.dueDatePrefix} {formatDateTimeDisplay(formData.dueDate, formData.dueTime)}
+                  </p>
+                )}
+              </div>
 
               {/* File Upload */}
               <div className="space-y-2">

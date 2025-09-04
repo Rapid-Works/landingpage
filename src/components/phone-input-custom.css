@@ -1,0 +1,59 @@
+/* Custom styling for react-phone-number-input to match our design */
+.phone-input-custom {
+  --PhoneInputCountryFlag-borderColor: rgb(209, 213, 219);
+  --PhoneInputCountrySelectArrow-color: rgb(156, 163, 175);
+  font-family: inherit;
+}
+
+.phone-input-custom .PhoneInputInput {
+  border: 1px solid rgb(209, 213, 219);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  transition: all 0.2s;
+  outline: none;
+  background: white;
+}
+
+.phone-input-custom .PhoneInputInput:focus {
+  border-color: #7C3BEC;
+  box-shadow: 0 0 0 2px rgba(124, 59, 236, 0.1);
+}
+
+.phone-input-custom .PhoneInputInput:disabled {
+  background-color: rgb(249, 250, 251);
+  opacity: 0.6;
+}
+
+.phone-input-custom .PhoneInputCountrySelect {
+  border: 1px solid rgb(209, 213, 219);
+  border-radius: 0.5rem;
+  margin-right: 0.5rem;
+  padding: 0.75rem 0.5rem;
+  background: white;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.phone-input-custom .PhoneInputCountrySelect:hover {
+  background-color: rgb(249, 250, 251);
+}
+
+.phone-input-custom .PhoneInputCountrySelect:focus {
+  border-color: #7C3BEC;
+  box-shadow: 0 0 0 2px rgba(124, 59, 236, 0.1);
+  outline: none;
+}
+
+.phone-input-custom .PhoneInputCountrySelect:disabled {
+  background-color: rgb(249, 250, 251);
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Ensure proper flag display */
+.phone-input-custom .PhoneInputCountryIconImg {
+  width: 1.25rem;
+  height: 1rem;
+  border-radius: 0.125rem;
+}

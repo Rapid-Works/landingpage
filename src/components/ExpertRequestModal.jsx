@@ -1,12 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { Input } from './ui/input'; // Assuming you have shadcn/ui input
 import { submitExpertRequestToAirtable } from '../utils/airtableService';
+import { useAuth } from '../contexts/AuthContext';
 
 const ExpertRequestModal = ({ isOpen, onClose, expertType, content, language }) => {
+  const { currentUser } = useAuth();
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('idle'); // idle, loading, success, error
   const [errorMessage, setErrorMessage] = useState('');
+
+  // Auto-populate email from logged-in user
+  useEffect(() => {
+    if (currentUser?.email) {
+      setEmail(currentUser.email);
+    }
+  }, [currentUser]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,21 +63,33 @@ const ExpertRequestModal = ({ isOpen, onClose, expertType, content, language }) 
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
-            <div className="mb-4">
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                {content?.emailLabel || "Your Email"}
-              </label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={content?.emailPlaceholder || "you@example.com"}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                disabled={status === 'loading'}
-              />
-            </div>
+            {/* Only show email field if user is not logged in */}
+            {!currentUser && (
+              <div className="mb-4">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                  {content?.emailLabel || "Your Email"}
+                </label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={content?.emailPlaceholder || "you@example.com"}
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  disabled={status === 'loading'}
+                />
+              </div>
+            )}
+
+            {/* Show user info when logged in */}
+            {currentUser && (
+              <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                <p className="text-sm text-blue-800">
+                  <span className="font-medium">Requesting as:</span> {currentUser.email}
+                </p>
+              </div>
+            )}
 
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-1">

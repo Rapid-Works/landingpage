@@ -9,12 +9,26 @@ admin.initializeApp();
 
 const db = admin.firestore();
 
-// Email Configuration
+// Email Configuration from environment variables
 const emailConfig = {
+  host: 'smtp.office365.com',
+  port: 587,
+  secure: false, // true for 465, false for other ports
+  auth: {
+    user: process.env.SMTP_USER, // Microsoft 365 email
+    pass: process.env.SMTP_PASSWORD // Microsoft 365 password
+  },
+  tls: {
+    ciphers: 'SSLv3'
+  }
+};
+
+// Fallback to Gmail if Microsoft 365 SMTP is disabled
+const gmailConfig = {
   service: 'gmail',
   auth: {
-    user: 'noreplyrapidworks@gmail.com', // You can change this to noreply@rapid-works.io when ready
-    pass: 'lipl ggum cmef bjpp' // App password
+    user: 'noreplyrapidworks@gmail.com',
+    pass: 'lipl ggum cmef bjpp' // Temporary fallback
   }
 };
 
@@ -362,7 +376,7 @@ const sendEmail = async (to, template) => {
     const mailOptions = {
       from: {
         name: 'RapidWorks',
-        address: 'noreplyrapidworks@gmail.com'
+        address: process.env.SMTP_FROM || process.env.SMTP_USER
       },
       to: to,
       subject: template.subject,
@@ -2586,13 +2600,33 @@ exports.sendTwilioWhatsApp = onCall(async (request) => {
     // Format phone number
     const formatPhoneNumber = (number) => {
       const cleaned = number.replace(/\D/g, '');
+      
+      // Ghana numbers
       if (cleaned.startsWith('233')) {
         return `+${cleaned}`;
-      } else if (cleaned.startsWith('0')) {
-        return `+233${cleaned.substring(1)}`;
-      } else if (!cleaned.startsWith('+')) {
+      } 
+      // German numbers with country code
+      else if (cleaned.startsWith('49')) {
         return `+${cleaned}`;
       }
+      // Local numbers starting with 0
+      else if (cleaned.startsWith('0')) {
+        if (cleaned.length === 10) {
+          // Ghana local: 0501311059 -> +233501311059
+          return `+233${cleaned.substring(1)}`;
+        } else if (cleaned.length >= 11) {
+          // German local: 054123456789 -> +49541234567 (remove leading 0)
+          return `+49${cleaned.substring(1)}`;
+        } else {
+          // Default to Ghana for shorter numbers
+          return `+233${cleaned.substring(1)}`;
+        }
+      } 
+      // Numbers without country code
+      else if (!cleaned.startsWith('+')) {
+        return `+${cleaned}`;
+      }
+      
       return cleaned.startsWith('+') ? cleaned : `+${cleaned}`;
     };
     

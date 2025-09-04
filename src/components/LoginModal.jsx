@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { LanguageContext } from '../App';
 import { motion } from 'framer-motion';
 import { Mail, Lock, Eye, EyeOff, X } from 'lucide-react';
 
@@ -8,7 +9,7 @@ const LoginModal = ({
   isOpen, 
   onClose, 
   onLoginSuccess,
-  context = 'general', // 'task', 'branding', 'general'
+  context: modalContext = 'general', // 'task', 'branding', 'general'
   redirectTo = '/dashboard' 
 }) => {
   const [email, setEmail] = useState('');
@@ -16,33 +17,94 @@ const LoginModal = ({
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [isSignup, setIsSignup] = useState(false);
+  const [isSignup, setIsSignup] = useState(modalContext === 'task' || modalContext === 'branding');
   const [confirmPassword, setConfirmPassword] = useState('');
   const { login, signup, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
+  const context = useContext(LanguageContext);
+  const language = context?.language || 'en';
 
   const contextMessages = {
     task: {
       title: "Account needed",
       subtitle: "In order to make fixed price requests you first need to create a RapidWorks account so that we can reach you back.",
       signupTitle: "Create Account",
-      signupSubtitle: "Create your RapidWorks account to request fixed price tasks from our experts."
+      signupSubtitle: "Create your RapidWorks account to request fixed price tasks from our experts.",
+      // German translations
+      titleDe: "Konto erforderlich",
+      subtitleDe: "Um Fixpreis-Anfragen zu stellen, benötigen Sie zuerst ein RapidWorks-Konto, damit wir Sie erreichen können.",
+      signupTitleDe: "Konto erstellen",
+      signupSubtitleDe: "Erstellen Sie Ihr RapidWorks-Konto, um Fixpreis-Aufgaben von unseren Experten anzufragen."
     },
     branding: {
       title: "Account needed", 
       subtitle: "In order to request Rapid Branding you first need to create a RapidWorks account so that we can reach you back.",
       signupTitle: "Create Account",
-      signupSubtitle: "Create your RapidWorks account to request Rapid Branding services."
+      signupSubtitle: "Create your RapidWorks account to request Rapid Branding services.",
+      // German translations
+      titleDe: "Konto erforderlich",
+      subtitleDe: "Um Rapid Branding anzufragen, benötigen Sie zuerst ein RapidWorks-Konto, damit wir Sie erreichen können.",
+      signupTitleDe: "Konto erstellen",
+      signupSubtitleDe: "Erstellen Sie Ihr RapidWorks-Konto, um Rapid Branding Services anzufragen."
     },
     general: {
       title: "Sign into your account",
       subtitle: "Access your RapidWorks dashboard and services",
       signupTitle: "Create Account", 
-      signupSubtitle: "Join RapidWorks to access our services."
+      signupSubtitle: "Join RapidWorks to access our services.",
+      // German translations
+      titleDe: "In Ihr Konto anmelden",
+      subtitleDe: "Greifen Sie auf Ihr RapidWorks Dashboard und Services zu",
+      signupTitleDe: "Konto erstellen",
+      signupSubtitleDe: "Treten Sie RapidWorks bei, um auf unsere Services zuzugreifen."
     }
   };
 
-  const currentMessage = contextMessages[context] || contextMessages.general;
+  const currentMessage = contextMessages[modalContext] || contextMessages.general;
+
+  // Language-specific labels
+  const labels = {
+    en: {
+      emailLabel: "Email Address",
+      emailPlaceholder: "Enter your email",
+      passwordLabel: "Password", 
+      passwordPlaceholder: "Enter your password",
+      confirmPasswordLabel: "Confirm Password",
+      confirmPasswordPlaceholder: "Confirm your password",
+      forgotPassword: "Forgot your password?",
+      signInButton: "Sign In",
+      createAccountButton: "Create Account",
+      signingInButton: "Signing in...",
+      creatingAccountButton: "Creating Account...",
+      continueWithGoogle: "Continue with Google",
+      alreadyHaveAccount: "Already have an account?",
+      dontHaveAccount: "Don't have an account?",
+      signIn: "Sign in",
+      signUp: "Sign up",
+      passwordRequirement: "Password must be at least 6 characters long"
+    },
+    de: {
+      emailLabel: "E-Mail-Adresse",
+      emailPlaceholder: "E-Mail eingeben",
+      passwordLabel: "Passwort",
+      passwordPlaceholder: "Passwort eingeben", 
+      confirmPasswordLabel: "Passwort bestätigen",
+      confirmPasswordPlaceholder: "Passwort bestätigen",
+      forgotPassword: "Passwort vergessen?",
+      signInButton: "Anmelden",
+      createAccountButton: "Registrieren",
+      signingInButton: "Anmelden...",
+      creatingAccountButton: "Registrieren...",
+      continueWithGoogle: "Mit Google fortfahren",
+      alreadyHaveAccount: "Bereits ein Konto?",
+      dontHaveAccount: "Noch kein Konto?",
+      signIn: "Anmelden",
+      signUp: "Registrieren",
+      passwordRequirement: "Passwort muss mindestens 6 Zeichen lang sein"
+    }
+  };
+
+  const currentLabels = labels[language] || labels.en;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -207,6 +269,8 @@ const LoginModal = ({
     setConfirmPassword('');
     setError('');
     setShowPassword(false);
+    // Reset to appropriate mode based on context
+    setIsSignup(modalContext === 'task' || modalContext === 'branding');
   };
 
   const handleClose = () => {
@@ -240,10 +304,16 @@ const LoginModal = ({
 
         <div className="text-center mb-8 mt-4">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {isSignup ? currentMessage.signupTitle : currentMessage.title}
+            {language === 'de' 
+              ? (isSignup ? currentMessage.signupTitleDe : currentMessage.titleDe)
+              : (isSignup ? currentMessage.signupTitle : currentMessage.title)
+            }
           </h1>
           <p className="text-gray-600 leading-relaxed">
-            {isSignup ? currentMessage.signupSubtitle : currentMessage.subtitle}
+            {language === 'de'
+              ? (isSignup ? currentMessage.signupSubtitleDe : currentMessage.subtitleDe)
+              : (isSignup ? currentMessage.signupSubtitle : currentMessage.subtitle)
+            }
           </p>
         </div>
 
@@ -256,7 +326,7 @@ const LoginModal = ({
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-              Email Address
+              {currentLabels.emailLabel}
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -268,7 +338,7 @@ const LoginModal = ({
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7C3BEC] focus:border-transparent"
-                placeholder="Enter your email"
+                placeholder={currentLabels.emailPlaceholder}
                 required
               />
             </div>
@@ -276,7 +346,7 @@ const LoginModal = ({
 
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-              Password
+              {currentLabels.passwordLabel}
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -288,7 +358,7 @@ const LoginModal = ({
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7C3BEC] focus:border-transparent"
-                placeholder="Enter your password"
+                placeholder={currentLabels.passwordPlaceholder}
                 required
               />
               <button
@@ -305,7 +375,7 @@ const LoginModal = ({
             </div>
             {isSignup && (
               <p className="text-xs text-gray-500 mt-1">
-                Password must be at least 6 characters long
+                {currentLabels.passwordRequirement}
               </p>
             )}
           </div>
@@ -313,7 +383,7 @@ const LoginModal = ({
           {isSignup && (
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
-                Confirm Password
+                {currentLabels.confirmPasswordLabel}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -325,7 +395,7 @@ const LoginModal = ({
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7C3BEC] focus:border-transparent"
-                  placeholder="Confirm your password"
+                  placeholder={currentLabels.confirmPasswordPlaceholder}
                   required
                 />
               </div>
@@ -339,7 +409,7 @@ const LoginModal = ({
                 className="text-sm text-[#7C3BEC] hover:text-[#6B32D6] underline"
                 onClick={handleClose}
               >
-                Forgot your password?
+                {currentLabels.forgotPassword}
               </Link>
             </div>
           )}
@@ -349,7 +419,10 @@ const LoginModal = ({
             disabled={loading}
             className="w-full bg-[#7C3BEC] text-white py-3 px-4 rounded-lg hover:bg-[#6B32D6] focus:outline-none focus:ring-2 focus:ring-[#7C3BEC] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
           >
-            {loading ? (isSignup ? 'Creating Account...' : 'Signing in...') : (isSignup ? 'Create Account' : 'Sign In')}
+            {loading 
+              ? (isSignup ? currentLabels.creatingAccountButton : currentLabels.signingInButton) 
+              : (isSignup ? currentLabels.createAccountButton : currentLabels.signInButton)
+            }
           </button>
         </form>
 
@@ -386,17 +459,17 @@ const LoginModal = ({
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            Continue with Google
+            {currentLabels.continueWithGoogle}
           </button>
         </div>
 
         <p className="mt-8 text-center text-sm text-gray-600">
-          {isSignup ? "Already have an account?" : "Don't have an account?"}{' '}
+          {isSignup ? currentLabels.alreadyHaveAccount : currentLabels.dontHaveAccount}{' '}
           <button 
             onClick={switchMode}
             className="text-[#7C3BEC] hover:text-[#6B32D6] underline font-medium"
           >
-            {isSignup ? "Sign in" : "Sign up"}
+            {isSignup ? currentLabels.signIn : currentLabels.signUp}
           </button>
         </p>
       </motion.div>

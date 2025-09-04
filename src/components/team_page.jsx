@@ -398,8 +398,8 @@ const TeamPage = () => {
       },
       cta: {
         title: "Bereit loszulegen?",
-        description: "Fordere ein Fixpreis-Angebot an und erhalte Hilfe von unseren Experten.",
-        buttonText: "Fixpreis-Aufgabe anfordern",
+        description: "Frage ein Fixpreis-Angebot an und erhalte Hilfe von unseren Experten.",
+        buttonText: "Fixpreis-Aufgabe anfragen",
       },
       team: {
         expertiseTitle: "Expertise",
@@ -409,7 +409,7 @@ const TeamPage = () => {
         getNotified: "Benachrichtigt werden, wenn neue Experten beitreten",
         comingSoon: "Demnächst verfügbar",
         requestExpertButton: "Diesen Experten anfragen",
-        bookNowButton: "Fixpreis-Aufgabe anfordern"
+        bookNowButton: "Fixpreis-Aufgabe anfragen"
       },
       modalContent: {
         title: "Expertenzugang anfordern",

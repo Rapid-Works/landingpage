@@ -1,0 +1,39 @@
+📧 URGENT: Enable SMTP Authentication for Microsoft 365
+
+Hi IT Team,
+
+I need SMTP Authentication enabled for our Microsoft 365 tenant to send automated emails from our RapidWorks application.
+
+🚨 CURRENT ERROR:
+"535 5.7.139 Authentication unsuccessful, SmtpClientAuthentication is disabled for the Tenant"
+
+🔧 QUICK FIX OPTIONS:
+
+Option 1 - Admin Center:
+• Go to Microsoft 365 Admin Center (admin.microsoft.com)
+• Navigate to Exchange Admin Center
+• Go to Mail flow → Auth policies  
+• Enable "Authenticated SMTP" for the organization
+
+Option 2 - PowerShell:
+Set-CASMailbox -Identity "samuel.donkor@rapid-works.io" -SmtpClientAuthenticationDisabled $false
+
+📋 TECHNICAL DETAILS:
+• SMTP Server: smtp.office365.com
+• Port: 587
+• Security: STARTTLS
+• Email: noreply@rapid-works.io
+
+🎯 PURPOSE:
+Send automated emails for RapidWorks customer onboarding:
+• Email verification messages
+• Password reset emails
+• Account notifications
+
+⏰ TIMELINE: Needed for production application ASAP
+
+This is a standard, secure configuration used by many applications. Please let me know if you need any additional information.
+
+Thanks!
+Samuel Donkor
+samuel.donkor@rapid-works.io
