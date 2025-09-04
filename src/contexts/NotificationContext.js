@@ -14,7 +14,9 @@ export const NotificationProvider = ({ children }) => {
   useEffect(() => {
     // Listen for incoming foreground messages
     const unsubscribe = onForegroundMessage((payload) => {
-      // console.log('Push notification received in foreground:', payload);
+      console.log('🔔 FOREGROUND MESSAGE RECEIVED:', payload);
+      console.log('🔔 Message data:', payload.data);
+      console.log('🔔 Notification data:', payload.notification);
       const newNotification = {
         id: payload.messageId || new Date().getTime(),
         title: payload.notification.title,

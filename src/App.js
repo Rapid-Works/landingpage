@@ -55,7 +55,7 @@ import Dashboard from './components/Dashboard'
 import ForgotPassword from './components/ForgotPassword'
 import EmailVerification from './components/EmailVerification'
 import ProtectedRoute from './components/ProtectedRoute'
-// import { NotificationProvider } from './contexts/NotificationContext' // DISABLED
+import { NotificationProvider } from './contexts/NotificationContext'
 import OrganizationInvite from './components/OrganizationInvite'
 import NotificationPermissionBanner from './components/NotificationPermissionBanner'
 
@@ -1400,11 +1400,12 @@ function App() {
     return (
       <ErrorBoundary>
         <AuthProvider>
-          {/* Notification permission banner for mobile/PWA users */}
-          <NotificationPermissionBanner />
-          <AutoNotificationRegistration />
-          <MobilePWAPrompt />
-          <LanguageContext.Provider value={contextValue}>
+          <NotificationProvider>
+            {/* Notification permission banner for mobile/PWA users */}
+            <NotificationPermissionBanner />
+            <AutoNotificationRegistration />
+            <MobilePWAPrompt />
+            <LanguageContext.Provider value={contextValue}>
             <ScrollToTop />
             <Analytics />
             <Routes>
@@ -1472,7 +1473,8 @@ function App() {
           /> */}
           {!isDashboardPage && <Footer />}
           <CookieConsent />
-          </LanguageContext.Provider>
+            </LanguageContext.Provider>
+          </NotificationProvider>
         </AuthProvider>
       </ErrorBoundary>
   )

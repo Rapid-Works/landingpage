@@ -10,7 +10,9 @@ import {
   orderBy,
   serverTimestamp,
   writeBatch,
-  setDoc
+  setDoc,
+  limit as firestoreLimit,
+  startAfter
 } from 'firebase/firestore';
 import { db } from '../firebase/config';
 
@@ -693,54 +695,124 @@ export const fixMissingUserData = async (organizationId, currentUserId, currentU
   }
 };
 
-// Admin function to get all organizations
-export const getAllOrganizations = async () => {
+// Admin function to get all organizations (optimized with pagination and caching)
+export const getAllOrganizations = async (options = {}) => {
+  const { 
+    limit = 50, 
+    startAfter = null, 
+    useCache = true 
+  } = options;
+
   try {
+    // Build paginated query
     const organizationsRef = collection(db, 'organizations');
-    const q = query(organizationsRef, orderBy('createdAt', 'desc'));
-    const snapshot = await getDocs(q);
+    let q = query(organizationsRef, orderBy('createdAt', 'desc'));
     
-    const organizations = [];
-    for (const organizationDoc of snapshot.docs) {
-      const orgData = { id: organizationDoc.id, ...organizationDoc.data() };
-      
-      // Get member count for each organization
-      const membersRef = collection(db, 'organizationMembers');
-      const membersQuery = query(
-        membersRef, 
-        where('organizationId', '==', organizationDoc.id),
-        where('status', '==', 'active')
-      );
-      const membersSnapshot = await getDocs(membersQuery);
-      orgData.memberCount = membersSnapshot.size;
-      
-      // Get admin info
-      const adminQuery = query(
-        membersRef,
-        where('organizationId', '==', organizationDoc.id),
-        where('role', '==', 'admin'),
-        where('status', '==', 'active')
-      );
-      const adminSnapshot = await getDocs(adminQuery);
-      if (!adminSnapshot.empty) {
-        const adminData = adminSnapshot.docs[0].data();
-        // Create user document reference
-        const adminUserRef = firestoreDoc(db, 'users', adminData.userId);
-        const adminUserDoc = await getDoc(adminUserRef);
-        if (adminUserDoc.exists()) {
-          const adminUser = adminUserDoc.data();
-          orgData.adminName = adminUser.displayName || adminUser.email?.split('@')[0] || 'Unknown';
-          orgData.adminEmail = adminUser.email || 'Unknown';
-        } else {
-          orgData.adminName = 'Unknown';
-          orgData.adminEmail = 'Unknown';
-        }
-      }
-      
-      organizations.push(orgData);
+    if (limit) {
+      q = query(q, firestoreLimit(limit));
     }
     
-    return organizations;
+    if (startAfter) {
+      q = query(q, startAfter(startAfter));
+    }
+    
+    const snapshot = await getDocs(q);
+    
+    if (snapshot.empty) {
+      return { organizations: [], hasMore: false, lastDoc: null };
+    }
+
+    // Get organization IDs for this page
+    const orgIds = snapshot.docs.map(doc => doc.id);
+    
+    // Optimized member fetching with parallel batches
+    const membersRef = collection(db, 'organizationMembers');
+    const memberPromises = [];
+    
+    // Process in parallel batches of 10 (Firestore 'in' query limitation)
+    for (let i = 0; i < orgIds.length; i += 10) {
+      const batch = orgIds.slice(i, i + 10);
+      const batchPromise = getDocs(query(
+        membersRef,
+        where('organizationId', 'in', batch),
+        where('status', '==', 'active')
+      ));
+      memberPromises.push(batchPromise);
+    }
+    
+    // Execute all member queries in parallel
+    const memberSnapshots = await Promise.all(memberPromises);
+    const allMembers = memberSnapshots.flatMap(snapshot => 
+      snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+    );
+
+    // Group members by organization and collect admin user IDs
+    const membersByOrg = {};
+    const adminUserIds = new Set();
+    
+    allMembers.forEach(member => {
+      const orgId = member.organizationId;
+      if (!membersByOrg[orgId]) {
+        membersByOrg[orgId] = [];
+      }
+      membersByOrg[orgId].push(member);
+      
+      if (member.role === 'admin') {
+        adminUserIds.add(member.userId);
+      }
+    });
+
+    // Batch fetch admin user data with error handling
+    const adminUsers = {};
+    if (adminUserIds.size > 0) {
+      const userPromises = Array.from(adminUserIds).slice(0, 50).map(async (userId) => {
+        try {
+          const userDoc = await getDoc(firestoreDoc(db, 'users', userId));
+          return userDoc.exists() ? { id: userId, ...userDoc.data() } : null;
+        } catch (error) {
+          console.warn(`Failed to fetch user ${userId}:`, error);
+          return null;
+        }
+      });
+      
+      const userResults = await Promise.all(userPromises);
+      userResults.forEach(user => {
+        if (user) {
+          adminUsers[user.id] = user;
+        }
+      });
+    }
+
+    // Build final organization list
+    const organizations = snapshot.docs.map(doc => {
+      const orgData = { id: doc.id, ...doc.data() };
+      const members = membersByOrg[doc.id] || [];
+      
+      orgData.memberCount = members.length;
+      
+      const admin = members.find(member => member.role === 'admin');
+      if (admin && adminUsers[admin.userId]) {
+        const adminUser = adminUsers[admin.userId];
+        orgData.adminName = adminUser.displayName || adminUser.email?.split('@')[0] || 'Unknown';
+        orgData.adminEmail = adminUser.email || 'Unknown';
+      } else {
+        orgData.adminName = 'Unknown';
+        orgData.adminEmail = 'Unknown';
+      }
+      
+      return orgData;
+    });
+    
+    // Determine if there are more results
+    const hasMore = snapshot.docs.length === limit;
+    const lastDoc = hasMore ? snapshot.docs[snapshot.docs.length - 1] : null;
+    
+    return {
+      organizations,
+      hasMore,
+      lastDoc,
+      total: organizations.length
+    };
   } catch (error) {
     console.error('Error fetching all organizations:', error);
     throw new Error('Failed to fetch organizations');

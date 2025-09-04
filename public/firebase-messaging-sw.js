@@ -37,7 +37,9 @@ if (!isiOS || isStandalone) {
   // console.log('Firebase messaging instance created');
 
   messaging.onBackgroundMessage((payload) => {
-  console.log("[firebase-messaging-sw.js] Received background message ", payload);
+  console.log("[firebase-messaging-sw.js] 🚨 EXPERT MESSAGE RECEIVED:", payload);
+  console.log("[firebase-messaging-sw.js] Notification data:", payload.notification);
+  console.log("[firebase-messaging-sw.js] Custom data:", payload.data);
   
   // Mobile-specific handling
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);

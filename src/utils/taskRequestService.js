@@ -381,6 +381,16 @@ export const addTaskMessage = async (taskId, message, sendNotification = true) =
           messageType = 'estimate';
         }
 
+        console.log('🚀 About to send task message notification:', {
+          taskId,
+          senderEmail,
+          senderRole,
+          recipientEmail,
+          recipientRole,
+          messageContent: (message.content || message.text || '').substring(0, 50),
+          messageType
+        });
+
         await sendTaskMessageNotification({
           taskId,
           senderEmail,
@@ -395,6 +405,8 @@ export const addTaskMessage = async (taskId, message, sendNotification = true) =
             status: taskData.status
           }
         });
+
+        console.log('✅ Task message notification sent successfully');
       } catch (notificationError) {
         console.error('Failed to send task message notification:', notificationError);
         // Don't fail the message sending if notification fails

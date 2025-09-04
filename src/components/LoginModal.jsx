@@ -142,9 +142,13 @@ const LoginModal = ({
 
       if (isSignup) {
         result = await signup(email, password);
-        // For signup, redirect to dashboard instead of email verification (temporarily)
+        // For signup, call success callback or redirect to dashboard (temporarily)
         if (EMAIL_VERIFICATION_DISABLED) {
-          navigate('/dashboard');
+          if (onLoginSuccess) {
+            onLoginSuccess(result);
+          } else {
+            navigate('/dashboard');
+          }
         } else {
           navigate('/verify-email');
         }

@@ -556,10 +556,11 @@ const TeamPage = () => {
   };
 
   // Function to handle successful login
-  const handleLoginSuccess = async (user) => {
+  const handleLoginSuccess = async (userCredential) => {
     setIsLoginModalOpen(false);
     
-    // Use the user parameter if currentUser is not immediately available
+    // Extract user from userCredential (both login and Google login return userCredential)
+    const user = userCredential?.user || userCredential;
     const userId = user?.uid || currentUser?.uid;
     
     if (!userId) {

@@ -602,12 +602,7 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
               </div>
 
               {/* Organization Context Switcher */}
-              {loadingContext ? (
-                <div className="flex items-center justify-center py-4 mb-8">
-                  <Loader2 className="h-5 w-5 animate-spin text-gray-400 mr-2" />
-                  <span className="text-gray-500">Loading context...</span>
-                </div>
-              ) : !hasOrganizations() ? (
+              {!loadingContext && !hasOrganizations() ? (
                 <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 mb-8">
                   <div className="flex items-start gap-3">
                     <AlertCircle className="h-6 w-6 text-amber-600 mt-0.5 flex-shrink-0" />
@@ -693,12 +688,9 @@ const NewTaskModal = ({ isOpen, onClose, selectedExpertType = '', expertName = '
                       disabled={status === 'loading' || !formData.dueDate}
                       placeholder="Select time"
                       style={{
-                        colorScheme: 'light',
-                        WebkitAppearance: 'none',
-                        MozAppearance: 'textfield'
+                        colorScheme: 'light'
                       }}
                     />
-                    <Clock className="absolute right-4 top-1/2 transform -translate-y-1/2 h-6 w-6 text-gray-400 pointer-events-none" />
                   </div>
                 </div>
                 

@@ -88,6 +88,28 @@ const TaskList = ({ userRole, expertInfo, initialSelectedTaskId, onTaskSelected,
     });
   };
 
+  // Enhanced date-time formatting for due dates
+  const formatDueDateWithTime = (task) => {
+    if (!task.dueDate) return '-';
+    
+    const dateStr = formatSimpleDate(task.dueDate);
+    
+    // Check if we have time information
+    if (task.dueTime) {
+      return `${dateStr} ${task.dueTime}`;
+    } else if (task.dueDatetime) {
+      // Extract time from ISO datetime string
+      const datetime = new Date(task.dueDatetime);
+      const timeStr = datetime.toLocaleTimeString('en-GB', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      return `${dateStr} ${timeStr}`;
+    }
+    
+    return dateStr;
+  };
+
   // Load tasks based on user role (realtime subscriptions)
   useEffect(() => {
     if (!currentUser || !userContext) return;
@@ -493,7 +515,7 @@ const TaskList = ({ userRole, expertInfo, initialSelectedTaskId, onTaskSelected,
                     {/* Due Date */}
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-500">
-                        {task.dueDate ? formatSimpleDate(task.dueDate) : '-'}
+                        {formatDueDateWithTime(task)}
                       </div>
                     </td>
 

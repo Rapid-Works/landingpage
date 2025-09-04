@@ -20,8 +20,8 @@ const OrganizationsList = ({ onNavigateToTask }) => {
     setError('');
     
     try {
-      const orgs = await getAllOrganizations();
-      setOrganizations(orgs);
+      const result = await getAllOrganizations({ limit: 50 });
+      setOrganizations(result.organizations || result); // Handle both new and old API
     } catch (err) {
       console.error('Error loading organizations:', err);
       setError('Failed to load organizations. Please try again.');

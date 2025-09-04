@@ -175,8 +175,8 @@ const OrganizationSwitcher = ({ onCreateOrganization, currentContext, onContextC
             ))
           )}
 
-          {/* Create Organization Option - Only show if user doesn't have any organizations and is not rapid-works admin */}
-          {!isRapidWorksAdmin && organizations.length === 0 && (
+          {/* Create Organization Option - Always show for rapid-works admins, or for users with no organizations */}
+          {(isRapidWorksAdmin || organizations.length === 0) && (
             <div className="border-t border-gray-100 mt-1">
               <button
                 onClick={handleCreateOrganization}
@@ -184,7 +184,9 @@ const OrganizationSwitcher = ({ onCreateOrganization, currentContext, onContextC
                 className="w-full flex items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-gray-50 text-[#7C3BEC]"
               >
                 <Plus className="h-4 w-4" />
-                <div className="font-medium text-sm">Create Organization</div>
+                <div className="font-medium text-sm">
+                  {isRapidWorksAdmin ? 'Create Client Organization' : 'Create Organization'}
+                </div>
               </button>
             </div>
           )}

@@ -326,12 +326,7 @@ const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName 
               <h2 className="text-3xl font-bold mb-6 text-gray-900 text-center">{t.title}</h2>
               
               {/* Organization Status */}
-              {loadingContext ? (
-                <div className="flex items-center justify-center py-4 mb-6">
-                  <Loader2 className="h-5 w-5 animate-spin text-gray-400 mr-2" />
-                  <span className="text-gray-500">Loading organization status...</span>
-                </div>
-              ) : currentMessage === 'no-organization' ? (
+              {!loadingContext && currentMessage === 'no-organization' ? (
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 mb-6">
                   <div className="flex items-start gap-3">
                     <AlertCircle className="h-6 w-6 text-amber-600 mt-0.5 flex-shrink-0" />
@@ -347,7 +342,7 @@ const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName 
                     </div>
                   </div>
                 </div>
-              ) : currentMessage === 'admin-required' ? (
+              ) : !loadingContext && currentMessage === 'admin-required' ? (
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 mb-6">
                   <div className="flex items-start gap-3">
                     <AlertCircle className="h-6 w-6 text-amber-600 mt-0.5 flex-shrink-0" />
@@ -363,7 +358,7 @@ const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName 
                     </div>
                   </div>
                 </div>
-              ) : currentMessage === 'organization-not-found' ? (
+              ) : !loadingContext && currentMessage === 'organization-not-found' ? (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
                   <div className="flex items-start gap-3">
                     <AlertCircle className="h-6 w-6 text-red-600 mt-0.5 flex-shrink-0" />
@@ -373,7 +368,7 @@ const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName 
                     </div>
                   </div>
                 </div>
-              ) : currentMessage === 'user-not-found' ? (
+              ) : !loadingContext && currentMessage === 'user-not-found' ? (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
                   <div className="flex items-start gap-3">
                     <AlertCircle className="h-6 w-6 text-red-600 mt-0.5 flex-shrink-0" />
@@ -383,7 +378,7 @@ const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName 
                     </div>
                   </div>
                 </div>
-              ) : currentMessage === 'error' ? (
+              ) : !loadingContext && currentMessage === 'error' ? (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
                   <div className="flex items-start gap-3">
                     <AlertCircle className="h-6 w-6 text-red-600 mt-0.5 flex-shrink-0" />
@@ -393,7 +388,7 @@ const FrameworkAgreementModal = ({ isOpen, onClose, onAgreementSigned, userName 
                     </div>
                   </div>
                 </div>
-              ) : !hasOrganizations() ? (
+              ) : !loadingContext && !hasOrganizations() ? (
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 mb-6">
                   <div className="flex items-start gap-3">
                     <AlertCircle className="h-6 w-6 text-amber-600 mt-0.5 flex-shrink-0" />

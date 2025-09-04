@@ -325,6 +325,28 @@ const CustomerTaskView = ({ taskData, onBack, viewOnly = false }) => {
     return formatted.replace(/^\d+/, `${day}${suffix}`);
   };
 
+  // Enhanced date-time formatting for due dates
+  const formatDueDateWithTime = (task) => {
+    if (!task || !task.dueDate) return '';
+    
+    const baseDate = formatReadableDate(task.dueDate);
+    
+    // Check if we have time information
+    if (task.dueTime) {
+      return `${baseDate} at ${task.dueTime}`;
+    } else if (task.dueDatetime) {
+      // Extract time from ISO datetime string
+      const datetime = new Date(task.dueDatetime);
+      const timeStr = datetime.toLocaleTimeString('en-GB', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      return `${baseDate} at ${timeStr}`;
+    }
+    
+    return baseDate;
+  };
+
   const MessageBubble = React.memo(({ msg }) => {
     const isCurrentUser = msg.sender === 'customer';
 
@@ -508,7 +530,7 @@ const CustomerTaskView = ({ taskData, onBack, viewOnly = false }) => {
               <div className="mb-3">
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <Calendar className="h-4 w-4" />
-                  <span>Due: {formatReadableDate(currentTaskData.dueDate)}</span>
+                  <span>Due: {formatDueDateWithTime(currentTaskData)}</span>
                 </div>
               </div>
             )}
