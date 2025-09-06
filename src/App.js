@@ -1329,26 +1329,12 @@ function App() {
           if (fallback.parentNode) {
             fallback.remove();
           }
-        }, 300);
+        }, 200);
       }
     };
     
-    // More aggressive removal for mobile browsers
-    const isMobileBrowser = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
-    // Remove immediately when component mounts
-    removeLoadingScreen();
-    
-    // Multiple attempts for mobile browsers
-    if (isMobileBrowser) {
-      setTimeout(removeLoadingScreen, 50);
-      setTimeout(removeLoadingScreen, 200);
-      setTimeout(removeLoadingScreen, 500);
-      setTimeout(removeLoadingScreen, 1000);
-        } else {
-      // Also try after a short delay to ensure DOM is ready
-      setTimeout(removeLoadingScreen, 100);
-    }
+    // Single removal attempt when React mounts
+    setTimeout(removeLoadingScreen, 100);
   }, []);
   
   // Check if we're on a dashboard page

@@ -1,0 +1,172 @@
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { Calendar, Clock, FileText, AlertCircle, Plus } from 'lucide-react';
+import { getCoachingSessions } from '../utils/coachingService';
+import AddCoachingModal from './AddCoachingModal';
+
+const RapidCoachings = () => {
+  const { currentUser } = useAuth();
+  const [coachingSessions, setCoachingSessions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    loadCoachingSessions();
+  }, [currentUser]);
+
+  const loadCoachingSessions = async () => {
+    if (!currentUser) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError('');
+      const sessions = await getCoachingSessions(currentUser.uid);
+      setCoachingSessions(sessions);
+    } catch (err) {
+      console.error('Error loading coaching sessions:', err);
+      setError('Failed to load coaching sessions. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleModalSuccess = () => {
+    loadCoachingSessions(); // Refresh the list after adding new session
+  };
+
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString('en-US', options);
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Completed':
+        return 'bg-green-100 text-green-800';
+      case 'Scheduled':
+        return 'bg-blue-100 text-blue-800';
+      case 'Cancelled':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7C3BEC]"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Rapid Coachings</h2>
+          <p className="text-gray-600 mt-1">Your coaching session history and upcoming appointments</p>
+        </div>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="inline-flex items-center px-4 py-2 bg-[#7C3BEC] text-white text-sm font-medium rounded-md hover:bg-[#6B2DBD] focus:outline-none focus:ring-2 focus:ring-[#7C3BEC] transition-colors"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Add Session
+        </button>
+      </div>
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+          {error}
+        </div>
+      )}
+
+      <div className="bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Date
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Duration
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Type
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Coach
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Description
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Status
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {coachingSessions.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="px-6 py-12 text-center">
+                    <AlertCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">No coaching sessions found</h3>
+                    <p className="text-gray-600">You haven't scheduled any coaching sessions yet.</p>
+                  </td>
+                </tr>
+              ) : (
+                coachingSessions.map((session) => (
+                  <tr key={session.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <Calendar className="h-4 w-4 text-gray-400 mr-2" />
+                        <span className="text-sm text-gray-900">{formatDate(session.date)}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <Clock className="h-4 w-4 text-gray-400 mr-2" />
+                        <span className="text-sm text-gray-900">{session.duration}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="text-sm font-medium text-gray-900">{session.type}</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="text-sm text-gray-900">{session.coach}</span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-start">
+                        <FileText className="h-4 w-4 text-gray-400 mr-2 mt-0.5 flex-shrink-0" />
+                        <span className="text-sm text-gray-900">{session.description}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(session.status)}`}>
+                        {session.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <AddCoachingModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSuccess={handleModalSuccess}
+      />
+    </div>
+  );
+};
+
+export default RapidCoachings;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { motion } from 'framer-motion';
-import { Edit, Package, MessageSquare, FileCheck, Receipt, ChevronDown, ChevronRight, BellRing, Users, Building, BarChart3, MessageCircle } from 'lucide-react';
+import { Edit, Package, MessageSquare, FileCheck, Receipt, ChevronDown, ChevronRight, BellRing, Users, Building, BarChart3, GraduationCap, CreditCard } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import RapidWorksHeader from './new_landing_page_header';
 import BrandingKits from './BrandingKits';
@@ -16,7 +16,8 @@ import OrganizationUsers from './OrganizationUsers';
 import OrganizationsList from './OrganizationsList';
 import Analytics from './Analytics';
 import AllUsers from './AllUsers';
-import TwilioWhatsAppTest from './TwilioWhatsAppTest';
+import RapidCoachings from './RapidCoachings';
+import RapidFinancing from './RapidFinancing';
 
 import { isExpert, getExpertByEmail, isAdmin, getAllExperts } from '../utils/expertService';
 import { getCurrentUserContext } from '../utils/organizationService';
@@ -92,6 +93,25 @@ const Dashboard = () => {
       try {
         const context = await getCurrentUserContext(currentUser.uid);
         setCurrentContext(context);
+        
+        // For non-admin users (clients), handle organization logic
+        if (!currentUser.email?.endsWith('@rapid-works.io')) {
+          const { getUserOrganizations, switchToOrganization } = await import('../utils/organizationService');
+          
+          // Get user's organizations
+          const userOrganizations = await getUserOrganizations(currentUser.uid);
+          
+          if (userOrganizations.length === 0) {
+            // No organizations - show create modal
+            setIsCreateOrgModalOpen(true);
+          } else if (context.type === 'personal' && userOrganizations.length > 0) {
+            // User has organizations but is in personal mode - auto-switch to first organization
+            await switchToOrganization(currentUser.uid, userOrganizations[0].id);
+            // Reload context after switching
+            const updatedContext = await getCurrentUserContext(currentUser.uid);
+            setCurrentContext(updatedContext);
+          }
+        }
       } catch (error) {
         console.error('Error loading user context:', error);
       } finally {
@@ -136,6 +156,9 @@ const Dashboard = () => {
   
   // Check if user can access all users list (rapid-works.io emails only)
   const canAccessAllUsers = currentUser && currentUser.email?.endsWith('@rapid-works.io');
+  
+  // Check if user can access Rapid Coachings and Rapid Financing (all authenticated users)
+  const canAccessRapidServices = currentUser !== null;
 
   // Handle navigation from invoicing to task chat
   const handleNavigateToTask = (taskId) => {
@@ -156,20 +179,50 @@ const Dashboard = () => {
 
   // moved enable/test notifications into Notification Settings modal
 
-  const handleOrganizationCreated = (organization) => {
-    // Update context after organization creation
-    setCurrentContext({
-      type: 'organization',
-      organization,
-      permissions: {
-        role: 'admin',
+  const handleOrganizationCreated = async (organization) => {
+    setIsCreateOrgModalOpen(false);
+    
+    if (currentUser.email?.endsWith('@rapid-works.io')) {
+      // For admin users, set context directly (original behavior)
+      setCurrentContext({
+        type: 'organization',
+        organization,
         permissions: {
-          canRequestExperts: true,
-          canSeeAllRequests: true,
-          canManageMembers: true
+          role: 'admin',
+          permissions: {
+            canRequestExperts: true,
+            canSeeAllRequests: true,
+            canManageMembers: true
+          }
         }
+      });
+    } else {
+      // For clients, automatically switch to the newly created organization
+      try {
+        const { switchToOrganization } = await import('../utils/organizationService');
+        
+        // Switch to the newly created organization
+        await switchToOrganization(currentUser.uid, organization.id);
+        // Reload context after switching
+        const updatedContext = await getCurrentUserContext(currentUser.uid);
+        setCurrentContext(updatedContext);
+      } catch (error) {
+        console.error('Error switching to new organization:', error);
+        // Fallback to direct context setting
+        setCurrentContext({
+          type: 'organization',
+          organization,
+          permissions: {
+            role: 'admin',
+            permissions: {
+              canRequestExperts: true,
+              canSeeAllRequests: true,
+              canManageMembers: true
+            }
+          }
+        });
       }
-    });
+    }
   };
 
   const handleContextChange = (newContext) => {
@@ -279,12 +332,14 @@ const Dashboard = () => {
                   </div>
                 </div>
                 
-                {/* Organization Switcher */}
-                <OrganizationSwitcher 
-                  onCreateOrganization={() => setIsCreateOrgModalOpen(true)}
-                  currentContext={currentContext}
-                  onContextChange={handleContextChange}
-                />
+                {/* Organization Switcher - Only for rapid-works.io admin users */}
+                {currentUser?.email?.endsWith('@rapid-works.io') && (
+                  <OrganizationSwitcher 
+                    onCreateOrganization={() => setIsCreateOrgModalOpen(true)}
+                    currentContext={currentContext}
+                    onContextChange={handleContextChange}
+                  />
+                )}
               </div>
 
               {/* Navigation Items */}
@@ -303,7 +358,7 @@ const Dashboard = () => {
                 >
                   <Package className="h-5 w-5" />
                   <div className="flex-1">
-                    <div className="font-medium">Branding Kits</div>
+                    <div className="font-medium">Rapid Branding</div>
                   </div>
                 </button>
                 
@@ -419,7 +474,7 @@ const Dashboard = () => {
                       <MessageSquare className="h-5 w-5" />
                       <div className="flex-1">
                         <div className="font-medium">
-                          {userIsExpert ? 'Expert Tasks' : 'My Requests'}
+                          {userIsExpert ? 'Expert Tasks' : (currentUser?.email?.endsWith('@rapid-works.io') ? 'My Requests' : 'Rapid Expert Tasks')}
                         </div>
                       </div>
                       {userIsExpert && unreadTotal > 0 && (
@@ -533,6 +588,48 @@ const Dashboard = () => {
                   </button>
                 )}
 
+                {/* Rapid Coachings - For non-admin users only */}
+                {canAccessRapidServices && (
+                  <button
+                    onClick={() => {
+                      setActiveTab('coachings');
+                      setSelectedTaskId(null); // Clear when leaving tasks area
+                      setIsMobileMenuOpen(false); // Close mobile menu
+                    }}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
+                      activeTab === 'coachings'
+                        ? 'bg-[#7C3BEC] text-white shadow-lg'
+                        : 'text-gray-700 hover:bg-white hover:shadow-md'
+                    }`}
+                  >
+                    <GraduationCap className="h-5 w-5" />
+                    <div className="flex-1">
+                      <div className="font-medium">Rapid Coachings</div>
+                    </div>
+                  </button>
+                )}
+
+                {/* Rapid Financing - For non-admin users only */}
+                {canAccessRapidServices && (
+                  <button
+                    onClick={() => {
+                      setActiveTab('financing');
+                      setSelectedTaskId(null); // Clear when leaving tasks area
+                      setIsMobileMenuOpen(false); // Close mobile menu
+                    }}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
+                      activeTab === 'financing'
+                        ? 'bg-[#7C3BEC] text-white shadow-lg'
+                        : 'text-gray-700 hover:bg-white hover:shadow-md'
+                    }`}
+                  >
+                    <CreditCard className="h-5 w-5" />
+                    <div className="flex-1">
+                      <div className="font-medium">Rapid Financing</div>
+                    </div>
+                  </button>
+                )}
+
                 {/* Twilio WhatsApp Test - Temporarily hidden (integrated into organization creation) */}
 
                 {canAccessMembers && (
@@ -548,9 +645,15 @@ const Dashboard = () => {
                         : 'text-gray-700 hover:bg-white hover:shadow-md'
                     }`}
                   >
-                    <Users className="h-5 w-5" />
+                    {currentUser?.email?.endsWith('@rapid-works.io') ? (
+                      <Users className="h-5 w-5" />
+                    ) : (
+                      <Building className="h-5 w-5" />
+                    )}
                     <div className="flex-1">
-                      <div className="font-medium">Members</div>
+                      <div className="font-medium">
+                        {currentUser?.email?.endsWith('@rapid-works.io') ? 'Members' : 'Organization'}
+                      </div>
                     </div>
                   </button>
                 )}
@@ -600,15 +703,17 @@ const Dashboard = () => {
                   </svg>
                 </button>
                 <h1 className="text-lg font-semibold text-gray-900 truncate">
-                  {activeTab === 'branding' && 'Branding Kits'}
-                  {activeTab === 'tasks' && (userIsExpert ? 'Expert Tasks' : 'My Requests')}
+                  {activeTab === 'branding' && 'Rapid Branding'}
+                  {activeTab === 'tasks' && (userIsExpert ? 'Expert Tasks' : (currentUser?.email?.endsWith('@rapid-works.io') ? 'My Requests' : 'Rapid Expert Tasks'))}
                   {activeTab === 'agreements' && 'Agreements'}
                   {activeTab === 'invoicing' && 'Invoicing'}
                   {activeTab === 'organizations' && 'Organizations'}
                   {activeTab === 'users' && 'Users'}
                   {activeTab === 'analytics' && 'Rapid Analytics'}
+                  {activeTab === 'coachings' && 'Rapid Coachings'}
+                  {activeTab === 'financing' && 'Rapid Financing'}
                   {/* {activeTab === 'twilio-test' && 'Twilio Test'} */}
-                  {activeTab === 'members' && 'Members'}
+                  {activeTab === 'members' && (currentUser?.email?.endsWith('@rapid-works.io') ? 'Members' : 'Organization')}
                 </h1>
               </div>
 
@@ -702,6 +807,28 @@ const Dashboard = () => {
                 )}
 
                 {/* Twilio test content temporarily hidden */}
+
+                {activeTab === 'coachings' && canAccessRapidServices && (
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="bg-white rounded-lg border border-gray-200 p-4 lg:p-6"
+                  >
+                    <RapidCoachings />
+                  </motion.div>
+                )}
+
+                {activeTab === 'financing' && canAccessRapidServices && (
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="bg-white rounded-lg border border-gray-200 p-4 lg:p-6"
+                  >
+                    <RapidFinancing />
+                  </motion.div>
+                )}
 
                 {activeTab === 'members' && canAccessMembers && (
                   <motion.div

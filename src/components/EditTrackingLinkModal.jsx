@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Link, FileText, ExternalLink } from 'lucide-react';
 
-const CreateTrackingLinkModal = ({ isOpen, onClose, onSubmit }) => {
+const EditTrackingLinkModal = ({ isOpen, onClose, onSubmit, linkData }) => {
   const [formData, setFormData] = useState({
     name: '',
     destinationUrl: '',
@@ -10,6 +10,17 @@ const CreateTrackingLinkModal = ({ isOpen, onClose, onSubmit }) => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
+
+  // Populate form when linkData changes
+  useEffect(() => {
+    if (linkData) {
+      setFormData({
+        name: linkData.name || '',
+        destinationUrl: linkData.destinationUrl || '',
+        description: linkData.description || ''
+      });
+    }
+  }, [linkData]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -54,9 +65,9 @@ const CreateTrackingLinkModal = ({ isOpen, onClose, onSubmit }) => {
         finalFormData.destinationUrl = 'https://' + finalFormData.destinationUrl;
       }
       
-      await onSubmit(finalFormData);
+      await onSubmit(linkData.id, finalFormData);
       
-      // Reset form
+      // Reset form and errors
       setFormData({
         name: '',
         destinationUrl: '',
@@ -64,7 +75,7 @@ const CreateTrackingLinkModal = ({ isOpen, onClose, onSubmit }) => {
       });
       setErrors({});
     } catch (error) {
-      console.error('Error creating tracking link:', error);
+      console.error('Error updating tracking link:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -79,7 +90,18 @@ const CreateTrackingLinkModal = ({ isOpen, onClose, onSubmit }) => {
     }
   };
 
-  if (!isOpen) return null;
+  const handleClose = () => {
+    // Reset form and errors when closing
+    setFormData({
+      name: '',
+      destinationUrl: '',
+      description: ''
+    });
+    setErrors({});
+    onClose();
+  };
+
+  if (!isOpen || !linkData) return null;
 
   const modalContent = (
     <div className="fixed inset-0 z-[9999] overflow-y-auto">
@@ -87,7 +109,7 @@ const CreateTrackingLinkModal = ({ isOpen, onClose, onSubmit }) => {
         className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
         style={{ backdropFilter: 'blur(8px)' }}
       >
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onClick={onClose}></div>
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onClick={handleClose}></div>
 
         <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
@@ -96,7 +118,7 @@ const CreateTrackingLinkModal = ({ isOpen, onClose, onSubmit }) => {
             <button
               type="button"
               className="bg-white rounded-md text-gray-400 hover:text-gray-600 focus:outline-none"
-              onClick={onClose}
+              onClick={handleClose}
             >
               <span className="sr-only">Close</span>
               <X className="h-6 w-6" aria-hidden="true" />
@@ -104,16 +126,16 @@ const CreateTrackingLinkModal = ({ isOpen, onClose, onSubmit }) => {
           </div>
 
           <div className="sm:flex sm:items-start">
-            <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-purple-100 sm:mx-0 sm:h-10 sm:w-10">
-              <Link className="h-6 w-6 text-purple-600" aria-hidden="true" />
+            <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
+              <Link className="h-6 w-6 text-blue-600" aria-hidden="true" />
             </div>
             <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left flex-1">
               <h3 className="text-lg leading-6 font-medium text-gray-900">
-                Create Tracking Link
+                Edit Tracking Link
               </h3>
               <div className="mt-2">
                 <p className="text-sm text-gray-500">
-                  Generate a trackable link with QR code for your marketing campaigns.
+                  Update the name, destination URL, and description of your tracking link.
                 </p>
               </div>
             </div>
@@ -130,7 +152,7 @@ const CreateTrackingLinkModal = ({ isOpen, onClose, onSubmit }) => {
                   id="name"
                   value={formData.name}
                   onChange={(e) => handleInputChange('name', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                     errors.name ? 'border-red-300' : 'border-gray-300'
                   }`}
                   placeholder="e.g. 30 Flyers for event XYZ"
@@ -158,7 +180,7 @@ const CreateTrackingLinkModal = ({ isOpen, onClose, onSubmit }) => {
                       handleInputChange('destinationUrl', 'https://' + url);
                     }
                   }}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                     errors.destinationUrl ? 'border-red-300' : 'border-gray-300'
                   }`}
                   placeholder="example.com or https://example.com"
@@ -178,25 +200,22 @@ const CreateTrackingLinkModal = ({ isOpen, onClose, onSubmit }) => {
                 value={formData.description}
                 onChange={(e) => handleInputChange('description', e.target.value)}
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="e.g. We will hand those to people at the event."
                 disabled={isSubmitting}
               />
             </div>
 
-            <div className="bg-gray-50 p-3 rounded-lg">
-              <p className="text-xs text-gray-600">
-                <strong>Note:</strong> Pressing this button will create a new record with the entered name, 
-                destination link and description, along with a generated tracking link, QR Code, 
-                and its own Google Analytics tracking link, so you can individually track the traffic of this campaign. Later on you can still change the name and even the Destination URL of this campaign here, thus rerouting users precisely to where you want.
+            <div className="bg-blue-50 p-3 rounded-lg">
+              <p className="text-xs text-blue-700">
+                <strong>Note:</strong> The tracking link and QR code will remain the same. Only the name, destination URL, and description will be updated.
               </p>
-              {/* <p className="text-xs text-gray-500 mt-1 italic">- System</p> */}
             </div>
 
             <div className="flex gap-3 pt-4">
               <button
                 type="button"
-                onClick={onClose}
+                onClick={handleClose}
                 className="flex-1 px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                 disabled={isSubmitting}
               >
@@ -204,10 +223,10 @@ const CreateTrackingLinkModal = ({ isOpen, onClose, onSubmit }) => {
               </button>
               <button
                 type="submit"
-                className="flex-1 bg-[#7C3BEC] hover:bg-[#6B32D6] text-white px-4 py-2 rounded-lg transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Creating...' : 'Generate new Tracking Link'}
+                {isSubmitting ? 'Updating...' : 'Update Tracking Link'}
               </button>
             </div>
           </form>
@@ -219,4 +238,4 @@ const CreateTrackingLinkModal = ({ isOpen, onClose, onSubmit }) => {
   return createPortal(modalContent, document.body);
 };
 
-export default CreateTrackingLinkModal;
+export default EditTrackingLinkModal;

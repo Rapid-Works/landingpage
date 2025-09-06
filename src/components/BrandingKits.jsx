@@ -238,9 +238,12 @@ const BrandingKits = ({ initialKitId }) => {
         <Button variant={tab === "my" ? "default" : "outline"} onClick={() => { setTab("my"); setSelectedKit(null); }}>
           My Kits
         </Button>
-        <Button variant={tab === "all" ? "default" : "outline"} onClick={() => { setTab("all"); setSelectedKit(null); }}>
-          Explore Kits
-        </Button>
+        {/* Only show Explore Kits tab for admin users */}
+        {isAdmin && (
+          <Button variant={tab === "all" ? "default" : "outline"} onClick={() => { setTab("all"); setSelectedKit(null); }}>
+            Explore Kits
+          </Button>
+        )}
       </div>
 
       {/* My Kits Tab */}
@@ -254,8 +257,13 @@ const BrandingKits = ({ initialKitId }) => {
             </div>
           ) : myKits.length === 0 ? (
             <div className="text-center text-gray-500 py-12">
-              You don't have any kits yet.<br />
-              <span className="text-blue-600 cursor-pointer underline" onClick={() => setTab("all")}>Explore kits</span> or contact admin to get started!
+              You don't have any kits yet.
+              {isAdmin && (
+                <>
+                  <br />
+                  <span className="text-blue-600 cursor-pointer underline" onClick={() => setTab("all")}>Explore kits</span> or create new ones to get started!
+                </>
+              )}
             </div>
           ) : selectedKit ? (
             // Show loading for specific kit while myKits loads, or render kit if found
@@ -315,8 +323,8 @@ const BrandingKits = ({ initialKitId }) => {
         </div>
       )}
 
-      {/* Explore Kits Tab */}
-      {tab === "all" && !selectedKit && (
+      {/* Explore Kits Tab - Only for admin users */}
+      {tab === "all" && !selectedKit && isAdmin && (
         <div className="px-6">
           {brandingKits.length === 0 ? (
             <div className="text-center text-gray-500 py-12">No kits available to explore at the moment.</div>
@@ -350,7 +358,7 @@ const BrandingKits = ({ initialKitId }) => {
           )}
         </div>
       )}
-      {tab === "all" && selectedKit && (
+      {tab === "all" && selectedKit && isAdmin && (
         <div className="px-6">
           {renderKit(brandingKits.find(k => k.id === selectedKit))}
         </div>

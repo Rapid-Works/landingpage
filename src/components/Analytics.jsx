@@ -10,7 +10,8 @@ import {
   MousePointer,
   Trash2,
   Globe,
-  Activity
+  Activity,
+  Edit
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { getCurrentUserContext } from '../utils/organizationService';
@@ -19,11 +20,13 @@ import {
   getTrackingLinks, 
   getAnalyticsSummary,
   deleteTrackingLink,
+  updateTrackingLink,
   getReferrerAnalytics,
   getVisitTrends
 } from '../utils/analyticsService';
 import QRCodeModal from './QRCodeModal';
 import CreateTrackingLinkModal from './CreateTrackingLinkModal';
+import EditTrackingLinkModal from './EditTrackingLinkModal';
 
 const Analytics = () => {
   const { currentUser } = useAuth();
@@ -33,6 +36,7 @@ const Analytics = () => {
   const [trendsData, setTrendsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [showQRModal, setShowQRModal] = useState(false);
   const [selectedLink, setSelectedLink] = useState(null);
   const [copiedLink, setCopiedLink] = useState(null);
@@ -245,6 +249,35 @@ const Analytics = () => {
   const handleShowQR = (link) => {
     setSelectedLink(link);
     setShowQRModal(true);
+  };
+
+  const handleEditLink = (link) => {
+    setSelectedLink(link);
+    setShowEditModal(true);
+  };
+
+  const handleUpdateLink = async (linkId, updates) => {
+    try {
+      await updateTrackingLink(linkId, updates);
+      
+      // Update the local state
+      setTrackingLinks(prev => 
+        prev.map(link => 
+          link.id === linkId 
+            ? { ...link, ...updates }
+            : link
+        )
+      );
+      
+      setShowEditModal(false);
+      setSelectedLink(null);
+      
+      // Refresh analytics data
+      await loadAnalytics();
+    } catch (error) {
+      console.error('Error updating tracking link:', error);
+      alert('Failed to update tracking link. Please try again.');
+    }
   };
 
   const handleDeleteLink = async (linkId) => {
@@ -512,6 +545,13 @@ const Analytics = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleEditLink(link)}
+                          className="text-blue-600 hover:text-blue-800"
+                          title="Edit link"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </button>
                         <button
                           onClick={() => handleDeleteLink(link.id)}
                           className="text-red-600 hover:text-red-800"
@@ -930,6 +970,15 @@ const Analytics = () => {
           isOpen={showQRModal}
           onClose={() => setShowQRModal(false)}
           link={selectedLink}
+        />
+      )}
+
+      {showEditModal && selectedLink && (
+        <EditTrackingLinkModal
+          isOpen={showEditModal}
+          onClose={() => setShowEditModal(false)}
+          onSubmit={handleUpdateLink}
+          linkData={selectedLink}
         />
       )}
     </div>

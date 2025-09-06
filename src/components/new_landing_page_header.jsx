@@ -239,129 +239,129 @@ export default function RapidWorksHeader() {
           {/* Desktop Header */}
           <div className="hidden md:flex items-center justify-center h-full relative">
             {/* Centered Group */}
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4 lg:gap-6">
               {/* Logo */}
               <Link to="/" className="flex items-center group flex-shrink-0">
-            <img src={logo} alt="RapidWorks" className="h-10 w-auto" />
-          </Link>
+                <img src={logo} alt="RapidWorks" className="h-10 w-auto" />
+              </Link>
 
               {/* Navigation */}
-              <nav className="flex items-center gap-6">
-            {navItems.map((item) => (
-              <div key={item.name} className="relative group">
-                <Link
-                  to={item.path}
-                  className={`relative px-4 py-2 rounded-full flex items-center gap-2 transition-all duration-300 text-sm font-medium z-10 ${
-                    isActive(item.path)
-                      ? `text-[${accentColor}]`
-                      : `text-gray-700 hover:text-[${accentColor}]`
-                  }`}
-                >
-                  <span className="w-4 h-4">{item.icon}</span>
-                  <span>{item.name}</span>
-                </Link>
-                <div className={`absolute -bottom-1 left-0 right-0 h-0.5`} style={{background: accentColor, opacity: isActive(item.path) ? 1 : 0, transform: isActive(item.path) ? 'scaleX(1)' : 'scaleX(0)', transition: 'transform 0.3s'}}></div>
-              </div>
-            ))}
+              <nav className="flex items-center gap-2 lg:gap-4">
+                {navItems.map((item) => (
+                  <div key={item.name} className="relative group">
+                    <Link
+                      to={item.path}
+                      className={`relative px-2 lg:px-4 py-2 rounded-full flex items-center gap-1 lg:gap-2 transition-all duration-300 text-xs lg:text-sm font-medium z-10 whitespace-nowrap ${
+                        isActive(item.path)
+                          ? `text-[${accentColor}]`
+                          : `text-gray-700 hover:text-[${accentColor}]`
+                      }`}
+                    >
+                      <span className="w-3 h-3 lg:w-4 lg:h-4 flex-shrink-0">{item.icon}</span>
+                      <span className="hidden xl:inline">{item.name}</span>
+                    </Link>
+                    <div className={`absolute -bottom-1 left-0 right-0 h-0.5`} style={{background: accentColor, opacity: isActive(item.path) ? 1 : 0, transform: isActive(item.path) ? 'scaleX(1)' : 'scaleX(0)', transition: 'transform 0.3s'}}></div>
+                  </div>
+                ))}
               </nav>
 
               {/* Centered Controls */}
-              <div className="flex items-center gap-4">
-            <a
-              href="https://calendly.com/yannick-familie-heeren/30min"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`px-8 py-2.5 rounded-full hover:shadow-lg hover:translate-y-[-2px] active:translate-y-[0px] transition-all duration-300 font-medium text-sm`}
-              style={{background: accentColor, color: '#fff', boxShadow: `0 2px 8px 0 ${accentColor}22`}}
-            >
-              {translate('nav.bookCall')}
-            </a>
-                <div className="flex items-center gap-1 p-1.5 bg-gray-100 rounded-full">
-               <button
-                 onClick={() => handleLanguageButtonClick('en')}
-                 className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors duration-200 ${
-                   language === 'en'
-                     ? 'shadow-sm'
-                     : 'text-gray-500 hover:text-gray-700'
-                 }`}
-                 style={language === 'en' ? { background: accentColor, color: '#fff' } : {}}
-               >
-                 EN
-               </button>
-               <button
-                 onClick={() => handleLanguageButtonClick('de')}
-                 className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors duration-200 ${
-                   language === 'de'
-                     ? 'shadow-sm'
-                     : 'text-gray-500 hover:text-gray-700'
-                 }`}
-                 style={language === 'de' ? { background: accentColor, color: '#fff' } : {}}
-               >
-                 DE
-               </button>
-             </div>
-          </div>
-          </div>
+              <div className="flex items-center gap-2 lg:gap-4">
+                <a
+                  href="https://calendly.com/yannick-familie-heeren/30min"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`hidden xl:block px-4 lg:px-8 py-2 lg:py-2.5 rounded-full hover:shadow-lg hover:translate-y-[-2px] active:translate-y-[0px] transition-all duration-300 font-medium text-xs lg:text-sm whitespace-nowrap`}
+                  style={{background: accentColor, color: '#fff', boxShadow: `0 2px 8px 0 ${accentColor}22`}}
+                >
+                  {translate('nav.bookCall')}
+                </a>
+                <div className="flex items-center gap-1 p-1 lg:p-1.5 bg-gray-100 rounded-full">
+                  <button
+                    onClick={() => handleLanguageButtonClick('en')}
+                    className={`px-2 lg:px-3 py-1 rounded-full text-xs font-medium transition-colors duration-200 ${
+                      language === 'en'
+                        ? 'text-white shadow-sm'
+                        : 'text-gray-500 hover:text-gray-700'
+                    }`}
+                    style={language === 'en' ? { background: accentColor } : {}}
+                  >
+                    EN
+                  </button>
+                  <button
+                    onClick={() => handleLanguageButtonClick('de')}
+                    className={`px-2 lg:px-3 py-1 rounded-full text-xs font-medium transition-colors duration-200 ${
+                      language === 'de'
+                        ? 'text-white shadow-sm'
+                        : 'text-gray-500 hover:text-gray-700'
+                    }`}
+                    style={language === 'de' ? { background: accentColor } : {}}
+                  >
+                    DE
+                  </button>
+                </div>
+              </div>
+            </div>
 
             {/* Right-aligned Auth */}
-            <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-4">
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-2 lg:gap-3">
               {currentUser ? (
                 <>
                   {/* Notification Bell - Only for logged in users */}
-            <div className="relative">
-              <button 
-                onClick={handleNotificationClick} 
-                className="relative text-gray-600 hover:text-purple-600 focus:outline-none p-2 rounded-full hover:bg-gray-100 transition-colors"
-                title="View notifications"
-              >
-                <Bell size={24} />
-                {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">
-                    {unreadCount > 99 ? '99+' : unreadCount}
-                  </span>
-                )}
-              </button>
-            </div>
-                <div className="relative user-menu-container" ref={userMenuRef}>
-               <button
-                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                    className="flex items-center flex-shrink-0"
-                  >
-                    {renderUserAvatar()}
-                  </button>
-                  {isUserMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-100 z-50">
-                      <div className="p-2">
-                        <div className="ml-1 mb-1">
-                          <p className="font-medium text-sm text-gray-800 truncate">
-                            {currentUser.displayName}
-                          </p>
-                          <p className="text-xs text-gray-500 truncate">
-                            {currentUser.email}
-                          </p>
+                  <div className="relative">
+                    <button 
+                      onClick={handleNotificationClick} 
+                      className="relative text-gray-600 hover:text-purple-600 focus:outline-none p-1.5 lg:p-2 rounded-full hover:bg-gray-100 transition-colors"
+                      title="View notifications"
+                    >
+                      <Bell size={20} className="lg:w-6 lg:h-6" />
+                      {unreadCount > 0 && (
+                        <span className="absolute -top-0.5 -right-0.5 lg:-top-1 lg:-right-1 flex h-4 w-4 lg:h-5 lg:w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">
+                          {unreadCount > 99 ? '99+' : unreadCount}
+                        </span>
+                      )}
+                    </button>
+                  </div>
+                  <div className="relative user-menu-container" ref={userMenuRef}>
+                    <button
+                      onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                      className="flex items-center flex-shrink-0"
+                    >
+                      {renderUserAvatar()}
+                    </button>
+                    {isUserMenuOpen && (
+                      <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-100 z-50">
+                        <div className="p-2">
+                          <div className="ml-1 mb-1">
+                            <p className="font-medium text-sm text-gray-800 truncate">
+                              {currentUser.displayName}
+                            </p>
+                            <p className="text-xs text-gray-500 truncate">
+                              {currentUser.email}
+                            </p>
+                          </div>
+                          <div className="border-t border-gray-100 my-1"></div>
+                          {/* Moved to Dashboard sidebar: Edit Profile and Notification Settings */}
+                          <button onClick={handleDashboardRedirect} className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+                            <Settings className="h-4 w-4 mr-2" />
+                            Dashboard
+                          </button>
+                          <button onClick={handleLogout} className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+                            <LogOut className="h-4 w-4 mr-2" />
+                            Sign Out
+                          </button>
                         </div>
-                        <div className="border-t border-gray-100 my-1"></div>
-                        {/* Moved to Dashboard sidebar: Edit Profile and Notification Settings */}
-                        <button onClick={handleDashboardRedirect} className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
-                          <Settings className="h-4 w-4 mr-2" />
-                          Dashboard
-               </button>
-                        <button onClick={handleLogout} className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
-                          <LogOut className="h-4 w-4 mr-2" />
-                          Sign Out
-               </button>
-             </div>
-                    </div>
-                  )}
-                </div>
+                      </div>
+                    )}
+                  </div>
                 </>
               ) : (
-            <button
+                <button
                   onClick={handleLoginRedirect}
                   className="px-6 py-2.5 text-gray-700 hover:text-[#7C3BEC] border border-gray-300 hover:border-[#7C3BEC] rounded-full hover:bg-gray-50 transition-all duration-300 font-medium text-sm"
-            >
+                >
                   Sign In
-            </button>
+                </button>
               )}
             </div>
           </div>

@@ -207,23 +207,24 @@ export function AuthProvider({ children }) {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
       
-      // Ensure user document exists whenever auth state changes
+      // Set loading to false immediately to prevent blank screens
+      setLoading(false);
+      
+      // Run background tasks after UI is rendered
       if (user) {
-        await ensureUserDocument(user);
-        
-        // Initialize notifications silently (no UI prompts)
-        // This will check if user has existing tokens and setup listeners
-        try {
-          await notificationInitService.initializeForUser(user, true);
-        } catch (error) {
-          console.log('📱 Silent notification initialization skipped:', error.message);
-        }
+        // Run these in the background without blocking UI
+        setTimeout(async () => {
+          try {
+            await ensureUserDocument(user);
+            await notificationInitService.initializeForUser(user, true);
+          } catch (error) {
+            console.log('📱 Background initialization error:', error.message);
+          }
+        }, 0);
       } else {
         // Reset notification service when user logs out
         notificationInitService.reset();
       }
-      
-      setLoading(false);
     });
 
     return unsubscribe;

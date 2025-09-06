@@ -1,7 +1,9 @@
 // Scripts for firebase and firebase messaging
 // Version: 1.6 - Add iOS Safari browser protection
+/* eslint-env serviceworker */
+/* global importScripts, firebase, clients */
+
 // Check if we're in a supported browser before loading Firebase scripts
-const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 const isStandalone = (typeof self !== 'undefined' && self.matchMedia && self.matchMedia('(display-mode: standalone)').matches);
 
@@ -32,7 +34,7 @@ if (!isiOS || isStandalone) {
 
   // Retrieve an instance of Firebase Messaging so that it can handle background
   // messages.
-  const messaging = firebase.messaging();
+  firebase.messaging();
 
   // console.log('Firebase messaging instance created');
 
@@ -121,7 +123,6 @@ if (!isiOS || isStandalone) {
 self.addEventListener("notificationclick", (event) => {
   const clickedUrl = event.notification.data?.url || "/dashboard";
   const notificationType = event.notification.data?.type || "general";
-  const kitId = event.notification.data?.kitId;
   const taskId = event.notification.data?.taskId;
   
   console.log("Notification click received. URL:", clickedUrl, "Type:", notificationType);
